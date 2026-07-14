@@ -1,0 +1,1339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>初识大模型与本地部署 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 课程讲义</div><a class="item active" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 1 讲</div>
+<h1>🤖 初识大模型与本地部署</h1>
+<div class="chips"><span class="chip">🏷️ 大模型基础</span><span class="chip">🏷️ Ollama</span><span class="chip">🏷️ ChatBox</span><a class="chip amber" href="../homework/hw01.html">✏️ 配套练习：起步任务清单</a></div>
+</div>
+<p>今日内容: 了解性</p>
+<ul>
+<li>1- 【了解】整个阶段的项目介绍</li>
+<li>2- 【了解】大模型核心基础: </li>
+<li>3- 【了解】私有化大模型的部署方案</li>
+<li>4- 【实操】ollama安装与使用</li>
+<li>【记录整理】客户端指令</li>
+<li>【记录整理】对话指令</li>
+<li>【记录整理】ollama的API学习</li>
+<li>5- 【实操】基于chatBox构建智能聊天机器人</li>
+</ul>
+<h2 id="sec-1">1- 聊天机器人项目简介</h2>
+<h3 id="sec-2">1.1 什么是聊天机器人</h3>
+<p>​       概念：聊天机器人是一种基于人工智能的<strong>自然语言</strong>处理技术开发的软件程序，能够通过文本或语音与用户进行交互，模拟人类对话它可以根据用户输入的问题或指令，生成相应的回答或执行特定的操作。</p>
+<p><img src="../assets/img/lesson01/20250219235132.png" alt="20250219235132" style="zoom:50%;" /></p>
+<ul>
+<li>
+<p>特点：</p>
+</li>
+<li>
+<p><strong>自然语言理解（NLP）</strong>：能够理解用户输入自然语言，包括文字或语音，并从中提取意图和关键信息。</p>
+</li>
+<li><strong>对话管理</strong>：通过对话引擎维持对话的连贯性，根据上下文生成合适的回答。</li>
+<li><strong>个性化交互</strong>：可以根据用户的历史记录和偏好提供定制化的回答。</li>
+<li>
+<p><strong>多功能性</strong>：除了聊天，还可以执行任务，如查询信息、预订服务、提供帮助等。</p>
+</li>
+<li>
+<p>应用场景：</p>
+</li>
+<li>
+<p><strong>客户服务</strong>：在电商、金融等领域，聊天机器人可以自动解答用户问题，提供24*7的客户支持。</p>
+</li>
+<li><strong>娱乐</strong>：一些聊天机器人可以与用户进行趣味对话，提供娱乐体验。</li>
+<li><strong>教育</strong>：用于语言学习、知识问答等教育场景。</li>
+<li><strong>智能家居</strong>：控制家电设备，如灯光、空调等。</li>
+<li>
+<p><strong>医疗健康</strong>：提供健康咨询、预约挂号等服务。</p>
+</li>
+<li>
+<p>有哪些常见聊天机器人?</p>
+</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Config</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="na">DeepSeek</span>
+<span class="na">由杭州深度求索人工智能基础技术研究有限公司研发,  其核心优势在于性能卓越、低成本开发和开源策略</span>
+<span class="na">Kimi智能助手</span>
+<span class="na">由月之暗面科技有限公司开发，支持超长上下文（最高200万汉字），适合长文本处理和复杂对话。</span>
+<span class="na">通义千问</span>
+<span class="na">阿里云推出的人工智能助手，适合办公场景，提供高效的信息处理能力。</span>
+<span class="na">讯飞星火</span>
+<span class="na">科大讯飞出品，支持语音输入和语音朗读回复，适合语音交互场景。</span>
+<span class="na">豆包</span>
+<span class="na">字节跳动推出，支持抖音和今日头条的内容信息获取，适合内容创作和信息检索。</span>
+</pre></div>
+</div>
+<ul>
+<li>智能聊天机器人效果展示</li>
+</ul>
+<blockquote>
+<p>本次课我们会带领大家完成从0-1的聊天机器人搭建。</p>
+</blockquote>
+<p>如何搭建像上面一样的聊天机器人？我们一起来看看基本需求</p>
+<h3 id="sec-3">1.2 项目需求分析</h3>
+<p>​       项目旨在构建一个基于大模型的智能聊天机器人，利用其强大的自然语言处理和生成能力，为用户提供高效、精准、个性化的对话服务。</p>
+<p>​       该聊天机器人将集成先进的大规模预训练语言模型（如GPT、Qwen等），具备自然语言理解、多轮对话、情感分析、知识问答等核心功能，并可根据具体应用场景进行定制化扩展，如客服咨询、教育辅导、娱乐互动等。</p>
+<p>相关功能需求如下：</p>
+<ul>
+<li>1- 核心对话功能需求</li>
+<li><strong>自然语言处理</strong>：<ul>
+<li>聊天机器人能够理解和生成自然语言文本，支持中文和英文对话。</li>
+<li>能够处理用户的输入并生成准确、流畅的回复。</li>
+</ul>
+</li>
+<li>
+<p><strong>实时对话交互</strong>：</p>
+<ul>
+<li>用户可以通过 Streamlit 界面输入文本，聊天机器人实时响应并展示回复。</li>
+<li>对话过程流畅，延迟时间不超过 3 秒。</li>
+</ul>
+</li>
+<li>
+<p>2- 用户界面功能需求</p>
+</li>
+<li><strong>简洁明了的布局</strong>：<ul>
+<li>提供输入框、发送按钮和对话展示区域。</li>
+<li>界面设计简洁美观，易于操作。</li>
+</ul>
+</li>
+<li><strong>交互式体验</strong>：<ul>
+<li>用户输入问题后，点击发送按钮即可触发对话。</li>
+<li>聊天机器人的回复实时展示在对话区域。</li>
+</ul>
+</li>
+</ul>
+<p>​       根据上述功能需求，项目采用模块化设计，前端通过Streamlit等框架实现简洁易用的交互界面，后端基于Ollama等平台进行模型部署和管理，确保系统的高效性和可扩展性。</p>
+<blockquote>
+<p>了解了相关需求之后，如何搭建聊天机器人呢？我们一起看看有哪些方式？</p>
+</blockquote>
+<h3 id="sec-4">1.3 项目架构设计</h3>
+<p>整体项目架构如下：</p>
+<p><img alt="架构图0218" src="../assets/img/lesson01/%E6%9E%B6%E6%9E%84%E5%9B%BE0218.jpg" /></p>
+<p>项目完整架构：</p>
+<ul>
+<li><strong>后端模型</strong>：利用 Ollama 平台的 Qwen 模型，该模型具备出色的自然语言处理能力，能够理解和生成自然语言文本，为聊天机器人提供核心的对话处理功能。</li>
+<li><strong>前端界面</strong>：采用 Streamlit 框架搭建用户界面，Streamlit 是一个简单易用的 Python 库，能够快速创建美观、交互式的 Web 应用，使用户能够通过网页与聊天机器人进行实时对话。</li>
+<li><strong>对话交互</strong>：用户可以通过 Streamlit 界面输入文本，聊天机器人基于 Qwen 模型对输入内容进行理解和处理，生成相应的回复并展示在界面上，实现流畅的对话交互。</li>
+<li><strong>模型调用</strong>：后端服务负责将用户输入传递给 Qwen 模型，并获取模型生成的回复，然后将回复内容返回给前端界面进行展示，确保对话的实时性和准确性。</li>
+<li><strong>界面展示</strong>：Streamlit 界面提供简洁明了的布局，包括输入框、发送按钮和对话展示区域，用户可以方便地输入问题并查看机器人的回答，提升用户体验。</li>
+</ul>
+<h3 id="sec-5">1.4 项目效果</h3>
+<ul>
+<li>本次课最终目标是我们会带领大家利用python编程完成从0-1的聊天机器人搭建。</li>
+</ul>
+<h2 id="sec-6">2. 大模型核心基础</h2>
+<p>​       大模型，通常指的是“大语言模型”，它是一个通过在海量文本数据上训练、能够理解并生成人类语言(自然语言 NLP)的超大型人工智能程序。 您可以把它想象成一个博览群书、学识渊博的超级大脑，它学习了互联网上几乎所有的公开知识，从而获得了强大的语言能力和世界知识。</p>
+<h3 id="sec-7">2.1 大模型分类</h3>
+<h4>2.1.1 自然语言处理模型</h4>
+<p>专注于文本生成、理解、翻译等任务，GPT系列（OpenAI）、BERT（Google）、T5（Google）</p>
+<p><img alt="1739844636699" src="../assets/img/lesson01/1739844636699.png" /></p>
+<h4>2.1.2 计算机视觉（CV）模型</h4>
+<p>视觉大模型（Large Visual Models）核心是通过大规模数据和复杂模型架构，实现对图像和视频的深度理解和生成。与传统计算机视觉模型相比，视觉大模型具有更强的泛化能力和多任务适应性，能够处理复杂的视觉任务，如图像分类、目标检测、语义分割、图像生成等。</p>
+<p>Stable Diffusion、Vision Transformers (ViT)、DALL·E（OpenAI）、CLIP（OpenAI）</p>
+<p><img alt="1739844687590" src="../assets/img/lesson01/1739844687590.png" /></p>
+<h4>2.1.3 语音模型</h4>
+<p>语音大模型是基于深度学习技术构建的人工智能模型，主要用于处理语音相关的任务，如语音识别（ASR）、语音合成（TTS）、语音翻译等。近年来，随着深度学习和大规模数据训练的发展，语音大模型在性能和功能上取得了显著进展，能够支持多语言、多场景的复杂任务。</p>
+<p>举例：Whisper（OpenAI）、WaveNet（DeepMind）、讯飞星火</p>
+<blockquote>
+<p>Whisper 由 OpenAI 开发的开源多语言语音识别模型，支持多种语言的语音转录和翻译</p>
+<p>讯飞星火由科大讯飞推出的语音大模型，尤其在中文语音识别方面表现突出，支持多种方言和少数民族语言。此外，讯飞星火还具备强大的语音合成能力。</p>
+</blockquote>
+<p><strong>‌</strong>语音模型<strong>‌是一种将声音信号转换为数字信号的模型。</strong></p>
+<p><img alt="image-20250219123303136" src="../assets/img/lesson01/image-20250219123303136.png" /></p>
+<p>语音模型的应用场景</p>
+<ol>
+<li>‌<strong>语音识别</strong>‌：将人类语音转换为文本或其他可理解的形式，广泛应用于智能助手、语音输入和自动化客服系统。</li>
+<li>‌<strong>语音合成</strong>‌：生成自然、具备韵律且富有情感的语音，适用于多语言、情感丰富的TTS应用。</li>
+<li>‌<strong>语音增强</strong>‌：提高语音信号的清晰度和质量，常用于噪声环境下的语音处理。</li>
+<li>‌<strong>声音事件监测</strong>‌：识别环境中的特定声音事件，如警报声、机器故障声等。</li>
+<li>‌<strong>说话人识别</strong>‌：识别说话人的身份，常用于安全验证和个性化服务。</li>
+</ol>
+<h4>2.1.4 多模态模型</h4>
+<p><code>多模态模型</code>是一种能够同时处理多种数据模态（如文本、图像、音频、视频等）的人工智能模型。与传统的单模态模型（如仅处理文本或图像）相比，多模态模型通过整合不同模态的数据，能够提供更全面、更准确的理解和生成能力。这些模型在多个领域展现出强大的应用潜力，例如医疗诊断、自动驾驶、智能助手等。</p>
+<p>多模态模型的核心在于跨模态融合，即将不同模态的数据表示映射到同一空间，以便模型能够理解和生成跨模态的内容。例如，在视觉问答（VQA）任务中，模型需要同时理解图像内容和自然语言问题，以生成准确的答案。</p>
+<p>举例：GPT-4（支持多模态）、Flamingo（DeepMind）、BLIP、KOSMOS（微软）</p>
+<p><img alt="image-20250219123333756" src="../assets/img/lesson01/image-20250219123333756.png" /></p>
+<p>对图解释如下：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">这里展示了一个基础模型</span><span class="err">（</span><span class="n">Foundation</span> <span class="n">Model</span><span class="err">）</span><span class="n">如何通过训练和适应</span><span class="err">（</span><span class="n">Adaptation</span><span class="err">）</span><span class="n">处理不同类型的数据</span><span class="err">，</span><span class="n">并执行多种任务</span><span class="err">。</span><span class="n">以下是图中各部分的详细解释</span><span class="err">：</span>
+<span class="n">数据</span><span class="err">（</span><span class="n">Data</span><span class="err">）</span>
+<span class="n">基础模型的训练需要多种类型的数据</span><span class="err">，</span><span class="n">这些数据包括</span><span class="err">：</span>
+<span class="n">文本</span><span class="err">（</span><span class="n">Text</span><span class="err">）：</span><span class="n">包括书籍</span><span class="err">、</span><span class="n">文章</span><span class="err">、</span><span class="n">网页等文本信息</span><span class="err">。</span>
+<span class="n">图像</span><span class="err">（</span><span class="n">Images</span><span class="err">）：</span><span class="n">包括照片</span><span class="err">、</span><span class="n">插图</span><span class="err">、</span><span class="n">图表等视觉信息</span><span class="err">。</span>
+<span class="n">语音</span><span class="err">（</span><span class="n">Speech</span><span class="err">）：</span><span class="n">包括语音记录</span><span class="err">、</span><span class="n">音频文件等声音信息</span><span class="err">。</span>
+<span class="n">结构化数据</span><span class="err">（</span><span class="n">Structured</span> <span class="n">Data</span><span class="err">）：</span><span class="n">包括数据库中的表格数据</span><span class="err">、</span><span class="n">电子表格等</span><span class="err">。</span>
+<span class="mi">3</span><span class="n">D信号</span><span class="err">（</span><span class="mi">3</span><span class="n">D</span> <span class="n">Signals</span><span class="err">）：</span><span class="n">可能包括3D模型</span><span class="err">、</span><span class="n">点云数据等三维信息</span><span class="err">。</span>
+
+<span class="n">训练</span><span class="err">（</span><span class="n">Training</span><span class="err">）</span>
+<span class="n">使用上述数据对基础模型进行训练</span><span class="err">，</span><span class="n">使其能够理解和处理不同类型的信息</span><span class="err">。</span>
+
+<span class="n">基础模型</span><span class="err">（</span><span class="n">Foundation</span> <span class="n">Model</span><span class="err">）</span>
+<span class="n">训练完成后</span><span class="err">，</span><span class="n">基础模型能够执行多种任务</span><span class="err">，</span><span class="n">并通过适应过程进一步优化其性能</span><span class="err">。</span>
+
+<span class="n">适应</span><span class="err">（</span><span class="n">Adaptation</span><span class="err">）</span>
+<span class="n">基础模型可以通过适应过程针对特定任务进行优化</span><span class="err">，</span><span class="n">以提高其在特定应用场景下的表现</span><span class="err">。</span>
+
+<span class="n">任务</span><span class="err">（</span><span class="n">Tasks</span><span class="err">）</span>
+<span class="n">基础模型可以执行以下任务</span><span class="err">：</span>
+<span class="n">问答</span><span class="err">（</span><span class="n">Question</span> <span class="n">Answering</span><span class="err">）：</span><span class="n">回答用户的问题</span><span class="err">。</span>
+<span class="n">情感分析</span><span class="err">（</span><span class="n">Sentiment</span> <span class="n">Analysis</span><span class="err">）：</span><span class="n">分析文本中的情感倾向</span><span class="err">，</span><span class="n">如正面</span><span class="err">、</span><span class="n">负面或中性</span><span class="err">。</span>
+<span class="n">信息提取</span><span class="err">（</span><span class="n">Information</span> <span class="n">Extraction</span><span class="err">）：</span><span class="n">从文本中提取关键信息</span><span class="err">，</span><span class="n">如实体</span><span class="err">、</span><span class="n">关系等</span><span class="err">。</span>
+<span class="n">图像描述生成</span><span class="err">（</span><span class="n">Image</span> <span class="n">Captioning</span><span class="err">）：</span><span class="n">为图像生成描述性文本</span><span class="err">。</span>
+<span class="n">物体识别</span><span class="err">（</span><span class="n">Object</span> <span class="n">Recognition</span><span class="err">）：</span><span class="n">识别图像中的物体</span><span class="err">。</span>
+<span class="n">指令遵循</span><span class="err">（</span><span class="n">Instruction</span> <span class="n">Following</span><span class="err">）：</span><span class="n">根据用户的指令执行特定的任务</span><span class="err">。</span>
+
+<span class="n">这里展示了基础模型的强大能力</span><span class="err">，</span><span class="n">它可以通过训练和适应处理多种类型的数据</span><span class="err">，</span><span class="n">并执行广泛的任务</span><span class="err">，</span><span class="n">从而在各种应用场景中发挥作用</span><span class="err">。</span>
+</pre></div>
+</div>
+<h3 id="sec-8">2.2 大模型应用场景</h3>
+<ul>
+<li>智能客服与对话系统：用于构建聊天机器人、虚拟助手，提供24*7的客户支持。目前大模型最广泛应用。</li>
+<li>文本生成：生成文章、故事、代码、营销文案等。</li>
+<li>机器翻译：实现多语言之间的高质量翻译。</li>
+<li>问答系统：提供精准的问答服务，如知识库查询、技术支持。</li>
+<li>图像分类与识别：识别图像中的物体、场景或人脸。</li>
+<li>目标检测与跟踪：用于自动驾驶、安防监控等场景。</li>
+</ul>
+<p><img src="../assets/img/lesson01/image-20250219123036053.png" alt="image-20250219123036053" style="zoom:150%;" /></p>
+<h2 id="sec-9">3. 【了解】私有部署大模型方案</h2>
+<h3 id="sec-10">3.1 为什么要有私有大模型</h3>
+<p><img alt="image-20250413213741997" src="../assets/img/lesson01/image-20250413213741997.png" /></p>
+<p>​       随着AI技术的不断普及，人们也积极拥抱其带来的变化，在生活或者工作中亦使用AI技术来帮助我们更高效的完成某些事件，但是在这个过程中，也暴露出AI技术当前下存在在的系列问题，其中最严重的就是安全问题</p>
+<p>比如：最典型的是三星员工使用ChatGPT泄露公司机密的案例。</p>
+<p>​       其实上述案例表现的就是<strong>企业数据隐私与安全的问题</strong>，在许多行业，如金融、医疗、政府等，数据隐私和安全是至关重要的。使用公共大模型可能涉及敏感数据的泄露风险，因为公共模型在训练过程中可能接触到了来自不同来源的敏感数据。因此就有了私有大模型的市场需求，私有大模型允许企业或机构在自己的数据上训练模型，而且训练的结果只供内部或合作伙伴使用，从而确保了数据隐私和安全。</p>
+<p>​       当然除了数据隐私问题原因之外，还存有便于内部员工工作提效、大模型开发的投入等诸多原因综合，直接推动私有大模型成为未来AI发展的新方向之一。</p>
+<h3 id="sec-11">3.2 私有大模型解决方案</h3>
+<p>​       随着AI的发展，越来越多的开发者投入到大模型开发中，他们期望能自身笔记本上运行大模型，以便开发。越来越多的企业积极改造自身产品，融入AI技术，他们期望能私有化大模型以保证数据安全。这些诉求直接推动社区出现了两个这方面的产品Ollama和LMstudio, 本次我们主要是基于Ollama方案进行私有大模型解决方案</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;"></th>
+<th style="text-align: left;">Ollama（开发和测试）</th>
+<th>LM Studio</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>产品定位</strong></td>
+<td style="text-align: left;"><strong>开源</strong>的大型语言模型本地运行框架</td>
+<td><strong>闭源</strong>的本地大型语言模型工作站，集模型训练、部署、调试于一体</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>技术特点</strong></td>
+<td style="text-align: left;">高度智能化，自主学习和适应能力强- 便捷性高，操作简单易懂- 安全性强，数据传输和存储严格保护</td>
+<td>高性能，采用先进计算架构和算法优化- 可定制化，支持用户定制模型结构和训练策略易用性，友好的用户界面和丰富的文档支持</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>功能</strong></td>
+<td style="text-align: left;">提供预训练模型访问和微调功能- 支持多种模型架构和定制模型- 用户友好界面，简化模型实验和部署过程</td>
+<td>丰富的训练数据和算法库- 可视化训练监控界面- 强大的调试工具，支持模型性能优化</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>应用场景</strong></td>
+<td style="text-align: left;">学术研究- 开发者原型设计和实验- 创意写作、文本生成等</td>
+<td>智能客服- 自然语言处理（如文本分类、情感分析、机器翻译）- 学术研究</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>用户友好性</strong></td>
+<td style="text-align: left;">界面化操作，适合不同水平的用户- 支持多种设备和平台</td>
+<td>友好的用户界面，适合初学者和非技术人员- 提供全面的工具组合，易于上手</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>定制性</strong></td>
+<td style="text-align: left;">提供一定程度的定制选项，但可能有限制</td>
+<td>高度可定制化，满足用户个性化需求</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>资源要求</strong></td>
+<td style="text-align: left;">需要一定的内存或显存资源来运行大型模型- 支持跨平台（macOS、Linux，Windows预览版）</td>
+<td>构建和训练复杂模型可能需要大量计算资源和专业技能</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>成本</strong></td>
+<td style="text-align: left;">成本可能根据使用量和资源需求变化- 开源项目，可能涉及较少的直接成本</td>
+<td>闭源产品，成本可能包括软件许可和可能的云服务费用</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>社区生态</strong></td>
+<td style="text-align: left;">社区生态活跃，开发者主流本地运行时- 快速适配新发布的模型</td>
+<td>未知（未提及具体社区生态活跃度）</td>
+</tr>
+</tbody>
+</table></div>
+<p>生产部署，尤其是针对海量用户  基于多个GPU（显卡 英伟达）运算模型：  VLLM 或者 K8s多卡方案部署 (AI大模型运维工程师)</p>
+<h3 id="sec-12">3.3 选择私有化大模型部署方案</h3>
+<p>​       Ollama 作为一个开源的轻量级工具，适合熟悉命令行界面的开发人员和高级用户进行模型实验和微调。它提供了广泛的预训练模型和灵活的定制选项，同时保持了高度的便捷性和安全性。最重要它是开源的，同时还提供API，对于开发有先天优势，因此在企业中备受欢迎和使用，因此本课程也才主要学习Ollama技术。</p>
+<h2 id="sec-13">4. 【实操】Ollama安装与使用</h2>
+<h3 id="sec-14">2.1 什么是Ollama</h3>
+<blockquote>
+<p>Ollama：是一款旨在简化大型语言模型本地部署和运行过程的开源软件。</p>
+<p>中文名：羊驼</p>
+<p>网址：https://ollama.com/</p>
+</blockquote>
+<p>​       Ollama提供了一个轻量级、易于扩展的框架，让开发者能够在本地机器上轻松构建和管理LLMs（大型语言模型）。通过Ollama，开发者可以访问和运行一系列预构建的模型，或者导入和定制自己的模型，无需关注复杂的底层实现细节。</p>
+<p>​       Ollama的主要功能包括快速部署和运行各种大语言模型，如Llama 2、Code Llama等。它还支持从GGUF、PyTorch或Safetensors格式导入自定义模型，并提供了丰富的API和CLI命令行工具，方便开发者进行高级定制和应用开发。</p>
+<h3 id="sec-15">2.2 Ollama特点</h3>
+<ul>
+<li><strong>一站式管理</strong>：</li>
+<li>Ollama将模型权重、配置和数据捆绑到一个包中，定义成Modelfile，从而优化了设置和配置细节。</li>
+<li>包括GPU使用情况。这种封装方式使得用户无需关注底层实现细节，即可快速部署和运行复杂的大语言模型。</li>
+<li><strong>热加载模型文件</strong>：</li>
+<li>支持热加载模型文件，无需重新启动即可切换不同的模型，</li>
+<li>提高了灵活性，还显著增强了用户体验。</li>
+<li><strong>丰富的模型库</strong>：提供多种预构建的模型，如Llama 2、Llama 3、通义千问，方便用户快速在本地运行大型语言模型。</li>
+<li><strong>多平台支持</strong>：支持多种操作系统，包括Mac、Windows和Linux，确保了广泛的可用性和灵活性。</li>
+<li><strong>无复杂依赖</strong>：优化推理代码减少不必要的依赖，可以在各种硬件上高效运行。包括纯CPU推理和Apple Silicon架构。</li>
+<li><strong>资源占用少</strong>：Ollama的代码简洁明了，运行时占用资源少，使其能够在本地高效运行，不需要大量的计算资源。</li>
+</ul>
+<h3 id="sec-16">2.3 Ollama下载与安装</h3>
+<h4>2.3.1 Ollama下载</h4>
+<blockquote>
+<p>Ollama共支持三种平台：</p>
+<ul>
+<li>Window：https://ollama.com/download/OllamaSetup.exe</li>
+<li>Mac：https://ollama.com/download/Ollama-darwin.zip</li>
+<li>Linux：https://ollama.com/download/ollama-linux-amd64</li>
+</ul>
+</blockquote>
+<h4>2.3.2 ollama模型库</h4>
+<p>​       ollama 支持多种开源模型，涵盖文本生成、代码生成、多模态推理等场景。用户可以根据需求选择合适的模型，并通过简单的命令行操作在本地运行。 ollama 官方模型库: https://ollama.com/library</p>
+<p><img alt="image-20250413214121800" src="../assets/img/lesson01/image-20250413214121800.png" /></p>
+<h4>2.3.2 Windows平台安装</h4>
+<h5>2.3.2.1 安装ollama</h5>
+<ul>
+<li>Windows安装</li>
+</ul>
+<p>~~~shell
+  第一步：在02_资料/OllamaSetup.exe 找到执行程序</p>
+<p>第二步：右键以管理员身份运行</p>
+<p>第三步：点击install
+  ~~~</p>
+<p><img alt="1739642839675" src="../assets/img/lesson01/1739642839675.png" /></p>
+<ul>
+<li>验证安装成功</li>
+</ul>
+<p>~~~shell
+  第一步：win+R组合键  输入cmd</p>
+<p>第二步： 输入命令  ollama -v</p>
+<p>第三步：显示ollama版本号 ollama version is 0.5.4</p>
+<p>即安装成功！
+  ~~~</p>
+<p><img alt="1739641908819" src="../assets/img/lesson01/1739641908819.png" /></p>
+<h5>2.3.2.2 部署大模型</h5>
+<p><img alt="image-20250413214616309" src="../assets/img/lesson01/image-20250413214616309.png" /></p>
+<p><img alt="image-20250413214626665" src="../assets/img/lesson01/image-20250413214626665.png" /></p>
+<h5>2.3.2.3 安装位置</h5>
+<p><img alt="image-20250413214648371" src="../assets/img/lesson01/image-20250413214648371.png" /></p>
+<h4>2.3.3 基于Mac平台安装</h4>
+<h5>2.3.3.1 安装ollama</h5>
+<p><img alt="image-20250413214917629" src="../assets/img/lesson01/image-20250413214917629.png" /></p>
+<p><img alt="image-20250413214931019" src="../assets/img/lesson01/image-20250413214931019.png" /></p>
+<h5>2.3.3.2 部署大模型</h5>
+<p><img alt="image-20250413214945386" src="../assets/img/lesson01/image-20250413214945386.png" /></p>
+<p><img alt="image-20250413215112487" src="../assets/img/lesson01/image-20250413215112487.png" /></p>
+<h5>2.3.3.3 安装位置</h5>
+<p><img alt="image-20250413215126146" src="../assets/img/lesson01/image-20250413215126146.png" /></p>
+<h3 id="sec-17">2.4 修改模型存储路径</h3>
+<p>ollama软件在各个操作系统上的默认存储路径是：</p>
+<blockquote>
+<p>Windows: ~/.ollama/models</p>
+<p>macOS: ~/.ollama/models</p>
+<p>Linux: ~/.ollama/models</p>
+</blockquote>
+<p>1.先在其他位置创建一个用于存储模型的目录</p>
+<p><img alt="image-20250414095912375" src="../assets/img/lesson01/image-20250414095912375.png" /></p>
+<p>2.window直接页面配置环境变量OLLAMA_MODELS,指定存储路径即可</p>
+<p><img alt="image-20250414100152889" src="../assets/img/lesson01/image-20250414100152889.png" /></p>
+<p><img alt="image-20250414100404778" src="../assets/img/lesson01/image-20250414100404778.png" /></p>
+<p>3.一定要重启ollama</p>
+<p><img alt="image-20250414101318731" src="../assets/img/lesson01/image-20250414101318731.png" /></p>
+<p>开始栏中找到ollama启动</p>
+<p><img alt="image-20250414101450144" src="../assets/img/lesson01/image-20250414101450144.png" /></p>
+<p>4.原来下载好的文件直接剪切到新的目录中即可</p>
+<p><img alt="image-20250414101547901" src="../assets/img/lesson01/image-20250414101547901.png" /></p>
+<h2 id="sec-18">3. 【熟练】客户端命令详解</h2>
+<p>Ollama客户端提供了系列命令，来管理本地大模型，接下来就先了解一下相关命令：</p>
+<h3 id="sec-19">3.1 run 命令</h3>
+<blockquote>
+<p>run命令主要用于运行一个大模型，命令格式是：</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>ollama<span class="w"> </span>run<span class="w"> </span>MODEL<span class="o">[</span>:Version<span class="o">]</span><span class="w"> </span><span class="o">[</span>PROMPT<span class="o">]</span><span class="w"> </span><span class="o">[</span>flags<span class="o">]</span>
+比如，运行通义千问命令：
+ollama<span class="w"> </span>run<span class="w"> </span>qwen2:0.5b
+</pre></div>
+</div>
+<blockquote>
+<p>[:Version] 可以理解成版本，而版本信息常常以大模型规模来命名，可以不写，不写则模式成latest</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>ollama run qwen2
+等同
+ollama run qwen2:latest
+</pre></div>
+</div>
+<blockquote>
+<p>[PROMPT] 参数是用户输入的提示词，如果带有此参数则，run命令会执行了输入提示词之后即退出终端，即只对话一次。</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">[</span>root@bogon<span class="w"> </span>~<span class="o">]</span><span class="c1">#  ollama run qwen2:0.5b 您好</span>
+您好！有什么问题我可以帮助您？
+
+<span class="o">[</span>root@bogon<span class="w"> </span>~<span class="o">]</span><span class="c1"># </span>
+</pre></div>
+</div>
+<blockquote>
+<p>[flags] 指定运行时的参数</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>Flags:
+<span class="w">      </span>--format<span class="w"> </span>string<span class="w">      </span>指定运行的模型输出格式<span class="w"> </span><span class="o">(</span>比如.<span class="w"> </span>json<span class="o">)</span>
+<span class="w">      </span>--insecure<span class="w">           </span>使用非安全模，比如在下载模型时会忽略https的安全证书
+<span class="w">      </span>--keepalive<span class="w"> </span>string<span class="w">   </span>指定模型在内存中的存活时间
+<span class="w">      </span>--nowordwrap<span class="w">         </span>关闭单词自动换行功能
+<span class="w">      </span>--verbose<span class="w">            </span>开启统计日志信息
+</pre></div>
+</div>
+<p>例如，在启动时增加 --verbose参数，则在对话时，自动增加统计token信息：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">[</span>root@bogon<span class="w"> </span>~<span class="o">]</span><span class="c1"># ollama run qwen2:0.5b --verbose</span>
+&gt;&gt;&gt;<span class="w"> </span>您好
+欢迎光临，我可以为您提供帮助。有什么问题或需要帮助的地方？
+
+total<span class="w"> </span>duration:<span class="w">       </span><span class="m">1</span>.229917477s
+load<span class="w"> </span>duration:<span class="w">        </span><span class="m">3</span>.027073ms
+prompt<span class="w"> </span><span class="nb">eval</span><span class="w"> </span>count:<span class="w">    </span><span class="m">10</span><span class="w"> </span>token<span class="o">(</span>s<span class="o">)</span>
+prompt<span class="w"> </span><span class="nb">eval</span><span class="w"> </span>duration:<span class="w"> </span><span class="m">167</span>.181ms
+prompt<span class="w"> </span><span class="nb">eval</span><span class="w"> </span>rate:<span class="w">     </span><span class="m">59</span>.82<span class="w"> </span>tokens/s
+<span class="nb">eval</span><span class="w"> </span>count:<span class="w">           </span><span class="m">16</span><span class="w"> </span>token<span class="o">(</span>s<span class="o">)</span>
+<span class="nb">eval</span><span class="w"> </span>duration:<span class="w">        </span><span class="m">928</span>.995ms
+<span class="nb">eval</span><span class="w"> </span>rate:<span class="w">            </span><span class="m">17</span>.22<span class="w"> </span>tokens/s
+</pre></div>
+</div>
+<h3 id="sec-20">3.2 show 命令</h3>
+<blockquote>
+<p>不用运行大模型，查看模型的信息，与之前所学的/show功能类似。</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">[</span>root@bogon<span class="w"> </span>~<span class="o">]</span><span class="c1"># ollama show -h</span>
+Show<span class="w"> </span>information<span class="w"> </span><span class="k">for</span><span class="w"> </span>a<span class="w"> </span>model
+
+Usage:
+<span class="w">  </span>ollama<span class="w"> </span>show<span class="w"> </span>MODEL<span class="w"> </span><span class="o">[</span>flags<span class="o">]</span>
+
+Flags:
+<span class="w">  </span>-h,<span class="w"> </span>--help<span class="w">         </span>查看使用帮助
+<span class="w">      </span>--license<span class="w">      </span>查看模型的许可信息
+<span class="w">      </span>--modelfile<span class="w">    </span>查看模型的制作源文件Modelfile
+<span class="w">      </span>--parameters<span class="w">   </span>查看模型的内置参数信息
+<span class="w">      </span>--system<span class="w">       </span>查看模型的内置Sytem信息
+<span class="w">      </span>--template<span class="w">     </span>查看模型的提示词模版
+</pre></div>
+</div>
+<p>例如，查看提示词模版：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">[</span>root@bogon<span class="w"> </span>~<span class="o">]</span><span class="c1"># ollama show qwen2 --template</span>
+<span class="o">{{</span><span class="w"> </span><span class="k">if</span><span class="w"> </span>.System<span class="w"> </span><span class="o">}}</span>&lt;<span class="p">|</span>im_start<span class="p">|</span>&gt;system
+<span class="o">{{</span><span class="w"> </span>.System<span class="w"> </span><span class="o">}}</span>&lt;<span class="p">|</span>im_end<span class="p">|</span>&gt;
+<span class="o">{{</span><span class="w"> </span>end<span class="w"> </span><span class="o">}}{{</span><span class="w"> </span><span class="k">if</span><span class="w"> </span>.Prompt<span class="w"> </span><span class="o">}}</span>&lt;<span class="p">|</span>im_start<span class="p">|</span>&gt;user
+<span class="o">{{</span><span class="w"> </span>.Prompt<span class="w"> </span><span class="o">}}</span>&lt;<span class="p">|</span>im_end<span class="p">|</span>&gt;
+<span class="o">{{</span><span class="w"> </span>end<span class="w"> </span><span class="o">}}</span>&lt;<span class="p">|</span>im_start<span class="p">|</span>&gt;assistant
+<span class="o">{{</span><span class="w"> </span>.Response<span class="w"> </span><span class="o">}}</span>&lt;<span class="p">|</span>im_end<span class="p">|</span>&gt;
+</pre></div>
+</div>
+<h3 id="sec-21">3.3 pull 命令</h3>
+<p>查询模型名称的网站：https://ollama.com/</p>
+<blockquote>
+<p>从远程下载一个模型，命令格式是：</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>ollama pull MODEL[:Version] [flags]
+</pre></div>
+</div>
+<blockquote>
+<p>[:Version] 可以理解成版本，但在这里理解成大模型规模，可以不写，不写则模式成latest </p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>ollama pull qwen2
+等同
+ollama pull qwen2:latest
+</pre></div>
+</div>
+<blockquote>
+<p>[flags] 参数，目前只有一个--insecure参数，用于来指定非安全模式下载数据</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>ollama<span class="w"> </span>pull<span class="w"> </span>qwen2<span class="w"> </span>--insecure
+</pre></div>
+</div>
+<h3 id="sec-22">3.4 list/ls 命令</h3>
+<blockquote>
+<p>查看本地下载的大模型列表，也可以使用简写ls</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">[</span>root@bogon<span class="w"> </span>~<span class="o">]</span><span class="c1"># ollama list</span>
+NAME<span class="w">                    </span>ID<span class="w">              </span>SIZE<span class="w">    </span>MODIFIED<span class="w">       </span>
+qwen2:latest<span class="w">            </span>e0d4e1163c58<span class="w">    </span><span class="m">4</span>.4<span class="w"> </span>GB<span class="w">  </span><span class="m">10</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">  </span>
+deepseek-coder:latest<span class="w">   </span>3ddd2d3fc8d2<span class="w">    </span><span class="m">776</span><span class="w"> </span>MB<span class="w">  </span><span class="m">3</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">     </span>
+qwen2:0.5b<span class="w">              </span>6f48b936a09f<span class="w">    </span><span class="m">352</span><span class="w"> </span>MB<span class="w">  </span><span class="m">8</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">     </span>
+<span class="o">[</span>root@bogon<span class="w"> </span>~<span class="o">]</span><span class="c1"># ollama ls</span>
+NAME<span class="w">                    </span>ID<span class="w">              </span>SIZE<span class="w">    </span>MODIFIED<span class="w">       </span>
+qwen2:latest<span class="w">            </span>e0d4e1163c58<span class="w">    </span><span class="m">4</span>.4<span class="w"> </span>GB<span class="w">  </span><span class="m">10</span><span class="w"> </span>minutes<span class="w"> </span>ago<span class="w">  </span>
+deepseek-coder:latest<span class="w">   </span>3ddd2d3fc8d2<span class="w">    </span><span class="m">776</span><span class="w"> </span>MB<span class="w">  </span><span class="m">3</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">     </span>
+qwen2:0.5b<span class="w">              </span>6f48b936a09f<span class="w">    </span><span class="m">352</span><span class="w"> </span>MB<span class="w">  </span><span class="m">8</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">   </span>
+</pre></div>
+</div>
+<p><strong>列表字段说明：</strong></p>
+<ul>
+<li>NAME：名称</li>
+<li>ID：大模型唯一ID</li>
+<li>SIZE：大模型大小</li>
+<li>MODIFIED：本地存活时间</li>
+</ul>
+<h3 id="sec-23">3.5 ps 命令</h3>
+<blockquote>
+<p>查看当前运行的大模型列表，PS命令没其它参数</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>[root@bogon ~]# ollama ps
+NAME                    ID              SIZE    PROCESSOR       UNTIL                   
+deepseek-coder:latest   3ddd2d3fc8d2    1.3 GB  100% CPU        About a minute from now 
+</pre></div>
+</div>
+<p><strong>列表字段说明：</strong></p>
+<ul>
+<li>NAME：大模型名称</li>
+<li>ID：唯一ID</li>
+<li>SIZE：模型大小</li>
+<li>PROCESSOR：资源占用</li>
+<li>UNTIL：运行存活时长</li>
+</ul>
+<h3 id="sec-24">3.6 rm 命令</h3>
+<blockquote>
+<p>删除本地大模型，RM命令没其它参数</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">[</span>root@localhost<span class="w"> </span>system<span class="o">]</span><span class="c1"># ollama ls</span>
+NAME<span class="w">                    </span>ID<span class="w">              </span>SIZE<span class="w">    </span>MODIFIED<span class="w">     </span>
+qwen2:latest<span class="w">            </span>e0d4e1163c58<span class="w">    </span><span class="m">4</span>.4<span class="w"> </span>GB<span class="w">  </span><span class="m">16</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">    </span>
+deepseek-coder:latest<span class="w">   </span>3ddd2d3fc8d2<span class="w">    </span><span class="m">776</span><span class="w"> </span>MB<span class="w">  </span><span class="m">19</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">    </span>
+qwen2:0.5b<span class="w">              </span>6f48b936a09f<span class="w">    </span><span class="m">352</span><span class="w"> </span>MB<span class="w">  </span><span class="m">24</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">    </span>
+<span class="o">[</span>root@localhost<span class="w"> </span>system<span class="o">]</span><span class="c1"># ollama rm qwen2:0.5b</span>
+deleted<span class="w"> </span><span class="s1">&#39;qwen2:0.5b&#39;</span>
+<span class="o">[</span>root@localhost<span class="w"> </span>system<span class="o">]</span><span class="c1"># ollama ls</span>
+NAME<span class="w">                    </span>ID<span class="w">              </span>SIZE<span class="w">    </span>MODIFIED<span class="w">     </span>
+qwen2:latest<span class="w">            </span>e0d4e1163c58<span class="w">    </span><span class="m">4</span>.4<span class="w"> </span>GB<span class="w">  </span><span class="m">16</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">    </span>
+deepseek-coder:latest<span class="w">   </span>3ddd2d3fc8d2<span class="w">    </span><span class="m">776</span><span class="w"> </span>MB<span class="w">  </span><span class="m">19</span><span class="w"> </span>hours<span class="w"> </span>ago<span class="w">    </span>
+<span class="o">[</span>root@localhost<span class="w"> </span>system<span class="o">]</span><span class="c1"># </span>
+</pre></div>
+</div>
+<h2 id="sec-25">4. 【了解】对话指令详解</h2>
+<p>在Ollama终端中提供了一系列指令，可以用来调整和控制对话模型：</p>
+<p><img alt="image-20240618153540896" src="../assets/img/lesson01/g5.png" /></p>
+<blockquote>
+<p>/?    该指令主要是列出支持的指令列表</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Config</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="na">[root@bogon ~]#  ollama run qwen2</span><span class="o">:</span><span class="s">0.5b</span>
+<span class="na">&gt;&gt;&gt; /?</span>
+<span class="na">Available Commands</span><span class="o">:</span>
+<span class="w">  </span><span class="na">/set            Set session variables</span>
+<span class="w">  </span><span class="na">/show           Show model information</span>
+<span class="w">  </span><span class="na">/load &lt;model&gt;   Load a session or model</span>
+<span class="w">  </span><span class="na">/save &lt;model&gt;   Save your current session</span>
+<span class="w">  </span><span class="na">/clear          Clear session context</span>
+<span class="w">  </span><span class="na">/bye            Exit</span>
+<span class="w">  </span><span class="na">/?, /help       Help for a command</span>
+<span class="w">  </span><span class="na">/? shortcuts    Help for keyboard shortcuts</span>
+
+<span class="na">Use &quot;&quot;&quot; to begin a multi-line message.</span>
+</pre></div>
+</div>
+<h3 id="sec-26">4.1 /bye 指令</h3>
+<blockquote>
+<p>退出当前控制台对话, 快捷键: ctrl + d</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">[</span>root@bogon<span class="w"> </span>~<span class="o">]</span><span class="c1">#  ollama run qwen2:0.5b</span>
+&gt;&gt;&gt;<span class="w"> </span>您好
+你好！有什么可以帮助您的吗？
+
+&gt;&gt;&gt;<span class="w"> </span>/bye
+<span class="o">[</span>root@bogon<span class="w"> </span>~<span class="o">]</span><span class="c1"># </span>
+</pre></div>
+</div>
+<h3 id="sec-27">4.2 /show指令</h3>
+<p>/show 指令：用于查看当前模型详细信息</p>
+<blockquote>
+<p>```shell
+[root@bogon ~]#  ollama run qwen2:0.5b</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>/show
+Available Commands:
+/show info         查看模型的基本信息
+/show license      查看模型的许可信息
+/show modelfile    查看模型的制作源文件Modelfile
+/show parameters   查看模型的内置参数信息
+/show system       查看模型的内置Sytem信息
+/show template     查看模型的提示词模版
+```</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>/show info         查看模型的基本信息</p>
+<blockquote>
+<p>```shell</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>/show info
+Model details:
+Family              qwen2     模型名称
+Parameter Size      494.03M       模型大小
+Quantization Level  Q4_0      模型量化级别
+```</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h3 id="sec-28">4.3 /? shortcuts 指令</h3>
+<blockquote>
+<p>查看在控制台中可用的快捷键</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>&gt;&gt;&gt; /? shortcuts
+Available keyboard shortcuts:
+  Ctrl + a            移动到行头
+  Ctrl + e            移动到行尾
+  Ctrl + b            移动到单词左边
+  Ctrl + f            移动到单词右边
+  Ctrl + k            删除游标后面的内容
+  Ctrl + u            删除游标前面的内容
+  Ctrl + w            删除游标前面的单词
+
+  Ctrl + l            清屏
+  Ctrl + c            停止推理输出
+  Ctrl + d            退出对话（只有在没有输入时才生效）
+</pre></div>
+</div>
+<h3 id="sec-29">4.4 """ 指令</h3>
+<blockquote>
+<p>""" 用于输入内容有换行时使用，如何多行输入结束也使用 """ </p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>&gt;&gt;&gt;<span class="w"> </span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">... 您好</span>
+<span class="s2">... 你是什么模型？</span>
+<span class="s2">... &quot;&quot;&quot;</span><span class="w"> </span>
+我是一个计算机程序，可以回答您的问题、提供信息和执行任务。请问您有什么问题或者指令想要我帮助您？
+</pre></div>
+</div>
+<h3 id="sec-30">4.5 /set 指令</h3>
+<blockquote>
+<p>set指令主要用来设置当前对话模型的系列参数</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>&gt;&gt;&gt; /set
+Available Commands:
+  /set parameter ...     设置对话参数
+  /set system &lt;string&gt;   设置系统角色
+  /set template &lt;string&gt; 设置推理模版
+  /set history           开启对话历史
+  /set nohistory         关闭对话历史
+  /set wordwrap          开启自动换行
+  /set nowordwrap        关闭自动换行
+  /set format json       输出JSON格式
+  /set noformat          关闭格式输出
+  /set verbose           开启对话统计日志
+  /set quiet             关闭对话统计日志
+</pre></div>
+</div>
+<blockquote>
+<p>/set parameter ...     设置对话参数</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>&gt;&gt;&gt; /set parameter
+Available Parameters:
+  /set parameter seed &lt;int&gt;             Random number seed
+  /set parameter num_predict &lt;int&gt;      Max number of tokens to predict
+  /set parameter top_k &lt;int&gt;            Pick from top k num of tokens
+  /set parameter top_p &lt;float&gt;          Pick token based on sum of probabilities
+  /set parameter num_ctx &lt;int&gt;          Set the context size
+  /set parameter temperature &lt;float&gt;    Set creativity level
+  /set parameter repeat_penalty &lt;float&gt; How strongly to penalize repetitions
+  /set parameter repeat_last_n &lt;int&gt;    Set how far back to look for repetitions
+  /set parameter num_gpu &lt;int&gt;          The number of layers to send to the GPU
+  /set parameter stop &lt;string&gt; &lt;string&gt; ...   Set the stop parameters
+</pre></div>
+</div>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Value Type</th>
+<th>Example Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>num_ctx</td>
+<td>设置上下文token大小. (默认: 2048)</td>
+<td>int</td>
+<td>num_ctx 4096</td>
+</tr>
+<tr>
+<td>repeat_last_n</td>
+<td>设置模型要回顾的距离以防止重复. (默认: 64, 0 = 禁用, -1 = num_ctx)</td>
+<td>int</td>
+<td>repeat_last_n 64</td>
+</tr>
+<tr>
+<td>repeat_penalty</td>
+<td>设置惩罚重复的强度。较高的值（例如，1.5)将更强烈地惩罚重复，而较低值（例如，0.9)会更加宽容。（默认值：1.1）</td>
+<td>float</td>
+<td>repeat_penalty 1.1</td>
+</tr>
+<tr>
+<td>temperature</td>
+<td><strong>模型的温度。提高温度将使模型的答案更有创造性。（默认值：0.8）</strong></td>
+<td>float</td>
+<td>temperature 0.7</td>
+</tr>
+<tr>
+<td>seed</td>
+<td>设置用于生成的随机数种子。将其设置为特定的数字将使模型为相同的提示生成相同的文本。（默认值：0）</td>
+<td>int</td>
+<td>seed 42</td>
+</tr>
+<tr>
+<td>stop</td>
+<td>设置停止词。当遇到这种词时，LLM将停止生成文本并返回</td>
+<td>string</td>
+<td>stop "AI assistant:"</td>
+</tr>
+<tr>
+<td>num_predict</td>
+<td>生成文本时要预测的最大标记数。（默认值：128，-1 =无限生成，-2 =填充上下文）</td>
+<td>int</td>
+<td>num_predict 42</td>
+</tr>
+<tr>
+<td>top_k</td>
+<td><strong>减少产生无意义的可能性。较高的值（例如100）将给出更多样化的答案，而较低的值（例如10）将更加保守。（默认值：40）</strong></td>
+<td>int</td>
+<td>top_k 40</td>
+</tr>
+<tr>
+<td>top_p</td>
+<td>与Top-K合作。较高的值（例如，0.95）将导致更多样化的文本，而较低的值（例如，0.5)将产生更集中和保守的文本。（默认值：0.9）</td>
+<td>float</td>
+<td>top_p 0.9</td>
+</tr>
+<tr>
+<td>num_gpu</td>
+<td>设置缓存到GPU显存中的模型层数</td>
+<td>int</td>
+<td>自动计算</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>JSON格式输出</strong></p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>&gt;&gt;&gt;<span class="w"> </span>/set<span class="w"> </span>format<span class="w"> </span>json
+Set<span class="w"> </span>format<span class="w"> </span>to<span class="w"> </span><span class="s1">&#39;json&#39;</span><span class="w"> </span>mode.
+&gt;&gt;&gt;<span class="w"> </span>您好
+<span class="o">{</span><span class="s2">&quot;response&quot;</span>:<span class="s2">&quot;你好，欢迎光临，请问有什么我可以帮助您的吗？&quot;</span><span class="o">}</span>
+
+&gt;&gt;&gt;<span class="w"> </span>/set<span class="w"> </span>noformat
+Disabled<span class="w"> </span>format.
+&gt;&gt;&gt;<span class="w"> </span>您好
+Hello!<span class="w"> </span>How<span class="w"> </span>can<span class="w"> </span>I<span class="w"> </span>assist<span class="w"> </span>you?
+</pre></div>
+</div>
+<p><strong>输出对话统计日志</strong></p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>&gt;&gt;&gt;<span class="w"> </span>/set<span class="w"> </span>verbose
+Set<span class="w"> </span><span class="s1">&#39;verbose&#39;</span><span class="w"> </span>mode.
+&gt;&gt;&gt;<span class="w"> </span>您好
+您好！我需要您的信息，以便回答您的问题。请问您能告诉我更多关于这个主题的信息吗？
+
+total<span class="w"> </span>duration:<span class="w">       </span><span class="m">1</span>.642906162s<span class="w">			</span>总耗时
+load<span class="w"> </span>duration:<span class="w">        </span><span class="m">3</span>.401367ms<span class="w">			</span>加载模型数据耗时
+prompt<span class="w"> </span><span class="nb">eval</span><span class="w"> </span>count:<span class="w">    </span><span class="m">11</span><span class="w"> </span>token<span class="o">(</span>s<span class="o">)</span><span class="w">			</span>提示词token消耗数量
+prompt<span class="w"> </span><span class="nb">eval</span><span class="w"> </span>duration:<span class="w"> </span><span class="m">196</span>.52ms<span class="w">				</span>提示词处理耗时
+prompt<span class="w"> </span><span class="nb">eval</span><span class="w"> </span>rate:<span class="w">     </span><span class="m">55</span>.97<span class="w"> </span>tokens/s<span class="w">		</span>提示词处理速率
+<span class="nb">eval</span><span class="w"> </span>count:<span class="w">           </span><span class="m">24</span><span class="w"> </span>token<span class="o">(</span>s<span class="o">)</span><span class="w">			</span>响应token消耗数量
+<span class="nb">eval</span><span class="w"> </span>duration:<span class="w">        </span><span class="m">1</span>.304188s<span class="w">				</span>响应处理耗时
+<span class="nb">eval</span><span class="w"> </span>rate:<span class="w">            </span><span class="m">18</span>.40<span class="w"> </span>tokens/s<span class="w">		</span>响应处理速率
+</pre></div>
+</div>
+<h3 id="sec-31">4.6 /clear 指令</h3>
+<p>在命令行终端中对话是自带上下文记忆功能，如果要清除上下文功能，则使用/clear指令清除上下文内容，例如：</p>
+<p>前2个问题都关联的，在输入/clear则把前2个问题的内容给清理掉了，第3次提问时则找不到开始的上下文了。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>&gt;&gt;&gt; 请帮我出1道java list的单选题 
+以下是一些关于Java List的单选题：
+
+1. 在Java中，List是哪一种数据结构？
+2. Java中的顺序存储方式（例如：使用数组）主要用来做什么？
+3. 一个列表对象可以包含哪些类型的元素？
+
+&gt;&gt;&gt; 再出1道
+以下是一些关于Java List的单选题：
+
+4. 在Java中，List接口用于创建和操作集合。
+5. Java中的顺序存储方式（如：使用数组）的主要优势有哪些？
+6. 一个列表对象可以包含哪些类型？
+
+&gt;&gt;&gt; /clear
+Cleared session context
+&gt;&gt;&gt; 在出1道
+很抱歉，我无法理解您的问题。您能否提供更多的背景信息或者问题描述，以便我能更好地帮助您？
+</pre></div>
+</div>
+<h3 id="sec-32">4.7 /load 指令</h3>
+<blockquote>
+<p>load可以在对话过程中随时切换大模型</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>&gt;&gt;&gt;<span class="w"> </span>你是什么大模型
+我是一个基于开放AI平台的模型，拥有一个强大的数学推理能力，并且在各种自然语言处理任务上都表现优秀。我可以回答您提出的问题，也可以提供与主题相关的信息和建议。如果您有任何问题或需要帮助，
+请随时告诉我！
+
+&gt;&gt;&gt;<span class="w"> </span>/load<span class="w"> </span>deepseek-coder
+Loading<span class="w"> </span>model<span class="w"> </span><span class="s1">&#39;deepseek-coder&#39;</span>
+&gt;&gt;&gt;<span class="w"> </span>你是什么大模型
+我是由中国的深度求索（DeepSeek）公司开发的编程智能助手，名为<span class="w"> </span>Deepseek<span class="w"> </span>Coder。我主要用于解答和协助计算机科学相关的问题、问题解决方案等任务。我的设计目标是提供最全面准确的高质量服务来帮
+助用户理解复杂的新技术或概念并迅速找到它们在实际应用中的实现方法或者原理所在的地方。
+</pre></div>
+</div>
+<h3 id="sec-33">4.8 /save 指令</h3>
+<blockquote>
+<p>可以把当前对话模型存储成一个新的模型</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>&gt;&gt;&gt;<span class="w"> </span>/save<span class="w"> </span><span class="nb">test</span>
+Created<span class="w"> </span>new<span class="w"> </span>model<span class="w"> </span><span class="s1">&#39;test&#39;</span>
+</pre></div>
+</div>
+<p>保存的模型存储在ollama的model文件中，进入下面路径即可看见模型文件test：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">[</span>root@bogon<span class="w"> </span>library<span class="o">]</span><span class="c1"># pwd</span>
+/root/.ollama/models/manifests/registry.ollama.ai/library
+<span class="o">[</span>root@bogon<span class="w"> </span>library<span class="o">]</span><span class="c1"># ls</span>
+deepseek-coder<span class="w">  </span>qwen2<span class="w">  </span><span class="nb">test</span>
+</pre></div>
+</div>
+<h2 id="sec-34">5. 【掌握】Ollama API 详解</h2>
+<h3 id="sec-35">5.1 HTTP基础知识</h3>
+<h4>5.1.1 什么是HTTP</h4>
+<p>HTTP，全称为超文本传输协议（HyperText Transfer Protocol），是互联网上应用最为广泛的一种网络协议。它是客户端和服务器之间进行通信的规则集合，允许将超文本标记语言（HTML）文档从Web服务器传输到Web浏览器。简而言之，HTTP是Web浏览器和Web服务器之间的“语言”，使得用户能够浏览网页、下载文件、提交表单等。</p>
+<h4>5.1.2 HTTP请求特征</h4>
+<p>HTTP请求是客户端（如浏览器）向服务器发送的请求消息，用于获取或操作资源。以下是HTTP请求的主要特征：</p>
+<p><strong>请求方法</strong>
+请求方法定义了客户端希望执行的操作类型，常见方法包括：</p>
+<ul>
+<li><strong>GET</strong>：请求获取指定资源。</li>
+<li><strong>POST</strong>：向服务器提交数据，通常用于表单提交。</li>
+</ul>
+<p><strong>请求URL</strong>
+ 请求URL指定了资源的路径，通常包括协议（如HTTP或HTTPS）、服务器地址、端口号和资源路径。</p>
+<p><strong>请求头（Headers）</strong>
+请求头包含关于请求的附加信息，常见字段包括：</p>
+<ul>
+<li><strong>Host</strong>：指定服务器的主机名和端口号。 </li>
+<li><strong>User-Agent</strong>：描述客户端的信息（如浏览器类型）。</li>
+<li><strong>Accept</strong>：指定客户端能够接收的媒体类型。</li>
+<li><strong>Content-Type</strong>：指示请求体的媒体类型（如<code>application/json</code>）。</li>
+<li><strong>Authorization</strong>：包含认证信息（如Bearer Token）</li>
+</ul>
+<p><strong>请求体（Request Body）</strong></p>
+<p>请求体用于携带客户端发送的数据，通常在POST、PUT等方法中使用。例如：</p>
+<ul>
+<li>表单数据：<code>username=test&amp;password=123456</code></li>
+<li>JSON数据：<code>{"username": "test", "password": "123456"}</code></li>
+</ul>
+<h4>5.1.3 HTTP请求体方法对比</h4>
+<p>​   在HTTP协议中，<strong>GET</strong>和<strong>POST</strong>是两种最常用的请求方法，它们在用途、数据传递方式、安全性等方面有显著区别。</p>
+<ul>
+<li><strong>GET</strong>：</li>
+<li>用于<strong>请求资源</strong>，通常用于从服务器获取数据（如加载网页、查询数据）。</li>
+<li>适合幂等操作（多次请求不会对资源产生影响）。</li>
+<li><strong>POST</strong>：</li>
+<li>用于<strong>提交数据</strong>，通常用于向服务器发送数据（如表单提交、文件上传）。</li>
+<li>适合非幂等操作（多次请求可能会对资源产生影响）。</li>
+</ul>
+<h4>5.1.4 HTTP状态码分类</h4>
+<p>​   200 OK：请求成功，响应中包含请求的数据。</p>
+<p>​   302 Found：资源临时移动到新URL。</p>
+<p>​   404 Not Found：请求的资源不存在。</p>
+<p>​   500 Internal Server Error：服务器内部错误，无法完成请求。</p>
+<p>​   502 Bad Gateway：服务器作为网关时收到无效响应。 </p>
+<p>总结:</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Config</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="na">1- 客户端(浏览器)向服务器端发送过程, 称为 请求</span>
+<span class="w">	</span><span class="na">请求方式</span><span class="o">:</span><span class="w"> </span><span class="s">get  和 post</span>
+<span class="w">		</span><span class="na">get</span><span class="o">:</span><span class="w"> </span><span class="s">用于获取资源</span>
+<span class="w">		</span><span class="na">post</span><span class="o">:</span><span class="s">提交数据给服务器的</span>
+
+<span class="na">2- 服务器端(ollama服务) 向 浏览器返回过程, 称为 响应</span>
+<span class="w">	</span><span class="na">状态码</span><span class="o">:</span><span class="w"> </span>
+<span class="w">		</span><span class="na">200</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s">请求成功的状态</span>
+<span class="w">		</span><span class="na">以 4 和 5开头的, 都是有问题的</span><span class="o">:</span>
+<span class="w">			</span><span class="na">4</span><span class="o">:</span><span class="w"> </span><span class="s">一般都是客户端的问题, 比如地址写错了...</span>
+<span class="w">			</span><span class="na">5</span><span class="o">:</span><span class="w"> </span><span class="s">一般都是服务器的问题</span>
+
+<span class="na">3- 在网络中. API/接口. 指的访问服务器中指定功能的地址连接</span>
+<span class="w">	</span><span class="na">例如</span><span class="o">:</span><span class="w"> </span><span class="s">网址  www.example.com</span>
+<span class="w">		</span><span class="na">/</span><span class="w">   </span><span class="o">:</span><span class="w"> </span><span class="s">获取官网</span>
+<span class="w">		</span><span class="na">/?aizly</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s">获取人工智能宣传页</span>
+</pre></div>
+</div>
+<h3 id="sec-36">5.2 API 详解</h3>
+<p>Ollama对客户端相关的命令也提供API操作的接口，方便在企业应用中通过程序类操作私有大模型。</p>
+<h4>5.2.1 Apifox介绍与安装</h4>
+<p>​       <strong>Apifox 是一款集成了 API 文档、API 调试、API Mock、API 自动化测试于一体的协同工作平台</strong>。它的目标是成为 API 开发、测试、运维整个生命周期中的“一站式”解决方案。</p>
+<p>你可以把它理解为：</p>
+<ul>
+<li><strong>Postman + Swagger + Mock.js + JMeter</strong> 的强大组合。</li>
+<li>它的核心理念是 <strong>“API 优先”</strong>，通过一套系统、一份数据，解决多个工具之间数据同步的难题。</li>
+</ul>
+<p>官网：https://apifox.com/</p>
+<p><img alt="image-20251016193747539" src="../assets/img/lesson01/image-20251016193747539.png" /></p>
+<p>安装操作:</p>
+<p><img alt="image-20250413222843935" src="../assets/img/lesson01/image-20250413222843935.png" /></p>
+<h4>5.2.2 导入Apifox文档</h4>
+<p>为了方便后续使用程序接入Ollama中的大模型，在此可以先通过Apifox进行Api的快速体验与学习。在资料文件夹中《Ollama.apifox.json》文件提供了供Apifox软件导入的json内容，再此我们先导入到Apifox软件中，快速体验一下API相关功能。</p>
+<p><strong>Step 1：打开导入项目</strong></p>
+<p><img alt="bg-7" src="../assets/img/lesson01/bg-7.png" /></p>
+<p><strong>Step 2：选择导入的文件</strong></p>
+<p><img alt="bg-9" src="../assets/img/lesson01/bg-9.png" /></p>
+<p><strong>Step 3：输入项目名称</strong></p>
+<p><img alt="bg-10" src="../assets/img/lesson01/bg-10.png" /></p>
+<p><strong>Step 4：完成导入，进入项目</strong></p>
+<blockquote>
+<p>中间如果有导入预览，则直接点击确定即可。</p>
+</blockquote>
+<p><img alt="image-20240620203700320" src="../assets/img/lesson01/image-20240620203700320.png" /></p>
+<h4>5.2.3 配置环境地址</h4>
+<p>Oallma支持的API可以在资料文件夹中通过《Ollama API文档.html》了解详解，双击打开查看：</p>
+<p><img alt="image-20240620174314154" src="../assets/img/lesson01/image-20240620174314154.png" /></p>
+<p>通过网页可以了解到Ollama支持7个API （这里只列举了常用的），接下来我们重点先了解对话和向量化接口，因为这两个接口是最重要的，其它接口则留给大家课后自行尝试，但是在正式体验之前，需要先配置一下环境地址。</p>
+<p><strong>配置测试环境地址：</strong></p>
+<p><img alt="bg41" src="../assets/img/lesson01/bg41.png" /></p>
+<h4>5.2.4 聊天对话接口说明</h4>
+<p>聊天对话接口，是实现类似ChatGPT、文心、通义千问等网页对话功能的关键接口，请求的地址与参数如下：</p>
+<blockquote>
+<p>POST /api/chat</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">JSON</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;qwen2.5:0.5b&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;images&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;string&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;stream&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul>
+<li>请求参数</li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>位置</th>
+<th>类型</th>
+<th>必选</th>
+<th>中文名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>body</td>
+<td>body</td>
+<td>object</td>
+<td>否</td>
+<td></td>
+<td>none</td>
+</tr>
+<tr>
+<td>model</td>
+<td>body</td>
+<td>string</td>
+<td>是</td>
+<td>模型名称</td>
+<td>none</td>
+</tr>
+<tr>
+<td>messages</td>
+<td>body</td>
+<td>[object]</td>
+<td>是</td>
+<td>聊天消息</td>
+<td>none</td>
+</tr>
+<tr>
+<td>role</td>
+<td>body</td>
+<td>string</td>
+<td>是</td>
+<td>角色</td>
+<td>system、user或assistant</td>
+</tr>
+<tr>
+<td>content</td>
+<td>body</td>
+<td>string</td>
+<td>是</td>
+<td>内容</td>
+<td>none</td>
+</tr>
+<tr>
+<td>images</td>
+<td>body</td>
+<td>string</td>
+<td>否</td>
+<td>图像</td>
+<td>none</td>
+</tr>
+<tr>
+<td>format</td>
+<td>body</td>
+<td>string</td>
+<td>否</td>
+<td>响应格式</td>
+<td>none</td>
+</tr>
+<tr>
+<td>stream</td>
+<td>body</td>
+<td>boolean</td>
+<td>否</td>
+<td>是否流式生成</td>
+<td>none</td>
+</tr>
+<tr>
+<td>keep_alive</td>
+<td>body</td>
+<td>string</td>
+<td>否</td>
+<td>模型内存保持时间</td>
+<td>5m</td>
+</tr>
+<tr>
+<td>tools</td>
+<td>body</td>
+<td>[object]</td>
+<td>否</td>
+<td>工具</td>
+<td></td>
+</tr>
+<tr>
+<td>options</td>
+<td>body</td>
+<td>object</td>
+<td>否</td>
+<td>配置参数</td>
+<td>none</td>
+</tr>
+<tr>
+<td>seed</td>
+<td>body</td>
+<td>integer</td>
+<td>否</td>
+<td>生成种子</td>
+<td>none</td>
+</tr>
+<tr>
+<td>top_k</td>
+<td>body</td>
+<td>integer</td>
+<td>否</td>
+<td>多样度</td>
+<td>越高越多样，默认40</td>
+</tr>
+<tr>
+<td>top_p</td>
+<td>body</td>
+<td>number</td>
+<td>否</td>
+<td>保守度</td>
+<td>越低越保守，默认0.9</td>
+</tr>
+<tr>
+<td>repeat_last_n</td>
+<td>body</td>
+<td>integer</td>
+<td>否</td>
+<td>防重复回顾距离</td>
+<td>默认: 64, 0 = 禁用, -1 = num_ctx</td>
+</tr>
+<tr>
+<td>temperature</td>
+<td>body</td>
+<td>number</td>
+<td>否</td>
+<td>温度值</td>
+<td>越高创造性越强，默认0.8</td>
+</tr>
+<tr>
+<td>repeat_penalty</td>
+<td>body</td>
+<td>number</td>
+<td>否</td>
+<td>重复惩罚强度</td>
+<td>越高惩罚越强，默认1.1</td>
+</tr>
+<tr>
+<td>stop</td>
+<td>body</td>
+<td>[string]</td>
+<td>是</td>
+<td>停止词</td>
+<td>none</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>返回示例</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">JSON</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;model&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;llama3.1&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-09-07T09:00:57.035084368Z&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;role&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;assistant&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;content&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;tool_calls&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nt">&quot;function&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;get_current_weather&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="nt">&quot;arguments&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                        </span><span class="nt">&quot;format&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;celsius&quot;</span><span class="p">,</span>
+<span class="w">                        </span><span class="nt">&quot;location&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Paris&quot;</span>
+<span class="w">                    </span><span class="p">}</span>
+<span class="w">                </span><span class="p">}</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;done_reason&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;stop&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;done&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;total_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">14452649821</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;load_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">21370256</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;prompt_eval_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">213</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;prompt_eval_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">11306354000</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;eval_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">25</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;eval_duration&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3082983000</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul>
+<li>返回结果</li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态码</th>
+<th>状态码含义</th>
+<th>说明</th>
+<th>数据模型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>200</td>
+<td><a href="https://tools.ietf.org/html/rfc7231#section-6.3.1">OK</a></td>
+<td>成功</td>
+<td>Inline</td>
+</tr>
+</tbody>
+</table></div>
+<ul>
+<li>返回数据结构</li>
+</ul>
+<p>状态码 <strong>200</strong> 时才返回以下信息。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>类型</th>
+<th>必选</th>
+<th>约束</th>
+<th>中文名</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>model</td>
+<td>string</td>
+<td>true</td>
+<td>none</td>
+<td>模型</td>
+<td>none</td>
+</tr>
+<tr>
+<td>created_at</td>
+<td>string</td>
+<td>true</td>
+<td>none</td>
+<td>响应时间</td>
+<td>none</td>
+</tr>
+<tr>
+<td>message</td>
+<td>object</td>
+<td>true</td>
+<td>none</td>
+<td>响应内容</td>
+<td>none</td>
+</tr>
+<tr>
+<td>role</td>
+<td>string</td>
+<td>true</td>
+<td>none</td>
+<td>角色</td>
+<td>none</td>
+</tr>
+<tr>
+<td>content</td>
+<td>string</td>
+<td>true</td>
+<td>none</td>
+<td>内容</td>
+<td>none</td>
+</tr>
+<tr>
+<td>tool_calls</td>
+<td>[object]</td>
+<td>false</td>
+<td>none</td>
+<td>调用的工具集</td>
+<td></td>
+</tr>
+<tr>
+<td>done</td>
+<td>boolean</td>
+<td>false</td>
+<td>none</td>
+<td></td>
+<td>none</td>
+</tr>
+<tr>
+<td>total_duration</td>
+<td>integer</td>
+<td>false</td>
+<td>none</td>
+<td>总耗时</td>
+<td>none</td>
+</tr>
+<tr>
+<td>load_duration</td>
+<td>integer</td>
+<td>false</td>
+<td>none</td>
+<td>模型加载耗时</td>
+<td>none</td>
+</tr>
+<tr>
+<td>prompt_eval_count</td>
+<td>integer</td>
+<td>false</td>
+<td>none</td>
+<td>提示词token消耗数</td>
+<td>none</td>
+</tr>
+<tr>
+<td>prompt_eval_duration</td>
+<td>integer</td>
+<td>false</td>
+<td>none</td>
+<td>提示词耗时</td>
+<td>none</td>
+</tr>
+<tr>
+<td>eval_count</td>
+<td>integer</td>
+<td>false</td>
+<td>none</td>
+<td>响应token消耗数</td>
+<td>none</td>
+</tr>
+<tr>
+<td>eval_duration</td>
+<td>integer</td>
+<td>false</td>
+<td>none</td>
+<td>响应耗时</td>
+<td>none</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="sec-37">5.3 聊天对话示例</h3>
+<p><img alt="image-20251015070808542" src="../assets/img/lesson01/image-20251015070808542.png" /></p>
+<h2 id="sec-38">6. 【实操】ChatBox与Ollama快速搭建ChatBot</h2>
+<h3 id="sec-39">6.1 ChatBox是什么</h3>
+<p>​       在当前市场上有很多类似ChatGPT、通义、文心、星火等这样的对话大模型供我们使用，帮助我们快速高效的完成日常的工作，但是对于一些企业来说，会存在一些数据安全的问题，因为您输入到大模型中的内容，会进过内部训练，成为大模型的一部分数据。就比如《三星被曝因ChatGPT泄露芯片机密！韩媒：数据「原封不动」传美国》，三星员工把一些内部资料输入到了ChatGPT，则ChatGPT拿到这些资料后，经过训练成模型数据，这样全球用户就都可以访问到这个数据。</p>
+<p>​       企业为避免类似的情况发生，可以采取部署企业私有大模型的方案来解决此问题，这就引出了接下要学习的知识：搭建企业私有ChatBot。要完成这个知识需要先学习一个ChatBox的软件，我们接下来看一下：</p>
+<p>​       Chatbox 是一款基于人工智能技术的对话工具，通常用于提供智能客服、聊天机器人或其他自动化对话服务。它可以帮助企业或个人实现高效的客户沟通、问题解答、任务处理等功能。</p>
+<p><img alt="1739203773266" src="../assets/img/lesson01/1739203773266.png" /></p>
+<p>ChatBox功能特点包含：</p>
+<ul>
+<li>一键免费拥有你自己的 ChatGPT/Gemini/Claude/Ollama 应用</li>
+<li>与文档和图片聊天</li>
+<li>代码神器：生成与预览</li>
+<li>支持本地大模型</li>
+<li>支持多平台AI接入</li>
+<li>支持插件扩展</li>
+</ul>
+<h3 id="sec-40">6.2 安装ChatBox</h3>
+<p>ChatBox提供了windows桌面安装方式，相关文件已下载到02_资料/Chatbox-1.9.8-Setup.exe，可以找到文件，然后通过以下操作进行安装：</p>
+<p>**Step 1：桌面win安装 ** </p>
+<p><img alt="1739643125906" src="../assets/img/lesson01/1739643125906.png" /></p>
+<p><strong>Step 2：访问ChatBox</strong></p>
+<p><img alt="image-20250413223018200" src="../assets/img/lesson01/image-20250413223018200.png" />![ima</p>
+<p><img alt="1739389459468" src="../assets/img/lesson01/1739389459468.png" /></p>
+<h3 id="sec-41">6.3 ChatBox界面介绍</h3>
+<h4>6.3.1 主界面</h4>
+<blockquote>
+<p>主界面如下，主要包括的内容有：</p>
+<ul>
+<li>功能菜单（左侧）</li>
+<li>对话菜单</li>
+<li>功能菜单</li>
+<li>模型选择</li>
+</ul>
+</blockquote>
+<p><img alt="1739207562004" src="../assets/img/lesson01/1739207562004.png" /></p>
+<h4>6.3.2 对话聊天界面</h4>
+<blockquote>
+<p>从主界面中点击【立即开始】则可快速进入聊天界面，然后与大模型进行聊天</p>
+<ul>
+<li>聊天区域：用户可以发送文本、图片等信息，与大模型进行对话</li>
+<li>聊天历史：显示历史用户与大模型对话列表</li>
+<li>聊天设置：可以进行对话模型切换与参数设置</li>
+</ul>
+</blockquote>
+<p><img alt="1739388676991" src="../assets/img/lesson01/1739388676991.png" /></p>
+<h3 id="sec-42">6.4 ChatBox集成Ollama</h3>
+<p>要在ChatBox中使用Ollama中的大模型，也非常便捷，可以按照以下步骤进行操作：</p>
+<p>配置Ollama信息</p>
+<p>进入对话聊天界面，并点击位置的设置按钮，则弹出下图中间区域的对话框，然后点击位置的【模型】菜单，然后按图填写信息：</p>
+<p><img alt="1739206990140" src="../assets/img/lesson01/1739206990140.png" /></p>
+<p><strong>Step 3：开始对话</strong></p>
+<p>配置完成之后，返回对话界面，在1号位置选择通义大模型，然后即可开始对话聊天。</p>
+<p><img alt="1739206253326" src="../assets/img/lesson01/1739206253326.png" /></p><div class="done-bar"><button class="mark-done-btn" data-key="lesson01" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a class="disabled"></a><a class="next" href="lesson02.html"><div class="dir">下一篇 →</div><div class="name">🐍 Python 基础语法与条件判断</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">1- 聊天机器人项目简介</a><a class="lv3" href="#sec-2">1.1 什么是聊天机器人</a><a class="lv3" href="#sec-3">1.2 项目需求分析</a><a class="lv3" href="#sec-4">1.3 项目架构设计</a><a class="lv3" href="#sec-5">1.4 项目效果</a><a class="lv2" href="#sec-6">2. 大模型核心基础</a><a class="lv3" href="#sec-7">2.1 大模型分类</a><a class="lv3" href="#sec-8">2.2 大模型应用场景</a><a class="lv2" href="#sec-9">3. 【了解】私有部署大模型方案</a><a class="lv3" href="#sec-10">3.1 为什么要有私有大模型</a><a class="lv3" href="#sec-11">3.2 私有大模型解决方案</a><a class="lv3" href="#sec-12">3.3 选择私有化大模型部署方案</a><a class="lv2" href="#sec-13">4. 【实操】Ollama安装与使用</a><a class="lv3" href="#sec-14">2.1 什么是Ollama</a><a class="lv3" href="#sec-15">2.2 Ollama特点</a><a class="lv3" href="#sec-16">2.3 Ollama下载与安装</a><a class="lv3" href="#sec-17">2.4 修改模型存储路径</a><a class="lv2" href="#sec-18">3. 【熟练】客户端命令详解</a><a class="lv3" href="#sec-19">3.1 run 命令</a><a class="lv3" href="#sec-20">3.2 show 命令</a><a class="lv3" href="#sec-21">3.3 pull 命令</a><a class="lv3" href="#sec-22">3.4 list/ls 命令</a><a class="lv3" href="#sec-23">3.5 ps 命令</a><a class="lv3" href="#sec-24">3.6 rm 命令</a><a class="lv2" href="#sec-25">4. 【了解】对话指令详解</a><a class="lv3" href="#sec-26">4.1 /bye 指令</a><a class="lv3" href="#sec-27">4.2 /show指令</a><a class="lv3" href="#sec-28">4.3 /? shortcuts 指令</a><a class="lv3" href="#sec-29">4.4 &quot;&quot;&quot; 指令</a><a class="lv3" href="#sec-30">4.5 /set 指令</a><a class="lv3" href="#sec-31">4.6 /clear 指令</a><a class="lv3" href="#sec-32">4.7 /load 指令</a><a class="lv3" href="#sec-33">4.8 /save 指令</a><a class="lv2" href="#sec-34">5. 【掌握】Ollama API 详解</a><a class="lv3" href="#sec-35">5.1 HTTP基础知识</a><a class="lv3" href="#sec-36">5.2 API 详解</a><a class="lv3" href="#sec-37">5.3 聊天对话示例</a><a class="lv2" href="#sec-38">6. 【实操】ChatBox与Ollama快速搭建ChatBot</a><a class="lv3" href="#sec-39">6.1 ChatBox是什么</a><a class="lv3" href="#sec-40">6.2 安装ChatBox</a><a class="lv3" href="#sec-41">6.3 ChatBox界面介绍</a><a class="lv3" href="#sec-42">6.4 ChatBox集成Ollama</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

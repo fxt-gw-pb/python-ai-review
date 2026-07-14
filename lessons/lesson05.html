@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>推导式与函数 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 课程讲义</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 5 讲</div>
+<h1>⚡ 推导式与函数</h1>
+<div class="chips"><span class="chip">🏷️ 推导式</span><span class="chip">🏷️ 函数</span><span class="chip">🏷️ 作用域</span><span class="chip">🏷️ lambda</span><a class="chip amber" href="../homework/hw07.html">✏️ 配套练习：推导式与函数</a><a class="chip amber" href="../homework/hw08.html">✏️ 配套练习：函数专项训练</a></div>
+</div>
+<h2 id="sec-1">今日内容大纲</h2>
+<ul>
+<li>
+<p>Python推导式定义与应用</p>
+</li>
+<li>
+<p>函数定义与嵌套</p>
+</li>
+<li>
+<p>变量的作用域</p>
+</li>
+<li>
+<p>函数参数进阶</p>
+</li>
+<li>
+<p>lambda函数应用场景</p>
+</li>
+</ul>
+<h2 id="sec-2">推导式</h2>
+<h3 id="sec-3">学习目标</h3>
+<ul>
+<li>掌握推导式的相关用法</li>
+</ul>
+<h3 id="sec-4">什么是推导式</h3>
+<p>推导式comprehensions（又称解析式），是Python的一种独有特性。推导式是可以从一个数据序列构建另一个新的数据序列（一个有规律的列表或控制一个有规律列表）的结构体。 共有三种推导：<code>列表推导式</code>、<code>集合推导式</code>、<code>字典推导式</code>。</p>
+<h3 id="sec-5">为什么需要推导式</h3>
+<p>案例：创建一个0-9的列表</p>
+<p>while循环：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 初始化计数器</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">list1</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="c1"># 编写循环条件</span>
+<span class="k">while</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="mi">9</span><span class="p">:</span>
+    <span class="n">list1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+ 	<span class="c1"># 更新计数器</span>
+    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">list1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>for循环：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">list1</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="c1"># 编写for循环</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">):</span>
+    <span class="n">list1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">list1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>思考：我们能不能把以上代码简化为一行代码搞定这个程序呢？</p>
+<p>答：可以，使用推导式</p>
+<h3 id="sec-6">列表推导式</h3>
+<p>基本语法：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">变量名</span> <span class="o">=</span> <span class="p">[</span><span class="n">表达式</span> <span class="k">for</span> <span class="n">变量</span> <span class="ow">in</span> <span class="n">列表</span><span class="p">]</span>
+<span class="n">变量名</span> <span class="o">=</span> <span class="p">[</span><span class="n">表达式</span> <span class="k">for</span> <span class="n">变量</span> <span class="ow">in</span> <span class="n">列表</span> <span class="k">if</span> <span class="n">条件</span><span class="p">]</span>
+<span class="n">变量名</span> <span class="o">=</span> <span class="p">[</span><span class="n">表达式</span> <span class="k">for</span> <span class="n">变量</span> <span class="ow">in</span> <span class="n">列表</span> <span class="k">for</span> <span class="n">变量</span> <span class="ow">in</span> <span class="n">列表</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>案例：定义0-9之间的列表</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">list1</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">):</span>
+    <span class="n">list1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">list1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>列表推导式</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">list1</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">list1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>执行原理：[i for i in range(10)]</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">POWERSHELL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">列表推导式先运行表达式右边的内容</span><span class="err">：</span>
+
+<span class="n">当第一次遍历时</span><span class="err">：</span><span class="n">i</span> <span class="p">=</span> <span class="n">0</span><span class="err">，</span><span class="n">其得到变量i的结果后</span><span class="err">，</span><span class="n">会放入最左侧的变量i中</span><span class="err">，</span><span class="n">这个时候列表中就是</span><span class="p">[</span><span class="n">0</span><span class="p">]</span>
+<span class="n">当第二次遍历时</span><span class="err">：</span><span class="n">i</span> <span class="p">=</span> <span class="n">1</span><span class="err">，</span><span class="n">其得到变量i的结果后</span><span class="err">，</span><span class="n">会追加最左侧的变量i中</span><span class="err">，</span><span class="n">这个时候列表中就是</span><span class="p">[</span><span class="n">0</span><span class="p">,</span> <span class="n">1</span><span class="p">]</span>
+<span class="p">...</span>
+<span class="n">当最后一次遍历时</span><span class="err">：</span><span class="n">i</span> <span class="p">=</span> <span class="n">9</span><span class="err">，</span><span class="n">其得到变量i的结果后</span><span class="err">，</span><span class="n">会追加最左侧的变量i中</span><span class="err">，</span><span class="n">这个时候列表中就是</span><span class="p">[</span><span class="n">0</span><span class="p">,</span> <span class="n">1</span><span class="p">,</span> <span class="n">2</span><span class="p">,</span> <span class="n">3</span><span class="p">,</span> <span class="n">4</span><span class="p">,</span> <span class="n">5</span><span class="p">,</span> <span class="n">6</span><span class="p">,</span> <span class="n">7</span><span class="p">,</span> <span class="n">8</span><span class="p">,</span> <span class="n">9</span><span class="p">]</span>
+</pre></div>
+</div>
+<h3 id="sec-7">列表推导式 + if条件判断</h3>
+<p>在使用列表推导式时候，我们除了可以使用for循环，其实我们还可以在其遍历的过程中，引入if条件判断。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">变量</span> <span class="o">=</span> <span class="p">[</span><span class="n">表达式</span> <span class="k">for</span> <span class="n">临时变量</span> <span class="ow">in</span> <span class="n">序列</span> <span class="k">if</span> <span class="n">条件判断</span><span class="p">]</span>
+
+<span class="n">等价于</span>
+
+<span class="k">for</span> <span class="n">临时变量</span> <span class="ow">in</span> <span class="n">序列</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">条件判断</span>
+</pre></div>
+</div>
+<p>案例：生成0-9之间的偶数（i%2 == 0）序列</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">list1</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">list1</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-8">for循环嵌套列表推导式</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">for</span> <span class="n">临时变量</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">临时变量</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+</pre></div>
+</div>
+<p>基本语法：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">变量</span> <span class="o">=</span> <span class="p">[</span><span class="n">表达式</span> <span class="k">for</span> <span class="n">临时变量</span> <span class="ow">in</span> <span class="n">序列</span> <span class="k">for</span> <span class="n">临时变量</span> <span class="ow">in</span> <span class="n">序列</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>案例：创建列表 =&gt; [(1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]</p>
+<p>(1,0)    (1, 0-2)</p>
+<p>(1,1)    (1, 0-2)</p>
+<p>(1,2)    (1, 0-2)</p>
+<hr />
+<p>(2,0)    (2, 0-2)</p>
+<p>(2,1)    (2, 0-2)</p>
+<p>(2,2)    (2, 0-2)</p>
+<p>原生代码：for循环嵌套</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">list1</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="c1"># 外层循环</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+    <span class="c1"># 内层循环</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+        <span class="n">tuple1</span> <span class="o">=</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span>
+        <span class="n">list1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tuple1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">list1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>列表推导式：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">list1</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">list1</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-9">推导式案例</h3>
+<p>案例一：使用列表推导式生成平方数集合</p>
+<p>~~~python</p>
+<h1>定义要生成的平方数的数量</h1>
+<p>n = 10</p>
+<h1>使用列表推导式生成平方数列表</h1>
+<p>squares_list = [i**2 for i in range(1, n + 1)]</p>
+<h1>将列表转换为集合</h1>
+<p>squares_set = set(squares_list)</p>
+<h1>输出结果</h1>
+<p>print("平方数集合:", squares_set)
+~~~</p>
+<h4>巩固练习</h4>
+<p>使用字段表达式将列表中元素映射为键值对，形成字典</p>
+<p>~~~python</p>
+<h1>定义名字列表</h1>
+<p>names = ['Alice', 'Bob', 'Charlie']</p>
+<h1>定义年龄列表</h1>
+<p>ages = [25, 30, 35]</p>
+<h1>使用字典推导式将两个列表拼接成字典</h1>
+<p>people_dict = {names[i]: ages[i] for i in range(len(names))}</p>
+<h1>输出结果</h1>
+<p>print("\n名字列表:", names)
+print("年龄列表:", ages)
+print("拼接后的字典:", people_dict)
+~~~</p>
+<h2 id="sec-10">Python中函数的作用与使用步骤</h2>
+<h3 id="sec-11">学习目标</h3>
+<ul>
+<li>掌握函数的定义和调用格式</li>
+</ul>
+<h3 id="sec-12">为什么需要函数</h3>
+<p>在Python实际开发中，我们使用函数的目的只有一个“让我们的代码可以被重复使用”</p>
+<p>函数的作用有两个：</p>
+<p><mark>① 代码重用（代码重复使用）</mark></p>
+<p><mark>② 模块化编程（模块化编程的核心就是函数，一般是把一个系统分解为若干个功能，每个功能就是一个函数）</mark></p>
+<blockquote>
+<p>在编程领域，编程可以分为两大类：① 模块化编程 ② 面向对象编程</p>
+</blockquote>
+<h3 id="sec-13">什么是函数</h3>
+<p>所谓的函数就是一个<mark>被命名的</mark>、<mark>独立的、完成特定功能的代码段（一段连续的代码）</mark>，并可能给调用它的程序一个<mark>返回值</mark>。</p>
+<p>被命名的：在Python中，函数大多数是有名函数（普通函数）。当然Python中也存在没有名字的函数叫做匿名函数。</p>
+<p>独立的、完成特定功能的代码段：在实际项目开发中，定义函数前一定要先思考一下，这个函数是为了完成某个操作或某个功能而定义的。（函数的功能一定要专一）</p>
+<p>返回值：很多函数在执行完毕后，会通过return关键字返回一个结果给调用它的位置。</p>
+<h3 id="sec-14">函数的定义</h3>
+<p>基本语法：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">函数名称</span><span class="p">([</span><span class="n">参数1</span><span class="p">,</span> <span class="n">参数2</span><span class="p">,</span> <span class="o">...</span><span class="p">]):</span>
+    <span class="n">函数体</span>
+    <span class="o">...</span>
+    <span class="p">[</span><span class="k">return</span> <span class="n">返回值</span><span class="p">]</span>
+</pre></div>
+</div>
+<h3 id="sec-15">函数的调用</h3>
+<p>在Python中，函数和变量一样，都是先定义后使用。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 定义函数</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">函数名称</span><span class="p">([</span><span class="n">参数1</span><span class="p">,</span> <span class="n">参数2</span><span class="p">,</span> <span class="o">...</span><span class="p">]):</span>
+    <span class="n">函数体</span>
+    <span class="o">...</span>
+    <span class="p">[</span><span class="k">return</span> <span class="n">返回值</span><span class="p">]</span>
+
+<span class="c1"># 调用函数</span>
+<span class="n">函数名称</span><span class="p">(</span><span class="n">参数1</span><span class="p">,</span> <span class="n">参数2</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-16">通过一个栗子引入函数</h3>
+<p>① 使用Python代码，编写一个打招呼程序</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">第一步</span><span class="err">：</span><span class="n">见到一个老师</span><span class="err">，</span><span class="n">打一声招呼</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;您好&#39;</span><span class="p">)</span>
+<span class="n">第二步</span><span class="err">：</span><span class="n">见到一个老师</span><span class="err">，</span><span class="n">打一声招呼</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;您好&#39;</span><span class="p">)</span>
+<span class="n">第二步</span><span class="err">：</span><span class="n">见到一个老师</span><span class="err">，</span><span class="n">打一声招呼</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;您好&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>虽然以上程序可以满足程序的需求，但是我们发现，我们的代码做了很多重复性的工作。我们能不能对以上代码进行进一步的优化，避免代码的重复性编写。</p>
+<p>② 升级：使用Python代码，编写一个打招呼程序（函数——一次编写，多次利用）</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 定义函数（封装函数）</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">greet</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;您好&#39;</span><span class="p">)</span>
+
+<span class="c1"># 调用函数</span>
+<span class="c1"># 见到一个老师，打一声招呼</span>
+<span class="n">greet</span><span class="p">()</span>
+<span class="c1"># 见到一个老师，打一声招呼</span>
+<span class="n">greet</span><span class="p">()</span>
+<span class="c1"># 见到一个老师，打一声招呼</span>
+<span class="n">greet</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>③ 升级：使用Python代码编写一个打招呼程序，可以实现向不同的人打不同的招呼</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 定义一个函数，同时为其定义一个参数</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">greet</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">，您好&#39;</span><span class="p">)</span>
+
+<span class="c1"># 调用函数</span>
+<span class="c1"># 见到了张老师，打一声招呼</span>
+<span class="n">greet</span><span class="p">(</span><span class="s1">&#39;老张&#39;</span><span class="p">)</span>
+<span class="c1"># 见到了李老师，打一声招呼</span>
+<span class="n">greet</span><span class="p">(</span><span class="s1">&#39;老李&#39;</span><span class="p">)</span>
+<span class="c1"># 见到了王老师，打一声招呼</span>
+<span class="n">greet</span><span class="p">(</span><span class="s1">&#39;老王&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>④ 函数的设计原则“高内聚、低耦合”，函数执行完毕后，应该主动把数返回给调用处，而不应该都交由print()等函数直接输出。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 定义一个函数，拥有name参数，同时函数执行完毕后，拥有一个return返回值</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">greet</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="c1"># 执行一系列相关操作</span>
+    <span class="k">return</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;，您好&#39;</span>
+
+<span class="c1"># 调用函数</span>
+<span class="c1"># 见到了张老师，打一声招呼</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">greet</span><span class="p">(</span><span class="s1">&#39;老张&#39;</span><span class="p">))</span>
+<span class="c1"># 见到了李老师，打一声招呼</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">greet</span><span class="p">(</span><span class="s1">&#39;老李&#39;</span><span class="p">))</span>
+<span class="c1"># 见到了王老师，打一声招呼</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">greet</span><span class="p">(</span><span class="s1">&#39;老王&#39;</span><span class="p">))</span>
+</pre></div>
+</div>
+<h3 id="sec-17">聊聊return返回值</h3>
+<p>思考1：如果一个函数如些两个return (如下所示)，程序如何执行？</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">return_num</span><span class="p">():</span>
+    <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="mi">2</span>
+
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">return_num</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># 1</span>
+</pre></div>
+</div>
+<p>答：只执行了第一个return，原因是因为return可以退出当前函数，导致return下方的代码不执行。</p>
+<p>思考2：如果一个函数要有多个返回值，该如何书写代码？</p>
+<p>答：在Python中，理论上一个函数只能返回一个结果。但是如果我们想让一个函数可以同时返回多个结果，我们可以使用<code>return 元组</code>的形式。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">return_num</span><span class="p">():</span>
+    <span class="k">return</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
+
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">return_num</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>  <span class="c1"># &lt;class &#39;tuple&#39;&gt;</span>
+</pre></div>
+</div>
+<p>思考3：封装一个函数，参数有两个num1，num2，求两个数的四则运算结果</p>
+<p>四则运算：加、减、乘、除</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">size</span><span class="p">(</span><span class="n">num1</span><span class="p">,</span> <span class="n">num2</span><span class="p">):</span>
+    <span class="n">jia</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">+</span> <span class="n">num2</span>
+    <span class="n">jian</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">-</span> <span class="n">num2</span>
+    <span class="n">cheng</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">*</span> <span class="n">num2</span>
+    <span class="n">chu</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">/</span> <span class="n">num2</span>
+    <span class="k">return</span> <span class="n">jia</span><span class="p">,</span> <span class="n">jian</span><span class="p">,</span> <span class="n">cheng</span><span class="p">,</span> <span class="n">chu</span>
+
+
+<span class="c1"># 调用size方法</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">size</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+</pre></div>
+</div>
+<h3 id="sec-18">什么是说明文档</h3>
+<p>思考：定义一个函数后，程序员如何书写程序能够快速提示这个函数的作用？</p>
+<p>答：注释</p>
+<p>思考：如果代码多，我们是不是需要在很多代码中找到这个函数定义的位置才能看到注释？如果想更方便的查看函数的作用怎么办？</p>
+<p>答：<mark>函数的说明文档（函数的说明文档也叫函数的文档说明）</mark></p>
+<h3 id="sec-19">总结</h3>
+<p>Q1:知道函数的作用</p>
+<ul>
+<li>模块化编程</li>
+<li>提高代码的复用性</li>
+</ul>
+<p>Q2: 函数的定义格式</p>
+<blockquote>
+<p>def 函数名(参1, 参2...):</p>
+<p>​ 函数体</p>
+<p>​ return 具体的返回值</p>
+</blockquote>
+<p>Q3: 函数的调用格式</p>
+<blockquote>
+<p>变量名 = 函数名(实参1, 实参2...)</p>
+</blockquote>
+<h2 id="sec-20">函数的嵌套及案例</h2>
+<h3 id="sec-21">学习目标</h3>
+<ul>
+<li>掌握函数嵌套的格式</li>
+</ul>
+<h3 id="sec-22">什么是函数的嵌套</h3>
+<p>所谓函数嵌套调用指的是<mark>一个函数里面又调用了另外一个函数</mark>。</p>
+<h3 id="sec-23">函数嵌套的基本语法</h3>
+<p><img alt="image-20210313120335429" src="../assets/img/lesson05/image-20210313120335429.png" /></p>
+<p>嵌套函数的执行流程：</p>
+<p>第一步：Python代码遵循一个“顺序原则”，从上往下，从左往右一行一行执行</p>
+<p>当代码执行到第1行时，则在计算机内存中定义一个funcB函数。但是其内部的代码并没有真正的执行，跳过第2行继续向下运行。</p>
+<p>第二步：执行到第5行，发现又声明了一个funcA的函数，根据函数的定义原则，定义就是在内存中声明有这样一个函数，但是没有真正的调用和执行。</p>
+<p>第三步：代码继续向下执行，到第14行，发现funcA()，函数体()就代表调用funcA函数并执行其内部的代码。程序返回到第6行，然后一步一步向下执行，输出40个横杠，然后打印这是funcA函数的函数体部分...，然后继续向下执行，遇到funcB函数，后边有一个圆括号代表执行funcB函数，原程序处于等待状态。</p>
+<p>第四步：进入funcB函数，执行输出这是funcB函数的函数体部分...，当代码完毕后，返回funcA函数中funcB()的位置，继续向下执行，打印40个横杠。</p>
+<p>最终程序就执行结束了。</p>
+<h3 id="sec-24">函数的应用案例</h3>
+<blockquote>
+<p>案例：奇偶求和</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">需求: 奇偶求和.</span>
+<span class="sd">    编写一个程序，求出一个列表中偶数和奇数的和。</span>
+<span class="sd">    定义函数calculate_sum()，参数为一个数字列表numbers_list, 分别求出偶数和奇数的和。</span>
+<span class="sd">    最后，返回一个列表，第一个元素为偶数的和，第二个元素为奇数的和。</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 1. 定义函数 calculate_sum()，参数为一个数字列表 numbers_list</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calculate_sum</span><span class="p">(</span><span class="n">numbers_list</span><span class="p">):</span>
+    <span class="c1"># 2. 初始化偶数和为0</span>
+    <span class="n">even_sum</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># 3. 初始化奇数和为0</span>
+    <span class="n">odd_sum</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="c1"># 4. 遍历数字列表中的每个数字</span>
+    <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">numbers_list</span><span class="p">:</span>
+        <span class="c1"># 5. 检查数字是否为偶数</span>
+        <span class="k">if</span> <span class="n">num</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># 6. 如果是偶数，加到偶数和中</span>
+            <span class="n">even_sum</span> <span class="o">+=</span> <span class="n">num</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># 7. 如果是奇数，加到奇数和中</span>
+            <span class="n">odd_sum</span> <span class="o">+=</span> <span class="n">num</span>
+
+    <span class="c1"># 8. 返回一个列表，第一个元素为偶数的和，第二个元素为奇数的和</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">even_sum</span><span class="p">,</span> <span class="n">odd_sum</span><span class="p">]</span>
+
+
+<span class="c1"># 9. 从输入获取一个整数列表</span>
+<span class="n">numbers</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+
+<span class="c1"># 10. 调用 calculate_sum() 函数并获取结果</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">calculate_sum</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span>
+
+<span class="c1"># 11. 打印结果</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;偶数的和是: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, 奇数的和是: </span><span class="si">{</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-25">总结</h3>
+<p>Q1: 函数嵌套调用流程</p>
+<ul>
+<li>默认按照顺序结构, 从上往下逐级调用</li>
+</ul>
+<h2 id="sec-26">变量的作用域</h2>
+<h3 id="sec-27">学习目标</h3>
+<ul>
+<li>掌握变量的作用域</li>
+<li>掌握global关键字的用法</li>
+</ul>
+<h3 id="sec-28">什么是变量的作用域</h3>
+<p>变量作用域指的是变量的作用范围（变量在哪里可用，在哪里不可用），主要分为两类：全局作用域与局部作用域。</p>
+<p>其实作用域的划分比较简单，在函数内部定义范围就称之为局部作用域，在函数外部（全局）定义范围就是全局作用域</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 全局作用域</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">():</span>
+    <span class="c1"># 局部作用域</span>
+</pre></div>
+</div>
+<h3 id="sec-29">局部变量与全局变量</h3>
+<p>在Python中，定义在函数外部的变量就称之为全局变量；定义在函数内部变量就称之为局部变量。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 定义在函数外部的变量（全局变量）</span>
+<span class="n">num</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="c1"># 定义一个函数</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">():</span>
+    <span class="c1"># 函数体代码</span>
+    <span class="c1"># 定义在函数内部的变量（局部变量）</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="mi">100</span>
+</pre></div>
+</div>
+<h3 id="sec-30">变量作用域的作用范围</h3>
+<p>全局变量：在整个程序范围内都可以直接使用</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">str1</span> <span class="o">=</span> <span class="s1">&#39;hello&#39;</span>
+<span class="c1"># 定义一个函数</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">():</span>
+    <span class="c1"># 在函数内部调用全局变量str1</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;在局部作用域中调用str1变量：</span><span class="si">{</span><span class="n">str1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># 直接调用全局变量str1</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;在全局作用域中调用str1变量：</span><span class="si">{</span><span class="n">str1</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="c1"># 调用func函数</span>
+<span class="n">func</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>局部变量：在函数的调用过程中，开始定义，函数运行过程中生效，函数执行完毕后，销毁</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 定义一个函数</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">():</span>
+    <span class="c1"># 在函数内部定义一个局部变量</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;在局部作用域中调用num局部变量：</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># 调用func函数</span>
+<span class="n">func</span><span class="p">()</span>
+<span class="c1"># 在全局作用域中调用num局部变量</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;在全局作用域中调用num局部变量：</span><span class="si">{</span><span class="n">num</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>运行结果：</p>
+<p><img alt="image-20210313145728886" src="../assets/img/lesson05/image-20210313145728886.png" /></p>
+<blockquote>
+<p>普及小知识：计算机的垃圾回收机制</p>
+</blockquote>
+<h3 id="sec-31">global关键字的应用场景</h3>
+<p>思考一个问题：我们能不能在局部作用域中对全局变量进行修改呢？</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 定义全局变量num = 10</span>
+<span class="n">num</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="c1"># 定义一个函数func</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">():</span>
+    <span class="c1"># 尝试在局部作用域中修改全局变量</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="mi">20</span>
+
+<span class="c1"># 调用函数func</span>
+<span class="n">func</span><span class="p">()</span>
+<span class="c1"># 尝试访问全局变量num</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>最终结果：弹出10，所以由运行结果可知，在函数体内部理论上是没有办法对全局变量进行修改的，所以一定要进行修改，必须使用<code>global</code>关键字。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 定义全局变量num = 10</span>
+<span class="n">num</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="c1"># 定义一个函数func</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">():</span>
+    <span class="c1"># 尝试在局部作用域中修改全局变量</span>
+    <span class="k">global</span> <span class="n">num</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="mi">20</span>
+
+<span class="c1"># 调用函数func</span>
+<span class="n">func</span><span class="p">()</span>
+<span class="c1"># 尝试访问全局变量num</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+</pre></div>
+</div>
+<blockquote>
+<p>记住：global关键字只是针对不可变数据类型的变量进行修改操作（数值、字符串、布尔类型、元组类型），可变类型可以不加global关键字。</p>
+</blockquote>
+<h3 id="sec-32">总结</h3>
+<p>Q1: 变量的作用域</p>
+<ul>
+<li>指的是变量的作用范围（变量在哪里可用，在哪里不可用)</li>
+</ul>
+<p>Q2: global关键字的用法</p>
+<ul>
+<li>实现在局部位置对全局变量做修改.</li>
+</ul>
+<h2 id="sec-33">函数的参数进阶</h2>
+<h3 id="sec-34">学习目标</h3>
+<ul>
+<li>掌握函数参数之位置参数, 关键字参数的用法</li>
+<li>掌握函数参数之不定长参数的用法</li>
+</ul>
+<h3 id="sec-35">函数的参数</h3>
+<p>在函数定义与调用时，我们可以根据自己的需求来实现参数的传递。在Python中，函数的参数一共有两种形式：</p>
+<p>① 形参 ② 实参</p>
+<p><mark>形参：在函数定义时，所编写的参数就称之为形式参数</mark></p>
+<p><mark>实参：在函数调用时，所传递的参数就称之为实际参数</mark></p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">greet</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>  <span class="c1"># name就是在函数greet定义时，所编写的参数（形参）</span>
+    <span class="k">return</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;，您好&#39;</span>
+
+<span class="c1"># 调用函数</span>
+<span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;老王&#39;</span>
+<span class="n">greet</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># 在函数调用时，所传递的参数就是实际参数</span>
+</pre></div>
+</div>
+<blockquote>
+<p>注意：虽然我们在函数传递时，喜欢使用相同的名称作为参数名称。但是两者的作用范围是不同的。name = '老王'，代表实参。其是一个全局变量，而greet(name)函数中的name实际是在函数定义时才声明的变量，所以其实一个局部变量。</p>
+</blockquote>
+<h3 id="sec-36">函数的参数类型(调用)</h3>
+<h4>☆ 位置参数</h4>
+<p>理论上，在函数定义时，我们可以为其定义多个参数。但是在函数调用时，我们也应该传递多个参数，正常情况，其要一一对应。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">user_info</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">,</span> <span class="n">address</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;我的名字</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">，今年</span><span class="si">{</span><span class="n">age</span><span class="si">}</span><span class="s1">岁了，家里住在</span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    
+<span class="c1"># 调用函数</span>
+<span class="n">user_info</span><span class="p">(</span><span class="s1">&#39;Tom&#39;</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="s1">&#39;美国纽约&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<blockquote>
+<p>注意事项：位置参数强调的是参数传递的位置必须一一对应，不能颠倒</p>
+</blockquote>
+<h4>☆ 关键词参数（Python特有）</h4>
+<p>函数调用，通过“键=值”形式加以指定。可以让函数更加清晰、容易使用，同时也清除了参数的顺序需求。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">user_info</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">,</span> <span class="n">address</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;我的名字</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">，今年</span><span class="si">{</span><span class="n">age</span><span class="si">}</span><span class="s1">岁了，家里住在</span><span class="si">{</span><span class="n">address</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    
+<span class="c1"># 调用函数（使用关键词参数）</span>
+<span class="n">user_info</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Tom&#39;</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">23</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="s1">&#39;美国纽约&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<h4>函数定义时缺省参数（参数默认值）</h4>
+<p>缺省参数也叫默认参数，用于定义函数，为参数提供默认值，调用函数时可不传该默认参数的值（注意：<strong>所有位置参数必须出现在默认参数前，包括函数定义和调用</strong>）。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">user_info</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">age</span><span class="p">,</span> <span class="n">gender</span><span class="o">=</span><span class="s1">&#39;男&#39;</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;我的名字</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s1">，今年</span><span class="si">{</span><span class="n">age</span><span class="si">}</span><span class="s1">岁了，我的性别为</span><span class="si">{</span><span class="n">gender</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+
+<span class="n">user_info</span><span class="p">(</span><span class="s1">&#39;李林&#39;</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+<span class="n">user_info</span><span class="p">(</span><span class="s1">&#39;振华&#39;</span><span class="p">,</span> <span class="mi">28</span><span class="p">)</span>
+<span class="n">user_info</span><span class="p">(</span><span class="s1">&#39;婉儿&#39;</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="s1">&#39;女&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<blockquote>
+<p>谨记：我们在定义缺省参数时，一定要把其写在参数列表的最后侧</p>
+</blockquote>
+<h3 id="sec-37">不定长参数</h3>
+<p>不定长参数也叫可变参数。用于不确定调用的时候会传递多少个参数(不传参也可以)的场景。此时，可用<mark>包裹(packing)位置参数</mark>，或者<mark>包裹关键字参数</mark>，来进行参数传递，会显得非常方便。</p>
+<h3 id="sec-38">☆ 不定长元组（位置）参数</h3>
+<p>````python
+def user_info(*args):
+    # print(args)  # 元组类型数据，对传递参数有顺序要求
+    print(f'我的名字{args[0]}，今年{args[1]}岁了，住在{args[2]}')</p>
+<h1>调用函数，传递参数</h1>
+<p>user_info('Tom', 23, '美国纽约')
+````</p>
+<h3 id="sec-39">☆ 不定长字典（关键字）参数</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">user_info</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="c1"># print(kwargs)  # 字典类型数据，对传递参数没有顺序要求，格式要求key = value值</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;我的名字</span><span class="si">{</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">，今年</span><span class="si">{</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">岁了，住在</span><span class="si">{</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;address&quot;</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># 调用函数，传递参数</span>
+<span class="n">user_info</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Tom&#39;</span><span class="p">,</span> <span class="n">address</span><span class="o">=</span><span class="s1">&#39;美国纽约&#39;</span><span class="p">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">23</span><span class="p">)</span>
+</pre></div>
+</div>
+<blockquote>
+<p>kw = keyword + args</p>
+</blockquote>
+<p>综上：无论是包裹位置传递还是包裹关键字传递，都是一个组包的过程。</p>
+<p>Python组包：就是把多个数据组成元组或者字典的过程。</p>
+<p>案例：Python中数据的传递案例</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+
+<span class="c1"># 定义一个元组（也可以是列表）</span>
+<span class="n">tuple1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+<span class="c1"># 定义一个字典</span>
+<span class="n">dict1</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;first&#39;</span><span class="p">:</span> <span class="mi">40</span><span class="p">,</span> <span class="s1">&#39;second&#39;</span><span class="p">:</span> <span class="mi">50</span><span class="p">,</span> <span class="s1">&#39;third&#39;</span><span class="p">:</span> <span class="mi">60</span><span class="p">}</span>
+<span class="c1"># 需求：把元组传递给*args参数，字典传递给**kwargs</span>
+<span class="c1"># ① 如果想把元组传递给*args，必须在tuple1的前面加一个*号</span>
+<span class="c1"># ② 如果想把字典传递给**kwargs，必须在dict1的前面加两个**号</span>
+<span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">tuple1</span><span class="p">,</span> <span class="o">**</span><span class="n">dict1</span><span class="p">)</span>
+</pre></div>
+</div>
+<h2 id="sec-40">可变与非可变数据类型</h2>
+<h3 id="sec-41">引用变量</h3>
+<p>在大多数编程语言中，值的传递通常可以分为两种形式“值传递与引用（地址）传递”，但是在Python中变量的传递基本上都是引用（地址）传递。</p>
+<h3 id="sec-42">☆ 聊聊变量在内存底层的存储形式</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">10</span>
+</pre></div>
+</div>
+<p>第一步：首先在计算机内存中创建一个数值10（占用一块内存空间）</p>
+<p>第二步：在栈空间中声明一个变量，如a</p>
+<p>第三步：把数值10的内存地址赋予给变量小a，形成所谓的<mark>“引用关系”</mark></p>
+<p><img alt="image-20210315100015772" src="../assets/img/lesson05/image-20210315100015772-16522635080701.png" /></p>
+<h3 id="sec-43">☆ 如何验证Python中变量的引用关系</h3>
+<p>答：可以使用内置方法id()，其参数就是要显示的变量信息 =&gt; <code>id(变量名称)</code></p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+</pre></div>
+</div>
+<h3 id="sec-44">☆ 把一个变量赋予给另外一个变量的影响</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">a</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>运行结果：</p>
+<p><img alt="image-20210315100748118" src="../assets/img/lesson05/image-20210315100748118-16522635080703.png" /></p>
+<p>说明：由以上运行结果可知，当我们把一个变量赋予给另外一个变量时，其两者指向的内存地址相同。就说明a和b指向了同一块内存空间，原理图如下：</p>
+<p><img alt="image-20210315101115722" src="../assets/img/lesson05/image-20210315101115722-16522635080702.png" /></p>
+<p>思考：如果在b = a以后，我们改变了变量a的值，问变量b是否会受到影响？</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># a = 10</span>
+<span class="c1"># print(id(a))</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">a</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>  <span class="c1"># 10 或 100</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">b</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>原理图：</p>
+<p><img alt="image-20210315101547645" src="../assets/img/lesson05/image-20210315101547645-16522635080704.png" /></p>
+<p>总结：不可变数据类型（数值）在赋值以后，其中一个值的改变不影响另外一个变量，因为两者指向空间地址不同。</p>
+<h2 id="sec-45">Python中可变和非可变数据类型</h2>
+<h3 id="sec-46">☆ 问题1：在Python中一共有几种数据类型？</h3>
+<p>答：7种，数值（int整型、float浮点类型）、bool类型（True和False）、字符串类型（str）、元组（tuple 1,2,3）、列表（list [1, 2, 3]）、字典（dict {key:value})、集合（set {1, 2})</p>
+<p>在Python中，我们可以把7种数据类型分为两大类：可变类型 + 非可变类型</p>
+<p>① 不可变类型（内存地址一旦固定，其值就不能发生改变）</p>
+<p>数值（int整型、float浮点类型）</p>
+<p>bool类型（True和False）</p>
+<p>字符串类型（str）</p>
+<p>元组（tuple 1,2,3）</p>
+<p>② 可变类型（内存地址一旦固定，其值是可以发生改变）</p>
+<p>列表（list [1, 2, 3]）</p>
+<p>字典（dict {key:value})</p>
+<p>集合（set {1, 2})</p>
+<h3 id="sec-47">☆ 问题2：如何判断一个数据类型是可变类型还是非可变类型？</h3>
+<p>在Python中，可变类型与非可变类型主要是通过这个数据类型在内存中的表现形式来进行定义的。</p>
+<p><mark>① 可变类型就是在内存中，其内存地址一旦固定，其变量的值是可以发生改变的</mark></p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+
+<span class="c1"># 向内存中追加新数据（对数据进行改变只能通过数据类型.方法()实现）</span>
+<span class="n">a</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>原理图：</p>
+<p><img alt="image-20210315103357217" src="../assets/img/lesson05/image-20210315103357217-16522635080705.png" /></p>
+<p><mark>② 非可变类型就是在内存中，内存地址一旦固定，其变量的值就没办法发生任何改变了</mark></p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="s1">&#39;hello&#39;</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">a</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>原理图：</p>
+<p><img alt="image-20210315103823240" src="../assets/img/lesson05/image-20210315103823240-16522635080706.png" /></p>
+<h3 id="sec-48">可变类型与非可变类型在函数中的应用</h3>
+<h4>☆ 可变类型</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 定义一个函数</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">mynames</span><span class="p">):</span>
+    <span class="n">mynames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;赵六&#39;</span><span class="p">)</span>
+    
+<span class="c1"># 定义一个全局变量</span>
+<span class="n">names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;张三&#39;</span><span class="p">,</span> <span class="s1">&#39;李四&#39;</span><span class="p">,</span> <span class="s1">&#39;王五&#39;</span><span class="p">]</span>
+<span class="c1"># 调用函数</span>
+<span class="n">func</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>  <span class="c1"># ???</span>
+</pre></div>
+</div>
+<p>原理图：</p>
+<p><img alt="image-20210315110548353" src="../assets/img/lesson05/image-20210315110548353-16522635080707.png" /></p>
+<p>综上所述：可变类型在函数中，如果在全局或局部中对可变类型进行增删改操作，其外部和内部都会受到影响。</p>
+<h4>☆ 不可变类型</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 定义一个函数</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+    <span class="n">num</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+    
+<span class="c1"># 定义一个全局变量</span>
+<span class="n">a</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="c1"># 调用函数</span>
+<span class="n">func</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># 在全局作用域中打印a</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><img alt="image-20210315111142925" src="../assets/img/lesson05/image-20210315111142925-16522635080708.png" /></p>
+<p>综上所述：不可变类型在函数中，局部或全局的改变对外部和内部都没有任何影响。</p>
+<h2 id="sec-49">元组拆包</h2>
+<h3 id="sec-50">什么是拆包？</h3>
+<p>简单来说就是把一个元组中的数据一个一个拆解出来的过程，就称之为叫做拆包操作。</p>
+<h3 id="sec-51">基本语法</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">tuple1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="c1"># 拆包</span>
+<span class="n">num1</span><span class="p">,</span> <span class="n">num2</span> <span class="o">=</span> <span class="n">tuple1</span>
+
+<span class="n">以上代码可以简写为</span>
+<span class="n">num1</span><span class="p">,</span> <span class="n">num2</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="n">还可以进一步简写</span>
+<span class="n">num1</span><span class="p">,</span> <span class="n">num2</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">20</span>
+</pre></div>
+</div>
+<h3 id="sec-52">拆包典型案例</h3>
+<p>实现两个变量值的交换</p>
+<p>① 引入第三方变量实现数值交换</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">c1</span> <span class="o">=</span> <span class="s1">&#39;可乐&#39;</span>
+<span class="n">c2</span> <span class="o">=</span> <span class="s1">&#39;牛奶&#39;</span>
+
+<span class="c1"># 经过一系列Python操作，把c1和c2中的值进行交换</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">c1</span>
+<span class="n">c1</span> <span class="o">=</span> <span class="n">c2</span>
+<span class="n">c2</span> <span class="o">=</span> <span class="n">temp</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span>  <span class="c1"># 牛奶</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">c2</span><span class="p">)</span>  <span class="c1"># 可乐</span>
+</pre></div>
+</div>
+<p>② 使用元组拆包实现两个变量值交换</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">c1</span> <span class="o">=</span> <span class="s1">&#39;可乐&#39;</span>
+<span class="n">c2</span> <span class="o">=</span> <span class="s1">&#39;牛奶&#39;</span>
+
+<span class="n">c1</span><span class="p">,</span> <span class="n">c2</span> <span class="o">=</span> <span class="p">(</span><span class="n">c2</span><span class="p">,</span> <span class="n">c1</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">c1</span><span class="p">)</span>  <span class="c1"># 牛奶</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">c2</span><span class="p">)</span>  <span class="c1"># 可乐</span>
+</pre></div>
+</div>
+<h2 id="sec-53">lambda函数</h2>
+<h3 id="sec-54">普通函数与匿名函数</h3>
+<p>在Python中，函数是一个被命名的、独立的完成特定功能的一段代码，并可能给调用它的程序一个返回值。</p>
+<p>所以在Python中，函数大多数是有名函数 =&gt; 普通函数。但是有些情况下，我们为了简化程序代码，也可以定义匿名函数 =&gt; lambda表达式</p>
+<h3 id="sec-55">lambda表达式应用场景</h3>
+<p>如果一个函数有一个返回值，并且只有一句代码，可以使用 lambda简化。</p>
+<h3 id="sec-56">lambda表达式基本语法</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">变量</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">函数参数</span><span class="p">:</span><span class="n">表达式</span><span class="err">（</span><span class="n">函数代码</span> <span class="o">+</span> <span class="n">return返回值</span><span class="err">）</span>
+<span class="c1"># 调用变量</span>
+<span class="n">变量</span><span class="p">()</span>
+</pre></div>
+</div>
+<h3 id="sec-57">编写lambda表达式</h3>
+<p>定义一个函数，经过一系列操作，最终返回100</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">fn1</span><span class="p">():</span>
+    <span class="k">return</span> <span class="mi">100</span>
+
+<span class="c1"># 调用fn1函数</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fn1</span><span class="p">)</span>  <span class="c1"># 返回fn1函数在内存中的地址</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fn1</span><span class="p">())</span>  <span class="c1"># 代表找到fn1函数的地址并立即执行</span>
+</pre></div>
+</div>
+<p>lambda表达式进行简化：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">fn2</span> <span class="o">=</span> <span class="k">lambda</span> <span class="p">:</span> <span class="mi">100</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">fn2</span><span class="p">)</span>  <span class="c1"># 返回fn2在内存中的地址</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fn2</span><span class="p">())</span>
+</pre></div>
+</div>
+<h3 id="sec-58">编写带参数的lambda表达式</h3>
+<p>编写一个函数求两个数的和</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">fn1</span><span class="p">(</span><span class="n">num1</span><span class="p">,</span> <span class="n">num2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">num1</span> <span class="o">+</span> <span class="n">num2</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">fn1</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>lambda表达式进行简化：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">fn2</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">num1</span><span class="p">,</span> <span class="n">num2</span><span class="p">:</span><span class="n">num1</span> <span class="o">+</span> <span class="n">num2</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">fn2</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+</pre></div>
+</div>
+<h3 id="sec-59">☆ 带默认参数的lambda表达式</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">fn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">100</span> <span class="p">:</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">+</span> <span class="n">c</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+</pre></div>
+</div>
+<h3 id="sec-60">☆ 带if判断（三目运算符）的lambda表达式</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">fn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="p">:</span> <span class="n">a</span> <span class="k">if</span> <span class="n">a</span> <span class="o">&gt;</span> <span class="n">b</span> <span class="k">else</span> <span class="n">b</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">fn</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+</pre></div>
+</div>
+<h3 id="sec-61">☆ 列表数据+字典数据排序（重点）</h3>
+<p>知识点：列表.sort(key=排序的key索引, reverse=True)</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">students</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Tom&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">20</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Rose&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">19</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Jack&#39;</span><span class="p">,</span> <span class="s1">&#39;age&#39;</span><span class="p">:</span> <span class="mi">22</span><span class="p">}</span>
+<span class="p">]</span>
+
+<span class="c1"># 按name值升序排列</span>
+<span class="n">students</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>  <span class="c1"># Jack/Rose/Tom</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">students</span><span class="p">)</span>
+
+<span class="c1"># 按name值降序排列</span>
+<span class="n">students</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">students</span><span class="p">)</span>
+
+<span class="c1"># 按age值升序排列</span>
+<span class="n">students</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;age&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">students</span><span class="p">)</span>
+</pre></div>
+</div>
+<h2 id="sec-62">作业</h2>
+<h3 id="sec-63">作业一_基础题：模拟计算器</h3>
+<p>需求：使用函数方式定义一个计算器，要求函数可以接收两个整数，并且可以返回这两个整数的加减乘除结果</p>
+<h3 id="sec-64">作业二_进阶题：最近回文数</h3>
+<p>需求：查找最近回文数.回文数是指从前往后读和从后往前读都是一样的数字，比如 121。最近的回文数指的是离给定数字最近的回文数，比如给定数字 125，最近的回文数是121。编写一个程序，查找离给定整数最近的回文数。</p><div class="done-bar"><button class="mark-done-btn" data-key="lesson05" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson04.html"><div class="dir">← 上一篇</div><div class="name">📦 数据容器：列表、元组、字典与集合</div></a><a class="next" href="lesson06.html"><div class="dir">下一篇 →</div><div class="name">📂 文件操作与异常处理</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">今日内容大纲</a><a class="lv2" href="#sec-2">推导式</a><a class="lv3" href="#sec-3">学习目标</a><a class="lv3" href="#sec-4">什么是推导式</a><a class="lv3" href="#sec-5">为什么需要推导式</a><a class="lv3" href="#sec-6">列表推导式</a><a class="lv3" href="#sec-7">列表推导式 + if条件判断</a><a class="lv3" href="#sec-8">for循环嵌套列表推导式</a><a class="lv3" href="#sec-9">推导式案例</a><a class="lv2" href="#sec-10">Python中函数的作用与使用步骤</a><a class="lv3" href="#sec-11">学习目标</a><a class="lv3" href="#sec-12">为什么需要函数</a><a class="lv3" href="#sec-13">什么是函数</a><a class="lv3" href="#sec-14">函数的定义</a><a class="lv3" href="#sec-15">函数的调用</a><a class="lv3" href="#sec-16">通过一个栗子引入函数</a><a class="lv3" href="#sec-17">聊聊return返回值</a><a class="lv3" href="#sec-18">什么是说明文档</a><a class="lv3" href="#sec-19">总结</a><a class="lv2" href="#sec-20">函数的嵌套及案例</a><a class="lv3" href="#sec-21">学习目标</a><a class="lv3" href="#sec-22">什么是函数的嵌套</a><a class="lv3" href="#sec-23">函数嵌套的基本语法</a><a class="lv3" href="#sec-24">函数的应用案例</a><a class="lv3" href="#sec-25">总结</a><a class="lv2" href="#sec-26">变量的作用域</a><a class="lv3" href="#sec-27">学习目标</a><a class="lv3" href="#sec-28">什么是变量的作用域</a><a class="lv3" href="#sec-29">局部变量与全局变量</a><a class="lv3" href="#sec-30">变量作用域的作用范围</a><a class="lv3" href="#sec-31">global关键字的应用场景</a><a class="lv3" href="#sec-32">总结</a><a class="lv2" href="#sec-33">函数的参数进阶</a><a class="lv3" href="#sec-34">学习目标</a><a class="lv3" href="#sec-35">函数的参数</a><a class="lv3" href="#sec-36">函数的参数类型(调用)</a><a class="lv3" href="#sec-37">不定长参数</a><a class="lv3" href="#sec-38">☆ 不定长元组（位置）参数</a><a class="lv3" href="#sec-39">☆ 不定长字典（关键字）参数</a><a class="lv2" href="#sec-40">可变与非可变数据类型</a><a class="lv3" href="#sec-41">引用变量</a><a class="lv3" href="#sec-42">☆ 聊聊变量在内存底层的存储形式</a><a class="lv3" href="#sec-43">☆ 如何验证Python中变量的引用关系</a><a class="lv3" href="#sec-44">☆ 把一个变量赋予给另外一个变量的影响</a><a class="lv2" href="#sec-45">Python中可变和非可变数据类型</a><a class="lv3" href="#sec-46">☆ 问题1：在Python中一共有几种数据类型？</a><a class="lv3" href="#sec-47">☆ 问题2：如何判断一个数据类型是可变类型还是非可变类型？</a><a class="lv3" href="#sec-48">可变类型与非可变类型在函数中的应用</a><a class="lv2" href="#sec-49">元组拆包</a><a class="lv3" href="#sec-50">什么是拆包？</a><a class="lv3" href="#sec-51">基本语法</a><a class="lv3" href="#sec-52">拆包典型案例</a><a class="lv2" href="#sec-53">lambda函数</a><a class="lv3" href="#sec-54">普通函数与匿名函数</a><a class="lv3" href="#sec-55">lambda表达式应用场景</a><a class="lv3" href="#sec-56">lambda表达式基本语法</a><a class="lv3" href="#sec-57">编写lambda表达式</a><a class="lv3" href="#sec-58">编写带参数的lambda表达式</a><a class="lv3" href="#sec-59">☆ 带默认参数的lambda表达式</a><a class="lv3" href="#sec-60">☆ 带if判断（三目运算符）的lambda表达式</a><a class="lv3" href="#sec-61">☆ 列表数据+字典数据排序（重点）</a><a class="lv2" href="#sec-62">作业</a><a class="lv3" href="#sec-63">作业一_基础题：模拟计算器</a><a class="lv3" href="#sec-64">作业二_进阶题：最近回文数</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

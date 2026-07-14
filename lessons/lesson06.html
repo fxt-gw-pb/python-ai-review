@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>文件操作与异常处理 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 课程讲义</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 6 讲</div>
+<h1>📂 文件操作与异常处理</h1>
+<div class="chips"><span class="chip">🏷️ 文件读写</span><span class="chip">🏷️ 异常处理</span><span class="chip">🏷️ 模块</span><a class="chip amber" href="../homework/hw09.html">✏️ 配套练习：解包、lambda、文件与异常</a></div>
+</div>
+<h2 id="sec-1">今日大纲</h2>
+<ul>
+<li>
+<p>文件的概念与基本操作</p>
+</li>
+<li>
+<p>Python异常处理方式</p>
+</li>
+<li>
+<p>内置模块与自定义模块的应用</p>
+</li>
+<li>
+<p>学生管理系统</p>
+</li>
+</ul>
+<h2 id="sec-2">文件的概念</h2>
+<h3 id="sec-3">学习目标</h3>
+<ul>
+<li>理解文件的相关概述</li>
+<li>理解文件的作用</li>
+</ul>
+<h3 id="sec-4">什么是文件</h3>
+<p>内存中存放的数据在计算机关机后就会消失。要长久保存数据，就要使用硬盘、光盘、U 盘等设备。为了便于数据的管理和检索，引入了<mark>“文件”</mark>的概念。</p>
+<p>一篇文章、一段视频、一个可执行程序，都可以被保存为一个文件，并赋予一个文件名。操作系统以文件为单位管理磁盘中的数据。一般来说，<mark>文件可分为文本文件、视频文件、音频文件、图像文件、可执行文件等多种类别。</mark></p>
+<p><img alt="image-20210315171013811" src="../assets/img/lesson06/image-20210315171013811.png" /></p>
+<h3 id="sec-5">思考：文件操作包含哪些内容呢？</h3>
+<p>在日常操作中，我们对文件的主要操作：创建文件、打开文件、文件读写、文件备份等等</p>
+<p><img alt="image-20210315171310117" src="../assets/img/lesson06/image-20210315171310117.png" /></p>
+<h3 id="sec-6">文件操作的作用</h3>
+<p>文件操作的作用就是<mark>把一些内容(数据)存储存放起来</mark>，可以让程序下一次执行的时候直接使用，而不必重新制作一份，省时省力。</p>
+<h3 id="sec-7">总结</h3>
+<p>Q1: 文件操作包括哪些内容?</p>
+<ul>
+<li>打开文件</li>
+<li>读写操作</li>
+<li>关闭文件</li>
+</ul>
+<h2 id="sec-8">文件的基本操作</h2>
+<h3 id="sec-9">学习目标</h3>
+<ul>
+<li>掌握绝对路径和相对路径的写法</li>
+<li>掌握文件的读取相关操作</li>
+<li>掌握文件的写入相关操作</li>
+</ul>
+<h3 id="sec-10">open函数打开文件</h3>
+<p>在Python，使用open()函数，可以打开一个已经存在的文件，或者创建一个新文件，语法如下：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+<span class="n">注</span><span class="err">：</span><span class="n">返回的结果是一个file文件对象</span><span class="err">（</span><span class="n">后续会学习</span><span class="err">，</span><span class="n">只需要记住</span><span class="err">，</span><span class="n">后续方法都是f</span><span class="o">.</span><span class="n">方法</span><span class="p">()</span><span class="err">）</span>
+</pre></div>
+</div>
+<p>name：是要打开的目标文件名的字符串(可以包含文件所在的具体路径)。</p>
+<p>mode：设置打开文件的模式(访问模式)：只读r、写入w、追加a等。</p>
+<blockquote>
+<p>r模式：代表以只读模式打开一个已存在的文件，后续我们对这个文件只能进行读取操作。如果文件不存在，则直接报错。另外，r模式在打开文件时，会将光标放在文件的第一行（开始位置）。</p>
+<p>w模式：代表以只写模式打开一个文件，文件不存在，则自动创建该文件。w模式主要是针对文件写入而定义的模式。但是，要特别注意，w模式在写入时，光标也是置于第一行同时还会清空原有文件内容。</p>
+<p>a模式：代表以追加模式打开一个文件，文件不存在，则自动创建该文件。a模式主要也是针对文件写入而定义模式。但是和w模式有所不同，a模式不会清空文件的原有内容，而是在文件的尾部追加内容。</p>
+</blockquote>
+<p>文件路径：① 绝对路径 ② 相对路径</p>
+<p>① 绝对路径：绝对路径表示绝对概念，一般都是从盘符开始，然后一级一级向下查找（不能越级），直到找到我们要访问的文件即可。</p>
+<p>比如访问C盘路径下的Python文件夹下面的python.txt文件，其完整路径：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">POWERSHELL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">Windows</span>
+<span class="n">C</span><span class="p">:\</span><span class="n">Python</span><span class="p">\</span><span class="n">python</span><span class="p">.</span><span class="n">txt</span>
+<span class="n">Linux</span>
+<span class="p">/</span><span class="n">usr</span><span class="p">/</span><span class="n">local</span><span class="p">/</span><span class="n">nginx</span><span class="p">/</span><span class="n">conf</span><span class="p">/</span><span class="n">nginx</span><span class="p">.</span><span class="n">conf</span>
+</pre></div>
+</div>
+<blockquote>
+<p>绝对路径一般路径固定了，文件就不能进行移动，另外在迁移过程中会比较麻烦。</p>
+</blockquote>
+<p>② <mark>相对路径</mark>：相对路径表示相  </p>
+<p>同级关系：我们要访问的文件与Python代码处于同一个目录，平行关系，同级关系的访问可以使用<code>./文件名称</code>或者直接写<code>文件名称</code>即可</p>
+<p>上级关系：如果我们要访问的文件在当前Python代码的上一级目录，则我们可以通过<code>../</code>来访问上一级路径（如果是多级，也可以通过../../../去一层一层向上访问</p>
+<p>下级关系：如果我们要访问的文件在与Python代码同级的某个文件夹中，则我们可以通过<code>文件夹名称/</code>来访问某个目录下的文件</p>
+<h3 id="sec-11">入门级案例</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 1、打开文件</span>
+<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;python.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<span class="c1"># 2、写入内容</span>
+<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;人生苦短，我学Python！&#39;</span><span class="p">)</span>
+<span class="c1"># 3、关闭文件</span>
+<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<blockquote>
+<p>强调一下：中文乱码问题，默认情况下，计算机常用编码ASCII、GBK、UTF-8</p>
+</blockquote>
+<h3 id="sec-12">解决写入中文乱码问题</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 1、打开文件</span>
+<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;python.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+<span class="c1"># 2、写入内容</span>
+<span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;人生苦短，我学Python！&#39;</span><span class="p">)</span>
+<span class="c1"># 3、关闭文件</span>
+<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<h3 id="sec-13">文件的读取操作</h3>
+<p><code>read(size)方法</code>：主要用于文本类型或者二进制文件（图片、音频、视频...）数据的读取</p>
+<p>size表示要从文件中读取的数据的长度（单位是字符/字节），如果没有传入size，那么就表示读取文件中所有的数据。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>  <span class="c1"># 读取文件的所有内容</span>
+<span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">1024</span><span class="p">)</span>  <span class="c1"># 读取1024个字符长度文件内容，字母或数字</span>
+</pre></div>
+</div>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 1、打开文件</span>
+<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;python.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+<span class="c1"># 2、使用read()方法读取文件所有内容</span>
+<span class="n">contents</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
+<span class="c1"># 3、关闭文件</span>
+<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><code>readlines()方法</code>：主要用于文本类型数据的读取</p>
+<p>readlines可以按照行的方式把整个文件中的内容进行一次性读取，并且返回的是一个列表，其中每一行的数据为一个元素。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 1、打开文件</span>
+<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;python.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+<span class="c1"># 2、读取文件</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="c1"># 3、关闭文件</span>
+<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><code>readline()方法</code>：一次读取一行内容，每运行一次readline()函数，其就会将文件的指针向下移动一行</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;python.txt’)</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+   <span class="c1"># 读取一行内容</span>
+   <span class="n">content</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+   <span class="c1"># 判断是否读取到内容</span>
+   <span class="k">if</span> <span class="ow">not</span> <span class="n">content</span><span class="p">:</span>
+       <span class="k">break</span>
+   <span class="c1"># 如果读取到内容，则输出</span>
+   <span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+
+<span class="c1"># 关闭文件</span>
+<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<h3 id="sec-14">聊聊文件操作的mode模式</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th><strong>模式</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>r</td>
+<td>以只读方式打开文件。文件的指针将会放在文件的开头。这是默认模式。</td>
+</tr>
+<tr>
+<td>rb</td>
+<td>以二进制格式打开一个文件用于只读。文件指针将会放在文件的开头。这是默认模式。</td>
+</tr>
+<tr>
+<td>r+</td>
+<td>打开一个文件用于读写。文件指针将会放在文件的开头。</td>
+</tr>
+<tr>
+<td>rb+</td>
+<td>以二进制格式打开一个文件用于读写。文件指针将会放在文件的开头。</td>
+</tr>
+<tr>
+<td>w</td>
+<td>打开一个文件只用于写入。如果该文件已存在则打开文件，并从开头开始编辑，即原有内容会被删除。如果该文件不存在，创建新文件。</td>
+</tr>
+<tr>
+<td>wb</td>
+<td>以二进制格式打开一个文件只用于写入。如果该文件已存在则打开文件，并从开头开始编辑，即原有内容会被删除。如果该文件不存在，创建新文件。</td>
+</tr>
+<tr>
+<td>w+</td>
+<td>打开一个文件用于读写。如果该文件已存在则打开文件，并从开头开始编辑，即原有内容会被删除。如果该文件不存在，创建新文件。</td>
+</tr>
+<tr>
+<td>wb+</td>
+<td>以二进制格式打开一个文件用于读写。如果该文件已存在则打开文件，并从开头开始编辑，即原有内容会被删除。如果该文件不存在，创建新文件。</td>
+</tr>
+<tr>
+<td>a</td>
+<td>打开一个文件用于追加。如果该文件已存在，文件指针将会放在文件的结尾。也就是说，新的内容将会被写入到已有内容之后。如果该文件不存在，创建新文件进行写入。</td>
+</tr>
+<tr>
+<td>ab</td>
+<td>以二进制格式打开一个文件用于追加。如果该文件已存在，文件指针将会放在文件的结尾。也就是说，新的内容将会被写入到已有内容之后。如果该文件不存在，创建新文件进行写入。</td>
+</tr>
+<tr>
+<td>a+</td>
+<td>打开一个文件用于读写。如果该文件已存在，文件指针将会放在文件的结尾。文件打开时会是追加模式。如果该文件不存在，创建新文件用于读写。</td>
+</tr>
+<tr>
+<td>ab+</td>
+<td>以二进制格式打开一个文件用于追加。如果该文件已存在，文件指针将会放在文件的结尾。如果该文件不存在，创建新文件用于读写。</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>虽然mode文件操作模式很多，但是我们只需要记住3个字符即可。r、w、a</p>
+<p>r+、w+、a+，代加号，功能全，既能读，又能写（区别在于指针到底指向不同）</p>
+<p>rb、wb、ab，代b的字符，代表以二进制的形式对其进行操作，适合读取文本或二进制格式文件，如图片、音频、视频等格式</p>
+<p>rb+、wb+、ab+，代加号，功能全，既能读，又能写（区别在于指针到底指向不同）</p>
+</blockquote>
+<h3 id="sec-15">总结</h3>
+<p>Q1: 文件操作相关的函数有哪些?</p>
+<ul>
+<li>打开文件: open()</li>
+<li>读取数据: read(), readline(), readlines()</li>
+<li>关闭文件: close()</li>
+</ul>
+<h2 id="sec-16">os模块</h2>
+<h3 id="sec-17">学习目标</h3>
+<ul>
+<li>掌握os模块常用函数</li>
+</ul>
+<h3 id="sec-18">os模块使用步骤</h3>
+<p>在Python中文件和文件夹的操作要借助os模块里面的相关功能，具体步骤如下：</p>
+<p>第一步：导入os模块</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+</pre></div>
+</div>
+<p>第二步：调用os模块中的相关方法</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">函数名</span><span class="p">()</span>
+</pre></div>
+</div>
+<h3 id="sec-19">文件操作相关方法</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th><strong>编号</strong></th>
+<th><strong>函数</strong></th>
+<th><strong>功能</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>os.rename(旧文件名称，新文件名称)</td>
+<td>对文件进行重命名操作</td>
+</tr>
+<tr>
+<td>2</td>
+<td>os.remove(要删除文件名称)</td>
+<td>对文件进行删除操作</td>
+</tr>
+</tbody>
+</table></div>
+<p>案例：把Python项目目录下的python.txt文件，更名为linux.txt，休眠20s，刷新后，查看效果，然后对这个文件进行删除操作。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 第一步：导入os模块</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="c1"># 第三步：引入time模块</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+
+<span class="c1"># 第二步：使用os.rename方法对python.txt进行重命名</span>
+<span class="n">os</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s1">&#39;python.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;linux.txt&#39;</span><span class="p">)</span>
+
+<span class="c1"># 第四步：休眠20s</span>
+<span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+
+<span class="c1"># 第五步：删除文件（linux.txt)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s1">&#39;linux.txt&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-20">文件夹操作相关操作</h3>
+<p>前提：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+</pre></div>
+</div>
+<p>相关方法：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th><strong>编号</strong></th>
+<th><strong>函数</strong></th>
+<th><strong>功能</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>os.mkdir(新文件夹名称)</td>
+<td>创建一个指定名称的文件夹</td>
+</tr>
+<tr>
+<td>2</td>
+<td>os.getcwd()</td>
+<td>current  work   directory，获取当前目录名称</td>
+</tr>
+<tr>
+<td>3</td>
+<td>os.chdir(切换后目录名称)</td>
+<td>change  directory，切换目录</td>
+</tr>
+<tr>
+<td>4</td>
+<td>os.listdir(目标目录)</td>
+<td>获取指定目录下的文件信息，返回列表</td>
+</tr>
+<tr>
+<td>5</td>
+<td>os.rmdir(目标目录)</td>
+<td>用于删除一个指定名称的"空"文件夹</td>
+</tr>
+</tbody>
+</table></div>
+<p>案例1：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 导入os模块</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+
+<span class="c1"># 1、使用mkdir方法创建一个images文件夹</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;images&#39;</span><span class="p">):</span>
+	<span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s1">&#39;images&#39;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;images/avatar&#39;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s1">&#39;images/avatar&#39;</span><span class="p">)</span>
+
+<span class="c1"># 2、getcwd = get current work directory</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
+
+<span class="c1"># 3、os.chdir，ch = change dir = directory切换目录</span>
+<span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s1">&#39;images/avatar&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
+
+<span class="c1"># 切换到上一级目录 =&gt; images</span>
+<span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s1">&#39;../../&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
+
+<span class="c1"># 4、使用os.listdir打印当前所在目录下的所有文件，返回列表</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">())</span>
+
+<span class="c1"># 5、删除空目录</span>
+<span class="n">os</span><span class="o">.</span><span class="n">rmdir</span><span class="p">(</span><span class="s1">&#39;images/avatar&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>案例2：准备一个static文件夹以及file1.txt、file2.txt、file3.txt三个文件</p>
+<p>① 在程序中，将当前目录切换到static文件夹</p>
+<p>② 创建一个新images文件夹以及test文件夹</p>
+<p>③ 获取目录下的所有文件</p>
+<p>④ 移除test文件夹</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 导入os模块</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="c1"># ① 在程序中，将当前目录切换到static文件夹</span>
+<span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s1">&#39;File&#39;</span><span class="p">)</span>
+<span class="c1"># print(os.getcwd())</span>
+
+<span class="c1"># ② 创建一个新images文件夹以及test文件夹</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;images&#39;</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s1">&#39;images&#39;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">):</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+
+<span class="c1"># ③ 获取目录下的所有文件</span>
+<span class="c1"># print(os.listdir())</span>
+<span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+
+<span class="c1"># ④ 移除test文件夹</span>
+<span class="n">os</span><span class="o">.</span><span class="n">rmdir</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-21">文件夹删除补充（递归删除、慎重！）</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 导入shutil模块</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+
+<span class="c1"># 递归删除非空目录</span>
+<span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="s1">&#39;要删除文件夹路径&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<blockquote>
+<p>递归删除文件夹的原理：理论上，其在删除过程中，如果文件夹非空，则自动切换到文件夹的内部，然后把其内部的文件，一个一个删除，当所有文件删除完毕后，返回到上一级目录，删除文件夹本身。</p>
+</blockquote>
+<h3 id="sec-22">with-open语句</h3>
+<p>它主要是针对于 文件操作的, 即: 你再也不用手动 close()释放资源了, 该语句会在 语句体执行完毕后, 自动释放资源.</p>
+<p>格式:
+​        with open('路径', '模式', '码表') as 别名,  open('路径', '模式', '码表') as 别名:
+​            语句体</p>
+<p>特点:
+​        语句体执行结束后, with后边定义的变量, 会自动被释放.</p>
+<p>案例：</p>
+<p>~~~python</p>
+<h1>1. 打开 数据源 和 目的地文件.</h1>
+<p>with open('./data/a.txt', 'rb') as src_f, open('./data/b.txt', 'wb') as dest_f:
+    # 2. 具体的 拷贝动作.
+    # 2.1 循环拷贝.
+    while True:
+        # 2.2 一次读取8192个字节.
+        data = src_f.read(8192)
+        # 2.3 读完了, 就不读了.
+        if len(data) &lt;= 0:
+        # if data == '':
+            break
+        # 2.4 走到这里, 说明读到了, 把读取到的数据写出到目的地文件.
+        dest_f.write(data)
+~~~</p>
+<h3 id="sec-23">总结</h3>
+<p>Q1: OS模块的常用函数</p>
+<ul>
+<li>rename()</li>
+<li>remove()</li>
+<li>mkdir()</li>
+<li>getcwd()</li>
+<li>chdir()</li>
+<li>listdir()</li>
+<li>rmdir()</li>
+<li>shutil.rmtree()</li>
+</ul>
+<h2 id="sec-24">文件案例</h2>
+<h3 id="sec-25">案例需求</h3>
+<p>反转文件内容.按行读取文件内容, 对每行的内容进行反转后, 写到另1个文件中.
+例如:数据源文件: a.txt</p>
+<p>~~~
+数据源文件: a.txt
+好好学习,
+天天向上.
+abc123!@#</p>
+<p>目的地文件: b.txt
+,习学好好
+.上向天天</p>
+<h1>@!321cba</h1>
+<p>~~~</p>
+<h3 id="sec-26">实现思路</h3>
+<p>① 读取两个文件a.txt，并且将读取到的文件存储到一个列表中</p>
+<p>② 遍历文件行中所有的内容，去除行末换行符，使用切片方式翻转内容</p>
+<p>③ 将翻转后的内容加载到一个新的列表中</p>
+<p>④将新列表的中的内容以文件的方式写到本地磁盘b.txt</p>
+<h3 id="sec-27">代码实现</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 1. 定义源文件路径和目标文件路径</span>
+<span class="n">source_file</span> <span class="o">=</span> <span class="s2">&quot;a.txt&quot;</span>
+<span class="n">destination_file</span> <span class="o">=</span> <span class="s2">&quot;b.txt&quot;</span>
+
+<span class="c1"># 2. 打开源文件以读取模式 (&#39;r&#39;)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">source_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">src_file</span><span class="p">:</span>
+    <span class="c1"># 3. 读取源文件的所有行</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">src_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+
+<span class="c1"># 4. 初始化一个列表用于存储反转后的行</span>
+<span class="n">reversed_lines</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># 5. 遍历每行内容</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+    <span class="c1"># 6. 去除行末的换行符</span>
+    <span class="n">stripped_line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="c1"># 7. 反转行内容</span>
+    <span class="n">reversed_line</span> <span class="o">=</span> <span class="n">stripped_line</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># 8. 将反转后的行添加到列表中，并添加换行符</span>
+    <span class="n">reversed_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">reversed_line</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># 9. 打开目标文件以写入模式 (&#39;w&#39;)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">destination_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">dest_file</span><span class="p">:</span>
+    <span class="c1"># 10. 将反转后的行写入目标文件</span>
+    <span class="n">dest_file</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">reversed_lines</span><span class="p">)</span>
+
+<span class="c1"># 11. 打印操作完成的消息</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;文件内容已反转并保存到 </span><span class="si">{</span><span class="n">destination_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-28">巩固练习</h3>
+<p>拷贝文件并改名.例如: 把 a.py文件 拷贝到 a[备份].txt 文件中</p>
+<p>~~~python</p>
+<h1>1. 定义源文件路径</h1>
+<p>source_file = "a.py"</p>
+<h1>2. 通过字符串切片和拼接方式定义目标文件路径</h1>
+<p>base_name = source_file[:-3]  # 去掉文件扩展名
+destination_file = base_name + "[备份].txt"</p>
+<h1>3. 打开源文件以读取模式 ('r')</h1>
+<p>with open(source_file, "r", encoding="utf-8") as src_file:
+    # 4. 读取源文件的所有内容
+    content = src_file.read()</p>
+<h1>5. 打开目标文件以写入模式 ('w')</h1>
+<p>with open(destination_file, "w", encoding="utf-8") as dest_file:
+    # 6. 将源文件的内容写入目标文件
+    dest_file.write(content)</p>
+<h1>7. 打印操作完成的消息</h1>
+<p>print(f"文件 {source_file} 已拷贝并保存为 {destination_file}")
+~~~</p>
+<h2 id="sec-29">Python异常</h2>
+<h3 id="sec-30">学习目标</h3>
+<ul>
+<li>掌握捕获异常的格式</li>
+</ul>
+<h3 id="sec-31">什么是异常</h3>
+<p>当检测到一个错误时，解释器就无法继续执行了，反而出现了一些错误的提示，这就是所谓的"异常"。</p>
+<h3 id="sec-32">异常演示</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 除数为0</span>
+<span class="c1"># print(10/0)</span>
+
+<span class="c1"># 文件读取异常</span>
+<span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;python.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-33">异常捕获</h3>
+<p>基本语法：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">可能发生错误的代码</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">如果出现异常执行的代码</span>
+</pre></div>
+</div>
+<blockquote>
+<p>try...except主要用于捕获代码运行时异常，如果异常发生，则执行except中的代码</p>
+</blockquote>
+<p>案例：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;python.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;python.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;发生异常，执行except语句中的代码&#39;</span><span class="p">)</span>
+<span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<h3 id="sec-34">捕获异常并输出错误信息</h3>
+<p>无论我们在except后面定义多少个异常类型，实际应用中，也可能会出现无法捕获的未知异常。这个时候，我们考虑使用Exception异常类型捕获可能遇到的所有未知异常：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">可能遇到的错误代码</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>案例：打印一个未定义变量，使用Exception异常类进行捕获</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-35">异常捕获中else语句</h3>
+<p>else语句：表示的是如果没有异常要执行的代码。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;哈哈，真开森，没有遇到任何异常&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>案例：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;python.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<h3 id="sec-36">异常捕获中的finally语句</h3>
+<p>finally表示的是无论是否异常都要执行的代码，例如关闭文件</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;python.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="k">except</span><span class="p">:</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;python.txt&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+<h3 id="sec-37">异常案例</h3>
+<h4>案例需求</h4>
+<p>升级猜数字游戏，增加程序健壮性，用户在输入过程中可能不会输入数字或者不按照要求输入，程序要能捕获到用户的异常输入。在已有的猜数游戏中加入异常功能。</p>
+<h4>实现思路</h4>
+<p>①使用python异常捕获try...except，捕获用户异常输入</p>
+<h4>代码实现</h4>
+<p>~~~python
+import random</p>
+<p>def guess_number_game():
+    # 1. 随机生成1个 1 ~ 100之间的数字, 让用户来猜.
+    guess_num = random.randint(1, 100)</p>
+<pre><code>while True:
+    try:
+        # 2. 键盘录入, 表示: 玩家出拳的编号.
+        input_num = int(input('请录入您要猜的整数 (1-100): '))
+
+        # 3. 判断用户是否猜对了, 并提示. 猜对, 猜大, 猜小.
+        if input_num == guess_num:
+            print('恭喜您, 猜对了, 请找夯老师领取奖品, 练习题一套!')
+            break
+        elif input_num &gt; guess_num:
+            print('哎呀, 您猜大了!')
+        else:
+            print('哎呀, 您猜小了!')
+    except ValueError:
+        print('输入无效，请输入一个整数!')
+</code></pre>
+<h1>调用猜数字游戏函数</h1>
+<p>guess_number_game()
+~~~</p>
+<h3 id="sec-38">总结</h3>
+<p>Q1: 什么是异常?</p>
+<ul>
+<li>Python中, 把程序出现的所有非正常情况, 统称为异常.</li>
+</ul>
+<p>Q2: 掌握捕获异常的格式.</p>
+<blockquote>
+<p>try:</p>
+<p>​ 可能出现问题的代码</p>
+<p>Except exception as e:</p>
+<p>​ 出现问题后的解决方案</p>
+<p>else:</p>
+<p>​ 如无异常, 则会执行这里的内容</p>
+<p>finally:</p>
+<p>​ 无论是否有问题, 都会执行这里的内容.</p>
+</blockquote>
+<h2 id="sec-39">Python内置模块</h2>
+<h3 id="sec-40">学习目标</h3>
+<ul>
+<li>理解Python模块的概念</li>
+<li>掌握Python导入模块的方式</li>
+</ul>
+<h3 id="sec-41">什么是Python模块</h3>
+<p>Python 模块(Module)，是一个<mark>Python 文件</mark>，以 .py 结尾，包含了 Python 对象定义和Python语句。模块能定义<mark>函数，类和变量</mark>，模块里也能包含可执行的代码。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>		<span class="o">=&gt;</span>     <span class="n">os</span><span class="o">.</span><span class="n">py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>	    <span class="o">=&gt;</span>     <span class="n">time</span><span class="o">.</span><span class="n">py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">random</span>   <span class="o">=&gt;</span>  <span class="n">random</span><span class="o">.</span><span class="n">py</span>
+
+<span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<blockquote>
+<p>在Python中，模块通常可以分为两大类：<mark>内置模块(目前使用的)</mark> 和 <mark>自定义模块</mark></p>
+</blockquote>
+<h3 id="sec-42">模块的导入方式</h3>
+<p>☆ import 模块名</p>
+<p>☆ import 模块名 as 别名</p>
+<p>☆ from 模块名 import *</p>
+<p>☆ from 模块名 import 功能名</p>
+<h3 id="sec-43">使用import导入模块</h3>
+<p>基本语法：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">模块名称</span>
+<span class="n">或</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">模块名称1</span><span class="o">,</span><span class="w"> </span><span class="nn">模块名称2</span><span class="o">,</span><span class="w"> </span><span class="nn">...</span>
+</pre></div>
+</div>
+<p>使用模块中封装好的方法：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">模块名称</span><span class="o">.</span><span class="n">方法</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>案例：使用import导入math模块</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="c1"># 求数字9的平方根 = 3</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">9</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>案例：使用import导入math与random模块</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span><span class="o">,</span><span class="w"> </span><span class="nn">random</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">9</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+</pre></div>
+</div>
+<blockquote>
+<p>普及：我们在Python代码中，通过import方式导入的实际上都是文件的名称</p>
+</blockquote>
+<h3 id="sec-44">使用as关键字为导入模块定义别名</h3>
+<p>在有些情况下，如导入的模块名称过长，建议使用as关键字对其重命名操作，以后在调用这个模块时，我们就可以使用别名进行操作。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">t</span>
+
+<span class="c1"># 调用方式</span>
+<span class="n">t</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<blockquote>
+<p>在Python中，如果给模块定义别名，命名规则建议使用大驼峰。</p>
+</blockquote>
+<h3 id="sec-45">使用from...import导入模块</h3>
+<p>提问：已经有了import导入模块，为什么还需要使用from 模块名 import 功能名这样的导入方式？</p>
+<p>答：import代表导入某个或多个模块中的所有功能，但是有些情况下，我们只希望使用这个模块下的某些方法，而不需要全部导入。这个时候就建议采用from 模块名 import 功能名</p>
+<h3 id="sec-46">☆ from 模块名 import *</h3>
+<p>这个导入方式代表导入这个模块的所有功能（等价于import 模块名）</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+</pre></div>
+</div>
+<h3 id="sec-47">☆ from 模块名 import 功能名（推荐）</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">floor</span>
+</pre></div>
+</div>
+<p>注意：以上两种方式都可以用于导入某个模块中的某些方法，但是在调用具体的方法时，我们只需要<code>功能名()</code>即可</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">功能名</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>案例：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># from math import *</span>
+<span class="c1"># 或</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">floor</span>
+
+<span class="c1"># 调用方式</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">9</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">floor</span><span class="p">(</span><span class="mf">10.88</span><span class="p">))</span>
+</pre></div>
+</div>
+<h3 id="sec-48">time模块中的time()方法</h3>
+<p>在Python中，time模块除了sleep方法以外，还有一个方法叫做time()方法</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>主要功能：就是返回格林制时间到当前时间的秒数（时间戳）</p>
+<p>案例：求循环代码的执行时间</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="c1"># 返回：格林制时间到当前时间的秒数</span>
+<span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="c1"># 编写一个循环</span>
+<span class="n">list1</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000000</span><span class="p">):</span>
+    <span class="n">list1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+<span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;以上代码共执行了</span><span class="si">{</span><span class="n">end</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="si">}</span><span class="s1">s&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-49">总结</h3>
+<p>Q1: 模块指的是什么?</p>
+<ul>
+<li>Python中, 把.py文件称之为模块.</li>
+</ul>
+<p>Q2: 导入模块有哪些方式?</p>
+<ul>
+<li>import .... as 别名</li>
+<li>from ... import ... as 别名</li>
+</ul>
+<h2 id="sec-50">Python中的自定义模块</h2>
+<h3 id="sec-51">学习目标</h3>
+<ul>
+<li>理解什么是自定义模块</li>
+</ul>
+<h3 id="sec-52">什么是自定义模块</h3>
+<p>在Python中，模块一共可以分为两大类：内置系统模块  和  自定义模块</p>
+<p>模块的本质：在Python中，模块的本质就是一个Python的独立文件（后缀名.py），里面可以包含<mark>全局变量、函数以及类</mark>。</p>
+<blockquote>
+<p>注：在Python中，每个Python文件都可以作为一个模块，模块的名字就是<mark>文件的名字</mark>。也就是说自定义模块名必须要符合标识符命名规则。</p>
+<p>特别注意：我们在自定义模块时，模块名称不能为中文，不能以数字开头，另外我们自定义的模块名称不能和系统中自带的模块名称(如os、random)相冲突，否则系统模块的功能将无法使用。比如不能定义一个叫做os.py模块</p>
+</blockquote>
+<h3 id="sec-53">定义一个自定义模块</h3>
+<p>案例：在Python项目中创建一个自定义文件，如my_module.py</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">sum_num</span><span class="p">(</span><span class="n">num1</span><span class="p">,</span> <span class="n">num2</span><span class="p">):</span>
+   	<span class="k">return</span> <span class="n">num1</span> <span class="o">+</span> <span class="n">num2</span>
+</pre></div>
+</div>
+<h3 id="sec-54">导入自定义模块</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">模块名称</span>
+<span class="n">或</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">模块名称</span><span class="w"> </span><span class="kn">import</span> <span class="n">功能名</span>
+</pre></div>
+</div>
+<p>案例：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">my_module</span>
+
+<span class="c1"># 调用my_module1模块中自定义的sum_num方法</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">my_module</span><span class="o">.</span><span class="n">sum_num</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+</pre></div>
+</div>
+<h3 id="sec-55">Python模块案例</h3>
+<h4>案例需求</h4>
+<p>在python中，创建A模块定义求和函数, 在B模块中调用A模块中的函数.</p>
+<h4>代码实现</h4>
+<p>~~~python</p>
+<h1>module_a.py</h1>
+<p>def sum_numbers(numbers):
+    """计算列表中所有数字的和"""
+    return sum(numbers)</p>
+<h1>module_b.py</h1>
+<h1>导入A模块</h1>
+<p>import module_a</p>
+<h1>定义一个数字列表</h1>
+<p>numbers = [1, 2, 3, 4, 5]</p>
+<h1>调用A模块中的求和函数</h1>
+<p>total_sum = module_a.sum_numbers(numbers)</p>
+<h1>输出结果</h1>
+<p>print(f"列表 {numbers} 的和是: {total_sum}")
+~~~</p>
+<h4>巩固练习</h4>
+<p>在python中，创建A模块定义打印水仙花数函数, 在B模块中调用.</p>
+<p>~~~python
+"""
+需求: 练: A模块定义打印水仙花数函数, 在B模块中调用.
+"""</p>
+<h1>A模块</h1>
+<h1>1. 定义打印水仙花数的函数</h1>
+<p>def print_narcissistic_numbers():
+    # 2. 遍历100到999之间的所有数字
+    for num in range(100, 1000):
+        # 3. 计算数字的每一位
+        hundreds = num // 100
+        tens = (num // 10) % 10
+        units = num % 10</p>
+<pre><code>    # 4. 计算水仙花数
+    if num == hundreds ** 3 + tens ** 3 + units ** 3:
+        # 5. 打印水仙花数
+        print(num)
+</code></pre>
+<h1>B模块</h1>
+<h1>1. 导入A模块中的打印水仙花数函数</h1>
+<p>from module_a import print_narcissistic_numbers</p>
+<h1>2. 调用打印水仙花数函数</h1>
+<p>print_narcissistic_numbers()
+~~~</p>
+<h2 id="sec-56">学生管理系统</h2>
+<h3 id="sec-57">案例需求</h3>
+<p>使用python语言实现学生管理系统，要求进入系统显示系统功能界面，功能如下：</p>
+<p>~~~python
+添加学生信息
+删除学生信息
+修改学生信息
+查询学生信息
+遍历所有学生信息
+退出系统
+~~~</p>
+<p>系统共6个功能，用户根据自己需求选取，实现该需求</p>
+<h3 id="sec-58">实现思路</h3>
+<p>①构建系统功能菜单界面封装函数</p>
+<p>②使用函数封装功能实现对学生信息添加、删除、修改、查询、遍历和退出</p>
+<h3 id="sec-59">代码实现</h3>
+<p>~~~python</p>
+<h1>1. 定义函数 print_info()  , 打印提示信息.</h1>
+<p>def print_info():
+    print('1. 添加学生信息')
+    print('2. 删除学生信息')
+    print('3. 修改学生信息')
+    print('4. 查询单个学生信息')
+    print('5. 查询所有的学生信息')
+    print('6. 退出系统')</p>
+<h1>3.1 定义容器, 用来存储学生信息, 格式如下:</h1>
+<h1>[{'id':'heima001', 'name':'刘亦菲', 'tel': '111'}, {'id':'heima002', 'name':'高圆圆', 'tel': '222'}]</h1>
+<p>info = []</p>
+<h1>3. 自定义函数 add_info(), 实现: 添加学生, 编号必须唯一</h1>
+<p>def add_info():
+    # 3.2 提示用户录入 学生的学号并接收.
+    new_id = input('请录入您要添加的学生的学号: ')  # heima001, heima002, abc...</p>
+<pre><code># 3.3 判断, 用户录入的学号是否存在, 如果存在, 就提示 学号存在, 然后添加结束.  如果不存在, 就提示录入 其它信息, 接收并存储.
+for stu in info:  # stu的格式, {'id':'heima001', 'name':'刘亦菲', 'tel': '111'}
+    if stu['id'] == new_id:
+        # 走这里, 说明学号存在
+        print('您录入的学号已存在, 请重新操作')
+        break
+else:
+    # 走这里, 说明没有走break, 说明 录入的学号不存在, 就提示录入其它信息, 并添加.
+    new_name = input('请录入您要添加的学生的姓名: ')
+    new_tel = input('请录入您要添加的学生的手机号: ')
+    # 3.4 将用户录入的数据封装成字典.
+    stu_dict = {'id': new_id, 'name': new_name, 'tel': new_tel}
+    # 3.5 将上述的字典(一个学生的信息), 添加到 学生列表中(info)
+    # global info  说明我们在操作全局变量, 但是因为 info是一个列表, 它是可变类型, 所以形参的改变直接影响实参.
+    info.append(stu_dict)
+</code></pre>
+<h1>4. 自定义函数 delete_info(), 实现: 删除学生, 根据编号删除</h1>
+<p>def delete_info():
+    # 4.1 提示用户录入要删除的学生学号, 并接收.
+    del_id = input('请录入您要删除的学生的id:')
+    # 4.2 判断该学号是否存在.
+    for stu in info:
+        # stu 就是已经存在的每一个学生的信息, 格式为:  {'id':'heima001', 'name':'刘亦菲', 'tel': '111'}
+        if stu['id'] == del_id:
+            # 4.3 如果学号存在就删除该学生.
+            info.remove(stu)  # 删除学生信息
+            print(f'学号为 {del_id} 的学生信息已删除成功!')
+            break
+    else:
+        # 4.4 如果学号不存在, 就提示: 该学号不存在, 请重新操作.
+        print('您录入的学号不存在, 请重新操作')</p>
+<h1>5. 自定义函数 update_info(), 实现: 修改学生信息, 根据编号修改, 只能修改: 姓名, 手机号.</h1>
+<p>def update_info():
+    # 5.1 提示用户录入要修改的学生学号, 并接收.
+    update_id = input('请录入您要修改的学生的id:')
+    # 5.2 判断该学号是否存在.
+    for stu in info:
+        # stu 就是已经存在的每一个学生的信息, 格式为:  {'id':'heima001', 'name':'刘亦菲', 'tel': '111'}
+        if stu['id'] == update_id:
+            # 5.3 如果学号存在就修改 该学生信息.
+            new_name = input('请录入您要修改的学生的姓名: ')
+            new_tel = input('请录入您要修改的学生的手机号: ')
+            # 5.4 根据录入的信息, 修改元素值.
+            stu['name'] = new_name
+            stu['tel'] = new_tel</p>
+<pre><code>        print(f'学号为 {update_id} 的学生信息已修改成功!')
+        break
+else:
+    # 4.4 如果学号不存在, 就提示: 该学号不存在, 请重新操作.
+    print('您录入的学号不存在, 请重新操作')
+</code></pre>
+<h1>6. 自定义函数 search_info(), 实现: 查询某个学生信息, 根据姓名查询</h1>
+<p>def search_info():
+    # 6.1 提示用户录入要查询的学生的姓名, 并接收.
+    search_name = input('请录入您要查询的学生的姓名:')</p>
+<pre><code># 6.5 我们用bool类型的变量标记是否查找到学生, True: 有这个人, False: 没有这人
+# 6.5.1 初值为 False, 假设没有这个学生.
+flag = False
+
+# 6.2 判断该姓名是否存在.
+for stu in info:
+    # stu 就是已经存在的每一个学生的信息, 格式为:  {'id':'heima001', 'name':'刘亦菲', 'tel': '111'}
+    if stu['name'] == search_name:
+        # 6.3 如果姓名存在就打印该学生.
+        print(stu)
+        # 6.5.2 查找到学生了, 就将flag的值改为 True
+        flag = True
+
+# 6.5.3 判断是否查询到学生.
+# if flag == False:
+if not flag:  # 逻辑运算符, and, or, not
+    # 6.4 如果姓名不存在, 就提示: 查无此人, 请重新操作.
+    print('查无此人, 请重新操作')
+</code></pre>
+<h1>7. 自定义函数 search_all(), 实现: 查询所有学生的信息.</h1>
+<h1>数据格式为: [{'id':'heima001', 'name':'刘亦菲', 'tel': '111'}, {'id':'heima002', 'name':'高圆圆', 'tel': '222'}]</h1>
+<p>def search_all():
+    # 7.1 判断是否有学生信息, 如果没有则提示用户先添加再查询.
+    if len(info) == 0:
+        print('没有学生信息, 请先添加, 后查询!')
+    else:
+        # 7.2 如果有, 则打印所有学生信息.
+        # 直接遍历所有.
+        for stu in info:
+            print(f'学生id:{stu["id"]}, 学生姓名:{stu["name"]}, 学生手机号:{stu["tel"]}')</p>
+<h1>2. 自定义while True循环逻辑, 实现: 用户录入什么数据, 就进行相应的操作</h1>
+<h1>注意: 处理一下非法值.</h1>
+<h1>if <strong>name</strong> == '<strong>main</strong>':</h1>
+<p>while True:
+    # 2.1 打印操作界面信息.
+    print_info()</p>
+<pre><code># 2.2 提示用户录入他/她要进行操作的数字, 并接收.
+num = input('请录入您要操作的数字: ')
+if num == '1':
+    add_info()
+elif num == '2':
+    delete_info()
+elif num == '3':
+    update_info()
+elif num == '4':
+    search_info()
+elif num == '5':
+    search_all()
+elif num == '6':
+    print('谢谢您的使用, 让我们下次再会!')
+    break  # 记得结束循环
+else:
+    print('没有这样的数字, 录入有误, 请重新录入')
+print()  # 目的, 更好的展示结果.
+</code></pre>
+<p>~~~</p><div class="done-bar"><button class="mark-done-btn" data-key="lesson06" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson05.html"><div class="dir">← 上一篇</div><div class="name">⚡ 推导式与函数</div></a><a class="next" href="lesson07.html"><div class="dir">下一篇 →</div><div class="name">💬 调用本地大模型 API：打造聊天机器人</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">今日大纲</a><a class="lv2" href="#sec-2">文件的概念</a><a class="lv3" href="#sec-3">学习目标</a><a class="lv3" href="#sec-4">什么是文件</a><a class="lv3" href="#sec-5">思考：文件操作包含哪些内容呢？</a><a class="lv3" href="#sec-6">文件操作的作用</a><a class="lv3" href="#sec-7">总结</a><a class="lv2" href="#sec-8">文件的基本操作</a><a class="lv3" href="#sec-9">学习目标</a><a class="lv3" href="#sec-10">open函数打开文件</a><a class="lv3" href="#sec-11">入门级案例</a><a class="lv3" href="#sec-12">解决写入中文乱码问题</a><a class="lv3" href="#sec-13">文件的读取操作</a><a class="lv3" href="#sec-14">聊聊文件操作的mode模式</a><a class="lv3" href="#sec-15">总结</a><a class="lv2" href="#sec-16">os模块</a><a class="lv3" href="#sec-17">学习目标</a><a class="lv3" href="#sec-18">os模块使用步骤</a><a class="lv3" href="#sec-19">文件操作相关方法</a><a class="lv3" href="#sec-20">文件夹操作相关操作</a><a class="lv3" href="#sec-21">文件夹删除补充（递归删除、慎重！）</a><a class="lv3" href="#sec-22">with-open语句</a><a class="lv3" href="#sec-23">总结</a><a class="lv2" href="#sec-24">文件案例</a><a class="lv3" href="#sec-25">案例需求</a><a class="lv3" href="#sec-26">实现思路</a><a class="lv3" href="#sec-27">代码实现</a><a class="lv3" href="#sec-28">巩固练习</a><a class="lv2" href="#sec-29">Python异常</a><a class="lv3" href="#sec-30">学习目标</a><a class="lv3" href="#sec-31">什么是异常</a><a class="lv3" href="#sec-32">异常演示</a><a class="lv3" href="#sec-33">异常捕获</a><a class="lv3" href="#sec-34">捕获异常并输出错误信息</a><a class="lv3" href="#sec-35">异常捕获中else语句</a><a class="lv3" href="#sec-36">异常捕获中的finally语句</a><a class="lv3" href="#sec-37">异常案例</a><a class="lv3" href="#sec-38">总结</a><a class="lv2" href="#sec-39">Python内置模块</a><a class="lv3" href="#sec-40">学习目标</a><a class="lv3" href="#sec-41">什么是Python模块</a><a class="lv3" href="#sec-42">模块的导入方式</a><a class="lv3" href="#sec-43">使用import导入模块</a><a class="lv3" href="#sec-44">使用as关键字为导入模块定义别名</a><a class="lv3" href="#sec-45">使用from...import导入模块</a><a class="lv3" href="#sec-46">☆ from 模块名 import *</a><a class="lv3" href="#sec-47">☆ from 模块名 import 功能名（推荐）</a><a class="lv3" href="#sec-48">time模块中的time()方法</a><a class="lv3" href="#sec-49">总结</a><a class="lv2" href="#sec-50">Python中的自定义模块</a><a class="lv3" href="#sec-51">学习目标</a><a class="lv3" href="#sec-52">什么是自定义模块</a><a class="lv3" href="#sec-53">定义一个自定义模块</a><a class="lv3" href="#sec-54">导入自定义模块</a><a class="lv3" href="#sec-55">Python模块案例</a><a class="lv2" href="#sec-56">学生管理系统</a><a class="lv3" href="#sec-57">案例需求</a><a class="lv3" href="#sec-58">实现思路</a><a class="lv3" href="#sec-59">代码实现</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
