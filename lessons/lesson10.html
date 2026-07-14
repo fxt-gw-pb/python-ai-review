@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>闭包与装饰器 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 10 讲</div>
+<h1>🎁 闭包与装饰器</h1>
+<div class="chips"><span class="chip">🏷️ 闭包</span><span class="chip">🏷️ nonlocal</span><span class="chip">🏷️ 装饰器</span></div>
+</div>
+<h2 id="sec-1">闭包背景介绍</h2>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">案例: 闭包背景介绍</span>
+
+<span class="sd">案例目的:</span>
+<span class="sd">    引出来 闭包 相关的知识点.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 需求: 定义函数保存变量10, 调用函数返回值 并 重复累加数值, 观察结果.</span>
+<span class="c1"># 1. 定义函数, 保存变量10</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">func</span><span class="p">():</span>
+    <span class="n">num</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="k">return</span> <span class="n">num</span>
+
+
+<span class="c1"># 2. 调用函数, 获取返回值.</span>
+<span class="n">num</span> <span class="o">=</span> <span class="n">func</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># 11</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># 11</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">num</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># 11</span>
+</pre></div>
+</div>
+<h2 id="sec-2">闭包入门</h2>
+<p><img alt="1742090722484" src="../assets/img/lesson10/1742090722484.png" /></p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">案例: 闭包入门.</span>
+
+<span class="sd">闭包解释:</span>
+<span class="sd">    概述:</span>
+<span class="sd">        内部函数 使用了外部函数的变量, 这种写法就称之为闭包.</span>
+<span class="sd">    格式:</span>
+<span class="sd">        def 外部函数名(形参列表):</span>
+<span class="sd">            外部函数的(局部)变量</span>
+
+<span class="sd">            def 内部函数名(形参列表):</span>
+<span class="sd">                使用外部函数的变量</span>
+
+<span class="sd">            return 内部函数名</span>
+<span class="sd">    前提条件:</span>
+<span class="sd">        1. 有嵌套.         外部函数嵌套内部函数</span>
+<span class="sd">        2. 有引用.         内部函数使用外部函数的变量</span>
+<span class="sd">        3. 有返回.         外部函数中, 返回 内部函数名(对象)</span>
+
+<span class="sd">细节:</span>
+<span class="sd">    1. 函数名 和 函数名() 是两个概念, 前者表示 函数对象, 后者表示 调用函数, 获取返回值.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 案例1: 函数名 -&gt; 是对象</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">get_sum</span><span class="p">)</span>  <span class="c1"># &lt;function get_sum at 0x000001B4AC3DD800&gt;, 对象.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">get_sum</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>      <span class="c1"># 调用函数, 获取返回值.</span>
+
+<span class="c1"># 函数名可以赋值给变量, 这个变量就是: 函数对象.</span>
+<span class="n">my_sum</span> <span class="o">=</span> <span class="n">get_sum</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">my_sum</span><span class="p">)</span>   <span class="c1"># &lt;function get_sum at 0x00000251CE53D800&gt;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">my_sum</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">))</span>     <span class="c1"># 300</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">23</span><span class="p">)</span>
+
+
+<span class="c1"># 案例2: 演示闭包写法.</span>
+<span class="c1"># 需求: 定义求和的闭包, 外部函数有参数num1, 内部函数有参数num2, 调用, 求解两数之和, 观察结果.</span>
+
+<span class="c1"># 1. 定义外部函数.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">fn_outer</span><span class="p">(</span><span class="n">num1</span><span class="p">):</span>
+    <span class="c1"># 2. 定义内部函数</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fn_inner</span><span class="p">(</span><span class="n">num2</span><span class="p">):</span>                 <span class="c1"># 有嵌套</span>
+        <span class="c1"># 3. 求和</span>
+        <span class="nb">sum</span> <span class="o">=</span> <span class="n">num1</span> <span class="o">+</span> <span class="n">num2</span>               <span class="c1"># 有引用</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;求和结果: </span><span class="si">{</span><span class="nb">sum</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">fn_inner</span>                     <span class="c1"># 有返回</span>
+
+
+<span class="c1"># 4.调用上述的函数</span>
+<span class="n">fn_inner</span> <span class="o">=</span> <span class="n">fn_outer</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">fn_inner</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">23</span><span class="p">)</span>
+
+<span class="n">fn_outer</span><span class="p">(</span><span class="mi">100</span><span class="p">)(</span><span class="mi">200</span><span class="p">)</span>
+</pre></div>
+</div>
+<h2 id="sec-3">nonlocal关键字介绍</h2>
+<ul>
+<li>图解</li>
+</ul>
+<p><img alt="1742091801009" src="../assets/img/lesson10/1742091801009.png" /></p>
+<ul>
+<li>代码</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  案例: nonlocal关键字介绍</span>
+<span class="sd">  </span>
+<span class="sd">  nonlocal:</span>
+<span class="sd">      它是Python内置的关键字, 可以实现 在内部函数中 修改外部函数的 变量值.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="c1"># 需求: 编写1个闭包,让内部函数访问外部函数的参数 a = 100, 并观察结果.</span>
+  <span class="c1"># 1. 定义外部函数.</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">fn_outer</span><span class="p">():</span>
+      <span class="c1"># 2.定义外部函数的(局部)变量</span>
+      <span class="n">a</span> <span class="o">=</span> <span class="mi">100</span>
+
+      <span class="c1"># 3.定义内部函数, 访问外部函数的变量.</span>
+      <span class="k">def</span><span class="w"> </span><span class="nf">fn_inner</span><span class="p">():</span>
+          <span class="c1"># 4.在内部函数中修改外部函数的变量</span>
+          <span class="k">nonlocal</span> <span class="n">a</span>      <span class="c1"># nonlocal: 可以实现在内部函数中修改外部函数的变量值.</span>
+          <span class="n">a</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="mi">1</span>
+          <span class="c1"># 5. 打印外部函数的变量</span>
+          <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;a: </span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+      <span class="c1"># 6. 返回 内部函数名(对象)</span>
+      <span class="k">return</span> <span class="n">fn_inner</span>
+
+
+  <span class="c1"># 7.测试</span>
+  <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+      <span class="n">fn_inner</span> <span class="o">=</span> <span class="n">fn_outer</span><span class="p">()</span>
+      <span class="n">fn_inner</span><span class="p">()</span>  <span class="c1"># 101</span>
+      <span class="n">fn_inner</span><span class="p">()</span>  <span class="c1"># 102</span>
+      <span class="n">fn_inner</span><span class="p">()</span>  <span class="c1"># 103</span>
+</pre></div>
+</div>
+<h2 id="sec-4">装饰器入门</h2>
+<ul>
+<li>图解</li>
+</ul>
+<p><img alt="1742094968294" src="../assets/img/lesson10/1742094968294.png" /></p>
+<ul>
+<li>代码</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  案例: 装饰器入门.</span>
+<span class="sd">  </span>
+<span class="sd">  装饰器介绍:</span>
+<span class="sd">      概述/作用:</span>
+<span class="sd">          它的本质是1个闭包函数, 目的是 在不改变原有函数的基础上, 对其功能做增强.</span>
+<span class="sd">          大白话: 装修队 在不改变房屋结构的情况下, 对房屋做装饰(功能增强)</span>
+<span class="sd">      前提条件:</span>
+<span class="sd">          1. 有嵌套.</span>
+<span class="sd">          2. 有引用.</span>
+<span class="sd">          3. 有返回.</span>
+<span class="sd">          4. 有额外功能.</span>
+<span class="sd">      装饰器的用法:</span>
+<span class="sd">          格式1: 传统写法.</span>
+<span class="sd">              装饰后的函数名 = 装饰器名(被装饰的原函数名)</span>
+<span class="sd">              装饰后的函数名()</span>
+<span class="sd">  </span>
+<span class="sd">          格式2: 语法糖.</span>
+<span class="sd">              在要被装饰的原函数上, 直接写 @装饰器名, 之后直接调用原函数即可.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="c1"># 需求: 在发表评论前, 都是需要先登录的.</span>
+
+  <span class="c1"># 1.定义外部函数, 形参列表接收 要被装饰的函数名(对象)</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">check_login</span><span class="p">(</span><span class="n">fn_name</span><span class="p">):</span>       <span class="c1"># fn_name: 被装饰的函数名(对象)</span>
+      <span class="c1"># 1.1 定义内部函数.</span>
+      <span class="k">def</span><span class="w"> </span><span class="nf">fn_inner</span><span class="p">():</span>             <span class="c1"># 有嵌套</span>
+          <span class="c1"># 1.2 额外功能</span>
+          <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;校验登陆... 登陆成功!&#39;</span><span class="p">)</span>
+          <span class="c1"># 1.3 访问原函数, 即: 外部函数的引用.</span>
+          <span class="n">fn_name</span><span class="p">()</span>               <span class="c1"># 有引用</span>
+      <span class="c1"># 1.4 返回内部函数对象.</span>
+      <span class="k">return</span> <span class="n">fn_inner</span>             <span class="c1"># 有返回</span>
+
+  <span class="c1"># 2.定义函数, 表示 发表评论.</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">comment</span><span class="p">():</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;发表评论&quot;</span><span class="p">)</span>
+
+  <span class="nd">@check_login</span>    <span class="c1"># 底层其实是: payment = check_login(payment)</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">payment</span><span class="p">():</span>
+      <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;充值中...&#39;</span><span class="p">)</span>
+
+  <span class="c1"># 3. 测试.</span>
+  <span class="c1"># 3.1 传统方式.</span>
+  <span class="n">comment</span> <span class="o">=</span> <span class="n">check_login</span><span class="p">(</span><span class="n">comment</span><span class="p">)</span>
+  <span class="n">comment</span><span class="p">()</span>
+  <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">23</span><span class="p">)</span>
+
+  <span class="c1"># 3.2 语法糖</span>
+  <span class="c1"># payment = check_login(payment)</span>
+  <span class="c1"># payment()</span>
+  <span class="n">payment</span><span class="p">()</span>
+
+</pre></div>
+</div>
+<h2 id="sec-5">装饰器案例</h2>
+<ul>
+<li>场景1: <mark><strong>无参无返回值的原函数</strong></mark></li>
+</ul>
+<p><img alt="1742097567109" src="../assets/img/lesson10/1742097567109.png" /></p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  案例: 装饰器装饰_无参无返回的原函数</span>
+<span class="sd">  </span>
+<span class="sd">  细节:</span>
+<span class="sd">      装饰器的内部函数格式 要和 被装饰的原函数 保持一致,</span>
+<span class="sd">      即: 原函数是无参无返回的, 则 装饰器的内部函数也必须是 无参无返回的.</span>
+<span class="sd">          原函数有参有返回的, 则 装饰器的内部函数也必须是 有参有返回的.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="c1"># 需求: 定义无参无返回值的 get_sum()求和函数, 在不改变其代码的基础上, 添加友好提示: 正在努力计算中...</span>
+  <span class="c1"># 1. 定义装饰器.</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">my_decorator</span><span class="p">(</span><span class="n">fn_name</span><span class="p">):</span>
+      <span class="c1"># 1.1 定义内部函数, 其格式必须和 被装饰的原函数 保持一致.</span>
+      <span class="k">def</span><span class="w"> </span><span class="nf">fn_inner</span><span class="p">():</span>                 <span class="c1"># 有嵌套</span>
+          <span class="c1"># 1.2 添加提示信息(额外功能)</span>
+          <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;正在努力计算中...&#39;</span><span class="p">)</span>     <span class="c1"># 有额外功能</span>
+          <span class="c1"># 1.3 调用原函数.</span>
+          <span class="n">fn_name</span><span class="p">()</span>                   <span class="c1"># 有引用</span>
+      <span class="c1"># 1.4 返回内部函数(对象)</span>
+      <span class="k">return</span> <span class="n">fn_inner</span>                 <span class="c1"># 有返回</span>
+
+
+  <span class="c1"># 2. 定义原函数.</span>
+  <span class="nd">@my_decorator</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">get_sum</span><span class="p">():</span>
+      <span class="n">a</span> <span class="o">=</span> <span class="mi">10</span>
+      <span class="n">b</span> <span class="o">=</span> <span class="mi">20</span>
+      <span class="nb">sum</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sum求和结果: </span><span class="si">{</span><span class="nb">sum</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+
+  <span class="c1"># 3.测试.</span>
+  <span class="c1"># 3.1 传统方式.</span>
+  <span class="c1"># get_sum = my_decorator(get_sum)</span>
+  <span class="c1"># get_sum()</span>
+
+  <span class="c1"># 3.2 语法糖.</span>
+  <span class="n">get_sum</span><span class="p">()</span>
+</pre></div>
+</div>
+<ul>
+<li>场景2: <mark><strong>有参无返回值的原函数</strong></mark></li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="w">  </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">  案例: 装饰器装饰_有参无返回的原函数</span>
+<span class="sd">  </span>
+<span class="sd">  细节:</span>
+<span class="sd">      装饰器的内部函数格式 要和 被装饰的原函数 保持一致,</span>
+<span class="sd">      即: 原函数是无参无返回的, 则 装饰器的内部函数也必须是 无参无返回的.</span>
+<span class="sd">          原函数有参有返回的, 则 装饰器的内部函数也必须是 有参有返回的.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="c1"># 需求: 定义有参无返回值的 get_sum()求和函数, 在不改变其代码的基础上, 添加友好提示: 正在努力计算中...</span>
+  <span class="c1"># 1. 定义装饰器.</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">my_decorator</span><span class="p">(</span><span class="n">fn_name</span><span class="p">):</span>
+      <span class="c1"># 1.1 定义内部函数</span>
+      <span class="k">def</span><span class="w"> </span><span class="nf">fn_inner</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+          <span class="c1"># 1.2 额外功能</span>
+          <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;正在努力计算中...&#39;</span><span class="p">)</span>
+          <span class="c1"># 1.3 调用原函数.</span>
+          <span class="n">fn_name</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+      <span class="c1"># 1.4 返回内部函数.</span>
+      <span class="k">return</span> <span class="n">fn_inner</span>
+
+  <span class="c1"># 2. 定义原函数, 有参无返回值.</span>
+  <span class="nd">@my_decorator</span>
+  <span class="k">def</span><span class="w"> </span><span class="nf">get_sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+      <span class="nb">sum</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+      <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;sum求和结果: </span><span class="si">{</span><span class="nb">sum</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+
+  <span class="c1"># 3.测试.</span>
+  <span class="c1"># 3.1 传统方式.</span>
+  <span class="c1"># get_sum = my_decorator(get_sum)</span>
+  <span class="c1"># get_sum(10, 20)</span>
+
+  <span class="c1"># 3.2 语法糖.</span>
+  <span class="n">get_sum</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div><div class="done-bar"><button class="mark-done-btn" data-key="lesson10" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson09.html"><div class="dir">← 上一篇</div><div class="name">🧬 面向对象进阶与学生管理系统</div></a><a class="next" href="lesson11.html"><div class="dir">下一篇 →</div><div class="name">🧵 多线程、数据共享与互斥锁</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">闭包背景介绍</a><a class="lv2" href="#sec-2">闭包入门</a><a class="lv2" href="#sec-3">nonlocal关键字介绍</a><a class="lv2" href="#sec-4">装饰器入门</a><a class="lv2" href="#sec-5">装饰器案例</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
