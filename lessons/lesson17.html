@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MySQL 查询：单表检索与多表关联 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 17 讲</div>
+<h1>🔎 MySQL 查询：单表检索与多表关联</h1>
+<div class="chips"><span class="chip">🏷️ DQL 单表查询</span><span class="chip">🏷️ 分组与聚合</span><span class="chip">🏷️ 多表连接</span></div>
+</div>
+<p>查询（DQL）是 SQL 中使用频率最高、也是数据分析岗位最核心的部分。本讲先把单表查询的七种能力（简单、条件、排序、聚合、分组、去重、分页）逐一吃透，再理解 SQL 的真实执行顺序，最后进入多表世界：表关系设计、外键约束，以及内连接、外连接、子查询与自关联。</p>
+<blockquote>
+<p>本讲承接上一讲《MySQL 基础》。单表部分统一使用一张商品表 <code>product</code> 演示，多表部分使用 <code>hero</code> / <code>kongfu</code>、<code>dept</code> / <code>emp</code> 等示例表，建表语句都在文中给出，可以跟着敲。</p>
+</blockquote>
+<h2 id="sec-1">一、DQL 概述与查询骨架</h2>
+<p>单表查询的完整语法骨架如下——先混个脸熟，本讲前半部分就是把每个子句逐一展开：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">select</span>
+<span class="w">    </span><span class="p">[</span><span class="k">distinct</span><span class="p">]</span><span class="w"> </span><span class="err">列名</span><span class="mi">1</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="err">别名</span><span class="p">,</span><span class="w"> </span><span class="err">列名</span><span class="mi">2</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="err">别名</span><span class="p">,</span><span class="w"> </span><span class="p">...</span>
+<span class="k">from</span>
+<span class="w">    </span><span class="err">数据表名</span>
+<span class="k">where</span>
+<span class="w">    </span><span class="err">组前筛选</span>
+<span class="k">group</span><span class="w"> </span><span class="k">by</span>
+<span class="w">    </span><span class="err">分组字段</span>
+<span class="k">having</span>
+<span class="w">    </span><span class="err">组后筛选</span>
+<span class="k">order</span><span class="w"> </span><span class="k">by</span>
+<span class="w">    </span><span class="err">排序字段</span><span class="w"> </span><span class="p">[</span><span class="k">asc</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="k">desc</span><span class="p">]</span>
+<span class="k">limit</span>
+<span class="w">    </span><span class="err">起始索引</span><span class="p">,</span><span class="w"> </span><span class="err">数据条数</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>准备演示数据——一张商品表，13 条数据（注意有 2 条商品的分类是 NULL）：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">create</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">product</span><span class="p">(</span>
+<span class="w">    </span><span class="n">pid</span><span class="w">         </span><span class="nb">int</span><span class="w"> </span><span class="k">primary</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="n">auto_increment</span><span class="p">,</span><span class="w">  </span><span class="o">#</span><span class="w"> </span><span class="err">商品</span><span class="n">id</span><span class="err">，主键</span>
+<span class="w">    </span><span class="n">pname</span><span class="w">       </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span><span class="w">    </span><span class="o">#</span><span class="w"> </span><span class="err">商品名</span>
+<span class="w">    </span><span class="n">price</span><span class="w">       </span><span class="n">double</span><span class="p">,</span><span class="w">         </span><span class="o">#</span><span class="w"> </span><span class="err">商品单价</span>
+<span class="w">    </span><span class="n">category_id</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span><span class="w">     </span><span class="o">#</span><span class="w"> </span><span class="err">商品的分类</span><span class="n">id</span>
+<span class="p">);</span>
+
+<span class="k">insert</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">product</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">pname</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="p">,</span><span class="w"> </span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">values</span>
+<span class="w">    </span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;联想&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">5000</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;c001&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;海尔&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">3000</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;c001&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;雷神&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">5000</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;c001&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;杰克琼斯&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">800</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;c002&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;真维斯&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="k">null</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;花花公子&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">440</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;c002&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;劲霸&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">2000</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;c002&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;香奈儿&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">800</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;c003&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;相宜本草&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="k">null</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;面霸&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;c003&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;好想你枣&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">56</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;c004&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;香飘飘奶茶&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;c005&#39;</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;海澜之家&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;c002&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<h2 id="sec-2">二、简单查询</h2>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="err">需求</span><span class="mi">1</span><span class="err">：查询所有的商品信息。</span><span class="o">*</span><span class="w"> </span><span class="err">代表表中所有列</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="p">;</span>
+<span class="k">select</span><span class="w"> </span><span class="n">pid</span><span class="p">,</span><span class="w"> </span><span class="n">pname</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="p">,</span><span class="w"> </span><span class="n">category_id</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="p">;</span><span class="w">   </span><span class="o">#</span><span class="w"> </span><span class="err">效果同上</span>
+
+<span class="o">#</span><span class="w"> </span><span class="err">需求</span><span class="mi">2</span><span class="err">：只查商品名和价格（指定列查询）</span>
+<span class="k">select</span><span class="w"> </span><span class="n">pname</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="p">;</span>
+
+<span class="o">#</span><span class="w"> </span><span class="err">需求</span><span class="mi">3</span><span class="err">：起别名。列名、表名都可以起别名，</span><span class="k">as</span><span class="w"> </span><span class="err">可以省略</span>
+<span class="k">select</span><span class="w"> </span><span class="n">pname</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="err">商品名</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="err">商品价格</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">p</span><span class="p">;</span>
+
+<span class="o">#</span><span class="w"> </span><span class="err">需求</span><span class="mi">4</span><span class="err">：查询结果可以是表达式：把所有商品价格</span><span class="w"> </span><span class="o">+</span><span class="mi">10</span><span class="w"> </span><span class="err">展示</span>
+<span class="k">select</span><span class="w"> </span><span class="n">pname</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="p">;</span>
+<span class="k">select</span><span class="w"> </span><span class="n">pname</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">10</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>三个注意点：</p>
+<ul>
+<li>实际开发中如果只需要某几列，<strong>不要图省事用 <code>select *</code></strong>——查所有列会影响查询效率；</li>
+<li>表达式列的典型场景：商品单价 × 数量得到总价；</li>
+<li>别名如果与关键字冲突（例如叫 <code>desc</code>），要在别名两侧添加反引号 <code>`desc`</code>；别名尽量不要和关键字相同。</li>
+</ul>
+<h2 id="sec-3">三、条件查询（WHERE）</h2>
+<p>格式：<code>select 列名 from 表名 where 条件;</code>——查询每一行时，对 where 后的条件进行判断，满足条件的行才会出现在结果中。条件由五类运算符构成。</p>
+<h3 id="sec-4">1. 比较运算符</h3>
+<p><code>=</code>、<code>&gt;</code>、<code>&lt;</code>、<code>&gt;=</code>、<code>&lt;=</code>、<code>!=</code>、<code>&lt;&gt;</code>（后两个都表示不等于），比较结果是成立（True）或不成立（False）。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="err">查询商品名为</span><span class="s1">&#39;花花公子&#39;</span><span class="err">的商品</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">pname</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;花花公子&#39;</span><span class="p">;</span>
+<span class="o">#</span><span class="w"> </span><span class="err">查询价格为</span><span class="mi">800</span><span class="err">的商品</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">800</span><span class="p">;</span>
+<span class="o">#</span><span class="w"> </span><span class="err">查询价格不是</span><span class="mi">800</span><span class="err">的商品（两种写法）</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">800</span><span class="p">;</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">&lt;&gt;</span><span class="w"> </span><span class="mi">800</span><span class="p">;</span>
+<span class="o">#</span><span class="w"> </span><span class="err">查询价格大于</span><span class="mi">60</span><span class="err">的商品</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">60</span><span class="p">;</span>
+<span class="o">#</span><span class="w"> </span><span class="err">查询价格小于等于</span><span class="mi">800</span><span class="err">的商品</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">800</span><span class="p">;</span>
+</pre></div>
+</div>
+<h3 id="sec-5">2. 逻辑运算符</h3>
+<p><code>and</code>（并且，两边都成立才成立）、<code>or</code>（或者，任何一边成立即成立）、<code>not</code>（取反），用来连接多个条件。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="err">价格在</span><span class="p">[</span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="mi">800</span><span class="p">]</span><span class="err">之间：</span><span class="k">and</span><span class="w"> </span><span class="err">连接两个条件</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">800</span><span class="p">;</span>
+<span class="o">#</span><span class="w"> </span><span class="err">价格是</span><span class="mi">200</span><span class="err">或</span><span class="mi">800</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">800</span><span class="p">;</span>
+<span class="o">#</span><span class="w"> </span><span class="err">价格不是</span><span class="mi">800</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">800</span><span class="p">;</span>
+</pre></div>
+</div>
+<h3 id="sec-6">3. 范围查询</h3>
+<ul>
+<li><code>between 值1 and 值2</code>：连续区间查询，<strong>包左包右</strong>；</li>
+<li><code>in (值1, 值2, ...)</code>：非连续的固定值查询。</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="err">价格在</span><span class="mi">200</span><span class="err">到</span><span class="mi">800</span><span class="err">之间（等价于</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">&lt;=</span><span class="w"> </span><span class="mi">800</span><span class="err">）</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">between</span><span class="w"> </span><span class="mi">200</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="mi">800</span><span class="p">;</span>
+<span class="o">#</span><span class="w"> </span><span class="err">价格是</span><span class="mi">200</span><span class="err">或</span><span class="mi">800</span><span class="err">（等价于两个</span><span class="w"> </span><span class="k">or</span><span class="w"> </span><span class="err">条件）</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="p">(</span><span class="mi">200</span><span class="p">,</span><span class="w"> </span><span class="mi">800</span><span class="p">);</span>
+<span class="o">#</span><span class="w"> </span><span class="err">价格不是</span><span class="mi">800</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="p">(</span><span class="mi">800</span><span class="p">);</span>
+</pre></div>
+</div>
+<h3 id="sec-7">4. 模糊查询（LIKE）</h3>
+<p><code>字段名 like '匹配模式'</code>，模式中有两个特殊符号：</p>
+<ul>
+<li><code>%</code>：任意<strong>多个</strong>任意字符（至少 0 个，多少都行）；</li>
+<li><code>_</code>：任意<strong>一个</strong>字符。</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="err">查询以</span><span class="s1">&#39;香&#39;</span><span class="err">开头的商品</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="err">香奈儿、香飘飘奶茶</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">pname</span><span class="w"> </span><span class="k">like</span><span class="w"> </span><span class="s1">&#39;香%&#39;</span><span class="p">;</span>
+
+<span class="o">#</span><span class="w"> </span><span class="err">查询第二个字是</span><span class="s1">&#39;想&#39;</span><span class="err">的商品</span><span class="w"> </span><span class="err">→</span><span class="w"> </span><span class="err">好想你枣</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">pname</span><span class="w"> </span><span class="k">like</span><span class="w"> </span><span class="s1">&#39;_想%&#39;</span><span class="p">;</span>
+<span class="o">#</span><span class="w"> </span><span class="err">对比：</span><span class="s1">&#39;_想&#39;</span><span class="w"> </span><span class="err">只能匹配</span><span class="ss">&quot;?想&quot;</span><span class="err">两个字的名字，查不出</span><span class="s1">&#39;好想你枣&#39;</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">pname</span><span class="w"> </span><span class="k">like</span><span class="w"> </span><span class="s1">&#39;_想&#39;</span><span class="p">;</span>
+</pre></div>
+</div>
+<h3 id="sec-8">5. 空值判断</h3>
+<p><strong>判断 NULL 一定不能用 <code>=</code> 或 <code>!=</code></strong>，必须用 <code>is null</code> / <code>is not null</code>：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="err">错误示范：不报错，但永远没有结果</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">category_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
+
+<span class="o">#</span><span class="w"> </span><span class="err">查询没有分类的商品（正确的判空写法）</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">category_id</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
+<span class="o">#</span><span class="w"> </span><span class="err">查询有分类的商品</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">category_id</span><span class="w"> </span><span class="k">is</span><span class="w"> </span><span class="k">not</span><span class="w"> </span><span class="k">null</span><span class="p">;</span>
+</pre></div>
+</div>
+<h2 id="sec-9">四、排序查询（ORDER BY）</h2>
+<p>格式：<code>select * from 表名 order by 字段1 [asc|desc], 字段2 [asc|desc], ...;</code></p>
+<ul>
+<li><code>asc</code>（ascending）升序、<code>desc</code>(descending) 降序；<strong>默认升序，asc 可省略</strong>；</li>
+<li>可以按多列排序：前列值相同的行，再按后列的值排序。</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="err">按价格升序（三种写法等价）</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">price</span><span class="p">;</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">asc</span><span class="p">;</span>
+<span class="o">#</span><span class="w"> </span><span class="err">按价格降序</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">desc</span><span class="p">;</span>
+
+<span class="o">#</span><span class="w"> </span><span class="err">多列排序：先按价格降序；价格相同的，再按分类降序</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">desc</span><span class="p">,</span><span class="w"> </span><span class="n">category_id</span><span class="w"> </span><span class="k">desc</span><span class="p">;</span>
+
+<span class="o">#</span><span class="w"> </span><span class="err">排序可以与条件组合：价格高于</span><span class="mi">2000</span><span class="err">的商品按价格从高到低</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">2000</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">desc</span><span class="p">;</span>
+</pre></div>
+</div>
+<h2 id="sec-10">五、聚合函数</h2>
+<p>聚合函数又叫组函数、统计函数，特点是<strong>多进一出</strong>：对某一列的一组值做统计计算，返回一个结果。常用的有五个：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>函数</th>
+<th>作用</th>
+<th>记忆</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>count(列)</code></td>
+<td>统计某列值的个数（<strong>只统计非空值</strong>）</td>
+<td>count 计数</td>
+</tr>
+<tr>
+<td><code>sum(列)</code></td>
+<td>求和</td>
+<td>sum 总和</td>
+</tr>
+<tr>
+<td><code>avg(列)</code></td>
+<td>求平均值</td>
+<td>average 平均数</td>
+</tr>
+<tr>
+<td><code>max(列)</code></td>
+<td>求最大值</td>
+<td>maximum 最大值</td>
+</tr>
+<tr>
+<td><code>min(列)</code></td>
+<td>求最小值</td>
+<td>minimum 最小值</td>
+</tr>
+</tbody>
+</table></div>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="err">需求</span><span class="mi">1</span><span class="err">：查询商品总条数</span>
+<span class="k">select</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">total_cnt</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="p">;</span><span class="w">             </span><span class="o">#</span><span class="w"> </span><span class="mi">13</span>
+<span class="k">select</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="n">category_id</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">total_cnt</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="p">;</span><span class="w">   </span><span class="o">#</span><span class="w"> </span><span class="mi">11</span><span class="err">：忽略了</span><span class="mi">2</span><span class="err">个</span><span class="k">NULL</span><span class="err">！</span>
+
+<span class="o">#</span><span class="w"> </span><span class="err">需求</span><span class="mi">2</span><span class="err">：查询价格大于</span><span class="mi">200</span><span class="err">的商品总条数</span>
+<span class="k">select</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">total_cnt</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">200</span><span class="p">;</span>
+
+<span class="o">#</span><span class="w"> </span><span class="err">需求</span><span class="mi">3</span><span class="err">：查询分类为</span><span class="s1">&#39;c001&#39;</span><span class="err">的商品价格总和</span>
+<span class="k">select</span><span class="w"> </span><span class="k">sum</span><span class="p">(</span><span class="n">price</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">total_price</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">category_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;c001&#39;</span><span class="p">;</span>
+
+<span class="o">#</span><span class="w"> </span><span class="err">需求</span><span class="mi">4</span><span class="err">：查询分类为</span><span class="s1">&#39;c002&#39;</span><span class="err">的商品平均价格</span>
+<span class="k">select</span><span class="w"> </span><span class="k">avg</span><span class="p">(</span><span class="n">price</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">avg_price</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">category_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;c002&#39;</span><span class="p">;</span>
+
+<span class="o">#</span><span class="w"> </span><span class="err">需求</span><span class="mi">5</span><span class="err">：同时查最大价格和最小价格</span>
+<span class="k">select</span>
+<span class="w">    </span><span class="k">max</span><span class="p">(</span><span class="n">price</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">max_price</span><span class="p">,</span>
+<span class="w">    </span><span class="k">min</span><span class="p">(</span><span class="n">price</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">min_price</span>
+<span class="k">from</span>
+<span class="w">    </span><span class="n">product</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><strong>核心细节：聚合函数的计算会忽略 NULL 值</strong>。所以统计总行数要用 <code>count(*)</code> 或 <code>count(1)</code>，用普通列（如 <code>count(category_id)</code>）会把空值行漏掉。</p>
+<blockquote>
+<p><strong>面试题：count(*)、count(1)、count(列) 的区别？</strong></p>
+<ul>
+<li>是否统计空值：<code>count(列)</code> 只统计该列的非空值；<code>count(*)</code> 和 <code>count(1)</code> 统计所有行，包括空值；</li>
+<li>效率排序：<code>count(主键列) &gt; count(1) &gt; count(*) &gt; count(普通列)</code>。</li>
+</ul>
+</blockquote>
+<h2 id="sec-11">六、分组查询（GROUP BY 与 HAVING）</h2>
+<h3 id="sec-12">1. 先分组，再聚合</h3>
+<p>分组查询的本质是<strong>把表数据"化整为零"</strong>：按分组字段的值把行划分成若干组（值相同的行进同一组），再对每一组分别执行聚合运算。</p>
+<p><img alt="分组查询图解：按 category_id 把 13 行商品分成 6 组，每组分别 count" src="../assets/img/lesson17/group-by-diagram.png" /></p>
+<p>格式：<code>select 列, 聚合函数 from 表名 [where 组前筛选] group by 分组字段 [having 组后筛选];</code></p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="err">需求</span><span class="mi">1</span><span class="err">：统计各个分类商品的个数</span>
+<span class="k">select</span><span class="w"> </span><span class="n">category_id</span><span class="p">,</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">total_cnt</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">category_id</span><span class="p">;</span>
+
+<span class="o">#</span><span class="w"> </span><span class="err">需求</span><span class="mi">2</span><span class="err">：按多字段组合分组——把</span><span class="ss">&quot;分类 + 是否自营&quot;</span><span class="err">作为整体来分组</span>
+<span class="o">#</span><span class="w"> </span><span class="k">select</span><span class="w"> </span><span class="n">category_id</span><span class="p">,</span><span class="w"> </span><span class="n">is_self</span><span class="p">,</span><span class="w"> </span><span class="k">count</span><span class="p">(</span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">category_id</span><span class="p">,</span><span class="w"> </span><span class="n">is_self</span><span class="p">;</span>
+</pre></div>
+</div>
+<h3 id="sec-13">2. SELECT 列的限制</h3>
+<p><strong>分组之后，select 后面查询的字段必须满足两种情况之一</strong>：</p>
+<ol>
+<li>字段是<strong>分组字段</strong>（在 group by 之后出现过）；</li>
+<li>字段被<strong>聚合函数</strong>统计（形如 <code>聚合函数(字段)</code>）。</li>
+</ol>
+<p>原因：分组聚合执行后每组只产生<strong>一行</strong>结果，如果 select 一个"组内值不统一"的普通字段，数据库不知道该拿组里哪一行的值——有歧义，所以报错。</p>
+<p>另一个推论：<strong>只分组、不写聚合，效果等价于按分组字段去重</strong>：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">select</span><span class="w"> </span><span class="n">category_id</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">category_id</span><span class="p">;</span>
+<span class="o">#</span><span class="w"> </span><span class="err">与</span><span class="w"> </span><span class="k">distinct</span><span class="w"> </span><span class="err">等价</span>
+<span class="k">select</span><span class="w"> </span><span class="k">distinct</span><span class="w"> </span><span class="n">category_id</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="p">;</span>
+</pre></div>
+</div>
+<h3 id="sec-14">3. HAVING：组后筛选</h3>
+<p>对分组聚合之后的结果再过滤，用 <code>having</code>：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="err">需求：统计各分类商品个数，只显示个数大于</span><span class="mi">1</span><span class="err">的分类</span>
+<span class="k">select</span>
+<span class="w">    </span><span class="n">category_id</span><span class="p">,</span>
+<span class="w">    </span><span class="k">count</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">total_cnt</span>
+<span class="k">from</span>
+<span class="w">    </span><span class="n">product</span>
+<span class="k">group</span><span class="w"> </span><span class="k">by</span>
+<span class="w">    </span><span class="n">category_id</span><span class="w">     </span><span class="o">#</span><span class="w"> </span><span class="err">按商品分类分组</span>
+<span class="k">having</span>
+<span class="w">    </span><span class="n">total_cnt</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">  </span><span class="o">#</span><span class="w"> </span><span class="err">组后筛选：对聚合结果过滤</span>
+</pre></div>
+</div>
+<p>注意：MySQL 中 having 可以直接使用聚合结果的<strong>别名</strong>（如上例的 <code>total_cnt</code>），这是 MySQL 的扩展特性，其他数据库不保证支持——通用写法是 <code>having count(*) &gt; 1</code>。</p>
+<h3 id="sec-15">4. 面试题：WHERE 和 HAVING 的区别</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>where</th>
+<th>having</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>过滤时机</td>
+<td><strong>组前</strong>筛选（分组之前过滤行）</td>
+<td><strong>组后</strong>筛选（对分组聚合的结果过滤）</td>
+</tr>
+<tr>
+<td>能否用聚合函数</td>
+<td>不能</td>
+<td>可以</td>
+</tr>
+<tr>
+<td>执行顺序</td>
+<td>where → group by → 聚合 → having</td>
+<td>同左</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="sec-16">七、去重查询（DISTINCT）</h2>
+<p><code>distinct</code> 对查询结果中重复的行进行去重：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="err">对分类</span><span class="n">id去重</span>
+<span class="k">select</span><span class="w"> </span><span class="k">distinct</span><span class="w"> </span><span class="n">category_id</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="p">;</span>
+
+<span class="o">#</span><span class="w"> </span><span class="err">多列时：把</span><span class="p">(</span><span class="n">category_id</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="p">)</span><span class="err">作为整体去重，两列都相同才算重复</span>
+<span class="k">select</span><span class="w"> </span><span class="k">distinct</span><span class="w"> </span><span class="n">category_id</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="p">;</span>
+<span class="o">#</span><span class="w"> </span><span class="err">等价的分组写法</span>
+<span class="k">select</span><span class="w"> </span><span class="n">category_id</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">category_id</span><span class="p">,</span><span class="w"> </span><span class="n">price</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>注意：<strong>distinct 针对的是查询结果的整行内容，不是单个字段</strong>——它写在 select 之后对所有查询列生效。</p>
+<h2 id="sec-17">八、分页查询（LIMIT）</h2>
+<h3 id="sec-18">1. 语法与参数计算</h3>
+<p>分页查询每次只从表中取固定条数的数据：既能降低服务器和浏览器的压力，又能提升用户体验，实际开发中非常常用。</p>
+<p>格式：<code>limit 起始索引, 数据条数;</code>（即 <code>limit M, N</code>：从索引 M 开始取 N 条，也就是从第 M+1 行开始）</p>
+<ul>
+<li>表中每条数据都有自己的索引，<strong>从 0 开始</strong>；</li>
+<li>从索引 0 开始取时，<code>0,</code> 可以省略：<code>limit 5</code> 等价 <code>limit 0, 5</code>；</li>
+<li>当 limit 的范围不存在（越界）时<strong>不报错</strong>，只是没有结果。</li>
+</ul>
+<p>分页的四个参数记住计算规则即可：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>来源 / 公式</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数据总条数</td>
+<td><code>count()</code> 函数统计</td>
+</tr>
+<tr>
+<td>每页条数</td>
+<td>产品经理 / 项目经理 / 你自己定</td>
+</tr>
+<tr>
+<td>每页起始索引</td>
+<td><code>(当前页数 - 1) × 每页条数</code></td>
+</tr>
+<tr>
+<td>总页数</td>
+<td><code>(总条数 + 每页条数 - 1) // 每页条数</code>（整除）</td>
+</tr>
+</tbody>
+</table></div>
+<p>例如每页 5 条：13、14、15 条数据都是 3 页，16 条就是 4 页——<code>(16 + 5 - 1) // 5 = 4</code>。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="err">每页</span><span class="mi">5</span><span class="err">条</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">limit</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w">       </span><span class="o">#</span><span class="w"> </span><span class="err">第</span><span class="mi">1</span><span class="err">页：从索引</span><span class="mi">0</span><span class="err">开始取</span><span class="mi">5</span><span class="err">条（</span><span class="mi">0</span><span class="err">可省略）</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">limit</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w">    </span><span class="o">#</span><span class="w"> </span><span class="err">第</span><span class="mi">1</span><span class="err">页，效果同上</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">limit</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="mi">5</span><span class="p">;</span><span class="w">    </span><span class="o">#</span><span class="w"> </span><span class="err">第</span><span class="mi">2</span><span class="err">页：从索引</span><span class="mi">5</span><span class="err">开始取</span><span class="mi">5</span><span class="err">条</span>
+
+<span class="o">#</span><span class="w"> </span><span class="err">每页</span><span class="mi">3</span><span class="err">条</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">limit</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w">    </span><span class="o">#</span><span class="w"> </span><span class="err">第</span><span class="mi">1</span><span class="err">页</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">limit</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w">    </span><span class="o">#</span><span class="w"> </span><span class="err">第</span><span class="mi">2</span><span class="err">页</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">limit</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w">    </span><span class="o">#</span><span class="w"> </span><span class="err">第</span><span class="mi">3</span><span class="err">页</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">limit</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w">    </span><span class="o">#</span><span class="w"> </span><span class="err">第</span><span class="mi">4</span><span class="err">页</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">limit</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">;</span><span class="w">   </span><span class="o">#</span><span class="w"> </span><span class="err">第</span><span class="mi">5</span><span class="err">页（只剩</span><span class="mi">1</span><span class="err">条也正常返回）</span>
+</pre></div>
+</div>
+<h3 id="sec-19">2. ORDER BY + LIMIT 求 Top-N</h3>
+<p>排序和分页组合，是"求最值所在行"的常用套路：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="err">价格最高的商品（假定最高价只有一个）</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">desc</span><span class="w"> </span><span class="k">limit</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="o">#</span><span class="w"> </span><span class="err">价格次高（第二高）的商品：跳过</span><span class="mi">1</span><span class="err">条取</span><span class="mi">1</span><span class="err">条</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="k">desc</span><span class="w"> </span><span class="k">limit</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</pre></div>
+</div>
+<h3 id="sec-20">3. 单表查询综合案例</h3>
+<p>把所有子句串起来——统计每类商品的单价总和，只统计单价 100 以上的商品，只看总和 500 以上的分类，按总价降序，取前 2 名：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">select</span>
+<span class="w">    </span><span class="n">category_id</span><span class="p">,</span>
+<span class="w">    </span><span class="k">sum</span><span class="p">(</span><span class="n">price</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">total_price</span>
+<span class="k">from</span>
+<span class="w">    </span><span class="n">product</span>
+<span class="k">where</span><span class="w">               </span><span class="o">#</span><span class="w"> </span><span class="err">组前筛选：先滤掉单价</span><span class="o">&lt;=</span><span class="mi">100</span><span class="err">的行</span>
+<span class="w">    </span><span class="n">price</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">100</span>
+<span class="k">group</span><span class="w"> </span><span class="k">by</span><span class="w">            </span><span class="o">#</span><span class="w"> </span><span class="err">分组</span>
+<span class="w">    </span><span class="n">category_id</span>
+<span class="k">having</span><span class="w">              </span><span class="o">#</span><span class="w"> </span><span class="err">组后筛选：对每组的聚合结果过滤</span>
+<span class="w">    </span><span class="n">total_price</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">500</span>
+<span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w">            </span><span class="o">#</span><span class="w"> </span><span class="err">排序</span>
+<span class="w">    </span><span class="n">total_price</span><span class="w"> </span><span class="k">desc</span>
+<span class="k">limit</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w">         </span><span class="o">#</span><span class="w"> </span><span class="err">分页：取前</span><span class="mi">2</span><span class="err">条</span>
+</pre></div>
+</div>
+<h2 id="sec-21">九、SQL 语句的执行顺序</h2>
+<p>初学者常疑惑："我写的 SQL 看着没问题，为什么执行报错？"多数原因是：<strong>SQL 的书写顺序和执行顺序不一样</strong>。</p>
+<p>书写顺序：<code>select → from → where → group by → having → order by → limit</code></p>
+<p>实际执行顺序：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>from（+ join/on 确定数据来源）
+  → where（组前筛选行）
+  → group by（分组）
+  → 聚合函数（对每组统计）
+  → having（组后筛选）
+  → select（取出/计算查询列）
+  → distinct（去重）
+  → order by（排序）
+  → limit（截取行数）
+</pre></div>
+</div>
+<p><strong>每一步都基于上一步的结果继续操作</strong>。理解了这个顺序，很多"为什么报错"都能自己解释：</p>
+<ul>
+<li>where 里不能用聚合函数——where 执行时还没分组，聚合根本没发生；</li>
+<li>分组后 select 普通字段报错——分组聚合先执行，每组只剩一行，再取组内不统一的字段有歧义；</li>
+<li>MySQL 中 having / order by 能用 select 的别名，是 MySQL 对执行细节做的扩展，别的数据库不保证。</li>
+</ul>
+<h2 id="sec-22">十、表与表的关系</h2>
+<p>实际项目通常需要很多张表配合，表与表之间存在三种关系。假设有 A、B 两张表：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>关系</th>
+<th>含义</th>
+<th>举例</th>
+<th>建表原则</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一对多</td>
+<td>A 表一行对应 B 表多行；B 表一行只对应 A 表一行</td>
+<td>部门和员工、客户和订单、分类和商品</td>
+<td><strong>在"多"的一方新建一列作外键列</strong>，关联"一"的一方的主键列</td>
+</tr>
+<tr>
+<td>多对多</td>
+<td>A 表一行对应 B 表多行；B 表一行也对应 A 表多行</td>
+<td>学生和课程（选课）、订单和商品</td>
+<td><strong>新建中间表</strong>，至少 3 列：自身主键 + 两个外键，分别关联两方的主键</td>
+</tr>
+<tr>
+<td>一对一</td>
+<td>A 表一行对应 B 表一行</td>
+<td>人和身份证号、公司和注册地址</td>
+<td>直接放到一张表中即可</td>
+</tr>
+</tbody>
+</table></div>
+<p>一对多是最常见的关系，用部门表（主表）和员工表（从表）看建表方式：</p>
+<p><img alt="一对多建表图解：员工表的外键列 dept_id 引用部门表的主键 id" src="../assets/img/lesson17/one-to-many.png" /></p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="mi">1</span><span class="p">.</span><span class="w"> </span><span class="err">部门表：一的一方（主表）</span>
+<span class="k">create</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">dept</span><span class="p">(</span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">int</span><span class="w"> </span><span class="k">primary</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="n">auto_increment</span><span class="p">,</span><span class="w">   </span><span class="o">#</span><span class="w"> </span><span class="err">部门</span><span class="n">id</span>
+<span class="w">    </span><span class="n">name</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="w">                     </span><span class="o">#</span><span class="w"> </span><span class="err">部门名字</span>
+<span class="p">);</span>
+
+<span class="o">#</span><span class="w"> </span><span class="mi">2</span><span class="p">.</span><span class="w"> </span><span class="err">员工表：多的一方（从表），新建</span><span class="w"> </span><span class="n">dept_id</span><span class="w"> </span><span class="err">列充当外键列</span>
+<span class="k">create</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">emp</span><span class="p">(</span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">int</span><span class="w"> </span><span class="k">primary</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="n">auto_increment</span><span class="p">,</span><span class="w">   </span><span class="o">#</span><span class="w"> </span><span class="err">员工</span><span class="n">id</span>
+<span class="w">    </span><span class="n">name</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span><span class="w">                    </span><span class="o">#</span><span class="w"> </span><span class="err">员工姓名</span>
+<span class="w">    </span><span class="n">salary</span><span class="w"> </span><span class="nb">int</span><span class="p">,</span><span class="w">                          </span><span class="o">#</span><span class="w"> </span><span class="err">员工工资</span>
+<span class="w">    </span><span class="n">dept_id</span><span class="w"> </span><span class="nb">int</span><span class="w">                          </span><span class="o">#</span><span class="w"> </span><span class="err">员工所属的部门</span><span class="n">id</span><span class="err">（外键列）</span>
+<span class="p">);</span>
+
+<span class="k">insert</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">dept</span><span class="w"> </span><span class="k">values</span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;人事部&#39;</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;研发部&#39;</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;财务部&#39;</span><span class="p">);</span>
+<span class="k">insert</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">emp</span><span class="w"> </span><span class="k">values</span>
+<span class="w">    </span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;乔峰&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">30000</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;虚竹&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">20000</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;段誉&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">3000</span><span class="p">,</span><span class="w"> </span><span class="mi">3</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>核心结论：<strong>从表的外键列，不能出现主表主键列没有的数据</strong>——员工的 <code>dept_id=10</code>，但部门表里没有 id 为 10 的部门，这就是"脏数据"。</p>
+<h2 id="sec-23">十一、外键约束（FOREIGN KEY）</h2>
+<h3 id="sec-24">1. 概念与作用</h3>
+<p>假设 B 表的某列引用了 A 表的主键列的值，则 B 表的这一列称为 B 表的<strong>外键列</strong>；被引用的 A 表叫<strong>主表</strong>，B 表叫<strong>从表</strong>。在从表的外键列上可以添加<strong>外键约束</strong>，它的作用有两个：</p>
+<ul>
+<li><strong>保证插入数据的准确性</strong>：从表外键的值，必须在主表主键中存在，否则插入失败；</li>
+<li><strong>保证删除数据的完整性</strong>：主表的主键值被从表引用后，主表中对应的记录不能被直接删除。</li>
+</ul>
+<h3 id="sec-25">2. 设置与删除</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="err">方式</span><span class="mi">1</span><span class="err">：建表时直接添加外键约束（可以顺便命名）</span>
+<span class="k">create</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">emp</span><span class="p">(</span>
+<span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">int</span><span class="w"> </span><span class="k">primary</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="n">auto_increment</span><span class="p">,</span>
+<span class="w">    </span><span class="n">name</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+<span class="w">    </span><span class="n">salary</span><span class="w"> </span><span class="nb">int</span><span class="p">,</span>
+<span class="w">    </span><span class="n">dept_id</span><span class="w"> </span><span class="nb">int</span><span class="p">,</span>
+<span class="w">    </span><span class="k">constraint</span><span class="w"> </span><span class="n">fk_dept_emp</span><span class="w"> </span><span class="k">foreign</span><span class="w"> </span><span class="k">key</span><span class="p">(</span><span class="n">dept_id</span><span class="p">)</span><span class="w"> </span><span class="k">references</span><span class="w"> </span><span class="n">dept</span><span class="p">(</span><span class="n">id</span><span class="p">)</span>
+<span class="w">    </span><span class="o">#</span><span class="w"> </span><span class="err">不命名的简写</span><span class="p">:</span><span class="w"> </span><span class="k">foreign</span><span class="w"> </span><span class="k">key</span><span class="p">(</span><span class="n">dept_id</span><span class="p">)</span><span class="w"> </span><span class="k">references</span><span class="w"> </span><span class="n">dept</span><span class="p">(</span><span class="n">id</span><span class="p">)</span>
+<span class="p">);</span>
+
+<span class="o">#</span><span class="w"> </span><span class="err">方式</span><span class="mi">2</span><span class="err">：建表后追加外键约束</span>
+<span class="o">#</span><span class="w"> </span><span class="err">格式</span><span class="p">:</span><span class="w"> </span><span class="k">alter</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="err">从表名</span><span class="w"> </span><span class="k">add</span><span class="w"> </span><span class="p">[</span><span class="k">constraint</span><span class="w"> </span><span class="err">约束名</span><span class="p">]</span><span class="w"> </span><span class="k">foreign</span><span class="w"> </span><span class="k">key</span><span class="p">(</span><span class="err">外键列</span><span class="p">)</span><span class="w"> </span><span class="k">references</span><span class="w"> </span><span class="err">主表名</span><span class="p">(</span><span class="err">主键列</span><span class="p">);</span>
+<span class="k">alter</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">emp</span><span class="w"> </span><span class="k">add</span><span class="w"> </span><span class="k">constraint</span><span class="w"> </span><span class="n">fk_01</span><span class="w"> </span><span class="k">foreign</span><span class="w"> </span><span class="k">key</span><span class="p">(</span><span class="n">dept_id</span><span class="p">)</span><span class="w"> </span><span class="k">references</span><span class="w"> </span><span class="n">dept</span><span class="p">(</span><span class="n">id</span><span class="p">);</span>
+
+<span class="o">#</span><span class="w"> </span><span class="err">有了外键约束后，插入脏数据会直接报错（部门表没有</span><span class="n">id</span><span class="o">=</span><span class="mi">10</span><span class="err">的部门）</span>
+<span class="k">insert</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">emp</span><span class="w"> </span><span class="k">values</span><span class="p">(</span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;喜哥&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">66666</span><span class="p">,</span><span class="w"> </span><span class="mi">10</span><span class="p">);</span>
+
+<span class="o">#</span><span class="w"> </span><span class="err">删除外键约束</span>
+<span class="o">#</span><span class="w"> </span><span class="err">格式</span><span class="p">:</span><span class="w"> </span><span class="k">alter</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="err">从表名</span><span class="w"> </span><span class="k">drop</span><span class="w"> </span><span class="k">foreign</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="err">外键约束名</span><span class="p">;</span>
+<span class="k">alter</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">emp</span><span class="w"> </span><span class="k">drop</span><span class="w"> </span><span class="k">foreign</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="n">fk_01</span><span class="p">;</span>
+
+<span class="o">#</span><span class="w"> </span><span class="err">建表时没命名的约束，</span><span class="n">MySQL</span><span class="w"> </span><span class="err">会自动起名（如</span><span class="w"> </span><span class="n">emp_ibfk_1</span><span class="err">），可以先查看再删除</span>
+<span class="k">show</span><span class="w"> </span><span class="k">create</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">emp</span><span class="p">;</span>
+<span class="k">alter</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">emp</span><span class="w"> </span><span class="k">drop</span><span class="w"> </span><span class="k">foreign</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="n">emp_ibfk_1</span><span class="p">;</span>
+</pre></div>
+</div>
+<h3 id="sec-26">3. 外键约束的取舍</h3>
+<p>外键约束并非只有好处：</p>
+<ul>
+<li>过分依赖外键会<strong>增加开发难度</strong>（增删数据要考虑先后顺序）；</li>
+<li>外键检查会<strong>降低增删改的性能</strong>。</li>
+</ul>
+<p>所以<strong>实际开发中很少使用外键约束</strong>，更多是"逻辑外键"：表结构上保留外键列表达关系，由程序员在<strong>代码层面</strong>保证插入的准确性和删除的完整性。</p>
+<h2 id="sec-27">十二、多表查询总览与笛卡尔积</h2>
+<blockquote>
+<p><strong>多表查询的精髓</strong>：根据<strong>关联条件</strong>和<strong>组合方式</strong>，把多张表拼成一张表，然后进行单表查询。</p>
+</blockquote>
+<p>准备两张演示表——英雄表和功夫表（注意各有匹配不上对方的数据）：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">create</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">hero</span><span class="p">(</span>
+<span class="w">    </span><span class="n">hid</span><span class="w">   </span><span class="nb">int</span><span class="w"> </span><span class="k">primary</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="n">auto_increment</span><span class="p">,</span><span class="w">   </span><span class="o">#</span><span class="w"> </span><span class="err">英雄</span><span class="n">id</span>
+<span class="w">    </span><span class="n">hname</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span><span class="w">                     </span><span class="o">#</span><span class="w"> </span><span class="err">英雄名</span>
+<span class="w">    </span><span class="n">kongfu_id</span><span class="w"> </span><span class="nb">int</span><span class="w">                           </span><span class="o">#</span><span class="w"> </span><span class="err">功夫</span><span class="n">id</span>
+<span class="p">);</span>
+<span class="k">create</span><span class="w"> </span><span class="k">table</span><span class="w"> </span><span class="n">kongfu</span><span class="p">(</span>
+<span class="w">    </span><span class="n">kid</span><span class="w">   </span><span class="nb">int</span><span class="w"> </span><span class="k">primary</span><span class="w"> </span><span class="k">key</span><span class="w"> </span><span class="n">auto_increment</span><span class="p">,</span><span class="w">   </span><span class="o">#</span><span class="w"> </span><span class="err">功夫</span><span class="n">id</span>
+<span class="w">    </span><span class="n">kname</span><span class="w"> </span><span class="nb">varchar</span><span class="p">(</span><span class="mi">255</span><span class="p">)</span><span class="w">                      </span><span class="o">#</span><span class="w"> </span><span class="err">功夫名</span>
+<span class="p">);</span>
+
+<span class="k">insert</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">hero</span><span class="w"> </span><span class="k">values</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;鸠摩智&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">9</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;乔峰&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;虚竹&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;段誉&#39;</span><span class="p">,</span><span class="w"> </span><span class="mi">12</span><span class="p">);</span>
+<span class="k">insert</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">kongfu</span><span class="w"> </span><span class="k">values</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;降龙十八掌&#39;</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;乾坤大挪移&#39;</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;猴子偷桃&#39;</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;天山折梅手&#39;</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="mi">9</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;龙象般若功&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+<p><strong>交叉连接（笛卡尔积）</strong>：也叫无条件连接——左表每一行无差别地和右表每一行分别组合：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="err">两种写法等价，结果行数</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">左表行数</span><span class="w"> </span><span class="err">×</span><span class="w"> </span><span class="err">右表行数</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">4</span><span class="w"> </span><span class="err">×</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="err">行</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hero</span><span class="p">,</span><span class="w"> </span><span class="n">kongfu</span><span class="p">;</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hero</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">kongfu</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>笛卡尔积一般不直接使用，原因有二：</p>
+<ol>
+<li><strong>结果行数可能非常恐怖</strong>：两张各 1 万行的表做笛卡尔积，结果是 1 万 × 1 万 = <strong>1 亿行</strong>；</li>
+<li>结果中大量"乱点鸳鸯谱"的组合并不满足关联需求（乔峰配上了不会的功夫）。</li>
+</ol>
+<p>所以实际使用的是<strong>有条件连接</strong>：连接时跟上一个关联条件，满足条件的行才组合。有条件连接分为 4 种：内连接、左连接、右连接、全连接。</p>
+<h2 id="sec-28">十三、内连接（INNER JOIN）</h2>
+<p>内连接返回<strong>两张表都满足连接条件的部分（交集）</strong>：左右两表关联时，满足关联条件的数据才会出现在结果中。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="err">格式</span><span class="mi">1</span><span class="err">：显式内连接（推荐）</span><span class="w">  </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="err">表</span><span class="n">A</span><span class="w"> </span><span class="k">inner</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="err">表</span><span class="n">B</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="err">关联条件</span><span class="p">;</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hero</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="k">inner</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">kongfu</span><span class="w"> </span><span class="n">kf</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">h</span><span class="p">.</span><span class="n">kongfu_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kf</span><span class="p">.</span><span class="n">kid</span><span class="p">;</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hero</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">kongfu</span><span class="w"> </span><span class="n">kf</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">h</span><span class="p">.</span><span class="n">kongfu_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kf</span><span class="p">.</span><span class="n">kid</span><span class="p">;</span><span class="w">   </span><span class="o">#</span><span class="w"> </span><span class="k">inner</span><span class="w"> </span><span class="err">可省略</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hero</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">kongfu</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">kongfu_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kid</span><span class="p">;</span><span class="w">             </span><span class="o">#</span><span class="w"> </span><span class="err">两表没有重名字段时，可省略</span><span class="ss">&quot;表名.&quot;</span><span class="err">前缀</span>
+
+<span class="o">#</span><span class="w"> </span><span class="err">格式</span><span class="mi">2</span><span class="err">：隐式内连接</span><span class="w">  </span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="err">表</span><span class="n">A</span><span class="p">,</span><span class="w"> </span><span class="err">表</span><span class="n">B</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="err">关联条件</span><span class="p">;</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hero</span><span class="w"> </span><span class="n">h</span><span class="p">,</span><span class="w"> </span><span class="n">kongfu</span><span class="w"> </span><span class="n">kf</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">h</span><span class="p">.</span><span class="n">kongfu_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kf</span><span class="p">.</span><span class="n">kid</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>查询结果（段誉的功夫 id=12 两表匹配不上，猴子偷桃、乾坤大挪移没人会，都不出现）：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>hid</th>
+<th>hname</th>
+<th>kongfu_id</th>
+<th>kid</th>
+<th>kname</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>鸠摩智</td>
+<td>9</td>
+<td>9</td>
+<td>龙象般若功</td>
+</tr>
+<tr>
+<td>3</td>
+<td>乔峰</td>
+<td>1</td>
+<td>1</td>
+<td>降龙十八掌</td>
+</tr>
+<tr>
+<td>4</td>
+<td>虚竹</td>
+<td>4</td>
+<td>4</td>
+<td>天山折梅手</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="sec-29">十四、左外连接与右外连接</h2>
+<p><strong>左外连接</strong>（<code>left outer join</code>，简写 <code>left join</code>）：结果 = <strong>左表全集 + 交集</strong>。除了满足条件的数据，左表中关联不上右表的行也会保留，右表侧自动填充 NULL：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hero</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="k">left</span><span class="w"> </span><span class="k">outer</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">kongfu</span><span class="w"> </span><span class="n">kf</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">h</span><span class="p">.</span><span class="n">kongfu_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kf</span><span class="p">.</span><span class="n">kid</span><span class="p">;</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hero</span><span class="w"> </span><span class="k">left</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">kongfu</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">kongfu_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kid</span><span class="p">;</span><span class="w">    </span><span class="o">#</span><span class="w"> </span><span class="err">简化版写法</span>
+</pre></div>
+</div>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>hid</th>
+<th>hname</th>
+<th>kongfu_id</th>
+<th>kid</th>
+<th>kname</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>鸠摩智</td>
+<td>9</td>
+<td>9</td>
+<td>龙象般若功</td>
+</tr>
+<tr>
+<td>3</td>
+<td>乔峰</td>
+<td>1</td>
+<td>1</td>
+<td>降龙十八掌</td>
+</tr>
+<tr>
+<td>4</td>
+<td>虚竹</td>
+<td>4</td>
+<td>4</td>
+<td>天山折梅手</td>
+</tr>
+<tr>
+<td>5</td>
+<td>段誉</td>
+<td>12</td>
+<td>NULL</td>
+<td>NULL</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>右外连接</strong>（<code>right outer join</code>，简写 <code>right join</code>）：结果 = <strong>右表全集 + 交集</strong>，右表中关联不上左表的行保留，左表侧填 NULL：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hero</span><span class="w"> </span><span class="n">h</span><span class="w"> </span><span class="k">right</span><span class="w"> </span><span class="k">outer</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">kongfu</span><span class="w"> </span><span class="n">kf</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">h</span><span class="p">.</span><span class="n">kongfu_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kf</span><span class="p">.</span><span class="n">kid</span><span class="p">;</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hero</span><span class="w"> </span><span class="k">right</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">kongfu</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">kongfu_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kid</span><span class="p">;</span><span class="w">   </span><span class="o">#</span><span class="w"> </span><span class="err">简化版写法</span>
+</pre></div>
+</div>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>hid</th>
+<th>hname</th>
+<th>kongfu_id</th>
+<th>kid</th>
+<th>kname</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>3</td>
+<td>乔峰</td>
+<td>1</td>
+<td>1</td>
+<td>降龙十八掌</td>
+</tr>
+<tr>
+<td>NULL</td>
+<td>NULL</td>
+<td>NULL</td>
+<td>2</td>
+<td>乾坤大挪移</td>
+</tr>
+<tr>
+<td>NULL</td>
+<td>NULL</td>
+<td>NULL</td>
+<td>3</td>
+<td>猴子偷桃</td>
+</tr>
+<tr>
+<td>4</td>
+<td>虚竹</td>
+<td>4</td>
+<td>4</td>
+<td>天山折梅手</td>
+</tr>
+<tr>
+<td>1</td>
+<td>鸠摩智</td>
+<td>9</td>
+<td>9</td>
+<td>龙象般若功</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>结论</strong>：交换两张表的顺序后，左外连接和右外连接可以得到一样的结果——<code>A right join B</code> 等价于 <code>B left join A</code>。掌握一种即可，<strong>推荐统一用左外连接</strong>。</p>
+<h2 id="sec-30">十五、全连接与 UNION</h2>
+<p><strong>全连接</strong>（full outer join）：结果 = 左表全集 + 交集 + 右表全集，两边关联不上的数据都保留，对应侧填 NULL。</p>
+<p><strong>注意：MySQL 不支持 FULL JOIN 关键字</strong>，需要用 <code>union</code> 把左连接和右连接的结果合并来模拟：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="err">全连接</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">左连接</span><span class="w"> </span><span class="k">UNION</span><span class="w"> </span><span class="err">右连接</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hero</span><span class="w"> </span><span class="k">left</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">kongfu</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">kongfu_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kid</span>
+<span class="k">union</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">hero</span><span class="w"> </span><span class="k">right</span><span class="w"> </span><span class="k">join</span><span class="w"> </span><span class="n">kongfu</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">kongfu_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">kid</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>结果共 6 行：交集 3 行 + 段誉（右侧 NULL）+ 乾坤大挪移、猴子偷桃（左侧 NULL）。</p>
+<p><code>union</code> 与 <code>union all</code> 的区别：</p>
+<ul>
+<li><code>union</code>：合并两个查询结果并<strong>去重</strong>（所以上面交集部分不会出现两次）；</li>
+<li><code>union all</code>：直接拼接，<strong>不去重</strong>——用它模拟全连接时交集行会重复出现。</li>
+</ul>
+<h2 id="sec-31">十六、七种 JOIN 查询模式速查</h2>
+<p>结合"两个圆的交并集"来记，常见的连接查询共有七种形态：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>#</th>
+<th>需求</th>
+<th>写法要点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>交集（两表都匹配）</td>
+<td><code>A join B on 条件</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>左表全集 + 交集</td>
+<td><code>A left join B on 条件</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>左表独有（去掉交集）</td>
+<td><code>A left join B on 条件 where B.key is null</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>右表全集 + 交集</td>
+<td><code>A right join B on 条件</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>右表独有（去掉交集）</td>
+<td><code>A right join B on 条件 where A.key is null</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td>全集（全连接）</td>
+<td>左连接 <code>union</code> 右连接</td>
+</tr>
+<tr>
+<td>7</td>
+<td>两表独有（全集去掉交集）</td>
+<td>模式3 <code>union</code> 模式5</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="sec-32">十七、子查询</h2>
+<p>如果一个查询的<strong>查询条件需要依赖另一个 SQL 的查询结果</strong>，就把里面的查询嵌进去，这种写法称为<strong>子查询</strong>：里边的查询叫子查询，外边的叫父查询（主查询）。</p>
+<p>需求：查询所有单价高于平均价的商品。分解着写是两步：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="n">step1</span><span class="p">:</span><span class="w"> </span><span class="err">先查所有商品的均价（顺便认识</span><span class="w"> </span><span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="err">：四舍五入保留</span><span class="n">n位小数</span><span class="err">）</span>
+<span class="k">select</span><span class="w"> </span><span class="n">round</span><span class="p">(</span><span class="k">avg</span><span class="p">(</span><span class="n">price</span><span class="p">),</span><span class="w"> </span><span class="mi">3</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">avg_price</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="p">;</span><span class="w">   </span><span class="o">#</span><span class="w"> </span><span class="mi">1346</span><span class="p">.</span><span class="mi">385</span>
+
+<span class="o">#</span><span class="w"> </span><span class="n">step2</span><span class="p">:</span><span class="w"> </span><span class="err">把上一步的结果代入条件</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1346</span><span class="p">.</span><span class="mi">385</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>子查询一步到位——把 step1 整个作为条件的右值：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w">      </span><span class="err">父查询</span><span class="p">(</span><span class="err">主查询</span><span class="p">)</span><span class="w">                       </span><span class="err">子查询</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">price</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span><span class="k">select</span><span class="w"> </span><span class="k">avg</span><span class="p">(</span><span class="n">price</span><span class="p">)</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">product</span><span class="p">);</span>
+</pre></div>
+</div>
+<h2 id="sec-33">十八、自关联查询</h2>
+<p><strong>表自己和自己做关联查询，称为自关联（自连接）查询</strong>，写法上可以是交叉、内连接、外连接——关键是给同一张表起<strong>不同的别名</strong>，把它当成两张表用。</p>
+<p>经典案例是行政区域表（省市区）：如果为省、市、区分别建三张表，结构重复且层级写死；更优雅的做法是<strong>一张表存所有层级</strong>，用 <code>pid</code>（父级 id）字段表达上下级关系：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>id（自身编号）</th>
+<th>title（自身名字）</th>
+<th>pid（父级编号）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>410000</td>
+<td>河南省</td>
+<td>0</td>
+</tr>
+<tr>
+<td>410100</td>
+<td>郑州市</td>
+<td>410000</td>
+</tr>
+<tr>
+<td>410700</td>
+<td>新乡市</td>
+<td>410000</td>
+</tr>
+<tr>
+<td>410101</td>
+<td>二七区</td>
+<td>410100</td>
+</tr>
+<tr>
+<td>410721</td>
+<td>新乡县</td>
+<td>410700</td>
+</tr>
+</tbody>
+</table></div>
+<p><img alt="自关联查询图解：county 表的 pid 指向 city 表的 id，city 表的 pid 指向 province 表的 id，三者其实是同一张 areas 表" src="../assets/img/lesson17/self-join-areas.png" /></p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="o">#</span><span class="w"> </span><span class="mi">1</span><span class="p">.</span><span class="w"> </span><span class="err">查询河南省的信息</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">areas</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;河南省&#39;</span><span class="p">;</span>
+
+<span class="o">#</span><span class="w"> </span><span class="mi">2</span><span class="p">.</span><span class="w"> </span><span class="err">查询河南省所有的市（父级</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">河南省的</span><span class="n">id</span><span class="err">）</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">areas</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">410000</span><span class="p">;</span>
+
+<span class="o">#</span><span class="w"> </span><span class="mi">3</span><span class="p">.</span><span class="w"> </span><span class="err">查询新乡市所有的县区</span>
+<span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">areas</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">410700</span><span class="p">;</span>
+
+<span class="o">#</span><span class="w"> </span><span class="mi">4</span><span class="p">.</span><span class="w"> </span><span class="err">一条</span><span class="n">SQL查出河南省所有的市</span><span class="err">、县区：同一张表起</span><span class="mi">3</span><span class="err">个别名，连接</span><span class="mi">2</span><span class="err">次</span>
+<span class="k">select</span>
+<span class="w">    </span><span class="n">province</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">province</span><span class="p">.</span><span class="n">title</span><span class="p">,</span><span class="w">    </span><span class="o">#</span><span class="w"> </span><span class="err">省的</span><span class="n">id</span><span class="err">、名字</span>
+<span class="w">    </span><span class="n">city</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">city</span><span class="p">.</span><span class="n">title</span><span class="p">,</span><span class="w">            </span><span class="o">#</span><span class="w"> </span><span class="err">市的</span><span class="n">id</span><span class="err">、名字</span>
+<span class="w">    </span><span class="n">county</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">county</span><span class="p">.</span><span class="n">title</span><span class="w">         </span><span class="o">#</span><span class="w"> </span><span class="err">县区的</span><span class="n">id</span><span class="err">、名字</span>
+<span class="k">from</span>
+<span class="w">    </span><span class="n">areas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">county</span><span class="w">                                  </span><span class="o">#</span><span class="w"> </span><span class="err">县区</span>
+<span class="k">join</span>
+<span class="w">    </span><span class="n">areas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">city</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">county</span><span class="p">.</span><span class="n">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">city</span><span class="p">.</span><span class="n">id</span><span class="w">            </span><span class="o">#</span><span class="w"> </span><span class="err">市</span>
+<span class="k">join</span>
+<span class="w">    </span><span class="n">areas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">province</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">city</span><span class="p">.</span><span class="n">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">province</span><span class="p">.</span><span class="n">id</span><span class="w">      </span><span class="o">#</span><span class="w"> </span><span class="err">省</span>
+<span class="k">where</span>
+<span class="w">    </span><span class="n">province</span><span class="p">.</span><span class="n">title</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;河南省&#39;</span><span class="p">;</span>
+
+<span class="o">#</span><span class="w"> </span><span class="mi">5</span><span class="p">.</span><span class="w"> </span><span class="err">趣味应用：根据身份证号前</span><span class="mi">6</span><span class="err">位查自己的家乡</span>
+<span class="k">select</span>
+<span class="w">    </span><span class="n">province</span><span class="p">.</span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">city</span><span class="p">.</span><span class="n">title</span><span class="p">,</span><span class="w"> </span><span class="n">county</span><span class="p">.</span><span class="n">title</span>
+<span class="k">from</span>
+<span class="w">    </span><span class="n">areas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">county</span>
+<span class="k">join</span>
+<span class="w">    </span><span class="n">areas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">city</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">county</span><span class="p">.</span><span class="n">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">city</span><span class="p">.</span><span class="n">id</span>
+<span class="k">join</span>
+<span class="w">    </span><span class="n">areas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">province</span><span class="w"> </span><span class="k">on</span><span class="w"> </span><span class="n">city</span><span class="p">.</span><span class="n">pid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">province</span><span class="p">.</span><span class="n">id</span>
+<span class="k">where</span>
+<span class="w">    </span><span class="n">county</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;142222&#39;</span><span class="p">;</span><span class="w">   </span><span class="o">#</span><span class="w"> </span><span class="err">换成你身份证的前</span><span class="mi">6</span><span class="err">位</span>
+</pre></div>
+</div>
+<h2 id="sec-34">十九、本讲小结</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>主题</th>
+<th>关键点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>查询骨架</td>
+<td><code>select … from … where … group by … having … order by … limit …</code></td>
+</tr>
+<tr>
+<td>条件查询</td>
+<td>比较、逻辑（and/or/not）、<code>between…and</code>（包左包右）、<code>in</code>、<code>like</code>（% 多 _ 一）、<code>is null</code></td>
+</tr>
+<tr>
+<td>聚合函数</td>
+<td>count/sum/avg/max/min，忽略 NULL；<code>count(*)</code> 统计所有行</td>
+</tr>
+<tr>
+<td>分组</td>
+<td>先分组再聚合；select 只能查分组字段或聚合结果；where 组前 having 组后</td>
+</tr>
+<tr>
+<td>去重与分页</td>
+<td><code>distinct</code> 整行去重；<code>limit M,N</code> 起始索引 = (页数-1)×每页条数</td>
+</tr>
+<tr>
+<td>执行顺序</td>
+<td>from → where → group by → 聚合 → having → select → distinct → order by → limit</td>
+</tr>
+<tr>
+<td>表关系</td>
+<td>一对多（多方加外键列）、多对多（中间表）、一对一（合一张表）</td>
+</tr>
+<tr>
+<td>外键约束</td>
+<td>保证插入准确、删除完整；实际开发多用逻辑外键，代码层维护</td>
+</tr>
+<tr>
+<td>连接查询</td>
+<td>内连接=交集；左/右外连接=单侧全集+交集；MySQL 无 FULL JOIN，用 <code>union</code> 模拟</td>
+</tr>
+<tr>
+<td>子查询与自关联</td>
+<td>查询条件依赖另一个查询的结果；同一张表起多个别名连接自身</td>
+</tr>
+</tbody>
+</table></div>
+<p>一句话总纲：<strong>多表查询 = 先按关联条件把多张表拼成一张表，再套用单表查询的全部功力</strong>。</p><div class="done-bar"><button class="mark-done-btn" data-key="lesson17" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson16.html"><div class="dir">← 上一篇</div><div class="name">🗄️ MySQL 基础：数据库、DDL 与数据管理</div></a><a class="disabled next"></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、DQL 概述与查询骨架</a><a class="lv2" href="#sec-2">二、简单查询</a><a class="lv2" href="#sec-3">三、条件查询（WHERE）</a><a class="lv3" href="#sec-4">1. 比较运算符</a><a class="lv3" href="#sec-5">2. 逻辑运算符</a><a class="lv3" href="#sec-6">3. 范围查询</a><a class="lv3" href="#sec-7">4. 模糊查询（LIKE）</a><a class="lv3" href="#sec-8">5. 空值判断</a><a class="lv2" href="#sec-9">四、排序查询（ORDER BY）</a><a class="lv2" href="#sec-10">五、聚合函数</a><a class="lv2" href="#sec-11">六、分组查询（GROUP BY 与 HAVING）</a><a class="lv3" href="#sec-12">1. 先分组，再聚合</a><a class="lv3" href="#sec-13">2. SELECT 列的限制</a><a class="lv3" href="#sec-14">3. HAVING：组后筛选</a><a class="lv3" href="#sec-15">4. 面试题：WHERE 和 HAVING 的区别</a><a class="lv2" href="#sec-16">七、去重查询（DISTINCT）</a><a class="lv2" href="#sec-17">八、分页查询（LIMIT）</a><a class="lv3" href="#sec-18">1. 语法与参数计算</a><a class="lv3" href="#sec-19">2. ORDER BY + LIMIT 求 Top-N</a><a class="lv3" href="#sec-20">3. 单表查询综合案例</a><a class="lv2" href="#sec-21">九、SQL 语句的执行顺序</a><a class="lv2" href="#sec-22">十、表与表的关系</a><a class="lv2" href="#sec-23">十一、外键约束（FOREIGN KEY）</a><a class="lv3" href="#sec-24">1. 概念与作用</a><a class="lv3" href="#sec-25">2. 设置与删除</a><a class="lv3" href="#sec-26">3. 外键约束的取舍</a><a class="lv2" href="#sec-27">十二、多表查询总览与笛卡尔积</a><a class="lv2" href="#sec-28">十三、内连接（INNER JOIN）</a><a class="lv2" href="#sec-29">十四、左外连接与右外连接</a><a class="lv2" href="#sec-30">十五、全连接与 UNION</a><a class="lv2" href="#sec-31">十六、七种 JOIN 查询模式速查</a><a class="lv2" href="#sec-32">十七、子查询</a><a class="lv2" href="#sec-33">十八、自关联查询</a><a class="lv2" href="#sec-34">十九、本讲小结</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
