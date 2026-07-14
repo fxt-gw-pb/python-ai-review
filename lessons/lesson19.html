@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pandas 基础：Series 与 DataFrame · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 19 讲</div>
+<h1>🐼 Pandas 基础：Series 与 DataFrame</h1>
+<div class="chips"><span class="chip">🏷️ Series / DataFrame</span><span class="chip">🏷️ loc / iloc</span><span class="chip">🏷️ 统计运算</span></div>
+</div>
+<p>Pandas 是商业和工程领域最流行的结构化数据工具集，用于数据清洗、处理与分析。它底层基于 NumPy（运行快），有专门处理缺失数据的 API，分组、聚合、转换功能强大而灵活。本讲从一个 GDP 数据的完整小案例开始建立体感，然后系统掌握两大数据结构 Series 与 DataFrame，以及索引、排序、运算、统计这些天天要用的基本功。</p>
+<blockquote>
+<p>适用场景：数据量大到 Excel 卡顿的单机数据处理，以及大数据 ETL 中的清洗环节。安装：<code>pip install pandas</code>（Anaconda 已自带）。</p>
+</blockquote>
+<h2 id="sec-1">一、Pandas 初体验：GDP 数据小案例</h2>
+<p>先完整走一遍"读数据 → 筛选 → 设索引 → 画图"的流程，建立对 Pandas 的直观认识：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="c1"># 1. 读取 csv 文件（中文数据常用 gbk 编码）</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;./1960-2019全球GDP数据.csv&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;gbk&#39;</span><span class="p">)</span>
+
+<span class="c1"># 2. 条件查询: 选出中国的 GDP 数据</span>
+<span class="n">china_gdp</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">country</span> <span class="o">==</span> <span class="s1">&#39;中国&#39;</span><span class="p">]</span>    <span class="c1"># df.country 即选中 country 列</span>
+<span class="n">china_gdp</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>                      <span class="c1"># 显示前10条</span>
+
+<span class="c1"># 3. 把 year 列设置为索引</span>
+<span class="n">china_gdp</span> <span class="o">=</span> <span class="n">china_gdp</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;year&#39;</span><span class="p">)</span>
+<span class="n">china_gdp</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>                        <span class="c1"># 默认显示前5条</span>
+
+<span class="c1"># 4. 一行画出 GDP 逐年变化曲线</span>
+<span class="n">china_gdp</span><span class="o">.</span><span class="n">GDP</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>多国对比也只是重复"筛选 + 画图"，用 <code>rename</code> 修改列名可以让图例显示国家名：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">china_gdp</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">country</span> <span class="o">==</span> <span class="s1">&#39;中国&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;year&#39;</span><span class="p">)</span>
+<span class="n">us_gdp</span>    <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">country</span> <span class="o">==</span> <span class="s1">&#39;美国&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;year&#39;</span><span class="p">)</span>
+<span class="n">jp_gdp</span>    <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">country</span> <span class="o">==</span> <span class="s1">&#39;日本&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;year&#39;</span><span class="p">)</span>
+
+<span class="c1"># 修改列名, 使图例显示为国家名; inplace=True 表示直接改原 df</span>
+<span class="n">china_gdp</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;GDP&#39;</span><span class="p">:</span> <span class="s1">&#39;中国&#39;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">us_gdp</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;GDP&#39;</span><span class="p">:</span> <span class="s1">&#39;美国&#39;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">jp_gdp</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;GDP&#39;</span><span class="p">:</span> <span class="s1">&#39;日本&#39;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">china_gdp</span><span class="p">[</span><span class="s1">&#39;中国&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>     <span class="c1"># legend=True 显示图例</span>
+<span class="n">us_gdp</span><span class="p">[</span><span class="s1">&#39;美国&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">jp_gdp</span><span class="p">[</span><span class="s1">&#39;日本&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">legend</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># 解决图表中文显示问题(运行一次即可)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.sans-serif&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SimHei&#39;</span><span class="p">]</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.unicode_minus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<p>两个实用的显示设置：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_rows&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>      <span class="c1"># 不限制显示行数</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>   <span class="c1"># 不限制显示列数</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">reset_option</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>                       <span class="c1"># 恢复所有选项默认值</span>
+</pre></div>
+</div>
+<h2 id="sec-2">二、Pandas 数据结构：Series 与 DataFrame</h2>
+<p>Pandas 的核心概念自上而下是：<strong>DataFrame → Series → 索引列（索引名/索引值、行号/下标）+ 数据列（列名、列值）</strong>。</p>
+<p><img alt="DataFrame 与 Series 的结构：红框整体是 DataFrame，绿框一列是 Series，橙框是索引" src="../assets/img/lesson19/pandas-structure.png" /></p>
+<h3 id="sec-3">1. Series 对象</h3>
+<p>Series 是类似一维数组的对象（DataFrame 的列对象），由两部分组成：</p>
+<ul>
+<li><strong>values</strong>：一组数据（numpy.ndarray 类型）；</li>
+<li><strong>index</strong>：数据索引标签；不指定时自动创建 0 到 N-1 的整数索引。</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># 用列表创建(默认自增索引)</span>
+<span class="n">s2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="c1"># 自定义索引</span>
+<span class="n">s3</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">])</span>
+<span class="c1"># 用元组/字典创建(字典的键自动成为索引)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">({</span><span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">})</span>
+<span class="c1"># 用 numpy 数组创建</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>常用属性与取值：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">s4</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">)],</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="s1">&#39;ABCDEF&#39;</span><span class="p">])</span>
+<span class="n">s4</span><span class="o">.</span><span class="n">index</span>      <span class="c1"># 索引</span>
+<span class="n">s4</span><span class="o">.</span><span class="n">values</span>     <span class="c1"># 值(ndarray)</span>
+<span class="n">s4</span><span class="p">[</span><span class="s1">&#39;A&#39;</span><span class="p">]</span>       <span class="c1"># 按索引取数据</span>
+</pre></div>
+</div>
+<h3 id="sec-4">2. DataFrame 对象</h3>
+<p>DataFrame 是类似二维表格（如 Excel）的对象，<strong>既有行索引又有列索引</strong>：</p>
+<ul>
+<li>行索引：<code>index</code>，0 轴，<code>axis=0</code>；</li>
+<li>列索引：<code>columns</code>，1 轴，<code>axis=1</code>。</li>
+</ul>
+<p>三种常用创建方式：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 1. 字典 + 列表: 键是列名, 默认自增行索引</span>
+<span class="n">df1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;日期&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;2021-08-21&#39;</span><span class="p">,</span> <span class="s1">&#39;2021-08-22&#39;</span><span class="p">,</span> <span class="s1">&#39;2021-08-23&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;温度&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">25</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">50</span><span class="p">],</span>
+    <span class="s1">&#39;湿度&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">81</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">56</span><span class="p">]</span>
+<span class="p">})</span>
+
+<span class="c1"># 2. 列表 + 元组: 手动指定列名和行索引</span>
+<span class="n">df2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="p">[(</span><span class="s1">&#39;2021-08-21&#39;</span><span class="p">,</span> <span class="mi">25</span><span class="p">,</span> <span class="mi">81</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;2021-08-22&#39;</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="mi">50</span><span class="p">),</span> <span class="p">(</span><span class="s1">&#39;2021-08-23&#39;</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">56</span><span class="p">)],</span>
+    <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;日期&#39;</span><span class="p">,</span> <span class="s1">&#39;温度&#39;</span><span class="p">,</span> <span class="s1">&#39;湿度&#39;</span><span class="p">],</span>
+    <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;row_1&#39;</span><span class="p">,</span> <span class="s1">&#39;row_2&#39;</span><span class="p">,</span> <span class="s1">&#39;row_3&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="c1"># 3. numpy 数组创建: 给随机成绩加上行列索引, 可读性大幅提升</span>
+<span class="n">score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">subjects</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;语文&#39;</span><span class="p">,</span> <span class="s1">&#39;数学&#39;</span><span class="p">,</span> <span class="s1">&#39;英语&#39;</span><span class="p">,</span> <span class="s1">&#39;政治&#39;</span><span class="p">,</span> <span class="s1">&#39;体育&#39;</span><span class="p">]</span>
+<span class="n">stu</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;同学&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">score</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">subjects</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">stu</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>常用属性与方法：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>属性/方法</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>df.shape</code></td>
+<td>形状，如 (10, 5)</td>
+</tr>
+<tr>
+<td><code>df.index</code> / <code>df.columns</code></td>
+<td>行索引 / 列索引</td>
+</tr>
+<tr>
+<td><code>df.values</code></td>
+<td>取出其中的 ndarray 值</td>
+</tr>
+<tr>
+<td><code>df.T</code></td>
+<td>转置</td>
+</tr>
+<tr>
+<td><code>df.head(n)</code> / <code>df.tail(n)</code></td>
+<td>查看前/后 n 行（默认 5 行）</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="sec-5">3. 索引的设置</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 1. 修改行索引: 只能整体全部修改, 不能只改其中一个</span>
+<span class="n">stu</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;学生_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">score</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+<span class="n">data</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">stu</span>
+<span class="c1"># data.index[3] = &#39;学生_3&#39;    # 错误! 不支持单个修改</span>
+
+<span class="c1"># 2. reset_index(drop=False): 重设为默认整数索引</span>
+<span class="n">data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>            <span class="c1"># 原索引变成普通列保留</span>
+<span class="n">data</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>   <span class="c1"># drop=True 时删除原索引</span>
+
+<span class="c1"># 3. set_index(keys, drop=True): 以某列(或多列)作为新索引</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;month&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span>
+                   <span class="s1">&#39;year&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2012</span><span class="p">,</span> <span class="mi">2014</span><span class="p">,</span> <span class="mi">2013</span><span class="p">,</span> <span class="mi">2014</span><span class="p">],</span>
+                   <span class="s1">&#39;sale&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">55</span><span class="p">,</span> <span class="mi">40</span><span class="p">,</span> <span class="mi">84</span><span class="p">,</span> <span class="mi">31</span><span class="p">]})</span>
+<span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s1">&#39;month&#39;</span><span class="p">)</span>             <span class="c1"># 以月份为索引</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">set_index</span><span class="p">([</span><span class="s1">&#39;year&#39;</span><span class="p">,</span> <span class="s1">&#39;month&#39;</span><span class="p">])</span>   <span class="c1"># 设置多级索引(MultiIndex)</span>
+</pre></div>
+</div>
+<h2 id="sec-6">三、Pandas 的数据类型</h2>
+<p>df 或 Series 中具体值的类型：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Pandas 数据类型</th>
+<th>说明</th>
+<th>对应 Python 类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>object</td>
+<td>字符串类型</td>
+<td>string</td>
+</tr>
+<tr>
+<td>int / float</td>
+<td>整数 / 浮点数</td>
+<td>int / float</td>
+</tr>
+<tr>
+<td>datetime</td>
+<td>日期时间类型</td>
+<td>datetime.datetime</td>
+</tr>
+<tr>
+<td>timedelta</td>
+<td>时间差类型</td>
+<td>datetime.timedelta</td>
+</tr>
+<tr>
+<td>category</td>
+<td>分类类型</td>
+<td>无原生类型</td>
+</tr>
+<tr>
+<td>bool</td>
+<td>布尔类型</td>
+<td>bool</td>
+</tr>
+<tr>
+<td>nan</td>
+<td>空值类型</td>
+<td>None</td>
+</tr>
+</tbody>
+</table></div>
+<p>查看类型：<code>s.dtypes</code>、<code>df.dtypes</code>、<code>df.info()</code>（Series 没有 info 方法）。</p>
+<p>三个特殊类型的用法：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># datetime: 字符串转日期</span>
+<span class="n">dates</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">([</span><span class="s1">&#39;2024-09-01&#39;</span><span class="p">,</span> <span class="s1">&#39;2024-09-02&#39;</span><span class="p">,</span> <span class="s1">&#39;2024-09-03&#39;</span><span class="p">])</span>
+
+<span class="c1"># timedelta: 两个日期相减得到时间差</span>
+<span class="n">delta</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="s1">&#39;2024-09-05&#39;</span><span class="p">)</span> <span class="o">-</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="s1">&#39;2024-09-01&#39;</span><span class="p">)</span>   <span class="c1"># 4 days</span>
+
+<span class="c1"># category: 分类类型, 用于有限集合数据(性别/颜色等), 更省内存、操作更快</span>
+<span class="n">categories</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="s1">&#39;apple&#39;</span><span class="p">,</span> <span class="s1">&#39;banana&#39;</span><span class="p">,</span> <span class="s1">&#39;apple&#39;</span><span class="p">,</span> <span class="s1">&#39;orange&#39;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;category&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<h2 id="sec-7">四、基本数据操作：索引、赋值与排序</h2>
+<p>以一份真实股票数据为例（先删掉几列让数据简单些）：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;./data/stock_day.csv&#39;</span><span class="p">)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;ma5&#39;</span><span class="p">,</span> <span class="s1">&#39;ma10&#39;</span><span class="p">,</span> <span class="s1">&#39;ma20&#39;</span><span class="p">,</span> <span class="s1">&#39;v_ma5&#39;</span><span class="p">,</span> <span class="s1">&#39;v_ma10&#39;</span><span class="p">,</span> <span class="s1">&#39;v_ma20&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-8">1. 三种索引方式</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 1. 直接索引: 必须先列后行, 且只能用索引名</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">][</span><span class="s1">&#39;2018-02-27&#39;</span><span class="p">]</span>     <span class="c1"># 23.53</span>
+<span class="c1"># data[&#39;2018-02-27&#39;][&#39;open&#39;]   # 错误! 不能先行后列</span>
+<span class="c1"># data[:1, :2]                 # 错误! 不支持数字切片组合</span>
+
+<span class="c1"># 2. loc: 先行后列, 用&quot;索引名&quot;</span>
+<span class="n">data</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="s1">&#39;2018-02-27&#39;</span><span class="p">:</span><span class="s1">&#39;2018-02-22&#39;</span><span class="p">,</span> <span class="s1">&#39;open&#39;</span><span class="p">]</span>
+
+<span class="c1"># 3. iloc: 先行后列, 用&quot;下标&quot;</span>
+<span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="mi">3</span><span class="p">,</span> <span class="p">:</span><span class="mi">5</span><span class="p">]</span>              <span class="c1"># 前3天数据的前5列</span>
+</pre></div>
+</div>
+<p>记忆：<strong>直接索引先列后行；loc 名字、iloc 数字，都是先行后列</strong>。</p>
+<h3 id="sec-9">2. 赋值</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;close&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>     <span class="c1"># 把 close 整列赋值为 1</span>
+<span class="n">data</span><span class="o">.</span><span class="n">close</span> <span class="o">=</span> <span class="mi">1</span>        <span class="c1"># 效果同上</span>
+</pre></div>
+</div>
+<h3 id="sec-10">3. 排序</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># DataFrame 按内容排序: by 可以是单个键或多个键, ascending=False 降序</span>
+<span class="n">data</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+<span class="n">data</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;high&#39;</span><span class="p">])</span>         <span class="c1"># 多键排序</span>
+
+<span class="c1"># DataFrame 按索引排序: 让日期索引从小到大</span>
+<span class="n">data</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+
+<span class="c1"># Series 排序: 只有一列, 不需要 by 参数</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;p_change&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;p_change&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+</pre></div>
+</div>
+<h2 id="sec-11">五、DataFrame 运算</h2>
+<h3 id="sec-12">1. 算术运算</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>    <span class="c1"># 等价于 data[&#39;open&#39;] + 1</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>    <span class="c1"># 减法</span>
+</pre></div>
+</div>
+<h3 id="sec-13">2. 逻辑运算与筛选</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 布尔向量: 逐行判断</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">23</span>
+
+<span class="c1"># 布尔向量作为筛选依据</span>
+<span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">23</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+
+<span class="c1"># 多条件组合: 每个条件必须用小括号包裹, 用 &amp; | 连接</span>
+<span class="n">data</span><span class="p">[(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">23</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">24</span><span class="p">)]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+
+<span class="c1"># 逻辑运算函数, 更简洁:</span>
+<span class="n">data</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;open&lt;24 &amp; open&gt;23&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>     <span class="c1"># query(查询字符串)</span>
+<span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">([</span><span class="mf">23.53</span><span class="p">,</span> <span class="mf">23.85</span><span class="p">])]</span>    <span class="c1"># isin: 是否为指定的固定值</span>
+</pre></div>
+</div>
+<h3 id="sec-14">3. 统计运算</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># describe(): 一次得出 count/mean/std/min/25%/50%/75%/max 综合统计</span>
+<span class="n">data</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
+
+<span class="c1"># 单个统计函数: axis=0 按列统计(默认), axis=1 按行统计</span>
+<span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">data</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>      <span class="c1"># 方差</span>
+<span class="n">data</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>      <span class="c1"># 标准差</span>
+<span class="n">data</span><span class="o">.</span><span class="n">median</span><span class="p">()</span>    <span class="c1"># 中位数: 从小到大排列取中间(偶数个取中间两数均值)</span>
+
+<span class="c1"># idxmax/idxmin: 最值所在的&quot;索引位置&quot;(比 numpy 的 argmax 更进一步, 直接给出索引名)</span>
+<span class="n">data</span><span class="o">.</span><span class="n">idxmax</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>    <span class="c1"># 每列最大值出现在哪一天</span>
+<span class="n">data</span><span class="o">.</span><span class="n">idxmin</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>常用统计函数一览：<code>count</code>（非空数量）、<code>sum</code>、<code>mean</code>、<code>median</code>、<code>min</code>、<code>max</code>、<code>mode</code>（众数）、<code>abs</code>、<code>prod</code>（乘积）、<code>std</code>、<code>var</code>、<code>idxmax</code>、<code>idxmin</code>。</p>
+<h3 id="sec-15">4. 累计统计函数</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>函数</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>cumsum</code></td>
+<td>前 1/2/…/n 个数的和</td>
+</tr>
+<tr>
+<td><code>cummax</code> / <code>cummin</code></td>
+<td>前 n 个数的最大值 / 最小值</td>
+</tr>
+<tr>
+<td><code>cumprod</code></td>
+<td>前 n 个数的积</td>
+</tr>
+</tbody>
+</table></div>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 按时间从前往后累计涨跌幅</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">sort_index</span><span class="p">()</span>
+<span class="n">stock_rise</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;p_change&#39;</span><span class="p">]</span>
+<span class="n">stock_rise</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+
+<span class="c1"># 配合 plot 直接可视化累计曲线</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="n">stock_rise</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<h3 id="sec-16">5. apply 自定义运算</h3>
+<p><code>apply(func, axis=0)</code>：对列（axis=0，默认）或行（axis=1）应用自定义函数：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 每列的极差(最大值-最小值)</span>
+<span class="n">data</span><span class="p">[[</span><span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">]]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">-</span> <span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="c1"># open     22.74</span>
+<span class="c1"># close    22.85</span>
+</pre></div>
+</div>
+<h2 id="sec-17">六、本讲小结</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>主题</th>
+<th>关键点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数据结构</td>
+<td>Series（values + index）；DataFrame（行索引 index=0 轴，列索引 columns=1 轴）</td>
+</tr>
+<tr>
+<td>创建</td>
+<td><code>pd.Series(列表/字典, index=)</code>；<code>pd.DataFrame(data, index=, columns=)</code></td>
+</tr>
+<tr>
+<td>索引设置</td>
+<td>行索引只能整体改；<code>reset_index(drop=)</code> 重设；<code>set_index(keys)</code> 支持多级索引</td>
+</tr>
+<tr>
+<td>数据类型</td>
+<td>dtypes / info() 查看；to_datetime、timedelta、category</td>
+</tr>
+<tr>
+<td>三种索引</td>
+<td>直接索引先列后行；loc 用名字、iloc 用下标（都先行后列）</td>
+</tr>
+<tr>
+<td>排序</td>
+<td><code>sort_values(by=, ascending=)</code>、<code>sort_index()</code></td>
+</tr>
+<tr>
+<td>运算</td>
+<td>布尔筛选（多条件用 <code>&amp;</code>、<code>\|</code> 加小括号）、query、isin</td>
+</tr>
+<tr>
+<td>统计</td>
+<td>describe 一步到位；idxmax/idxmin 定位最值索引；cumsum 累计；apply 自定义</td>
+</tr>
+</tbody>
+</table></div>
+<p>下一讲进入 Pandas 进阶：文件读写、增删改查、缺失值处理、合并、分组聚合与透视表。</p><div class="done-bar"><button class="mark-done-btn" data-key="lesson19" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson18.html"><div class="dir">← 上一篇</div><div class="name">🧮 数据分析环境与 NumPy</div></a><a class="next" href="lesson20.html"><div class="dir">下一篇 →</div><div class="name">🧹 Pandas 进阶：读写、清洗与分组透视</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、Pandas 初体验：GDP 数据小案例</a><a class="lv2" href="#sec-2">二、Pandas 数据结构：Series 与 DataFrame</a><a class="lv3" href="#sec-3">1. Series 对象</a><a class="lv3" href="#sec-4">2. DataFrame 对象</a><a class="lv3" href="#sec-5">3. 索引的设置</a><a class="lv2" href="#sec-6">三、Pandas 的数据类型</a><a class="lv2" href="#sec-7">四、基本数据操作：索引、赋值与排序</a><a class="lv3" href="#sec-8">1. 三种索引方式</a><a class="lv3" href="#sec-9">2. 赋值</a><a class="lv3" href="#sec-10">3. 排序</a><a class="lv2" href="#sec-11">五、DataFrame 运算</a><a class="lv3" href="#sec-12">1. 算术运算</a><a class="lv3" href="#sec-13">2. 逻辑运算与筛选</a><a class="lv3" href="#sec-14">3. 统计运算</a><a class="lv3" href="#sec-15">4. 累计统计函数</a><a class="lv3" href="#sec-16">5. apply 自定义运算</a><a class="lv2" href="#sec-17">六、本讲小结</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

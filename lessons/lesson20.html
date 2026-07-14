@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pandas 进阶：读写、清洗与分组透视 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 20 讲</div>
+<h1>🧹 Pandas 进阶：读写、清洗与分组透视</h1>
+<div class="chips"><span class="chip">🏷️ 文件读写</span><span class="chip">🏷️ 缺失值处理</span><span class="chip">🏷️ 分组聚合</span></div>
+</div>
+<p>基础打好后，这一讲解决实际数据处理的五类高频问题：<strong>数据从哪来到哪去</strong>（CSV/MySQL/JSON 读写）、<strong>表怎么改</strong>（增删改查与去重）、<strong>脏数据怎么办</strong>（缺失值处理）、<strong>多表怎么合</strong>（concat/merge）、<strong>怎么按组统计</strong>（groupby 聚合、过滤与交叉表/透视表）。</p>
+<blockquote>
+<p>本讲示例继续使用股票、电影、GDP 和优衣库销售数据集。</p>
+</blockquote>
+<h2 id="sec-1">一、文件读取与存储</h2>
+<p>Pandas 支持众多文件格式的 IO 操作：CSV、SQL、XLS、JSON、HDF5 等，常用 API 都是成对的 <code>read_xxx()</code> / <code>to_xxx()</code>。</p>
+<h3 id="sec-2">1. CSV</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 读取: sep 分隔符默认逗号; usecols 指定只读取某些列</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;./data/stock_day.csv&#39;</span><span class="p">,</span> <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">,</span> <span class="s1">&#39;close&#39;</span><span class="p">])</span>
+
+<span class="c1"># 存储: 选取10行保存, columns 选择要保存的列</span>
+<span class="n">data</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;./data/test.csv&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">])</span>
+
+<span class="c1"># 默认会把行索引也存成一列(Unnamed: 0); index=False 可以去掉</span>
+<span class="n">data</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s1">&#39;./data/test.csv&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;open&#39;</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code>to_csv</code> 的常用参数：<code>path_or_buf</code> 路径、<code>sep</code> 分隔符、<code>columns</code> 列选择、<code>header</code> 是否写列名、<code>index</code> 是否写行索引、<code>mode</code>（'w' 重写 / 'a' 追加）、<code>encoding</code>。</p>
+<h3 id="sec-3">2. MySQL</h3>
+<p>与数据库交互需要先装两个包：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pymysql<span class="w"> </span>-i<span class="w"> </span>https://pypi.tuna.tsinghua.edu.cn/simple/
+pip<span class="w"> </span>install<span class="w"> </span>sqlalchemy<span class="w"> </span>-i<span class="w"> </span>https://pypi.tuna.tsinghua.edu.cn/simple/
+</pre></div>
+</div>
+<p>核心是用 sqlalchemy 创建<strong>数据库引擎</strong>，再配合 <code>to_sql</code> / <code>read_sql</code>：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_engine</span>
+
+<span class="c1"># uri 规则: mysql+pymysql://账号:密码@ip:端口/数据库名?charset=utf8</span>
+<span class="c1">#   mysql    → 数据库类型      pymysql → python 操作数据库的包</span>
+<span class="n">engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span><span class="s1">&#39;mysql+pymysql://用户名:密码@127.0.0.1:3306/test?charset=utf8&#39;</span><span class="p">)</span>
+
+<span class="c1"># 写入: 参1 表名; index=False 不添加自增主键; if_exists=&#39;append&#39; 表存在则追加、不存在则建表</span>
+<span class="n">df</span><span class="o">.</span><span class="n">to_sql</span><span class="p">(</span><span class="s1">&#39;test_pdtosql&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">if_exists</span><span class="o">=</span><span class="s1">&#39;append&#39;</span><span class="p">)</span>
+
+<span class="c1"># 读取整张表</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="s1">&#39;test_pdtosql&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="p">)</span>
+
+<span class="c1"># 用 SQL 语句读取指定数据</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">read_sql</span><span class="p">(</span><span class="s1">&#39;select name, AKA from test_pdtosql&#39;</span><span class="p">,</span> <span class="n">engine</span><span class="p">)</span>
+</pre></div>
+</div>
+<blockquote>
+<p>如果报错提示与 sqlalchemy 相关，多为版本问题：<code>pip uninstall sqlalchemy</code> 后重装指定版本即可。</p>
+</blockquote>
+<h3 id="sec-4">3. JSON</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 读取: orient 指定 json 组织形式, lines=True 表示按行读取(每行一个 json 对象)</span>
+<span class="n">json_read</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="s1">&#39;./data/Sarcasm_Headlines_Dataset.json&#39;</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;records&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># 存储</span>
+<span class="n">json_read</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="s1">&#39;./data/test.json&#39;</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;records&#39;</span><span class="p">)</span>             <span class="c1"># 整体一个数组</span>
+<span class="n">json_read</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="s1">&#39;./data/test.json&#39;</span><span class="p">,</span> <span class="n">orient</span><span class="o">=</span><span class="s1">&#39;records&#39;</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># 一行一个对象</span>
+</pre></div>
+</div>
+<p>orient 的五种取值：<code>split</code>（索引/列名/数据三部分分开）、<code>records</code>（<code>[{列: 值}, ...]</code> 列表，最常用）、<code>index</code>（<code>{索引: {列: 值}}</code>）、<code>columns</code>（<code>{列: {索引: 值}}</code>，默认）、<code>values</code>（只输出值）。</p>
+<h2 id="sec-5">二、DataFrame 的增删改查</h2>
+<h3 id="sec-6">1. 增加列</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">df3</span> <span class="o">=</span> <span class="n">df2</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># 方式1: 直接赋值(修改原 df)</span>
+<span class="n">df3</span><span class="p">[</span><span class="s1">&#39;new col 1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">33</span>                  <span class="c1"># 整列固定值</span>
+<span class="n">df3</span><span class="p">[</span><span class="s1">&#39;new col 2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>     <span class="c1"># 数量必须与行数相等</span>
+<span class="n">df3</span><span class="p">[</span><span class="s1">&#39;new col 3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df3</span><span class="o">.</span><span class="n">year</span> <span class="o">*</span> <span class="mi">2</span>        <span class="c1"># 由已有列计算得来</span>
+
+<span class="c1"># 方式2: assign 函数(不修改原 df, 返回新 df), 值可以是:</span>
+<span class="n">df2</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">new0</span><span class="o">=</span><span class="mi">66</span><span class="p">)</span>                        <span class="c1"># 单个数据</span>
+<span class="n">df2</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">new1</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>           <span class="c1"># 一组数据(数量=行数)</span>
+<span class="n">df2</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">new2</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]))</span>  <span class="c1"># Series(索引需与 df 一致)</span>
+<span class="n">df2</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">new3</span><span class="o">=</span><span class="n">df2</span><span class="o">.</span><span class="n">year</span> <span class="o">+</span> <span class="n">df2</span><span class="o">.</span><span class="n">GDP</span><span class="p">)</span>        <span class="c1"># 由列运算出的 Series</span>
+<span class="n">df2</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">new4</span><span class="o">=</span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>  <span class="c1"># 函数(自动接收 df 为参数)</span>
+
+<span class="c1"># assign 可以一次添加多列</span>
+<span class="n">df2</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">new0</span><span class="o">=</span><span class="s1">&#39;hahaha&#39;</span><span class="p">,</span> <span class="n">new1</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">new5</span><span class="o">=</span><span class="k">lambda</span> <span class="n">df</span><span class="p">:</span> <span class="n">df</span><span class="o">.</span><span class="n">year</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-7">2. 删除与去重</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># drop: 返回删除后的新对象, 不修改原 df</span>
+<span class="n">df3</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span>                    <span class="c1"># 默认按行索引删行</span>
+<span class="n">df3</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>              <span class="c1"># 删多行</span>
+<span class="n">df3</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="s1">&#39;new col 3&#39;</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># axis=1 时按列名删列</span>
+<span class="n">df3</span><span class="o">.</span><span class="n">GDP</span><span class="o">.</span><span class="n">drop</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>             <span class="c1"># Series 也能按索引删</span>
+
+<span class="c1"># del: 直接永久删除原 df 中的列【慎用, 重复执行会报错】</span>
+<span class="k">del</span> <span class="n">df3</span><span class="p">[</span><span class="s1">&#39;new col 3&#39;</span><span class="p">]</span>
+
+<span class="c1"># DataFrame 去重</span>
+<span class="n">df4</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>
+
+<span class="c1"># Series 去重的两种方式</span>
+<span class="n">df4</span><span class="o">.</span><span class="n">country</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span>    <span class="c1"># 返回 Series</span>
+<span class="n">df4</span><span class="o">.</span><span class="n">country</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>             <span class="c1"># 返回 ndarray</span>
+</pre></div>
+</div>
+<p><code>drop</code> 与 <code>del</code> 的区别：drop 返回新对象、原 df 不变；del 直接改原 df。</p>
+<h3 id="sec-8">3. 修改数据</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 方式1: assign 替换整列(不改原 df)</span>
+<span class="n">df5</span> <span class="o">=</span> <span class="n">df5</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">GDP</span><span class="o">=</span><span class="mi">66</span><span class="p">)</span>
+
+<span class="c1"># 方式2: 直接赋值(修改原 df, 一般不建议)</span>
+<span class="n">df5</span><span class="p">[</span><span class="s1">&#39;GDP&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># 方式3: replace 按值替换(完全匹配单元格的值)</span>
+<span class="n">df6</span><span class="o">.</span><span class="n">year</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="mi">1960</span><span class="p">,</span> <span class="mi">19600</span><span class="p">)</span>                    <span class="c1"># Series 替换, 返回新 Series</span>
+<span class="n">df6</span><span class="o">.</span><span class="n">country</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;日本&#39;</span><span class="p">,</span> <span class="s1">&#39;扶桑&#39;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># inplace=True 修改原 df</span>
+<span class="n">df6</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="mi">1960</span><span class="p">,</span> <span class="mi">19600</span><span class="p">)</span>                         <span class="c1"># df 整体替换, 用法一致</span>
+</pre></div>
+</div>
+<h3 id="sec-9">4. 查询数据</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 1. 前后多行: head(n) / tail(n), 默认5行</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="mi">15</span><span class="p">)</span>
+
+<span class="c1"># 2. 一列或多列</span>
+<span class="n">df2</span><span class="p">[</span><span class="s1">&#39;country&#39;</span><span class="p">]</span>            <span class="c1"># 等同 df2.country(列名含空格时只能用中括号形式)</span>
+<span class="n">df2</span><span class="p">[[</span><span class="s1">&#39;country&#39;</span><span class="p">,</span> <span class="s1">&#39;GDP&#39;</span><span class="p">]]</span>   <span class="c1"># 双层中括号取多列, 返回新 df</span>
+
+<span class="c1"># 3. 行切片: df[起始行下标:结束行下标:步长], 顾头不顾尾</span>
+<span class="n">df4</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>      <span class="c1"># 前3行</span>
+<span class="n">df4</span><span class="p">[:</span><span class="mi">5</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>     <span class="c1"># 前5行, 步长2</span>
+<span class="n">df4</span><span class="p">[</span><span class="mi">1</span><span class="p">::</span><span class="mi">3</span><span class="p">]</span>     <span class="c1"># 从第2行到最后, 步长3</span>
+
+<span class="c1"># 4. query 查询(等价于布尔向量筛选, 注意表达式是字符串)</span>
+<span class="n">df3</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;country==&quot;帕劳&quot;&#39;</span><span class="p">)</span>          <span class="c1"># 等价 df3[df3[&#39;country&#39;]==&#39;帕劳&#39;]</span>
+<span class="n">df</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="s1">&#39;(country==&quot;中国&quot; or country==&quot;日本&quot; or country==&quot;美国&quot;) and year in [&quot;2015&quot;, &quot;2016&quot;, &quot;2017&quot;, &quot;2018&quot;, &quot;2019&quot;]&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-10">5. rank 排名函数</h3>
+<p><code>df.rank()</code> / <code>s.rank()</code> 返回数据的排名，常用参数：</p>
+<ul>
+<li><code>ascending</code>：默认 True 升序；</li>
+<li><code>axis</code>：默认 0 按纵轴计算；</li>
+<li><code>numeric_only</code>：只对数值列统计；</li>
+<li><code>pct</code>：以百分比形式显示排名；</li>
+<li><code>na_option</code>：NaN 的处理（keep 保留原位 / top 放最前 / bottom 放最后）；</li>
+<li><code>method</code>：<strong>相同值的评分方式</strong>（重点）——<code>average</code> 默认取平均、<code>min</code> 取最小、<code>max</code> 取最大、<code>dense</code> 连续排名。</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">df7</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;姓名&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;小明&#39;</span><span class="p">,</span> <span class="s1">&#39;小美&#39;</span><span class="p">,</span> <span class="s1">&#39;小强&#39;</span><span class="p">,</span> <span class="s1">&#39;小兰&#39;</span><span class="p">],</span>
+                    <span class="s1">&#39;成绩&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">80</span><span class="p">]})</span>
+
+<span class="c1"># dense: 排名连续(100→1, 90→2, 90→2, 80→3), 最常用, 重点掌握</span>
+<span class="n">df7</span><span class="p">[</span><span class="s1">&#39;成绩排名&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df7</span><span class="o">.</span><span class="n">成绩</span><span class="o">.</span><span class="n">rank</span><span class="p">(</span><span class="n">method</span><span class="o">=</span><span class="s1">&#39;dense&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># min:  100→1, 90→2, 90→2, 80→4(排名不连续)</span>
+<span class="c1"># max:  100→1, 90→3, 90→3, 80→4</span>
+</pre></div>
+</div>
+<h2 id="sec-11">三、缺失值处理</h2>
+<p>处理思路一张图：<strong>先判断缺失值的标记方式</strong>——</p>
+<ul>
+<li>如果是 NaN：判断（isnull/notnull）→ 删除（dropna）或填充（fillna）；</li>
+<li>如果是其它标记（如 <code>?</code>）：先 <code>replace</code> 成 np.nan，再按上面处理。</li>
+</ul>
+<h3 id="sec-12">1. 判断缺失值</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">movie</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;./data/movie.csv&#39;</span><span class="p">)</span>
+
+<span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">movie</span><span class="p">)</span>      <span class="c1"># 每个值是否为空</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">notnull</span><span class="p">(</span><span class="n">movie</span><span class="p">)</span>     <span class="c1"># 每个值是否非空</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">isnull</span><span class="p">(</span><span class="n">movie</span><span class="p">))</span>    <span class="c1"># 有一个缺失值就返回 True</span>
+<span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">notnull</span><span class="p">(</span><span class="n">movie</span><span class="p">))</span>   <span class="c1"># 有一个缺失值就返回 False</span>
+
+<span class="c1"># 找出含空值的行</span>
+<span class="n">row_with_null</span> <span class="o">=</span> <span class="n">movie</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">movie</span><span class="p">[</span><span class="n">row_with_null</span><span class="p">]</span>
+</pre></div>
+</div>
+<h3 id="sec-13">2. 删除缺失值：dropna</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 不修改原数据, 需要接收返回值; 默认 axis=0 删行, axis=1 删列</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">movie</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+</pre></div>
+</div>
+<h3 id="sec-14">3. 填充缺失值：fillna</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 用该列平均值填充(inplace=True 修改原数据); 也可填充中位数、固定值</span>
+<span class="n">movie</span><span class="p">[</span><span class="s1">&#39;Revenue (Millions)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">movie</span><span class="p">[</span><span class="s1">&#39;Revenue (Millions)&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># 循环处理所有含缺失值的列</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">movie</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">notnull</span><span class="p">(</span><span class="n">movie</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+        <span class="n">movie</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="n">movie</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-15">4. 缺失值不是 NaN 而是特殊标记</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 数据中用 &quot;?&quot; 标记缺失: 先替换为 np.nan, 再删除/填充</span>
+<span class="n">wis</span> <span class="o">=</span> <span class="n">wis</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">to_replace</span><span class="o">=</span><span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+<span class="n">wis</span> <span class="o">=</span> <span class="n">wis</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+</pre></div>
+</div>
+<blockquote>
+<p>注意：<code>dropna</code> 只认 np.nan——<code>?</code> 这类标记直接 dropna 是删不掉的，必须先转换。</p>
+</blockquote>
+<h2 id="sec-16">四、数据合并</h2>
+<h3 id="sec-17">1. pd.concat：按方向拼接（类似 SQL 的 UNION）</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># axis=0 竖向拼接(摞起来), axis=1 横向拼接(并排)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">data</span><span class="p">,</span> <span class="n">dummies</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-18">2. pd.merge：按键连接（类似 SQL 的 JOIN）</h3>
+<p><code>pd.merge(left, right, how='inner', on=None)</code>——<code>on</code> 指定共同键，<code>how</code> 指定连接方式：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>how 取值</th>
+<th>对应 SQL</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>inner</code>（默认）</td>
+<td>INNER JOIN</td>
+<td>两表键的交集</td>
+</tr>
+<tr>
+<td><code>left</code></td>
+<td>LEFT OUTER JOIN</td>
+<td>只用左表的键</td>
+</tr>
+<tr>
+<td><code>right</code></td>
+<td>RIGHT OUTER JOIN</td>
+<td>只用右表的键</td>
+</tr>
+<tr>
+<td><code>outer</code></td>
+<td>FULL OUTER JOIN</td>
+<td>两表键的并集</td>
+</tr>
+</tbody>
+</table></div>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">left</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;key1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;K0&#39;</span><span class="p">,</span> <span class="s1">&#39;K0&#39;</span><span class="p">,</span> <span class="s1">&#39;K1&#39;</span><span class="p">,</span> <span class="s1">&#39;K2&#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;key2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;K0&#39;</span><span class="p">,</span> <span class="s1">&#39;K1&#39;</span><span class="p">,</span> <span class="s1">&#39;K0&#39;</span><span class="p">,</span> <span class="s1">&#39;K1&#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;A&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;A0&#39;</span><span class="p">,</span> <span class="s1">&#39;A1&#39;</span><span class="p">,</span> <span class="s1">&#39;A2&#39;</span><span class="p">,</span> <span class="s1">&#39;A3&#39;</span><span class="p">],</span>
+                     <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;B0&#39;</span><span class="p">,</span> <span class="s1">&#39;B1&#39;</span><span class="p">,</span> <span class="s1">&#39;B2&#39;</span><span class="p">,</span> <span class="s1">&#39;B3&#39;</span><span class="p">]})</span>
+<span class="n">right</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s1">&#39;key1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;K0&#39;</span><span class="p">,</span> <span class="s1">&#39;K1&#39;</span><span class="p">,</span> <span class="s1">&#39;K1&#39;</span><span class="p">,</span> <span class="s1">&#39;K2&#39;</span><span class="p">],</span>
+                      <span class="s1">&#39;key2&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;K0&#39;</span><span class="p">,</span> <span class="s1">&#39;K0&#39;</span><span class="p">,</span> <span class="s1">&#39;K0&#39;</span><span class="p">,</span> <span class="s1">&#39;K0&#39;</span><span class="p">],</span>
+                      <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;C0&#39;</span><span class="p">,</span> <span class="s1">&#39;C1&#39;</span><span class="p">,</span> <span class="s1">&#39;C2&#39;</span><span class="p">,</span> <span class="s1">&#39;C3&#39;</span><span class="p">],</span>
+                      <span class="s1">&#39;D&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;D0&#39;</span><span class="p">,</span> <span class="s1">&#39;D1&#39;</span><span class="p">,</span> <span class="s1">&#39;D2&#39;</span><span class="p">,</span> <span class="s1">&#39;D3&#39;</span><span class="p">]})</span>
+
+<span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;key1&#39;</span><span class="p">,</span> <span class="s1">&#39;key2&#39;</span><span class="p">])</span>                 <span class="c1"># 默认内连接</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;left&#39;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;key1&#39;</span><span class="p">,</span> <span class="s1">&#39;key2&#39;</span><span class="p">])</span>     <span class="c1"># 左连接: 左表全保留, 右侧无匹配填 NaN</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;key1&#39;</span><span class="p">,</span> <span class="s1">&#39;key2&#39;</span><span class="p">])</span>    <span class="c1"># 右连接</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;outer&#39;</span><span class="p">,</span> <span class="n">on</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;key1&#39;</span><span class="p">,</span> <span class="s1">&#39;key2&#39;</span><span class="p">])</span>    <span class="c1"># 外连接: 双方都保留</span>
+</pre></div>
+</div>
+<p>上一章学过 SQL 连接查询的话，这里可以无缝对照：<code>merge</code> 就是 DataFrame 世界的 JOIN。</p>
+<h2 id="sec-19">五、数据分组：groupby</h2>
+<p>以优衣库销售数据集为例（字段：store_id 门店、city 城市、channel 线上线下、gender_group 性别、age_group 年龄段、wkd_ind 周末周间、product 产品类别、customer 客户数、revenue 销售金额、order 订单数、quant 购买数量、unit_cost 成本）：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;../数据集/uniqlo.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-20">1. 创建分组对象</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">gs</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;gender_group&#39;</span><span class="p">])</span>            <span class="c1"># 按单列分组 → DataFrameGroupBy 对象</span>
+<span class="n">gs2</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;gender_group&#39;</span><span class="p">,</span> <span class="s1">&#39;city&#39;</span><span class="p">])</span>   <span class="c1"># 按多列分组</span>
+<span class="n">gs</span><span class="p">[</span><span class="s1">&#39;city&#39;</span><span class="p">]</span>                                   <span class="c1"># 分组对象取列 → SeriesGroupBy 对象</span>
+</pre></div>
+</div>
+<p>分组对象本身不显示数据，配合后续操作才有结果：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">gs2</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>                        <span class="c1"># 取每组的第一条数据</span>
+<span class="n">gs2</span><span class="o">.</span><span class="n">last</span><span class="p">()</span>                         <span class="c1"># 取每组的最后一条数据</span>
+<span class="n">gs2</span><span class="o">.</span><span class="n">get_group</span><span class="p">((</span><span class="s1">&#39;Female&#39;</span><span class="p">,</span> <span class="s1">&#39;线上&#39;</span><span class="p">))</span>  <span class="c1"># 按分组依据取出其中一组</span>
+</pre></div>
+</div>
+<h3 id="sec-21">2. 分组聚合：agg</h3>
+<p>对多列分别使用不同的聚合函数——这是最常用的分组姿势：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 按城市和渠道分组, 分别计算销售金额的平均值、成本的总和</span>
+<span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;city&#39;</span><span class="p">,</span> <span class="s1">&#39;channel&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span>
+    <span class="s1">&#39;revenue&#39;</span><span class="p">:</span> <span class="s1">&#39;mean&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;unit_cost&#39;</span><span class="p">:</span> <span class="s1">&#39;sum&#39;</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<h3 id="sec-22">3. 分组过滤：filter</h3>
+<p>保留满足条件的<strong>整组</strong>数据（对比 SQL 的 having）：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 按城市分组, 查询&quot;组内销售金额平均值大于200&quot;的全部数据</span>
+<span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s1">&#39;city&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="n">s</span><span class="p">[</span><span class="s1">&#39;revenue&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">200</span><span class="p">)</span>
+</pre></div>
+</div>
+<h2 id="sec-23">六、交叉表与透视表</h2>
+<p>典型问题：<strong>股票的涨跌与星期几有关吗？</strong> 需要统计"每个星期几中，涨/跌各占的比例"——这正是交叉表与透视表的用武之地。</p>
+<ul>
+<li><strong>交叉表 crosstab</strong>：计算一列数据对另一列数据的<strong>分组个数</strong>（统计分组频率的特殊透视表）：<code>pd.crosstab(value1, value2)</code>；</li>
+<li><strong>透视表 pivot_table</strong>：把原 df 的列分别作为行索引和列索引，再对指定列应用<strong>聚合函数</strong>：<code>df.pivot_table([], index=[])</code>。</li>
+</ul>
+<h3 id="sec-24">1. 最小示例</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;性别&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;男&#39;</span><span class="p">,</span> <span class="s1">&#39;女&#39;</span><span class="p">,</span> <span class="s1">&#39;男&#39;</span><span class="p">,</span> <span class="s1">&#39;女&#39;</span><span class="p">,</span> <span class="s1">&#39;男&#39;</span><span class="p">,</span> <span class="s1">&#39;女&#39;</span><span class="p">,</span> <span class="s1">&#39;女&#39;</span><span class="p">,</span> <span class="s1">&#39;男&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;购买&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;是&#39;</span><span class="p">,</span> <span class="s1">&#39;否&#39;</span><span class="p">,</span> <span class="s1">&#39;是&#39;</span><span class="p">,</span> <span class="s1">&#39;是&#39;</span><span class="p">,</span> <span class="s1">&#39;否&#39;</span><span class="p">,</span> <span class="s1">&#39;否&#39;</span><span class="p">,</span> <span class="s1">&#39;是&#39;</span><span class="p">,</span> <span class="s1">&#39;否&#39;</span><span class="p">]</span>
+<span class="p">})</span>
+
+<span class="c1"># 交叉表: 统计不同性别中购买/不购买的人数</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;性别&#39;</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;购买&#39;</span><span class="p">])</span>
+
+<span class="c1"># 透视表: 统计不同性别中购买/不购买的平均金额(需要有金额列)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">&#39;金额&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="s1">&#39;性别&#39;</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="s1">&#39;购买&#39;</span><span class="p">,</span> <span class="n">aggfunc</span><span class="o">=</span><span class="s1">&#39;mean&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-25">2. 股票涨跌与星期几的案例</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 1. 从日期索引算出星期几(weekday: 0=周一)</span>
+<span class="n">date</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">weekday</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;week&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">date</span>
+
+<span class="c1"># 2. 涨跌幅按0为界限分类: 涨记1, 跌记0</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;posi_neg&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;p_change&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># 3. 交叉表统计每个星期几的涨跌天数</span>
+<span class="n">count</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">crosstab</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;week&#39;</span><span class="p">],</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;posi_neg&#39;</span><span class="p">])</span>
+
+<span class="c1"># 4. 除以每行总数, 得到涨跌&quot;比例&quot;</span>
+<span class="n">sum_</span> <span class="o">=</span> <span class="n">count</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">pro</span> <span class="o">=</span> <span class="n">count</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">sum_</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># 5. 堆叠柱状图展示</span>
+<span class="n">pro</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;bar&#39;</span><span class="p">,</span> <span class="n">stacked</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># 用透视表一步到位(自动算比例, 因为1/0的均值就是涨的占比):</span>
+<span class="n">data</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">([</span><span class="s1">&#39;posi_neg&#39;</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="s1">&#39;week&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<h2 id="sec-26">七、本讲小结</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>主题</th>
+<th>关键点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>文件读写</td>
+<td>read_csv/to_csv（usecols、index=False）；MySQL 走 create_engine + to_sql/read_sql；JSON 记住 orient='records' + lines=True</td>
+</tr>
+<tr>
+<td>增列</td>
+<td>直接赋值改原 df；assign 返回新 df、可一次多列、值可为函数</td>
+</tr>
+<tr>
+<td>删除</td>
+<td>drop 返回新对象（axis=1 删列）；del 永久删除；drop_duplicates/unique 去重</td>
+</tr>
+<tr>
+<td>修改</td>
+<td>assign 换整列；replace(to_replace=, value=) 按值替换</td>
+</tr>
+<tr>
+<td>查询</td>
+<td>head/tail、列选取、行切片、query 表达式、rank（method='dense' 重点）</td>
+</tr>
+<tr>
+<td>缺失值</td>
+<td>isnull/notnull 判断 → dropna 删 / fillna 填；特殊标记先 replace 成 np.nan</td>
+</tr>
+<tr>
+<td>合并</td>
+<td>concat 按方向拼接；merge 按键连接（how: inner/left/right/outer）</td>
+</tr>
+<tr>
+<td>分组</td>
+<td>groupby + agg（多列不同聚合）/ filter（组级过滤）/ first / get_group</td>
+</tr>
+<tr>
+<td>交叉/透视</td>
+<td>crosstab 统计频数；pivot_table 行列重排 + 聚合</td>
+</tr>
+</tbody>
+</table></div>
+<p>和 SQL 对照记忆最高效：<strong>concat ≈ UNION，merge ≈ JOIN，groupby+agg ≈ GROUP BY，filter ≈ HAVING，pivot_table ≈ 分组 + 行转列</strong>。</p><div class="done-bar"><button class="mark-done-btn" data-key="lesson20" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson19.html"><div class="dir">← 上一篇</div><div class="name">🐼 Pandas 基础：Series 与 DataFrame</div></a><a class="next" href="lesson21.html"><div class="dir">下一篇 →</div><div class="name">📊 Matplotlib 与数据可视化</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、文件读取与存储</a><a class="lv3" href="#sec-2">1. CSV</a><a class="lv3" href="#sec-3">2. MySQL</a><a class="lv3" href="#sec-4">3. JSON</a><a class="lv2" href="#sec-5">二、DataFrame 的增删改查</a><a class="lv3" href="#sec-6">1. 增加列</a><a class="lv3" href="#sec-7">2. 删除与去重</a><a class="lv3" href="#sec-8">3. 修改数据</a><a class="lv3" href="#sec-9">4. 查询数据</a><a class="lv3" href="#sec-10">5. rank 排名函数</a><a class="lv2" href="#sec-11">三、缺失值处理</a><a class="lv3" href="#sec-12">1. 判断缺失值</a><a class="lv3" href="#sec-13">2. 删除缺失值：dropna</a><a class="lv3" href="#sec-14">3. 填充缺失值：fillna</a><a class="lv3" href="#sec-15">4. 缺失值不是 NaN 而是特殊标记</a><a class="lv2" href="#sec-16">四、数据合并</a><a class="lv3" href="#sec-17">1. pd.concat：按方向拼接（类似 SQL 的 UNION）</a><a class="lv3" href="#sec-18">2. pd.merge：按键连接（类似 SQL 的 JOIN）</a><a class="lv2" href="#sec-19">五、数据分组：groupby</a><a class="lv3" href="#sec-20">1. 创建分组对象</a><a class="lv3" href="#sec-21">2. 分组聚合：agg</a><a class="lv3" href="#sec-22">3. 分组过滤：filter</a><a class="lv2" href="#sec-23">六、交叉表与透视表</a><a class="lv3" href="#sec-24">1. 最小示例</a><a class="lv3" href="#sec-25">2. 股票涨跌与星期几的案例</a><a class="lv2" href="#sec-26">七、本讲小结</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
