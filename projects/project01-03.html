@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BERT 微调与服务部署 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#projects" class="active">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">32</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">33</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">34</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">35</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">39</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">40</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">42</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">21</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">22</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">23</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">24</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">25</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">26</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">27</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">28</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">29</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">30</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project active" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="project01.html">投满分：智能文本分类全流程</a> / 第 3 章</div>
+<h1>🧠 BERT 微调与服务部署</h1>
+<div class="chips"><span class="chip green">🏷️ BERT</span><span class="chip green">🏷️ Fine-tuning</span><span class="chip green">🏷️ Flask / Streamlit</span><a class="chip" href="project01.html">🚀 返回项目总览</a></div>
+</div>
+<nav class="project-chapter-nav" aria-label="项目章节"><div class="project-nav-label">项目进度</div><div class="project-steps"><a class="project-step" href="project01-01.html"><span>01</span>项目背景、架构与数据分析</a><a class="project-step" href="project01-02.html"><span>02</span>随机森林与 FastText 基线</a><a class="project-step active" href="project01-03.html"><span>03</span>BERT 微调与服务部署</a><a class="project-step" href="project01-04.html"><span>04</span>LLM 提示词文本分类</a><a class="project-step" href="project01-05.html"><span>05</span>模型压缩：量化、蒸馏与剪枝</a><a class="project-step" href="project01-06.html"><span>06</span>项目答辩准备</a><a class="project-step" href="project01-07.html"><span>07</span>简历表达与模拟面试</a></div></nav><h2 id="sec-1">1 预训练Bert的下游微调</h2>
+<p>学习目标：</p>
+<p>1.完成数据集的读取及预处理</p>
+<p>2.理解dataSet、dataloader与collate_fn关系</p>
+<p>3.完成Bert微调模型的构建</p>
+<p>4.完成Bert微调模型的训练与测试</p>
+<p>5.完成Bert微调模型的预测以及部署</p>
+<h3 id="sec-2">1.1 bert模型下载</h3>
+<blockquote>
+<p>使用bert-base-chinese，bert下载:
+- huggingface: https://huggingface.co/bert-base-chinese
+- hf-mirror: https://hf-mirror.com/google-bert/bert-base-chinese</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://hf-mirror.com/google-bert/bert-base-chinese<span class="w"> </span>project/03-笔记
+</pre></div>
+</div>
+<ul>
+<li>modelscope: https://www.modelscope.cn/models/tiansz/bert-base-chinese/files</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://www.modelscope.cn/tiansz/bert-base-chinese.git<span class="w"> </span>project/03-笔记
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="image.png" src="../assets/img/project01-03/figure-5e0012d7c5ae.png" /></p>
+<h3 id="sec-3">1.2 代码结构图</h3>
+<p><img loading="lazy" decoding="async" alt="image.png" src="../assets/img/project01-03/figure-ee3db47caf19.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-2.png" src="../assets/img/project01-03/figure-941aa7493ddf.png" /></p>
+<blockquote>
+<p>基于Bert进行分类建模思路：
+1. 创建一个配置文件config.py，管理数据路径、模型路径、超参数等。</p>
+</blockquote>
+<ol start="2">
+<li>
+<p>构建模型训练脚本bert_train.py,实现基于预训练BERT进行下游分类微调的完整工作流：</p>
+<p>NLP中神经网络训练的工作流：</p>
+<pre><code>1.构建词表
+    由bert_tokenizer自带的
+2.准备数据集
+    拆分为训练集、验证集、测试集
+    张量 -&gt; 数据集对象 -&gt; 数据加载器
+3.搭建神经网络模型
+    预训练BERT
+    pooler_output句子表示
+    线性分类头nn.Linear
+4.模型训练
+    1.前向传播
+    2.计算损失
+    3.梯度清零
+    4.反向传播
+    5.更新参数
+5.模型测试
+</code></pre>
+</li>
+<li>
+<p>构建模型预测脚本</p>
+</li>
+<li>
+<p>构建模型部署API、streamlit 脚本</p>
+</li>
+</ol>
+<h3 id="sec-4">1.3 代码实现</h3>
+<h4>1 config配置文件</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    配置文件，统一管理全局配置信息，包括数据路径、类别信息等。方便项目的管理和后期维护。</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>   <span class="c1"># 文件操作模块</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>  <span class="c1"># 路径操作模块</span>
+<span class="c1"># 不显示警告信息</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+
+<span class="c1"># 1.定义配置类，集中管理全局配置信息，比如数据路径、类别信息</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Config</span><span class="p">():</span>
+    <span class="c1"># 1.定义__init__方法，初始化配置项</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># 1.初始化根路径</span>
+        <span class="c1"># self.root_path = os.path.join(Path(__file__).parent.parent, &quot;01-data&quot;)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_path</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;project/01-data&quot;</span>
+        <span class="c1"># 2.初始化数据文件路径</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;train.txt&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dev_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;dev.txt&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;test.txt&quot;</span><span class="p">)</span>
+        <span class="c1"># 停用词文件路径</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stopwords_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;stopwords.txt&quot;</span><span class="p">)</span>
+        <span class="c1"># 3.初始化类别文件路径</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;class.txt&quot;</span><span class="p">)</span>
+        <span class="c1"># 4.初始化 处理后的数据文件路径</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_train_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;process_train.csv&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_dev_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;process_dev.csv&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_test_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;process_test.csv&quot;</span><span class="p">)</span>
+        <span class="c1"># 添加按字符分词的数据文件路径</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">char_train_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;char_train.txt&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">char_dev_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;char_dev.txt&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">char_test_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;char_test.txt&quot;</span><span class="p">)</span>
+        <span class="c1"># 添加按词分词的数据文件路径</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">word_train_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;word_train.txt&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">word_dev_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;word_dev.txt&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">word_test_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;word_test.txt&quot;</span><span class="p">)</span>
+        <span class="c1"># 5.模型保存路径</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;save_model&quot;</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># pkl格式，用于保存sklearn机器学习模型</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rf_model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;save_model&quot;</span><span class="p">,</span> <span class="s2">&quot;rf_model.pkl&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tfidf_model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;save_model&quot;</span><span class="p">,</span> <span class="s2">&quot;tfidf_model.pkl&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ft_model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;save_model&quot;</span><span class="p">,</span> <span class="s2">&quot;ft_model.bin&quot;</span><span class="p">)</span>
+        <span class="c1"># 6.模型预测结果路径，txt</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;result&quot;</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_predict_result</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;result&quot;</span><span class="p">,</span> <span class="s2">&quot;model_predict_result.txt&quot;</span><span class="p">)</span>
+        <span class="c1"># 7.API配置</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_host</span> <span class="o">=</span> <span class="s2">&quot;127.0.0.1&quot;</span> <span class="c1"># 本地地址</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_port</span> <span class="o">=</span> <span class="mi">5000</span> <span class="c1"># 端口号</span>
+        <span class="c1"># 8.类别索引-名称的映射字典</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="c1"># 1.使用for循环遍历行，去掉空格和空白, 内存占用小</span>
+            <span class="n">class_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+            <span class="c1"># 2.直接使用f.read().split()来一次性获取所有行，内存占用大</span>
+            <span class="c1"># class_list = f.read().split()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id2class</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">class_name</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">class_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">class_list</span><span class="p">)}</span>
+        <span class="c1"># 9.预训练BERT模型路径</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bert_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;bert-base-chinese&quot;</span><span class="p">)</span>
+        <span class="c1"># 10.BERT下游微调模型的保存路径，模型权重文件格式为.pt/.pth 格式</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bert_model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;save_model&quot;</span><span class="p">,</span> <span class="s2">&quot;bert_model.pt&quot;</span><span class="p">)</span>
+        <span class="c1"># 11.全局配置和超参数</span>
+        <span class="c1"># 设置设备，优先级：cuda &gt; mps &gt; cpu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span>
+            <span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+            <span class="k">else</span> <span class="s2">&quot;mps&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">mps</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+            <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+        <span class="c1"># 超参数：训练前设置的参数，训练过程中不能学习的参数</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">epochs</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># BERT下游微调的常用训练轮数</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">batch_size</span> <span class="o">=</span> <span class="mi">64</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span> <span class="o">=</span> <span class="mi">32</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lr</span> <span class="o">=</span> <span class="mf">2e-5</span>  <span class="c1"># BERT的微调学习率,一般为2e-5~5e-5</span>
+        <span class="c1"># 神经网络训练中常用的L2正则化方法是如何实现的</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">weight_decay</span> <span class="o">=</span> <span class="mf">1e-3</span>
+
+<span class="c1"># 2.测试</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># 1.创建配置对象</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+    <span class="c1"># 2.打印配置信息，验证是否正确加载</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;根路径:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">root_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;训练数据路径:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">train_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;验证数据路径:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">dev_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;测试数据路径:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">test_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;停用词文件路径:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">stopwords_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;类别文件路径:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">class_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;处理后的训练数据路径: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">process_train_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;服务器地址: api_host: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">api_host</span><span class="si">}</span><span class="s2"> | &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;端口号:</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">api_port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;类别索引-名称的映射字典: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">id2class</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;预训练BERT模型路径: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">bert_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;设备: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">device</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;epochs: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">epochs</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>根路径: project/01-data
+训练数据路径: project/01-data\train.txt
+验证数据路径: project/01-data\dev.txt
+测试数据路径: project/01-data\test.txt
+停用词文件路径: project/01-data\stopwords.txt
+类别文件路径: project/01-data\class.txt
+处理后的训练数据路径: project/01-data\process_train.csv
+服务器地址: api_host: 127.0.0.1 | 端口号:5000
+类别索引-名称的映射字典: {0: 'finance', 1: 'realty', 2: 'stocks', 3: 'education', 4: 'science', 5: 'society', 6: 'politics', 7: 'sports', 8: 'game', 9: 'entertainment'}
+预训练BERT模型路径: project/01-data\bert-base-chinese
+设备: cuda
+epochs: 5
+</code></pre>
+<h4>2 bert_train模型训练</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">演示</span>
+<span class="sd">    基于预训练BERT的下游文本分类微调的流程</span>
+<span class="sd">NLP中神经网络训练的工作流：</span>
+<span class="sd">    1.构建词表/加载分词器</span>
+<span class="sd">        由bert_tokenizer自带的</span>
+<span class="sd">    2.准备数据集</span>
+<span class="sd">        拆分为训练集、验证集、测试集</span>
+<span class="sd">        构造样本的输入输出</span>
+<span class="sd">        张量 -&gt; 数据集对象 -&gt; 数据加载器</span>
+<span class="sd">    3.搭建神经网络模型</span>
+<span class="sd">        预训练BERT，输出hidden_state(表示token语义),pooler_output(池化输出,整个句子的语义表示)</span>
+<span class="sd">        pooler_output句子表示</span>
+<span class="sd">        线性层nn.Linear</span>
+<span class="sd">    4.模型训练 - 训练集 + 验证集</span>
+<span class="sd">        1.前向传播</span>
+<span class="sd">        2.计算损失</span>
+<span class="sd">        3.梯度清零</span>
+<span class="sd">        4.反向传播</span>
+<span class="sd">        5.更新参数</span>
+<span class="sd">    5.模型测试</span>
+<span class="sd">        1.前向传播</span>
+<span class="sd">        2.计算损失</span>
+<span class="sd">        # 3.梯度清零</span>
+<span class="sd">        # 4.反向传播</span>
+<span class="sd">        # 5.更新参数</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;TF_ENABLE_ONEDNN_OPTS&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>   <span class="c1"># 可视化训练过程</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>    <span class="c1"># pytorch框架</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>   <span class="c1"># 神经网络模块</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.optim</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">optim</span> <span class="c1"># 优化器模块，提供各种优化器，比如SGD,Adam,AdamW</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.utils.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">DataLoader</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">BertModel</span><span class="p">,</span> <span class="n">BertTokenizer</span><span class="p">,</span> <span class="n">BertConfig</span>   <span class="c1"># huggingface的transformers框架的具体模型方法</span>
+<span class="c1"># from config import Config   # 自定义的全局配置类</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="c1"># 计算 accuracy准确率 和 F1(精确率和召回率的调和平均)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">f1_score</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span> <span class="c1"># 绘图</span>
+<span class="c1"># 设置中文字体</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.sans-serif&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SimHei&#39;</span><span class="p">]</span>  <span class="c1"># 微软雅黑</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.unicode_minus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>            <span class="c1"># 解决负号显示问题</span>
+
+<span class="c1"># 0.全局配置</span>
+<span class="c1"># 创建Config()实例</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+<span class="c1"># 创建BERT模型对象，分词器对象，配置对象</span>
+<span class="n">bert_tokenizer</span> <span class="o">=</span> <span class="n">BertTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">bert_path</span><span class="p">)</span>
+<span class="n">bert_config</span> <span class="o">=</span> <span class="n">BertConfig</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">bert_path</span><span class="p">)</span>
+
+<span class="c1"># 1.构建词表</span>
+<span class="c1"># 由bert_tokenizer自带的</span>
+<span class="c1"># print(bert_tokenizer.vocab)</span>
+<span class="c1"># print(len(bert_tokenizer.vocab))</span>
+<span class="c1"># print(bert_tokenizer.tokenize(&quot;从前有一份真挚的爱情放在我的面前&quot;))</span>
+<span class="c1"># print(bert_tokenizer.convert_tokens_to_ids(bert_tokenizer.tokenize(&quot;从前有一份真挚的爱情放在我的面前&quot;)))</span>
+
+<span class="c1"># 2.准备数据集</span>
+<span class="c1"># 2.1 定义函数，加载数据，返回 文本-标签索引 的元组列表</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_raw_data</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    加载数据文件，返回 文本-标签索引的元组列表</span>
+<span class="sd">    :param file_path:原始文件路径</span>
+<span class="sd">    :return: 元组列表，[(状元心经：考前一周重点是回顾和整理,3),(美股评论：SUN的苦涩曙光,2),...]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 1.初始化结果列表</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># 2.加载源文件，并处理</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="c1"># 1.遍历行，获取每行</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+            <span class="c1"># 2.去除首尾空白</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="c1"># 3.跳过空行, None, &quot;&quot;</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c1"># 4.分割文本和标签，\t</span>
+            <span class="n">text</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="c1"># 5.添加结果到结果列表中</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">text</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">label</span><span class="p">)))</span>
+    <span class="c1"># 3.返回结果</span>
+    <span class="k">return</span> <span class="n">results</span>
+
+<span class="c1"># 2.2 自定义数据集类，构造输入输出</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="c1"># 1.初始化方法</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_list</span><span class="p">):</span>
+        <span class="c1"># 1.初始化父类成员</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># 2.初始化数据列表</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_list</span> <span class="o">=</span> <span class="n">data_list</span>
+    <span class="c1"># 2.len方法，返回数据集大小</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_list</span><span class="p">)</span>
+    <span class="c1"># 3.getitem方法，返回指定索引的样本，输入-输出</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="n">text</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_list</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">text</span><span class="p">,</span> <span class="n">label</span>
+
+<span class="c1"># 2.3 定义整理函数，批量处理数据，进行分词器编码</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">collate_fn</span><span class="p">(</span><span class="n">batch</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    对一个batch的样本进行BERT分词器编码：</span>
+<span class="sd">    文本 -&gt; 分词 -&gt; padding -&gt; tensor: input_ids, attention_mask, token_type_ids(句子id，这里不需要)</span>
+<span class="sd">    :param batch: 一个批次的样本, 长度batch_size, [(text,label),(text,label),...]</span>
+<span class="sd">    :return: 元组, (input_ids, attention_mask, labels)</span>
+<span class="sd">            input_ids: (batch_size, max_length), token的id</span>
+<span class="sd">            attention_mask: (batch_size, max_length)，注意力掩码</span>
+<span class="sd">            labels: (batch_size,),标签</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 1.获取文本和标签的元组</span>
+    <span class="n">texts</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">batch</span><span class="p">)</span>
+    <span class="c1"># 2.BERT分词器编码</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">bert_tokenizer</span><span class="p">(</span>
+        <span class="nb">list</span><span class="p">(</span><span class="n">texts</span><span class="p">),</span>    <span class="c1"># 输入文本列表</span>
+        <span class="n">padding</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>   <span class="c1"># 填充, 按照batch内最大长度进行填充</span>
+        <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># 截断，阶段超出最大长度max_length的文本</span>
+        <span class="n">max_length</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">max_length</span><span class="p">,</span>  <span class="c1"># 最大长度</span>
+        <span class="n">return_tensors</span><span class="o">=</span><span class="s1">&#39;pt&#39;</span><span class="p">,</span>  <span class="c1"># 返回张量</span>
+    <span class="p">)</span>
+    <span class="c1"># 3.获取张量</span>
+    <span class="n">input_ids</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="s1">&#39;input_ids&#39;</span><span class="p">]</span>
+    <span class="n">attention_mask</span> <span class="o">=</span> <span class="n">output</span><span class="p">[</span><span class="s1">&#39;attention_mask&#39;</span><span class="p">]</span>
+    <span class="c1"># print(input_ids.shape)</span>
+    <span class="c1"># print(attention_mask.shape)</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span><span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+    <span class="c1"># 4.返回</span>
+    <span class="k">return</span> <span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">,</span> <span class="n">labels</span>
+
+<span class="c1"># 2.4 构建数据加载器</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">build_dataloader</span><span class="p">():</span>
+    <span class="c1"># 张量 -&gt; 数据集对象 -&gt; 数据加载器</span>
+    <span class="c1"># 1.加载源数据</span>
+    <span class="n">train_data</span> <span class="o">=</span> <span class="n">load_raw_data</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">train_path</span><span class="p">)</span>
+    <span class="n">dev_data</span> <span class="o">=</span> <span class="n">load_raw_data</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">dev_path</span><span class="p">)</span>
+    <span class="n">test_data</span> <span class="o">=</span> <span class="n">load_raw_data</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">test_path</span><span class="p">)</span>
+    <span class="c1"># 2.构建数据集对象</span>
+    <span class="n">train_dataset</span> <span class="o">=</span> <span class="n">MyDataset</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span>
+    <span class="n">dev_dataset</span> <span class="o">=</span> <span class="n">MyDataset</span><span class="p">(</span><span class="n">dev_data</span><span class="p">)</span>
+    <span class="n">test_dataset</span> <span class="o">=</span> <span class="n">MyDataset</span><span class="p">(</span><span class="n">test_data</span><span class="p">)</span>
+    <span class="c1"># 3.构建数据加载器对象</span>
+    <span class="n">train_dataloader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span>
+        <span class="n">train_dataset</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+        <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span>   <span class="c1"># 批量处理数据</span>
+    <span class="p">)</span>
+    <span class="n">dev_dataloader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span>
+        <span class="n">dev_dataset</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+        <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span>
+    <span class="p">)</span>
+    <span class="n">test_dataloader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span>
+        <span class="n">test_dataset</span><span class="p">,</span>
+        <span class="n">batch_size</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">batch_size</span><span class="p">,</span>
+        <span class="n">shuffle</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">collate_fn</span><span class="o">=</span><span class="n">collate_fn</span>
+    <span class="p">)</span>
+    <span class="c1"># 4.返回结果</span>
+    <span class="k">return</span> <span class="n">train_dataloader</span><span class="p">,</span> <span class="n">dev_dataloader</span><span class="p">,</span> <span class="n">test_dataloader</span>
+
+<span class="c1"># 3.搭建神经网络模型</span>
+<span class="c1"># 基于预训练的BERT模型实现下游分类模型</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyBertClassifier</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="c1"># 1.初始化方法，定义网络层</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># 1.初始化预训练BERT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bert</span> <span class="o">=</span> <span class="n">BertModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">bert_path</span><span class="p">)</span>
+        <span class="c1"># 2.初始化线性分类头，输入维度hidden_size, 输出维度num_classes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">bert_config</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">id2class</span><span class="p">))</span>
+        <span class="c1"># 3.可选：冻结bert层参数，在训练开始时冻结，训练中期解冻</span>
+        <span class="c1"># for param in self.bert.parameters():</span>
+        <span class="c1">#     param.requires_grad = False</span>
+
+    <span class="c1"># 2.forward方法，实现前向传播</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        根据传入的input_ids, attention_mask，前向传播返回预测logits</span>
+<span class="sd">        :param input_ids: 输入文本分词之后的token id,(batch_size, max_length)</span>
+<span class="sd">        :param attention_mask: 输入文本的注意力掩码，填充掩码，(batch_size, max_length)</span>
+<span class="sd">        :return: logits预测分数(batch_size, num_classes)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 1.把输入input_ids和attention_mask传入BERT模型，获取输出</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bert</span><span class="p">(</span>
+            <span class="n">input_ids</span><span class="o">=</span><span class="n">input_ids</span><span class="p">,</span>
+            <span class="n">attention_mask</span><span class="o">=</span><span class="n">attention_mask</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="c1"># 2.获取pooler_output，句子级表示</span>
+        <span class="n">pooler_output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">pooler_output</span>    <span class="c1"># (batch_size, hidden_size)</span>
+        <span class="c1"># 3.传入线性分类头，获取预测分数logits</span>
+        <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">linear1</span><span class="p">(</span><span class="n">pooler_output</span><span class="p">)</span>    <span class="c1"># (batch_size, num_classes)</span>
+        <span class="k">return</span> <span class="n">logits</span>
+
+<span class="c1"># 4.模型训练</span>
+<span class="c1"># 4.1 训练一个轮次</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">train_one_epoch</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">train_dataloader</span><span class="p">,</span> <span class="n">loss_fn</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">):</span>
+    <span class="c1"># 1.设置训练模式</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>   <span class="c1"># 告诉模型现在是训练模式，要开启dropout等特殊网络层</span>
+    <span class="c1"># 2.初始化 总损失，总样本数，预测结果列表，真实标签列表</span>
+    <span class="n">total_loss</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">total_samples</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total_preds</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">total_labels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">batch_losses</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># 记录每个batch的平均损失</span>
+    <span class="c1"># 3.遍历数据加载器</span>
+    <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">train_dataloader</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Training&quot;</span><span class="p">):</span>
+        <span class="c1"># 0.迁移数据到设备</span>
+        <span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">]</span>
+        <span class="c1"># 1.前向传播</span>
+        <span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">)</span>   <span class="c1"># (batch_size, num_classes)</span>
+        <span class="c1"># 2.计算损失</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+        <span class="c1"># 3.梯度清零</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="c1"># 4.反向传播</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="c1"># 5.更新参数</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+        <span class="c1"># 6.记录结果</span>
+        <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">*</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">total_samples</span> <span class="o">+=</span> <span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">y_pred_class</span> <span class="o">=</span> <span class="n">logits</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>    <span class="c1"># (batch_size,)</span>
+        <span class="n">total_preds</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">y_pred_class</span><span class="p">)</span>
+        <span class="n">total_labels</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+        <span class="n">batch_losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+    <span class="c1"># 4.计算训练过程指标，平均损失、准确率、F1(macro)分数</span>
+    <span class="n">avg_loss</span> <span class="o">=</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="n">total_samples</span>
+    <span class="n">avg_acc</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">total_labels</span><span class="p">,</span> <span class="n">total_preds</span><span class="p">)</span>
+    <span class="c1"># macro宏平均：统计所有类别的F1分数，然后求平均，类别平等，不考虑类别样本不均衡，也就小类别和大类别的权重一样；</span>
+    <span class="c1"># micro微平均：统计所有样本的预测结果，然后求指标，样本平均，考虑类别样本不均衡，大类别的权重大；</span>
+    <span class="n">avg_f1</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">total_labels</span><span class="p">,</span> <span class="n">total_preds</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s1">&#39;macro&#39;</span><span class="p">)</span>
+    <span class="c1"># 5.返回计算结果</span>
+    <span class="k">return</span> <span class="n">avg_loss</span><span class="p">,</span> <span class="n">avg_acc</span><span class="p">,</span> <span class="n">avg_f1</span><span class="p">,</span> <span class="n">batch_losses</span>
+
+<span class="c1"># 4.2 模型评估</span>
+<span class="nd">@torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">()</span>    <span class="c1"># 关闭梯度计算，节省20%的显存</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">val_dataloader</span><span class="p">,</span> <span class="n">loss_fn</span><span class="p">):</span>
+    <span class="c1"># 1.设置评估模式</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>   <span class="c1"># 告诉模型现在是评估模式，要关闭dropout等特殊网络层</span>
+    <span class="c1"># 2.初始化 总损失，总样本数，预测结果列表，真实标签列表</span>
+    <span class="n">total_loss</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">total_samples</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">total_preds</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">total_labels</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># 3.遍历数据加载器</span>
+    <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">val_dataloader</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="s2">&quot;Evaluating&quot;</span><span class="p">):</span>
+        <span class="c1"># 0.迁移数据到设备</span>
+        <span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">device</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">batch</span><span class="p">]</span>
+        <span class="c1"># 1.前向传播</span>
+        <span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">)</span>   <span class="c1"># (batch_size, num_classes)</span>
+        <span class="c1"># 2.计算损失</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+        <span class="c1"># # 3.梯度清零</span>
+        <span class="c1"># optimizer.zero_grad()</span>
+        <span class="c1"># # 4.反向传播</span>
+        <span class="c1"># loss.backward()</span>
+        <span class="c1"># # 5.更新参数</span>
+        <span class="c1"># optimizer.step()</span>
+        <span class="c1"># 6.记录结果</span>
+        <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="o">*</span><span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">total_samples</span> <span class="o">+=</span> <span class="n">labels</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">y_pred_class</span> <span class="o">=</span> <span class="n">logits</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>    <span class="c1"># (batch_size,)</span>
+        <span class="n">total_preds</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">y_pred_class</span><span class="p">)</span>
+        <span class="n">total_labels</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+    <span class="c1"># 4.计算过程指标，平均损失、准确率、F1(macro)分数</span>
+    <span class="n">avg_loss</span> <span class="o">=</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="n">total_samples</span>
+    <span class="n">avg_acc</span> <span class="o">=</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">total_labels</span><span class="p">,</span> <span class="n">total_preds</span><span class="p">)</span>
+    <span class="c1"># macro宏平均：统计所有类别的F1分数，然后求平均，类别平等，不考虑类别样本不均衡，也就小类别和大类别的权重一样；</span>
+    <span class="c1"># micro微平均：统计所有样本的预测结果，然后求指标，样本平均，考虑类别样本不均衡，大类别的权重大；</span>
+    <span class="n">avg_f1</span> <span class="o">=</span> <span class="n">f1_score</span><span class="p">(</span><span class="n">total_labels</span><span class="p">,</span> <span class="n">total_preds</span><span class="p">,</span> <span class="n">average</span><span class="o">=</span><span class="s1">&#39;macro&#39;</span><span class="p">)</span>
+    <span class="c1"># 5.返回计算结果</span>
+    <span class="k">return</span> <span class="n">avg_loss</span><span class="p">,</span> <span class="n">avg_acc</span><span class="p">,</span> <span class="n">avg_f1</span>
+
+<span class="c1"># 4.3 训练主函数</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">train</span><span class="p">():</span>
+    <span class="c1"># 1.创建数据加载器</span>
+    <span class="n">train_dataloader</span><span class="p">,</span> <span class="n">dev_dataloader</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">build_dataloader</span><span class="p">()</span>
+    <span class="c1"># 2.创建神经网络对象</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">MyBertClassifier</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="c1"># 3.定义损失函数和优化器</span>
+    <span class="n">loss_fn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">AdamW</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">lr</span><span class="p">,</span> <span class="n">weight_decay</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">weight_decay</span><span class="p">)</span>
+    <span class="c1"># 4.初始化训练过程指标</span>
+    <span class="c1"># 初始化最优f1分数，用于选择最优模型</span>
+    <span class="n">best_f1</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="c1"># 记录训练过程指标，用于绘图</span>
+    <span class="n">history</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;train_loss&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;train_acc&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;train_f1&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;val_loss&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;val_acc&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;val_f1&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s1">&#39;batch_loss&#39;</span><span class="p">:</span> <span class="p">[]</span>  <span class="c1"># 新增：按训练顺序存储所有batch损失</span>
+    <span class="p">}</span>
+    <span class="c1"># 5.开始训练，遍历轮数</span>
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">epochs</span><span class="p">):</span>
+        <span class="c1"># 1.训练一个轮次</span>
+        <span class="n">train_loss</span><span class="p">,</span> <span class="n">train_acc</span><span class="p">,</span> <span class="n">train_f1</span><span class="p">,</span> <span class="n">batch_losses</span> <span class="o">=</span> <span class="n">train_one_epoch</span><span class="p">(</span>
+            <span class="n">model</span><span class="p">,</span>
+            <span class="n">train_dataloader</span><span class="p">,</span>
+            <span class="n">loss_fn</span><span class="p">,</span>
+            <span class="n">optimizer</span>
+        <span class="p">)</span>
+        <span class="c1"># 2.评估当前模型</span>
+        <span class="n">val_loss</span><span class="p">,</span> <span class="n">val_acc</span><span class="p">,</span> <span class="n">val_f1</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span>
+            <span class="n">model</span><span class="p">,</span>
+            <span class="n">dev_dataloader</span><span class="p">,</span>
+            <span class="n">loss_fn</span>
+        <span class="p">)</span>
+        <span class="c1"># 3.打印训练过程指标</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">epochs</span><span class="si">}</span><span class="s2"> | &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;Train Loss: </span><span class="si">{</span><span class="n">train_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;Train Acc: </span><span class="si">{</span><span class="n">train_acc</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;Train F1: </span><span class="si">{</span><span class="n">train_f1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;Val Loss: </span><span class="si">{</span><span class="n">val_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;Val Acc: </span><span class="si">{</span><span class="n">val_acc</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | &quot;</span>
+              <span class="sa">f</span><span class="s2">&quot;Val F1: </span><span class="si">{</span><span class="n">val_f1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># 4.记录训练过程指标</span>
+        <span class="n">history</span><span class="p">[</span><span class="s1">&#39;train_loss&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">train_loss</span><span class="p">)</span>
+        <span class="n">history</span><span class="p">[</span><span class="s1">&#39;train_acc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">train_acc</span><span class="p">)</span>
+        <span class="n">history</span><span class="p">[</span><span class="s1">&#39;train_f1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">train_f1</span><span class="p">)</span>
+        <span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_loss&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val_loss</span><span class="p">)</span>
+        <span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_acc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val_acc</span><span class="p">)</span>
+        <span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_f1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val_f1</span><span class="p">)</span>
+        <span class="n">history</span><span class="p">[</span><span class="s1">&#39;batch_loss&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">batch_losses</span><span class="p">)</span>
+
+        <span class="c1"># 5.根据f1分数来保存最优模型</span>
+        <span class="k">if</span> <span class="n">val_f1</span> <span class="o">&gt;</span> <span class="n">best_f1</span><span class="p">:</span>
+            <span class="c1"># 1.更新最优f1分数</span>
+            <span class="n">best_f1</span> <span class="o">=</span> <span class="n">val_f1</span>
+            <span class="c1"># 2.保存最优模型参数</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="n">config</span><span class="o">.</span><span class="n">bert_model_path</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;保存最优模型为: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">bert_model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 6.返回训练结果，用于可视化</span>
+    <span class="k">return</span> <span class="n">history</span>
+
+<span class="c1"># 4.4 绘制训练曲线</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_history</span><span class="p">(</span><span class="n">history</span><span class="p">):</span>
+    <span class="c1"># 1.设置x轴刻度，epoch轮次</span>
+    <span class="n">epochs</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;train_loss&#39;</span><span class="p">])</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># 2.设置画布大小</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+    <span class="c1"># 3.绘制loss曲线</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">history</span><span class="p">[</span><span class="s1">&#39;train_loss&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;train_loss&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_loss&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;val_loss&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Loss Curve&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Epoch&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Loss&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="c1"># 4.绘制acc曲线</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">history</span><span class="p">[</span><span class="s1">&#39;train_acc&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;train_acc&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_acc&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;val_acc&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Acc Curve&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Epoch&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Acc&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="c1"># 5.绘制f1曲线</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">history</span><span class="p">[</span><span class="s1">&#39;train_f1&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;train_f1&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">epochs</span><span class="p">,</span> <span class="n">history</span><span class="p">[</span><span class="s1">&#39;val_f1&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;val_f1&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;F1 Curve&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Epoch&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;F1&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="c1"># 6.新增子图：batch平均损失 vs epoch平均损失（横坐标对齐）</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+    <span class="n">num_epochs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;train_loss&#39;</span><span class="p">])</span>
+    <span class="n">steps_per_epoch</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># 默认每轮至少有一个batch</span>
+    <span class="k">if</span> <span class="n">num_epochs</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;batch_loss&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">steps_per_epoch</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;batch_loss&#39;</span><span class="p">])</span> <span class="o">//</span> <span class="n">num_epochs</span>
+        <span class="k">if</span> <span class="n">steps_per_epoch</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">batch_x</span> <span class="o">=</span> <span class="p">[(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">steps_per_epoch</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;batch_loss&#39;</span><span class="p">]))]</span>
+            <span class="n">epoch_loss_expanded</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">e_loss</span> <span class="ow">in</span> <span class="n">history</span><span class="p">[</span><span class="s1">&#39;train_loss&#39;</span><span class="p">]:</span>
+                <span class="n">epoch_loss_expanded</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">e_loss</span><span class="p">]</span> <span class="o">*</span> <span class="n">steps_per_epoch</span><span class="p">)</span>
+            <span class="c1"># 若最后长度有偏差（通常不会），做一次截断对齐</span>
+            <span class="n">min_len</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">batch_x</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">epoch_loss_expanded</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">history</span><span class="p">[</span><span class="s1">&#39;batch_loss&#39;</span><span class="p">]))</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">batch_x</span><span class="p">[:</span><span class="n">min_len</span><span class="p">],</span> <span class="n">history</span><span class="p">[</span><span class="s1">&#39;batch_loss&#39;</span><span class="p">][:</span><span class="n">min_len</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;batch_loss&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">batch_x</span><span class="p">[:</span><span class="n">min_len</span><span class="p">],</span> <span class="n">epoch_loss_expanded</span><span class="p">[:</span><span class="n">min_len</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;epoch_train_loss&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Batch vs Epoch Loss&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Epoch (</span><span class="si">{</span><span class="n">steps_per_epoch</span><span class="si">}</span><span class="s1">*batch)&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Loss&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="c1"># 优化布局并显示</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># 测试</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># # 1.加载数据文件</span>
+    <span class="c1"># train_data = load_raw_data(config.train_path)</span>
+    <span class="c1"># dev_data = load_raw_data(config.dev_path)</span>
+    <span class="c1"># test_data = load_raw_data(config.test_path)</span>
+    <span class="c1"># print(train_data[:5])</span>
+    <span class="c1"># print(len(train_data))</span>
+    <span class="c1"># print(len(dev_data))</span>
+    <span class="c1"># print(len(test_data))</span>
+    <span class="c1"># # 2.创建数据集对象</span>
+    <span class="c1"># train_dataset = MyDataset(train_data)</span>
+    <span class="c1"># dev_dataset = MyDataset(dev_data)</span>
+    <span class="c1"># test_dataset = MyDataset(test_data)</span>
+    <span class="c1"># # 3.测试collate_fn</span>
+    <span class="c1"># collate_fn(train_dataset[:2])</span>
+    <span class="c1"># 4.创建数据加载器对象</span>
+    <span class="n">train_dataloader</span><span class="p">,</span> <span class="n">dev_dataloader</span><span class="p">,</span> <span class="n">test_dataloader</span> <span class="o">=</span> <span class="n">build_dataloader</span><span class="p">()</span>
+    <span class="c1"># print(len(train_dataloader))    # 180000/64 = 2813</span>
+    <span class="c1"># print(len(dev_dataloader))</span>
+    <span class="c1"># print(len(test_dataloader))</span>
+    <span class="c1"># for batch in train_dataloader:</span>
+    <span class="c1">#     # print(batch)</span>
+    <span class="c1">#     input_ids, attention_mask, labels = batch</span>
+    <span class="c1">#     print(input_ids.shape)  # (batch_size, max_length)</span>
+    <span class="c1">#     print(attention_mask.shape)</span>
+    <span class="c1">#     print(labels.shape)</span>
+    <span class="c1">#     break</span>
+    <span class="c1"># 5.模型训练</span>
+    <span class="n">history</span> <span class="o">=</span> <span class="n">train</span><span class="p">()</span>
+    <span class="c1"># 6.可视化训练过程</span>
+    <span class="n">plot_history</span><span class="p">(</span><span class="n">history</span><span class="p">)</span>
+    <span class="c1"># 7.模型测试</span>
+    <span class="c1"># 加载本地模型</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">MyBertClassifier</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">bert_model_path</span><span class="p">,</span>
+            <span class="n">weights_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="c1"># weights_only=True, 表示：只加载权重数据，不加载任何可执行对象，更安全，更适合模型部署</span>
+            <span class="n">map_location</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">device</span>  <span class="c1"># 将模型加载到指定的设备，防止训练和推理/预测的设备不一致</span>
+        <span class="p">))</span>
+    <span class="n">test_loss</span><span class="p">,</span> <span class="n">test_acc</span><span class="p">,</span> <span class="n">test_f1</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">test_dataloader</span><span class="p">,</span> <span class="n">loss_fn</span><span class="o">=</span><span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;测试集 Loss: </span><span class="si">{</span><span class="n">test_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;测试集 Acc: </span><span class="si">{</span><span class="n">test_acc</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;测试集 F1(macro): </span><span class="si">{</span><span class="n">test_f1</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>Training: 100%|██████████| 2813/2813 [09:57&lt;00:00,  4.71it/s]
+Evaluating: 100%|██████████| 157/157 [00:07&lt;00:00, 20.28it/s]
+
+
+Epoch: 1/5 | Train Loss: 0.2767 | Train Acc: 0.9151 | Train F1: 0.9151 | Val Loss: 0.2100 | Val Acc: 0.9317 | Val F1: 0.9314
+保存最优模型为: project/01-data\save_model\bert_model.pt
+
+
+Training: 100%|██████████| 2813/2813 [06:27&lt;00:00,  7.25it/s]
+Evaluating: 100%|██████████| 157/157 [00:07&lt;00:00, 20.84it/s]
+
+
+Epoch: 2/5 | Train Loss: 0.1541 | Train Acc: 0.9488 | Train F1: 0.9488 | Val Loss: 0.1956 | Val Acc: 0.9354 | Val F1: 0.9353
+保存最优模型为: project/01-data\save_model\bert_model.pt
+
+
+Training: 100%|██████████| 2813/2813 [06:25&lt;00:00,  7.30it/s]
+Evaluating: 100%|██████████| 157/157 [00:07&lt;00:00, 21.60it/s]
+
+
+Epoch: 3/5 | Train Loss: 0.1065 | Train Acc: 0.9641 | Train F1: 0.9641 | Val Loss: 0.2114 | Val Acc: 0.9345 | Val F1: 0.9344
+
+
+Training: 100%|██████████| 2813/2813 [06:24&lt;00:00,  7.31it/s]
+Evaluating: 100%|██████████| 157/157 [00:07&lt;00:00, 20.71it/s]
+
+
+Epoch: 4/5 | Train Loss: 0.0754 | Train Acc: 0.9744 | Train F1: 0.9743 | Val Loss: 0.2129 | Val Acc: 0.9393 | Val F1: 0.9392
+保存最优模型为: project/01-data\save_model\bert_model.pt
+
+
+Training: 100%|██████████| 2813/2813 [06:23&lt;00:00,  7.33it/s]
+Evaluating: 100%|██████████| 157/157 [00:07&lt;00:00, 21.17it/s]
+
+
+Epoch: 5/5 | Train Loss: 0.0537 | Train Acc: 0.9817 | Train F1: 0.9817 | Val Loss: 0.2599 | Val Acc: 0.9352 | Val F1: 0.9352
+</code></pre>
+<p><img loading="lazy" decoding="async" alt="png" src="../assets/img/project01-03/figure-c30f6192f7f1.png" /></p>
+<pre><code>Evaluating: 100%|██████████| 157/157 [00:07&lt;00:00, 21.52it/s]
+
+测试集 Loss: 0.2003 | 测试集 Acc: 0.9422 | 测试集 F1(macro): 0.9421
+</code></pre>
+<h4>3 预测脚本</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">text</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;上海2010上半年四六级考试报名4月8日前完成1&#39;</span><span class="p">,</span><span class="s1">&#39;《赤壁OL》攻城战诸侯战硝烟又起&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">([</span><span class="n">text</span><span class="p">])</span>   <span class="c1"># [&#39;上海2010上半年四六级考试报名4月8日前完成1&#39;]</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>   <span class="c1"># [&#39;上&#39;, &#39;海&#39;, &#39;2&#39;, &#39;0&#39;, &#39;1&#39;, &#39;0&#39;, &#39;上&#39;, &#39;半&#39;, &#39;年&#39;, &#39;四&#39;, &#39;六&#39;, &#39;级&#39;, &#39;考&#39;, &#39;试&#39;, &#39;报&#39;, &#39;名&#39;, &#39;4&#39;, &#39;月&#39;, &#39;8&#39;, &#39;日&#39;, &#39;前&#39;, &#39;完&#39;, &#39;成&#39;, &#39;1&#39;]</span>
+</pre></div>
+</div>
+<pre><code>[('上海2010上半年四六级考试报名4月8日前完成1', '《赤壁OL》攻城战诸侯战硝烟又起')]
+['上海2010上半年四六级考试报名4月8日前完成1', '《赤壁OL》攻城战诸侯战硝烟又起']
+</code></pre>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">演示</span>
+<span class="sd">    基于预训练BERT模型的下游分类微调的模型预测</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="c1"># from config import Config</span>
+<span class="c1"># from bert_train import MyBertClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">BertTokenizer</span>
+
+<span class="c1"># 1.创建config对象</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+<span class="c1"># 2.初始化BertTokenizer分词器，输出张量的三个属性：input_ids, attention_mask, token_type_ids</span>
+<span class="n">bert_tokenizer</span> <span class="o">=</span> <span class="n">BertTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">bert_path</span><span class="p">)</span>
+<span class="c1"># 3.加载模型，并迁移到设备</span>
+<span class="c1"># 创建模型对象</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MyBertClassifier</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+<span class="c1"># 加载本地的模型参数</span>
+<span class="c1"># weights_only=True,更安全的加载模型参数</span>
+<span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">bert_model_save_path</span><span class="p">,</span> <span class="n">weights_only</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+<span class="c1"># print(model)</span>
+<span class="c1"># 4.模型预测，定义函数来实现：输入文本，返回预测结果（类别）</span>
+<span class="c1"># 关闭梯度计算</span>
+<span class="nd">@torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">predict_fun</span><span class="p">(</span><span class="n">data_dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    输入文本，返回BERT下游分类模型的预测结果，预测类别</span>
+<span class="sd">    :param data_dict:输入文本字典，{text: 文本内容}</span>
+<span class="sd">    :return: 预测类别，{text: 文本内容, pred_class: 预测类别}</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 1.设为评估模式，比如关闭dropout</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="c1"># 2.获取输入文本</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]</span>
+    <span class="c1"># 3.预训练BERT分词器编码</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">bert_tokenizer</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">text</span><span class="p">],</span>  <span class="c1"># 输入文本列表</span>
+        <span class="n">padding</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># 填充，默认为True,填充到当前batch的最大文本长度</span>
+        <span class="n">truncation</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="c1"># 截断，默认为True,截断到max_length</span>
+        <span class="n">max_length</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">max_length</span><span class="p">,</span>  <span class="c1"># 默认为None，不进行截断</span>
+        <span class="n">return_tensors</span><span class="o">=</span><span class="s1">&#39;pt&#39;</span> <span class="c1"># 返回pytorch张量</span>
+    <span class="p">)</span>
+    <span class="c1"># 4.前向传播，BERT下游分类模型的模型预测，获取预测分数logits</span>
+    <span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span>
+        <span class="n">input_ids</span><span class="o">=</span><span class="n">output</span><span class="p">[</span><span class="s1">&#39;input_ids&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>    <span class="c1"># (batch_size, seq_len),输入文本分词之后的token id 序列</span>
+        <span class="n">attention_mask</span><span class="o">=</span><span class="n">output</span><span class="p">[</span><span class="s1">&#39;attention_mask&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>  <span class="c1"># (batch_size, seq_len),输入文本分词之后的掩码张量</span>
+    <span class="p">)</span>   <span class="c1"># 预测分数(batch_size,num_classes)</span>
+    <span class="c1"># 5.获取预测类别</span>
+    <span class="c1"># 预测类别索引</span>
+    <span class="n">y_pred_class</span> <span class="o">=</span> <span class="n">logits</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># 预测类别名称</span>
+    <span class="n">y_pred_class</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">id2class</span><span class="p">[</span><span class="n">y_pred_class</span><span class="o">.</span><span class="n">item</span><span class="p">()]</span>
+    <span class="n">data_dict</span><span class="p">[</span><span class="s1">&#39;pred_class&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_pred_class</span>
+    <span class="c1"># 6.返回结果</span>
+    <span class="k">return</span> <span class="n">data_dict</span>
+
+<span class="c1"># 5.测试</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># 1.创建输入文本</span>
+    <span class="n">data_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;text&#39;</span><span class="p">:</span> <span class="s1">&#39;开盘：企业财报利好美股走强&#39;</span>
+    <span class="p">}</span>
+    <span class="c1"># 2.进行预测</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">predict_fun</span><span class="p">(</span><span class="n">data_dict</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>{'text': '开盘：企业财报利好美股走强', 'pred_class': 'stocks'}
+</code></pre>
+<h4>4 模型部署</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">通过Flask组件，构建 路由 + 预测函数 的应用</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flask</span><span class="w"> </span><span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">jsonify</span>
+<span class="c1"># from bert_predict_fun import predict_fun</span>
+<span class="c1"># from config import Config</span>
+
+<span class="c1"># 1.创建App应用</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+<span class="c1"># 2.创建预测接口(路由 + 预测函数)</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/predict&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">():</span>
+    <span class="c1"># 获取用户请求中的数据</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;data: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># 调用预测函数</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">predict_fun</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<span class="c1"># 3.启动App应用</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># 支持局域网访问</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">api_host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">api_port</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code> * Serving Flask app '__main__'
+ * Debug mode: off
+
+
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://192.168.1.4:5000
+Press CTRL+C to quit
+</code></pre>
+<h4>5 接口测试</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">创建一个Flask应用，并启动应用</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="c1"># from config import Config</span>
+
+<span class="c1"># 创建Config对象</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+<span class="c1"># 定义接口地址</span>
+<span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;http://</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">api_host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">api_port</span><span class="si">}</span><span class="s2">/predict&quot;</span>
+
+<span class="c1"># 测试调用</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># 1.测试通用API接口</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;请输入新闻标题：&quot;</span><span class="p">)</span>
+    <span class="c1"># 2.发送请求</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">text</span><span class="p">})</span>
+    <span class="c1"># 3.打印结果</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;预测结果为: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="o">...</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;出问题了：</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>预测结果为: {'pred_class': 'stocks', 'text': '华尔街早餐：周二美股盘前必读'}
+</code></pre>
+<h4>6 前端预测</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">实现一个streamlit框架的web前端</span>
+<span class="sd">安装streamlit： pip install streamlit</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">streamlit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="c1"># from config import Config</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+<span class="c1"># 1.streamlit 创建画面</span>
+<span class="c1"># 1.1 设置标题</span>
+<span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;投满分项目&quot;</span><span class="p">)</span>
+<span class="c1"># 1.2 前端输入文本</span>
+<span class="n">text</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span><span class="s2">&quot;请输入文本：&quot;</span><span class="p">)</span>
+
+<span class="c1"># 2.后台发送请求</span>
+<span class="c1"># 2.1 准备url</span>
+<span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;http://</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">api_host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">api_port</span><span class="si">}</span><span class="s2">/predict&quot;</span>
+<span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;bert预测&quot;</span><span class="p">):</span>
+    <span class="c1"># 2.2 获取当前时刻</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># 2.3 发送请求，获取数据</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">text</span><span class="p">})</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;r: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># 2.4 计算耗时</span>
+        <span class="n">total_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span><span class="o">*</span><span class="mi">1000</span>
+        <span class="c1"># 2.5 显示预测结果</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;预测结果：</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;pred_class&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">，耗时：</span><span class="si">{</span><span class="n">total_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">ms&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;出问题了,请联系管理员! 错误信息: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-5">1.4 总结</h3>
+<ul>
+<li>
+<p>下载BERT模型的方法</p>
+</li>
+<li>
+<p>基于预训练BERT模型进行下游文本分类微调的完整流程，包括数据处理、模型训练以及评估、模型部署及调用等。</p>
+</li>
+</ul>
+<h2 id="sec-6">2 常见面试题</h2>
+<h4>1 NLP任务中 Dataset、collate_fn、DataLoader 的关系？</h4>
+<ul>
+<li><strong>Dataset</strong>：定义 单条样本（如 text、label）。  </li>
+<li><strong>collate_fn</strong>：统一处理一个 batch 的多条样本（分词、padding到固定长度、转张量）。  </li>
+<li><strong>DataLoader</strong>：按 batch 从 Dataset 取样本，并调用 collate_fn 组装成可直接喂给模型的数据。  </li>
+</ul>
+<p>一句话：<strong>Dataset 管单条，collate_fn 管拼批，DataLoader 管迭代与加载。</strong></p>
+<h4>2 如何下载预训练BERT模型？</h4>
+<p>三个平台都支持下载：</p>
+<pre><code>1. huggingface: https://huggingface.co/bert-base-chinese
+2. hf-mirror: https://hf-mirror.com/google-bert/bert-base-chinese
+3. modelscope: https://www.modelscope.cn/models/tiansz/bert-base-chinese/files
+</code></pre>
+<h4>3 如何使用预训练BERT模型进行文本分类，也就是NLP任务的工作流？</h4>
+<pre><code>1.构建词表
+    由bert_tokenizer自带的
+2.准备数据集
+    拆分为训练集、验证集、测试集
+    张量 -&gt; 数据集对象 -&gt; 数据加载器
+3.搭建神经网络模型
+    预训练BERT
+    pooler_output句子表示
+    线性分类头nn.Linear
+4.模型训练
+    1.前向传播
+    2.计算损失
+    3.梯度清零
+    4.反向传播
+    5.更新参数
+5.模型测试
+</code></pre>
+<h4>4 简述BERT模型架构</h4>
+<pre><code>1. BERT 是基于 Transformer Encoder 结构的预训练语言模型，由多层 Transformer Encoder 堆叠而成。
+2. BERT 输入包含词嵌入、位置嵌入和句子嵌入，相比原生 Transformer，增加了 句子嵌入segment embedding 用于区分上下句。
+3. 预训练好的 BERT 在下游任务使用时，只需添加特定的输出头即可。
+</code></pre>
+<h4>5 多分类项目中评估指标有哪些，如何计算的?</h4>
+<pre><code>1. 准确率 Accuracy = 预测正确的样本数 / 总样本数
+2. 精准率 Precision = 预测为正类的样本中，实际为正类的样本数 / 预测为正类的样本数
+3. 召回率 Recall = 实际为正类的样本中，预测为正类的样本数 / 实际为正类的样本数
+4. F1 Score = 2 * (precision * recall) / (precision + recall)
+</code></pre>
+<h4>6 macro-F1 / micro-F1 / weighted-F1 Score 的区别是什么？</h4>
+<pre><code>1. macro-F1宏平均F1：计算每个类别的F1分数，然后求平均，每个类别权重一样，不受样本不均衡影响；
+2. micro-F1微平均F1：统计所有样本的指标TP、FP、FN，然后整体求F1分数，大类别的权重大；
+3. weighted-F1加权平均F1：计算每个类别的F1分数，然后按每个类别的样本数加权平均，大类别权重大；
+4. 如何选择：最常用weighted-F1，类别不平衡又关心小类别时macro-F1，多标签多分类micro-F1。
+</code></pre>
+<h4>7 collate_fn函数的作用是什么？</h4>
+<pre><code>1. 对批量样本进行统一处理，文本分词、编码、填充、截断；
+2. 将不同长度的序列统一填充到相同长度，便于构建张量；
+3. 返回tensor格式的input_ids、attention_mask、token_type_ids和labels供模型使用。
+</code></pre>
+<h4>8 为什么要使用 @torch.no_grad() 装饰器？</h4>
+<pre><code>1. 在推理阶段关闭梯度计算，减少显存占用约20%；
+2. 提升推理速度；
+</code></pre>
+<h4>9 BERT微调为什么使用 AdamW 优化器而不是 Adam？</h4>
+<pre><code>1. AdamW 将权重衰减和梯度更新解耦，权重衰减不依赖梯度；
+2. BERT微调时 AdamW 的正则化效果更好，防止过拟合；
+</code></pre>
+<h4>10 加载模型时为什么使用 weights_only=True？</h4>
+<pre><code>1. 只加载模型权重，不加载任何其他对象，提高安全性；
+2. 避免加载可能包含恶意代码的对象；
+3. 适合模型部署上线，防止安全漏洞。
+</code></pre>
+<h4>11 如何在BERT微调中冻结部分参数提升效率？</h4>
+<pre><code>1. 在训练前冻结BERT编码器层，只训练分类头，加快收敛；
+2. 中期解冻，在学习率降低后解冻BERT层进行全局微调；
+3. 根据显存大小和训练时间灵活调整冻结策略。
+</code></pre>
+<h4>12 BERT分词器编码时，padding=True 和 truncation=True 的作用是什么？</h4>
+<pre><code>1. padding=True 将序列填充到batch内最大长度，保证矩阵形状一致；
+2. truncation=True 将超过max_length的序列截断，避免内存溢出；
+3. 两者结合确保模型输入具有统一的形状。
+</code></pre>
+<h4>13 如何部署BERT分类模型到生产环境？</h4>
+<pre><code>1. 使用Flask框架创建RESTful API接口；
+2. 定义POST路由接收文本请求，调用预测函数返回分类结果；
+3. 使用Streamlit构建前端界面，或通过HTTP请求调用API。
+</code></pre>
+<h4>14 BERT分词器的输出张量是什么？</h4>
+<pre><code>1. input_ids：词id，输入文本对应的token ID序列；
+2. attention_mask：掩码张量，指示哪些token是实际输入（1）还是填充（0）的掩码；
+3. token_type_ids：句子id，区分不同句子的标识，单句为0，双句分别为0和1。
+</code></pre><div class="done-bar"><button class="mark-done-btn" data-key="project01-03" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="project01-02.html"><div class="dir">← 上一篇</div><div class="name">🌲 随机森林与 FastText 基线</div></a><a class="next" href="project01-04.html"><div class="dir">下一篇 →</div><div class="name">💬 LLM 提示词文本分类</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">1 预训练Bert的下游微调</a><a class="lv3" href="#sec-2">1.1 bert模型下载</a><a class="lv3" href="#sec-3">1.2 代码结构图</a><a class="lv3" href="#sec-4">1.3 代码实现</a><a class="lv3" href="#sec-5">1.4 总结</a><a class="lv2" href="#sec-6">2 常见面试题</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>随机森林与 FastText 基线 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#projects" class="active">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">32</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">33</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">34</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">35</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">39</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">40</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">42</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">21</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">22</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">23</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">24</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">25</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">26</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">27</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">28</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">29</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">30</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project active" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="project01.html">投满分：智能文本分类全流程</a> / 第 2 章</div>
+<h1>🌲 随机森林与 FastText 基线</h1>
+<div class="chips"><span class="chip green">🏷️ TF-IDF</span><span class="chip green">🏷️ Random Forest</span><span class="chip green">🏷️ FastText</span><a class="chip" href="project01.html">🚀 返回项目总览</a></div>
+</div>
+<nav class="project-chapter-nav" aria-label="项目章节"><div class="project-nav-label">项目进度</div><div class="project-steps"><a class="project-step" href="project01-01.html"><span>01</span>项目背景、架构与数据分析</a><a class="project-step active" href="project01-02.html"><span>02</span>随机森林与 FastText 基线</a><a class="project-step" href="project01-03.html"><span>03</span>BERT 微调与服务部署</a><a class="project-step" href="project01-04.html"><span>04</span>LLM 提示词文本分类</a><a class="project-step" href="project01-05.html"><span>05</span>模型压缩：量化、蒸馏与剪枝</a><a class="project-step" href="project01-06.html"><span>06</span>项目答辩准备</a><a class="project-step" href="project01-07.html"><span>07</span>简历表达与模拟面试</a></div></nav><h2 id="sec-1">1 随机森林模型</h2>
+<p>学习目标</p>
+<ul>
+<li>掌握利用随机森林实现基线模型.</li>
+<li>能够完成模型部署</li>
+<li>理解建模、评估、上线整个流程</li>
+</ul>
+<blockquote>
+<p>为什么要做基线模型？：</p>
+</blockquote>
+<p>基线模型(Baseline Model)是AI建模任务的重要起点，主要核心目标是：</p>
+<pre><code>① 快速验证任务可行性：基线模型通常简单高效，能够快速验证数据和任务的可行性，为后续优化提供方向。
+② 提供性能参考：基线模型的性能为后续复杂模型（如深度学习模型）提供对比基准，衡量改进效果。
+③ 降低开发成本：基线模型实现简单，能在资源有限的情况下快速构建一个可用的解决方案。
+④ 发现问题：通过基线模型的训练和评估，可以发现潜问题，例如数据质量问题。
+</code></pre>
+<h3 id="sec-2">1.1 代码结构图</h3>
+<p><img loading="lazy" decoding="async" src="../assets/img/project01-02/figure-e6aea633c95a.png" alt="image.png" width="50%" ></p>
+<blockquote>
+<p>基于随机森林分类建模思路：</p>
+</blockquote>
+<p>①对数据train.txt等文件的文本列进行 分词， 得到words列</p>
+<p><img loading="lazy" decoding="async" alt="image.png" src="../assets/img/project01-02/figure-ddc9bec6d6cf.png" /></p>
+<p>②采用TF-IDF将words列，转换为数值特征</p>
+<p><img loading="lazy" decoding="async" alt="image-2.png" src="../assets/img/project01-02/figure-a3a77bc7fdb3.png" /></p>
+<p>③利用随机森林算法进行建模、评估与保存
+④模型预测
+⑤模型部署，提供api接口
+⑥前端预测实现</p>
+<h3 id="sec-3">1.2 代码实现</h3>
+<h4>1 config配置文件</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    配置文件，统一管理全局配置信息，包括数据路径、类别信息等。方便项目的管理和后期维护。</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>   <span class="c1"># 文件操作模块</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>  <span class="c1"># 路径操作模块</span>
+<span class="c1"># 不显示警告信息</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+
+<span class="c1"># 1.定义配置类，集中管理全局配置信息，比如数据路径、类别信息</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Config</span><span class="p">():</span>
+    <span class="c1"># 1.定义__init__方法，初始化配置项</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># 1.初始化根路径</span>
+        <span class="c1"># self.root_path = os.path.join(Path(__file__).parent.parent, &quot;01-data&quot;)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_path</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;project/01-data&quot;</span>
+        <span class="c1"># 2.初始化数据文件路径</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;train.txt&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dev_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;dev.txt&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;test.txt&quot;</span><span class="p">)</span>
+        <span class="c1"># 停用词文件路径</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stopwords_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;stopwords.txt&quot;</span><span class="p">)</span>
+        <span class="c1"># 3.初始化类别文件路径</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;class.txt&quot;</span><span class="p">)</span>
+        <span class="c1"># 4.初始化 处理后的数据文件路径</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_train_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;process_train.csv&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_dev_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;process_dev.csv&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_test_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;process_test.csv&quot;</span><span class="p">)</span>
+        <span class="c1"># 5.模型保存路径</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;save_model&quot;</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># pkl格式，用于保存sklearn机器学习模型</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rf_model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;save_model&quot;</span><span class="p">,</span> <span class="s2">&quot;rf_model.pkl&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tfidf_model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;save_model&quot;</span><span class="p">,</span> <span class="s2">&quot;tfidf_model.pkl&quot;</span><span class="p">)</span>
+        <span class="c1"># 6.模型预测结果路径，txt</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;result&quot;</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_predict_result</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;result&quot;</span><span class="p">,</span> <span class="s2">&quot;model_predict_result.txt&quot;</span><span class="p">)</span>
+        <span class="c1"># 7.API配置</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_host</span> <span class="o">=</span> <span class="s2">&quot;127.0.0.1&quot;</span> <span class="c1"># 本地地址</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_port</span> <span class="o">=</span> <span class="mi">5000</span> <span class="c1"># 端口号</span>
+
+<span class="c1"># 2.测试</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># 1.创建配置对象</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+    <span class="c1"># 2.打印配置信息，验证是否正确加载</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;根路径:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">root_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;训练数据路径:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">train_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;验证数据路径:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">dev_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;测试数据路径:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">test_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;停用词文件路径:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">stopwords_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;类别文件路径:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">class_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;处理后的训练数据路径: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">process_train_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;服务器地址: api_host: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">api_host</span><span class="si">}</span><span class="s2"> | &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;端口号:</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">api_port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>根路径: project/01-data
+训练数据路径: project/01-data\train.txt
+验证数据路径: project/01-data\dev.txt
+测试数据路径: project/01-data\test.txt
+停用词文件路径: project/01-data\stopwords.txt
+类别文件路径: project/01-data\class.txt
+处理后的训练数据路径: project/01-data\process_train.csv
+服务器地址: api_host: 127.0.0.1 | 端口号:5000
+</code></pre>
+<h4>2 data_process数据处理</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    数据预处理, 进行jieba分词, 并保存为CSV文件</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span> <span class="c1"># 处理表格数据</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jieba</span> <span class="c1"># 中文分词</span>
+<span class="c1"># from config import Config # 配置文件</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span> <span class="c1"># 数据可视化</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+
+<span class="c1"># 1.创建配置对象</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+<span class="c1"># 2.定义函数，处理数据，进行jieba分词，并保存为CSV文件</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">process_data</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">save_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    数据处理函数，对原始数据集text进行jieba分词并保存为CSV文件</span>
+<span class="sd">    :param data_path: 原始数据文件路径，txt格式，每行格式：label \t text</span>
+<span class="sd">    :param save_path: 处理后数据文件路径，CSV格式，包含两列：label和text</span>
+<span class="sd">    :return: 无</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 1.读取原始文件，返回pandas数据框</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">,</span><span class="s2">&quot;label&quot;</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="c1"># 2.进行jieba分词</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cut_words</span><span class="p">(</span><span class="n">sentence</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">jieba</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">sentence</span><span class="p">)[:</span><span class="mi">20</span><span class="p">])</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;words&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">cut_words</span><span class="p">)</span>
+    <span class="c1"># 3.进行jieba分词，获取序列长度seq_len</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_seq_len</span><span class="p">(</span><span class="n">sentence</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">jieba</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">sentence</span><span class="p">)[:</span><span class="mi">20</span><span class="p">])</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;seq_len&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">get_seq_len</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="c1"># 4.可视化序列长度分布</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;seq_len&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">hist</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;seq_len&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
+    <span class="c1"># 5.保存处理后的数据为CSV文件</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;处理后的数据保存在：</span><span class="si">{</span><span class="n">save_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 3.处理数据</span>
+<span class="c1"># 训练集</span>
+<span class="n">process_data</span><span class="p">(</span><span class="n">data_path</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">train_path</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">process_train_path</span><span class="p">)</span>
+<span class="c1"># 验证集</span>
+<span class="n">process_data</span><span class="p">(</span><span class="n">data_path</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">dev_path</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">process_dev_path</span><span class="p">)</span>
+<span class="c1"># 测试集</span>
+<span class="n">process_data</span><span class="p">(</span><span class="n">data_path</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">test_path</span><span class="p">,</span> <span class="n">save_path</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">process_test_path</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>Building prefix dict from the default dictionary ...
+
+
+                        text  label
+0         中华女子学院：本科层次仅1专业招男生      3
+1     两天价网站背后重重迷雾：做个网站究竟要多少钱      4
+2  东5环海棠公社230-290平2居准现房98折优惠      1
+3  卡佩罗：告诉你德国脚生猛的原因 不希望英德战踢点球      7
+4    82岁老太为学生做饭扫地44年获授港大荣誉院士      5
+
+
+Dumping model to file cache &lt;本地用户目录&gt;\AppData\Local\Temp\jieba.cache
+Loading model cost 0.483 seconds.
+Prefix dict has been built successfully.
+
+
+                        text  label                                     words  \
+0         中华女子学院：本科层次仅1专业招男生      3              中华 女子 学院 ： 本科 层次 仅 1 专业 招 男生
+1     两天价网站背后重重迷雾：做个网站究竟要多少钱      4        两天 价 网站 背后 重重 迷雾 ： 做个 网站 究竟 要 多少 钱
+2  东5环海棠公社230-290平2居准现房98折优惠      1   东 5 环 海棠 公社 230 - 290 平 2 居 准现房 98 折 优惠
+3  卡佩罗：告诉你德国脚生猛的原因 不希望英德战踢点球      7  卡佩罗 ： 告诉 你 德国 脚 生猛 的 原因   不 希望 英德 战 踢 点球
+4    82岁老太为学生做饭扫地44年获授港大荣誉院士      5       82 岁 老太 为 学生 做饭 扫地 44 年 获授 港大 荣誉 院士
+
+   seq_len
+0       11
+1       13
+2       15
+3       16
+4       13
+</code></pre>
+<p><img loading="lazy" decoding="async" alt="png" src="../assets/img/project01-02/figure-03fd9555b5e0.png" /></p>
+<pre><code>count    180000.000000
+mean         10.246356
+std           2.575008
+min           1.000000
+25%           8.000000
+50%          10.000000
+75%          12.000000
+max          20.000000
+Name: seq_len, dtype: float64
+处理后的数据保存在：project/01-data\process_train.csv
+                 text  label
+0  体验2D巅峰 倚天屠龙记十大创新概览      8
+1   60年铁树开花形状似玉米芯(组图)      5
+2       同步A股首秀：港股缩量回调      2
+3   中青宝sg现场抓拍 兔子舞热辣表演      8
+4            锌价难续去年辉煌      0
+                 text  label                       words  seq_len
+0  体验2D巅峰 倚天屠龙记十大创新概览      8  体验 2D 巅峰   倚天 屠龙记 十大 创新 概览        9
+1   60年铁树开花形状似玉米芯(组图)      5   60 年 铁树开花 形状 似 玉米芯 ( 组图 )        9
+2       同步A股首秀：港股缩量回调      2         同步 A股 首秀 ： 港股 缩量 回调        7
+3   中青宝sg现场抓拍 兔子舞热辣表演      8   中青宝 sg 现场 抓拍   兔子 舞 热辣 表演        9
+4            锌价难续去年辉煌      0                 锌 价难续 去年 辉煌        4
+</code></pre>
+<p><img loading="lazy" decoding="async" alt="png" src="../assets/img/project01-02/figure-fb66f1060b1a.png" /></p>
+<pre><code>count    10000.000000
+mean        10.178400
+std          2.553747
+min          2.000000
+25%          8.000000
+50%         10.000000
+75%         12.000000
+max         19.000000
+Name: seq_len, dtype: float64
+处理后的数据保存在：project/01-data\process_dev.csv
+                      text  label
+0   词汇阅读是关键 08年考研暑期英语复习全指南      3
+1  中国人民公安大学2012年硕士研究生目录及书目      3
+2       日本地震：金吉列关注在日学子系列报道      3
+3    名师辅导：2012考研英语虚拟语气三种用法      3
+4        自考经验谈：自考生毕业论文选题技巧      3
+                      text  label                               words  seq_len
+0   词汇阅读是关键 08年考研暑期英语复习全指南      3  词汇 阅读 是 关键   08 年 考研 暑期 英语 复习 全 指南       13
+1  中国人民公安大学2012年硕士研究生目录及书目      3    中国 人民 公安大学 2012 年 硕士 研究生 目录 及 书目       10
+2       日本地震：金吉列关注在日学子系列报道      3          日本 地震 ： 金吉列 关注 在 日 学子 系列报道        9
+3    名师辅导：2012考研英语虚拟语气三种用法      3       名师 辅导 ： 2012 考研 英语 虚拟语气 三种 用法        9
+4        自考经验谈：自考生毕业论文选题技巧      3            自考 经验谈 ： 自 考生 毕业论文 选题 技巧        8
+</code></pre>
+<p><img loading="lazy" decoding="async" alt="png" src="../assets/img/project01-02/figure-2d9e37bf69fa.png" /></p>
+<pre><code>count    10000.000000
+mean        10.217400
+std          2.594997
+min          1.000000
+25%          8.000000
+50%         10.000000
+75%         12.000000
+max         20.000000
+Name: seq_len, dtype: float64
+处理后的数据保存在：project/01-data\process_test.csv
+</code></pre>
+<h4>3 rf_train模型训练</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">演示</span>
+<span class="sd">    训练随机森林模型和TF-IDF向量化器</span>
+<span class="sd">随机森林训练工作流：</span>
+<span class="sd">    1.加载训练集</span>
+<span class="sd">    2.使用TF-IDF向量化器提取文本特征</span>
+<span class="sd">    3.训练随机森林模型</span>
+<span class="sd">    4.评估模型性能</span>
+<span class="sd">    5.保存模型和向量化器</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_extraction.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">TfidfVectorizer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="c1"># 模型评估指标：准确率、精确率、召回率、F1-score、分类评估报告、混淆矩阵</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">recall_score</span><span class="p">,</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">classification_report</span><span class="p">,</span> \
+    <span class="n">confusion_matrix</span>
+<span class="c1"># from config import Config</span>
+<span class="c1"># 集成学习模型：随机森林、AdaBoost、GBDT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.ensemble</span><span class="w"> </span><span class="kn">import</span> <span class="n">RandomForestClassifier</span><span class="p">,</span> <span class="n">AdaBoostClassifier</span><span class="p">,</span> <span class="n">GradientBoostingClassifier</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+<span class="c1"># 0.pandas的基础设置</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.expand_frame_repr&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>  <span class="c1"># 避免宽表格换行</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># 确保所有列可见</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+
+<span class="c1"># 1.加载训练集</span>
+<span class="c1"># 读取前20000行</span>
+<span class="n">train_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">process_train_path</span><span class="p">)[:</span><span class="mi">20000</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;训练集大小：</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># print(train_data.head())</span>
+
+<span class="c1"># 提取特征列words</span>
+<span class="n">words</span> <span class="o">=</span> <span class="n">train_data</span><span class="p">[</span><span class="s1">&#39;words&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;words: </span><span class="si">{</span><span class="n">words</span><span class="o">.</span><span class="n">head</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 提取标签列label</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">train_data</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;labels: </span><span class="si">{</span><span class="n">labels</span><span class="o">.</span><span class="n">head</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 2.使用TF-IDF向量化器提取文本特征</span>
+<span class="c1"># 读取停用词文件</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">stopwords_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="c1"># 遍历行，去掉空行和空格，内存占用小</span>
+    <span class="n">stop_words</span> <span class="o">=</span> <span class="p">[</span><span class="n">word</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">f</span> <span class="k">if</span> <span class="n">word</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+    <span class="c1"># 一次性读取所有行，内存占用大</span>
+    <span class="c1"># stop_words = f.read().split()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;stop_words: </span><span class="si">{</span><span class="n">stop_words</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># 初始化TF-IDF向量化器，指定停用词列表</span>
+<span class="n">tfidf</span> <span class="o">=</span> <span class="n">TfidfVectorizer</span><span class="p">(</span><span class="n">stop_words</span><span class="o">=</span><span class="n">stop_words</span><span class="p">)</span>
+<span class="c1"># 训练TF-IDF向量化器,并转换文本为TF-IDF特征</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">tfidf</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;features.shape: </span><span class="si">{</span><span class="n">features</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># 查看词表</span>
+<span class="c1"># print(f&quot;vocabulary_:{len(tfidf.vocabulary_)}\n {tfidf.vocabulary_}&quot;)</span>
+
+<span class="c1"># 3.训练随机森林模型</span>
+<span class="c1"># 划分训练集和验证集</span>
+<span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;训练集大小：</span><span class="si">{</span><span class="n">x_train</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;测试集大小：</span><span class="si">{</span><span class="n">x_test</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># 初始化随机森林分类器</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">RandomForestClassifier</span><span class="p">()</span>
+<span class="c1"># 训练模型</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="c1"># 模型评估</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+<span class="c1"># macro: 各个类别指标，平权平均，每个类别权重一样</span>
+<span class="c1"># micro: 汇总所有TP/FP/FN,直接算指标</span>
+<span class="c1"># weighted: 各个类别指标，按照样本数加权平均，大类权重更大</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;准确率：</span><span class="se">\n</span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;精确率(macro)：</span><span class="se">\n</span><span class="si">{</span><span class="n">precision_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">,</span><span class="w"> </span><span class="n">average</span><span class="o">=</span><span class="s1">&#39;macro&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;召回率(macro)：</span><span class="se">\n</span><span class="si">{</span><span class="n">recall_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">,</span><span class="w"> </span><span class="n">average</span><span class="o">=</span><span class="s1">&#39;macro&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;F1-score(macro)：</span><span class="se">\n</span><span class="si">{</span><span class="n">f1_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">,</span><span class="w"> </span><span class="n">average</span><span class="o">=</span><span class="s1">&#39;macro&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;classification_report：</span><span class="se">\n</span><span class="si">{</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;confusion_matrix：</span><span class="se">\n</span><span class="si">{</span><span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 4.保存模型和向量化器</span>
+<span class="c1"># 保存训练好的模型</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">rf_model_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;保存模型为：</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">rf_model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># 保存TF-IDF向量化器</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">tfidf_model_path</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">tfidf</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;保存向量化器为：</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">tfidf_model_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>训练集大小：20000
+words: 0                中华 女子 学院 ： 本科 层次 仅 1 专业 招 男生
+1          两天 价 网站 背后 重重 迷雾 ： 做个 网站 究竟 要 多少 钱
+2     东 5 环 海棠 公社 230 - 290 平 2 居 准现房 98 折 优惠
+3    卡佩罗 ： 告诉 你 德国 脚 生猛 的 原因   不 希望 英德 战 踢 点球
+4         82 岁 老太 为 学生 做饭 扫地 44 年 获授 港大 荣誉 院士
+Name: words, dtype: object
+labels: 0    3
+1    4
+2    1
+3    7
+4    5
+Name: label, dtype: int64
+stop_words: [':', '：', '———', '》），', '）÷（１－', '”，', '）、', '＝（', '→', '℃']
+features.shape: (20000, 34930)
+训练集大小：(16000, 34930)
+测试集大小：(4000, 34930)
+准确率：
+0.7275
+精确率(macro)：
+0.7656117855857135
+召回率(macro)：
+0.7266703099952767
+F1-score(macro)：
+0.7369534657970548
+classification_report：
+              precision    recall  f1-score   support
+
+           0       0.84      0.72      0.78       392
+           1       0.86      0.80      0.83       408
+           2       0.69      0.62      0.65       415
+           3       0.88      0.87      0.87       387
+           4       0.75      0.60      0.67       378
+           5       0.76      0.70      0.73       381
+           6       0.75      0.70      0.72       410
+           7       0.86      0.71      0.78       396
+           8       0.83      0.71      0.76       404
+           9       0.44      0.83      0.57       429
+
+    accuracy                           0.73      4000
+   macro avg       0.77      0.73      0.74      4000
+weighted avg       0.76      0.73      0.74      4000
+
+confusion_matrix：
+[[283   2  50   4   4   6   4   1   1  37]
+ [  4 325  12   7   5   4   8   0   8  35]
+ [ 36  14 258   2  15   4  22   6   3  55]
+ [  0   3   2 337   2   5   9   1   3  25]
+ [  7   7  28   4 227  14   9  10  24  48]
+ [  2   8   4  14   8 266  12   2   3  62]
+ [  0   6  10   5   8  21 287   8   4  61]
+ [  0   5   2   3   1   6  13 282   3  81]
+ [  3   1   7   6  22   5   7  10 287  56]
+ [  1   6   2   3   9  20  12   7  11 358]]
+保存模型为：project/01-data\save_model\rf_model.pkl
+保存向量化器为：project/01-data\save_model\tfidf_model.pkl
+</code></pre>
+<blockquote>
+<p>注意：tf-idf文本数值化。核心是将文本转化为数值表示。</p>
+</blockquote>
+<p><strong>TF-IDF介绍</strong></p>
+<p>TF-IDF（term frequency–inverse document frequency，词频-逆向文件频率）是一种将文本转化为数值向量的向量化方法。它由两部分组成，TF 和 IDF。</p>
+<ul>
+<li>TF, term frequency,词频。一个词在一篇文章里出现的频率（出现的次数除以文章总词数）。</li>
+<li>IDF, inverse document frequency,逆文档频率。IDF 用来衡量一个词在所有文章中的“独特性”。如果一个词只在少数文章中出现，IDF 分数高，说明它很重要；如果一个词几乎每篇文章都有，IDF 分数低，说明它不重要。</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>#样例数据：
+D1: 中华 女子 学院 本科 层次 仅 1 专业 招 男生
+D2: 两天 价 网站 背后 重重 迷雾 ： 做个 网站 究竟 要 多少 钱
+D3: 东 5 环 海棠 公社 230 - 290 平 2 居 准现房 98 折 优惠
+D4: 卡佩罗 ： 告诉 你 德国 脚 生猛 的 原因 不 希望 英德 战 踢 点球
+D5: 82 岁 老太 为 学生 做饭 扫地 44 年 获 授 港大 荣誉 院士
+</pre></div>
+</div>
+<ul>
+<li>step1. 计算TF</li>
+</ul>
+<p>$$
+\text{TF}(t, d) = \frac{\text{词 } t \text{ 在文档 } d \text{ 中的出现次数}}{\text{文档 } d \text{ 的总词数}}
+$$</p>
+<ul>
+<li>t:具体的词，如“本科”</li>
+<li>d: 当前文档,如 D1</li>
+<li>TF作用：衡量当前词在当前文档的频率。考虑到文章有长短之分，为了便于不同文章的比较，进行 “词频” 归一化, /文档总词数</li>
+<li>
+<p>示例：TF("本科",D1) = 1/10</p>
+</li>
+<li>
+<p>step2. 计算IDF</p>
+</li>
+</ul>
+<p>$$
+\text{IDF}(t) = \log\left(\frac{N}{\text{df}(t) + 1}\right) + 1
+$$</p>
+<ul>
+<li>N: 总文档数。</li>
+<li>df(t): 包含词 t 的文档数</li>
+<li>示例：IDF("本科") =log(5/2) +1 ≈ 1.916</li>
+</ul>
+<blockquote>
+<p>如果一个词越常见，IDF逆文档频率就越小。这里分母+1，是为了避免分母为0。</p>
+</blockquote>
+<ul>
+<li>step3. 计算TF-IDF</li>
+</ul>
+<p>$$
+\text{TF-IDF}(t, d) = \text{TF}(t, d) \times \text{IDF}(t)
+$$</p>
+<p>结合 TF 和 IDF，计算词 t 在文档 d 的重要性分数。</p>
+<ul>
+<li>step4. 总结</li>
+</ul>
+<p>TF-IDF 是一种统计方法 和 文本数值化方法，用以评估一个词对于一个文件集或一个语料库中的其中一份文件的重要程度。词的重要性正相关于它在文档的词频，负相关于 它在语料库中出现的频率。</p>
+<p>TF-IDF 的主要思想是：如果某个词在一篇文章中出现的词频 TF 高，并且在其他文章中很少出现，则此词具有很好的类别区分能力。</p>
+<h4>4 rf_test模型测试</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">演示</span>
+<span class="sd">    随机森林模型的 模型评估</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="c1"># from config import Config</span>
+<span class="c1"># 分类模型评估指标</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">recall_score</span><span class="p">,</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">classification_report</span><span class="p">,</span> \
+    <span class="n">confusion_matrix</span>
+<span class="c1"># 取消警告显示</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+<span class="c1"># 设置pandas显示</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.expand_frame_repr&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>  <span class="c1"># 避免宽表格换行</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>  <span class="c1"># 确保所有列可见</span>
+
+<span class="c1"># 1.加载配置文件</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+
+<span class="c1"># 2.加载模型和向量化器</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">rf_model_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">tfidf_model_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">tfidf</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="c1"># 3.读取dev数据集，分隔符为,</span>
+<span class="n">dev_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">process_dev_path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;,&#39;</span><span class="p">)</span>
+<span class="n">words</span> <span class="o">=</span> <span class="n">dev_data</span><span class="p">[</span><span class="s1">&#39;words&#39;</span><span class="p">]</span>
+
+<span class="c1"># 4.对dev数据集进行向量化</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">tfidf</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;features.shape: </span><span class="si">{</span><span class="n">features</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 5.模型预测</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+
+<span class="c1"># 6.模型评估</span>
+<span class="n">y_true</span> <span class="o">=</span> <span class="n">dev_data</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span>
+<span class="c1"># 准确率: 预测正确的样本数 / 总样本数</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;准确率：</span><span class="si">{</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># 多分类平均方式：</span>
+<span class="c1"># macro: 各个类别指标，平权平均，每个类别权重一样</span>
+<span class="c1"># weighted: 各个类别指标，按照样本数加权平均，大类权重更大</span>
+<span class="c1"># micro: 汇总所有TP/FP/FN,直接算指标</span>
+<span class="c1"># 精确率：TP / (TP + FP)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;精确率(macro)：</span><span class="si">{</span><span class="n">precision_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">,</span><span class="w"> </span><span class="n">average</span><span class="o">=</span><span class="s1">&#39;macro&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;精确率(micro)：</span><span class="si">{</span><span class="n">precision_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">,</span><span class="w"> </span><span class="n">average</span><span class="o">=</span><span class="s1">&#39;micro&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;精确率(weighted)：</span><span class="si">{</span><span class="n">precision_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">,</span><span class="w"> </span><span class="n">average</span><span class="o">=</span><span class="s1">&#39;weighted&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># 召回率：TP / (TP + FN)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;召回率(macro)：</span><span class="si">{</span><span class="n">recall_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">,</span><span class="w"> </span><span class="n">average</span><span class="o">=</span><span class="s1">&#39;macro&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;召回率(micro)：</span><span class="si">{</span><span class="n">recall_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">,</span><span class="w"> </span><span class="n">average</span><span class="o">=</span><span class="s1">&#39;micro&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;召回率(weighted)：</span><span class="si">{</span><span class="n">recall_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">,</span><span class="w"> </span><span class="n">average</span><span class="o">=</span><span class="s1">&#39;weighted&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># F1-score: 2 * (精确率 * 召回率) / (精确率 + 召回率)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;F1-score(macro)：</span><span class="si">{</span><span class="n">f1_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">,</span><span class="w"> </span><span class="n">average</span><span class="o">=</span><span class="s1">&#39;macro&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;F1-score(micro)：</span><span class="si">{</span><span class="n">f1_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">,</span><span class="w"> </span><span class="n">average</span><span class="o">=</span><span class="s1">&#39;micro&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;F1-score(weighted)：</span><span class="si">{</span><span class="n">f1_score</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">,</span><span class="w"> </span><span class="n">average</span><span class="o">=</span><span class="s1">&#39;weighted&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;classification_report：</span><span class="si">{</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span><span class="w"> </span><span class="n">y_pred</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 7.保存预测结果</span>
+<span class="n">dev_data</span><span class="p">[</span><span class="s1">&#39;pred_label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_pred</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;dev_data: </span><span class="si">{</span><span class="n">dev_data</span><span class="o">.</span><span class="n">head</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">dev_data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">model_predict_result</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>features.shape: (10000, 34930)
+准确率：0.7334
+精确率(macro)：0.7600245238122915
+精确率(micro)：0.7334
+精确率(weighted)：0.7600245238122915
+召回率(macro)：0.7333999999999999
+召回率(micro)：0.7334
+召回率(weighted)：0.7334
+F1-score(macro)：0.7400187808047967
+F1-score(micro)：0.7334
+F1-score(weighted)：0.7400187808047967
+classification_report：              precision    recall  f1-score   support
+
+           0       0.79      0.71      0.75      1000
+           1       0.84      0.78      0.81      1000
+           2       0.66      0.67      0.67      1000
+           3       0.85      0.86      0.86      1000
+           4       0.75      0.65      0.70      1000
+           5       0.77      0.71      0.74      1000
+           6       0.78      0.73      0.75      1000
+           7       0.89      0.71      0.79      1000
+           8       0.80      0.73      0.76      1000
+           9       0.46      0.79      0.58      1000
+
+    accuracy                           0.73     10000
+   macro avg       0.76      0.73      0.74     10000
+weighted avg       0.76      0.73      0.74     10000
+
+dev_data:                  text  label                       words  seq_len  pred_label
+0  体验2D巅峰 倚天屠龙记十大创新概览      8  体验 2D 巅峰   倚天 屠龙记 十大 创新 概览        9           8
+1   60年铁树开花形状似玉米芯(组图)      5   60 年 铁树开花 形状 似 玉米芯 ( 组图 )        9           9
+2       同步A股首秀：港股缩量回调      2         同步 A股 首秀 ： 港股 缩量 回调        7           2
+3   中青宝sg现场抓拍 兔子舞热辣表演      8   中青宝 sg 现场 抓拍   兔子 舞 热辣 表演        9           9
+4            锌价难续去年辉煌      0                 锌 价难续 去年 辉煌        4           9
+</code></pre>
+<h4>5 rf_predict_fun模型预测</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">演示</span>
+<span class="sd">    随机森林模型的 模型预测</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jieba</span>
+<span class="c1"># from config import Config</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="c1"># 取消警告显示</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+
+<span class="c1"># 1.加载配置文件</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+
+<span class="c1"># 2.加载模型和向量化器</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">rf_model_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">tfidf_model_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">tfidf</span> <span class="o">=</span> <span class="n">pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+<span class="c1"># 3.模型预测函数</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">predict_fun</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="c1"># 1.jieba分词</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">jieba</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]))[:</span><span class="mi">30</span><span class="p">]</span>
+    <span class="c1"># 2.TF-IDF向量化</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">tfidf</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="n">words</span><span class="p">])</span>
+    <span class="c1"># 3.预测</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">features</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="c1"># 4.获取标签索引-&gt;标签名称的映射关系</span>
+    <span class="c1"># 类别文件是文本文件，每行一个类别名称，所以用文本方式读取</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">class_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="c1"># 按行读取，去掉空行，内存占用小</span>
+        <span class="n">class_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+        <span class="c1"># 一次性读取整个文件，再拆分，内存占用大</span>
+        <span class="c1"># class_list = f.read().split()</span>
+    <span class="n">id2class</span> <span class="o">=</span> <span class="p">{</span><span class="n">idx</span><span class="p">:</span> <span class="bp">cls</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">class_list</span><span class="p">)}</span>
+    <span class="c1"># 5.获取预测的类别名称</span>
+    <span class="n">y_pred_class</span> <span class="o">=</span> <span class="n">id2class</span><span class="p">[</span><span class="n">y_pred</span><span class="p">]</span>
+    <span class="c1"># 6.给原始数据新增1列</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;pred_class&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_pred_class</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+<span class="c1"># 4.测试</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;《射雕》群侠战高三：指点考生应考秘籍(图)&quot;</span><span class="p">}</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">predict_fun</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+    <span class="c1"># 计算推理延迟</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+        <span class="n">predict_fun</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;推理延迟：</span><span class="si">{</span><span class="p">(</span><span class="n">end</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="p">)</span><span class="o">/</span><span class="mi">100</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>{'text': '《射雕》群侠战高三：指点考生应考秘籍(图)', 'pred_class': 'education'}
+推理延迟：0.00374s
+</code></pre>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">s1</span> <span class="o">=</span> <span class="s1">&#39;故人西辞富士康, 为学技术到蓝翔! 蓝翔毕业包分配, 尼玛还是富士康&#39;</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">s1</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">s1</span><span class="p">)))</span>
+</pre></div>
+</div>
+<pre><code>['故', '人', '西', '辞', '富', '士', '康', ',', ' ', '为', '学', '技', '术', '到', '蓝', '翔', '!', ' ', '蓝', '翔', '毕', '业', '包', '分', '配', ',', ' ', '尼', '玛', '还', '是', '富', '士', '康']
+故 人 西 辞 富 士 康 ,   为 学 技 术 到 蓝 翔 !   蓝 翔 毕 业 包 分 配 ,   尼 玛 还 是 富 士 康
+</code></pre>
+<h4>6 api接口封装</h4>
+<p>这里使用Flask框架部署后端API服务，实现生产环境部署.</p>
+<ul>
+<li>随机森林模型的在线服务地址（http://127.0.0.1:8001）</li>
+</ul>
+<blockquote>
+<p>api.py服务启动演示：</p>
+</blockquote>
+<p><img loading="lazy" decoding="async" alt="image.png" src="../assets/img/project01-02/figure-83c9666a7069.png" /></p>
+<p>flask的demo:</p>
+<p>Flask框架是当下受欢迎的python轻量级框架。 Flask的基本模式为在程序里将一个视图函数分配一个URL，每当用户访问这个URL时，系统就会执行给该URL对应的视图函数，获取函数的返回值，其工作过程见图：</p>
+<p><img loading="lazy" decoding="async" alt="image.png" src="../assets/img/project01-02/figure-d1fa7e557a91.png" /></p>
+<p>将预测函数封装成 api在线服务，需要flask、request工具</p>
+<p>requests 是一个简单易用的 HTTP 客户端工具，允许我们通过 Python 代码向服务器发送 HTTP 请求并处理响应。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">通过Flask组件，构建 路由 + 预测函数 的应用</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flask</span><span class="w"> </span><span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">jsonify</span>
+<span class="c1"># from rf_predict_fun import predict_fun</span>
+<span class="c1"># from config import Config</span>
+
+<span class="c1"># 1.创建App应用</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+<span class="c1"># 2.创建预测接口(路由 + 预测函数)</span>
+<span class="c1"># HTTP请求方法：GET（获取资源）, POST（提交数据）, PUT（更新资源）, DELETE（删除资源）</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/predict&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">():</span>
+    <span class="c1"># 获取用户请求中的数据</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;data: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># 调用预测函数</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">predict_fun</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="c1"># 返回预测结果，jsonify将Python对象转换为JSON格式</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<span class="c1"># 3.启动App应用</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># 支持局域网访问</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">api_host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">api_port</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code> * Serving Flask app '__main__'
+ * Debug mode: off
+
+
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://192.168.1.4:5000
+Press CTRL+C to quit
+</code></pre>
+<h4>7 api_test测试API接口</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">创建一个Flask应用，并启动应用</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="c1"># from config import Config</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+<span class="c1"># 定义接口地址</span>
+<span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;http://</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">api_host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">api_port</span><span class="si">}</span><span class="s2">/predict&quot;</span>
+
+<span class="c1"># 测试调用</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># 1.测试通用API接口</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;请输入新闻标题：&quot;</span><span class="p">)</span>
+    <span class="c1"># 2.发送请求</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">text</span><span class="p">})</span>
+    <span class="c1"># 3.打印结果</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;预测结果为: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="o">...</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;出问题了：</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>预测结果为: {'pred_class': 'finance', 'text': '快讯：欧元兑美元大跌 大宗商品再度下挫'}
+</code></pre>
+<h4>8 app.py前端预测</h4>
+<p>前后端交互逻辑：
+- 前端通过 HTTP 请求调用服务并展示结果。
+- 后端API服务调用predict_fun函数进行预测，并返回结果给前端。
+<img loading="lazy" decoding="async" alt="image.png" src="../assets/img/project01-02/figure-ad531ba36391.png" /></p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">实现一个streamlit框架的web前端</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">streamlit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="c1"># from config import Config</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+
+<span class="c1"># 1.streamlit 创建画面</span>
+<span class="c1"># 1.1 设置标题</span>
+<span class="n">st</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;投满分分类项目&quot;</span><span class="p">)</span>
+<span class="c1"># 1.2 前端输入文本</span>
+<span class="n">text</span> <span class="o">=</span> <span class="n">st</span><span class="o">.</span><span class="n">text_input</span><span class="p">(</span><span class="s2">&quot;请输入文本：&quot;</span><span class="p">)</span>
+
+<span class="c1"># 2.后台发送请求</span>
+<span class="c1"># 2.1 准备url</span>
+<span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;http://</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">api_host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">api_port</span><span class="si">}</span><span class="s2">/predict&quot;</span>
+<span class="k">if</span> <span class="n">st</span><span class="o">.</span><span class="n">button</span><span class="p">(</span><span class="s2">&quot;随机森林预测&quot;</span><span class="p">):</span>
+    <span class="c1"># 2.2 获取当前时刻</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># 2.3 发送请求，获取数据</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">text</span><span class="p">})</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;r: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># 2.4 计算耗时</span>
+        <span class="n">total_time</span> <span class="o">=</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span><span class="o">*</span><span class="mi">1000</span>
+        <span class="c1"># 2.5 显示预测结果</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;预测结果：</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s1">&#39;pred_class&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">，耗时：</span><span class="si">{</span><span class="n">total_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">ms&quot;</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">st</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;出问题了,请联系管理员!&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>2026-02-23 13:34:07.330 WARNING streamlit.runtime.scriptrunner_utils.script_run_context: Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-02-23 13:34:07.428
+  Warning: to view this Streamlit app on a browser, run it with the following
+  command:
+
+    streamlit run &lt;本地用户目录&gt;\.conda\envs\nlp_project\lib\site-packages\ipykernel_launcher.py [ARGUMENTS]
+2026-02-23 13:34:07.429 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-02-23 13:34:07.429 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-02-23 13:34:07.430 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-02-23 13:34:07.430 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-02-23 13:34:07.430 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-02-23 13:34:07.430 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-02-23 13:34:07.432 Session state does not function when running a script without `streamlit run`
+2026-02-23 13:34:07.432 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-02-23 13:34:07.432 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-02-23 13:34:07.433 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-02-23 13:34:07.433 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-02-23 13:34:07.434 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-02-23 13:34:07.434 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-02-23 13:34:07.435 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-02-23 13:34:07.435 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+2026-02-23 13:34:07.435 Thread 'MainThread': missing ScriptRunContext! This warning can be ignored when running in bare mode.
+</code></pre>
+<p>启动streamlit前端：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>streamlit<span class="w"> </span>run<span class="w"> </span>streamlit_app.py
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="image-2.png" src="../assets/img/project01-02/figure-f33959ad59be.png" /></p>
+<h4>9 小结</h4>
+<ul>
+<li>完成了基于随机森林的基线模型。</li>
+<li>完成了从数据处理到模型构建、训练、评估、部署、前端测试等的整个流程。</li>
+</ul>
+<h2 id="sec-4">2 Fastext 模型</h2>
+<p>学习目标</p>
+<ul>
+<li>掌握Fastext搭建投满分项目的分类模型</li>
+<li>掌握Fastext模型评估、优化</li>
+<li>掌握Fastext模型部署与上线测试</li>
+</ul>
+<h3 id="sec-5">2.1 代码结构图</h3>
+<blockquote>
+<p>基于fastText分类建模思路：</p>
+</blockquote>
+<pre><code>①对数据train.txt等相关文件的文本列进行 分词处理，两种处理思路字符级别以及词级别。
+②利用fastext库进行建模、评估与保存。
+fasttext_char_1_default.py
+fasttext_char_2_auto.py
+fasttext_word_1_default.py
+fasttext_word_2_auto.py
+③模型预测
+④模型部署，提供api接口
+⑤前端预测实现
+</code></pre>
+<p><img loading="lazy" decoding="async" alt="image.png" src="../assets/img/project01-02/figure-ad531ba36391.png" /></p>
+<h3 id="sec-6">2.2 代码实现</h3>
+<h4>1 config配置文件</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    配置文件，统一管理全局配置信息，包括数据路径、类别信息等。方便项目的管理和后期维护。</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>   <span class="c1"># 文件操作模块</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>  <span class="c1"># 路径操作模块</span>
+<span class="c1"># 不显示警告信息</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+
+<span class="c1"># 1.定义配置类，集中管理全局配置信息，比如数据路径、类别信息</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Config</span><span class="p">():</span>
+    <span class="c1"># 1.定义__init__方法，初始化配置项</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># 1.初始化根路径</span>
+        <span class="c1"># self.root_path = os.path.join(Path(__file__).parent.parent, &quot;01-data&quot;)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">root_path</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;project/01-data&quot;</span>
+        <span class="c1"># 2.初始化数据文件路径</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">train_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;train.txt&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dev_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;dev.txt&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;test.txt&quot;</span><span class="p">)</span>
+        <span class="c1"># 停用词文件路径</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stopwords_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;stopwords.txt&quot;</span><span class="p">)</span>
+        <span class="c1"># 3.初始化类别文件路径</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">class_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;class.txt&quot;</span><span class="p">)</span>
+        <span class="c1"># 4.初始化 处理后的数据文件路径</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_train_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;process_train.csv&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_dev_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;process_dev.csv&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process_test_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;process_test.csv&quot;</span><span class="p">)</span>
+        <span class="c1"># 添加按字符分词的数据文件路径</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">char_train_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;char_train.txt&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">char_dev_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;char_dev.txt&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">char_test_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;char_test.txt&quot;</span><span class="p">)</span>
+        <span class="c1"># 添加按词分词的数据文件路径</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">word_train_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;word_train.txt&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">word_dev_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;word_dev.txt&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">word_test_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;word_test.txt&quot;</span><span class="p">)</span>
+        <span class="c1"># 5.模型保存路径</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;save_model&quot;</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># pkl格式，用于保存sklearn机器学习模型</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rf_model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;save_model&quot;</span><span class="p">,</span> <span class="s2">&quot;rf_model.pkl&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tfidf_model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;save_model&quot;</span><span class="p">,</span> <span class="s2">&quot;tfidf_model.pkl&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ft_model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;save_model&quot;</span><span class="p">,</span> <span class="s2">&quot;ft_model.bin&quot;</span><span class="p">)</span>
+        <span class="c1"># 6.模型预测结果路径，txt</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;result&quot;</span><span class="p">),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">model_predict_result</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root_path</span><span class="p">,</span> <span class="s2">&quot;result&quot;</span><span class="p">,</span> <span class="s2">&quot;model_predict_result.txt&quot;</span><span class="p">)</span>
+        <span class="c1"># 7.API配置</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_host</span> <span class="o">=</span> <span class="s2">&quot;127.0.0.1&quot;</span> <span class="c1"># 本地地址</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">api_port</span> <span class="o">=</span> <span class="mi">5000</span> <span class="c1"># 端口号</span>
+        <span class="c1"># 8.类别索引-名称的映射字典</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">id2class</span> <span class="o">=</span> <span class="p">{</span><span class="n">idx</span><span class="p">:</span> <span class="bp">cls</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">f</span><span class="p">)}</span>
+
+<span class="c1"># 2.测试</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="c1"># 1.创建配置对象</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+    <span class="c1"># 2.打印配置信息，验证是否正确加载</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;根路径:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">root_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;训练数据路径:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">train_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;验证数据路径:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">dev_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;测试数据路径:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">test_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;停用词文件路径:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">stopwords_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;类别文件路径:&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">class_path</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;处理后的训练数据路径: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">process_train_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;服务器地址: api_host: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">api_host</span><span class="si">}</span><span class="s2"> | &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;端口号:</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">api_port</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;类别索引-名称的映射字典: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">id2class</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>根路径: project/01-data
+训练数据路径: project/01-data\train.txt
+验证数据路径: project/01-data\dev.txt
+测试数据路径: project/01-data\test.txt
+停用词文件路径: project/01-data\stopwords.txt
+类别文件路径: project/01-data\class.txt
+处理后的训练数据路径: project/01-data\process_train.csv
+服务器地址: api_host: 127.0.0.1 | 端口号:5000
+类别索引-名称的映射字典: {0: 'finance', 1: 'realty', 2: 'stocks', 3: 'education', 4: 'science', 5: 'society', 6: 'politics', 7: 'sports', 8: 'game', 9: 'entertainment'}
+</code></pre>
+<h4>2 data_preprocess数据处理</h4>
+<blockquote>
+<p>fastText数据处理背景：
+FastText 是一个开源、免费、轻量级的库，允许用户学习文本表示和文本分类器。它适用于标准的通用硬件。模型稍后可以缩小，甚至适合移动设备。
+FastText最初训练语料是英文，英文天然支持每个单词之间是有空格的，所以中文相较英文语料的文本分类任务或者词嵌入都会多一步分词。最终的训练数据需要构建成如下格式，构建思路来自官方的数据样例（https://dl.fbaipublicfiles.com/fasttext/data/cooking.stackexchange.tar.gz）：</p>
+</blockquote>
+<p>单字符级别分字处理
+原始样本：三羊资产清盘事起ITAT    0
+处理后样本：__label__finance 三 羊 资 产 清 盘 事 起 I T A T
+词级别分词处理
+原始样本：三羊资产清盘事起ITAT    0
+处理后样本：__label__finance 三羊 资产 清盘 事起 ITAT</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">进行数据预处理,将原始文本 转为 fasttext需要的输入格式</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jieba</span>
+<span class="c1"># from config import Config</span>
+
+<span class="c1"># 1.实例化配置类</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+
+<span class="c1"># 2.定义函数，将原始文本 转为 fasttext需要的输入格式</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">process_data</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="n">save_path</span><span class="p">,</span> <span class="n">is_char</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    数据处理函数</span>
+<span class="sd">    :param data_path: 原始数据文件路径</span>
+<span class="sd">    :param save_path: 处理后数据文件路径</span>
+<span class="sd">    :param is_char: 是否进行字符级分词，默认为True，如果为False则进行jieba分词</span>
+<span class="sd">    :return: 无</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 1.打开原始数据文件</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">save_path</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fw</span><span class="p">:</span>
+            <span class="c1"># 2.循环读取每一行</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                <span class="c1"># 3.去除首尾空格</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="c1"># 4.分割文本和标签</span>
+                <span class="n">text</span><span class="p">,</span> <span class="n">label</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+                <span class="c1"># 5.把标签转为整型</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+                <span class="c1"># 6.将标签映射为对应的类别字符串</span>
+                <span class="n">label_str</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">id2class</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
+                <span class="c1"># 7.根据is_char参数，对文本进行分词或者字符级别分词</span>
+                <span class="k">if</span> <span class="n">is_char</span><span class="p">:</span>
+                    <span class="c1"># 1.字符级分割，例如 从前有座山 -&gt; 从 前 有 座 山</span>
+                    <span class="n">text_split</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># 2.词级分割，例如 从前有座山 -&gt; 从前 有座山</span>
+                    <span class="n">text_split</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">jieba</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+                <span class="c1"># 8.构建fasttext要求的输入格式，__label__ + 类别名称 + 空格 + 文本</span>
+                <span class="n">ft_line</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;__label__</span><span class="si">{</span><span class="n">label_str</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">text_split</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+                <span class="c1"># 9.将构建好的输入文本写入文件</span>
+                <span class="n">fw</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ft_line</span><span class="p">)</span>
+
+<span class="c1"># 测试</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># 处理训练集</span>
+    <span class="n">process_data</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">train_path</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">char_train_path</span><span class="p">,</span> <span class="n">is_char</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">process_data</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">train_path</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">word_train_path</span><span class="p">,</span> <span class="n">is_char</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># 处理验证集</span>
+    <span class="n">process_data</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">dev_path</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">char_dev_path</span><span class="p">,</span> <span class="n">is_char</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">process_data</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">dev_path</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">word_dev_path</span><span class="p">,</span> <span class="n">is_char</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># 处理测试集</span>
+    <span class="n">process_data</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">test_path</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">char_test_path</span><span class="p">,</span> <span class="n">is_char</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">process_data</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">test_path</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">word_test_path</span><span class="p">,</span> <span class="n">is_char</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<h4>3 fasttext_char_1_default字符级别建模</h4>
+<p>字符级别建模（默认参数进行训练）</p>
+<blockquote>
+<p>fastText模型构建之后，选择的配置参数非常多，当前的fasttext_char_1_default.py我们只设置训练数据路径，所有的其他参数的值都采用默认。</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">fasttext训练，默认参数，字符级</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">fasttext</span>
+<span class="c1"># from config import Config</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="c1"># 1.加载项目配置</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+
+<span class="c1"># 2.模型训练</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">fasttext</span><span class="o">.</span><span class="n">train_supervised</span><span class="p">(</span>
+    <span class="nb">input</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">char_train_path</span><span class="p">,</span>
+    <span class="n">dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">minn</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">maxn</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># 3.模型保存</span>
+<span class="c1"># 模型保存路径为config.ft_model_path中的pkl文件名称添加后缀char_1</span>
+<span class="n">model</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">ft_model_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.bin&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_char_1_default.bin&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;保存模型为：</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">ft_model_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="sa">f</span><span class="s2">&quot;_char_1_default.bin&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="c1"># 4.模型评估</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">char_test_path</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;评估结果(样本数, 精确率, 召回率)：</span><span class="si">{</span><span class="n">results</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># 5.打印模型训练后关键信息</span>
+<span class="c1"># 词向量</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">get_word_vector</span><span class="p">(</span><span class="s2">&quot;武&quot;</span><span class="p">))</span>
+<span class="c1"># 类别标签</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
+<span class="c1"># # 词和词频</span>
+<span class="c1"># print(model.get_words(include_freq=True))</span>
+<span class="c1"># # 词-词频的列表</span>
+<span class="c1"># print(list(zip(*model.get_words(include_freq=True))))</span>
+</pre></div>
+</div>
+<pre><code>保存模型为：project/01-data\save_model\ft_model_char_1_default.bin
+评估结果(样本数, 精确率, 召回率)：(10000, 0.874, 0.874)
+[-0.15748286  0.16988806 -0.34145203 -0.07634129  0.3786479  -0.3334336
+ -0.50239706 -0.13597648  1.027006    0.52307934]
+['__label__stocks', '__label__science', '__label__society', '__label__game', '__label__sports', '__label__finance', '__label__politics', '__label__education', '__label__realty', '__label__entertainment']
+</code></pre>
+<h4>4 fasttext_char_2_auto字符级别建模</h4>
+<p>字符级别建模（采用auto自动调参进行训练）</p>
+<blockquote>
+<p>fastText模型构建之后，选择的配置参数非常多，当前的fasttext_char_1_auto.py我们设置训练数据路径，并启用auto方式进行自动调参，注意自动调参需要增加验证集的设置。</p>
+</blockquote>
+<p>以下是相关参数说明：
+开启auto模式的模型训练：
+1. autotuneValidationFile参数需要指定验证数据集所在的路径它将在验证集是使用随机搜索的方法寻找最优的超参数
+2. 使用autotuneDuration参数可以控制随机搜索的时间，单次搜索 默认是300，单位秒.根据不同的需求, 可以延长或者缩短时间.
+3. 自动调节的超参数包含这些内容:</p>
+<pre><code>- lr                         学习率 default 0.1
+- dim                        词向量维度 default 100
+- ws                         上下文窗口大小 default 5， cbow
+- epoch                      训练轮数 default 5
+- minCount                   最低词频 default 5
+- wordNgrams                 n-gram设置 default 1
+- loss                       损失函数 {hs,softmax} default softmax
+- minn                       最小字符长度 default 0
+- maxn                       最大字符长度 default 0
+- dsub                       全称为 "dimension subsampling"，用于控制输入向量的子采样率，以减少模型的计算复杂度和内存占用。它通过降低词嵌入（输入向量）的维度来加速训练和压缩模型。
+</code></pre>
+<ol start="4">
+<li>如何观察超参数调整过程，verbose: 该参数决定日志打印级别, 当设置为3, 可以将当前正在尝试的超参数打印出来。</li>
+</ol>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">fasttext训练，默认参数，字符级</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">fasttext</span>
+<span class="c1"># from config import Config</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="c1"># 1.加载项目配置</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+
+<span class="c1"># 获取当前时间，格式年月日</span>
+<span class="c1"># current_time = datetime.datetime.now().strftime(&quot;%Y%m%d&quot;)</span>
+
+<span class="c1"># 2.模型训练</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">fasttext</span><span class="o">.</span><span class="n">train_supervised</span><span class="p">(</span>
+    <span class="nb">input</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">char_train_path</span><span class="p">,</span>
+    <span class="n">autotuneValidationFile</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">char_dev_path</span><span class="p">,</span>
+    <span class="c1"># autotuneDuration=120,</span>
+    <span class="c1"># thread=1,   # 线程数</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>  <span class="c1"># 日志详细程度，最详细</span>
+    <span class="n">seed</span> <span class="o">=</span> <span class="mi">40</span>
+<span class="p">)</span>
+
+<span class="c1"># 3.模型保存</span>
+<span class="c1"># 模型保存路径为config.ft_model_save_path中的pkl文件名称添加后缀char_1</span>
+<span class="n">model</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">ft_model_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.bin&quot;</span><span class="p">,</span> <span class="s2">&quot;_char_2_auto.bin&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;保存模型为：</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">ft_model_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;_char_2_auto.bin&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="c1"># 4.模型评估</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">char_test_path</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;评估结果(样本数, 精确率, 召回率)：</span><span class="si">{</span><span class="n">results</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># 5.打印模型训练后关键信息</span>
+<span class="c1"># 词向量</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">get_word_vector</span><span class="p">(</span><span class="s2">&quot;武&quot;</span><span class="p">))</span>
+<span class="c1"># 类别标签</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
+<span class="c1"># # 词和词频</span>
+<span class="c1"># print(model.get_words(include_freq=True))</span>
+<span class="c1"># # 词-词频的列表</span>
+<span class="c1"># print(list(zip(*model.get_words(include_freq=True))))</span>
+</pre></div>
+</div>
+<pre><code>保存模型为：project/01-data\save_model\ft_model_char_2_auto.bin
+评估结果(样本数, 精确率, 召回率)：(10000, 0.9224, 0.9224)
+[-0.11191633 -0.30170417 -0.20765816 -0.8850599  -0.0895794   0.26496485
+ -0.5462401  -0.30731598 -0.14093824  0.01233022 -0.19457652 -0.3543809
+ -0.0960279  -0.8957915   0.30737227 -0.21287028  0.52121437  0.32020757
+  0.6257054   0.25932494  0.47807392  0.5341093  -0.27230263 -0.8183932
+  0.06339489 -0.6795334  -0.11878835  0.1734844  -0.02884247 -0.10001815
+ -0.41516352  0.12704898 -0.02451772  0.09648839  0.7391427   0.28803068
+ -0.33346432  0.0312924  -0.16843005  0.66330516  0.30407384  0.9052247
+ -0.1173528  -0.02668306  0.65726954  0.61454326  0.39516526  0.7822842
+  1.2177978   0.18431419  0.00825802 -0.00568291 -0.37621763]
+['__label__stocks', '__label__science', '__label__society', '__label__game', '__label__sports', '__label__finance', '__label__politics', '__label__education', '__label__realty', '__label__entertainment']
+</code></pre>
+<h4>5 fasttext_word_1_default词级别建模</h4>
+<p>字符级别建模（默认参数进行训练）</p>
+<blockquote>
+<p>fastText模型构建之后，选择的配置参数非常多，当前的fasttext_word_1_default.py我们只设置训练数据路径，所有的其他参数的值都采用默认。</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">fasttext训练，默认参数，词级</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">fasttext</span>
+<span class="c1"># from config import Config</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="c1"># 1.加载项目配置</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+
+<span class="c1"># 2.模型训练</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">fasttext</span><span class="o">.</span><span class="n">train_supervised</span><span class="p">(</span>
+    <span class="nb">input</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">word_train_path</span><span class="p">,</span>
+    <span class="n">dim</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">minn</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">maxn</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># 3.模型保存</span>
+<span class="c1"># 模型保存路径为config.ft_model_save_path中的pkl文件名称添加后缀word_1</span>
+<span class="n">model</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">ft_model_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.bin&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_word_1_default.bin&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;保存模型为：</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">ft_model_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="sa">f</span><span class="s2">&quot;_word_1_default.bin&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="c1"># 4.模型评估</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">word_test_path</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;评估结果(样本数, 精确率, 召回率)：</span><span class="si">{</span><span class="n">results</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># 5.打印模型训练后关键信息</span>
+<span class="c1"># 词向量</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">get_word_vector</span><span class="p">(</span><span class="s2">&quot;武&quot;</span><span class="p">))</span>
+<span class="c1"># 类别标签</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
+<span class="c1"># 词向量维度</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">get_dimension</span><span class="p">())</span>
+<span class="c1"># 词和词频</span>
+<span class="c1"># print(model.get_words(include_freq=True))</span>
+<span class="c1"># # 词-词频的列表</span>
+<span class="c1"># print(list(zip(*model.get_words(include_freq=True))))</span>
+</pre></div>
+</div>
+<pre><code>保存模型为：project/01-data\save_model\ft_model_word_1_default.bin
+评估结果(样本数, 精确率, 召回率)：(10000, 0.9171, 0.9171)
+[-0.20585863  0.32058287 -0.16799474  0.01949614 -0.06840044 -0.15625405
+  0.2796011   0.25564206 -0.01216106  0.31716117]
+['__label__realty', '__label__sports', '__label__society', '__label__entertainment', '__label__game', '__label__stocks', '__label__politics', '__label__finance', '__label__education', '__label__science']
+10
+</code></pre>
+<h4>6 fasttext_word_2_auto词级别建模</h4>
+<p>词级别建模（采用auto自动调参进行训练）</p>
+<blockquote>
+<p>fastText模型构建之后，选择的配置参数非常多，当前的fasttext_word_2_auto.py我们设置训练数据路径，并启用auto方式进行自动调参，注意自动调参需要增加验证集的设置。</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">fasttext训练，默认参数，词级</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">fasttext</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">config</span><span class="w"> </span><span class="kn">import</span> <span class="n">Config</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">f1_score</span><span class="p">,</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">precision_score</span><span class="p">,</span> <span class="n">recall_score</span>
+
+<span class="c1"># 1.加载项目配置</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+
+<span class="c1"># 获取当前时间，格式年月日</span>
+<span class="c1"># current_time = datetime.datetime.now().strftime(&quot;%Y%m%d&quot;)</span>
+
+<span class="c1"># 2.模型训练</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">fasttext</span><span class="o">.</span><span class="n">train_supervised</span><span class="p">(</span>
+    <span class="nb">input</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">word_train_path</span><span class="p">,</span>
+    <span class="n">autotuneValidationFile</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">word_dev_path</span><span class="p">,</span>
+    <span class="c1"># autotuneDuration=120,</span>
+    <span class="c1"># thread=1,   # 线程数</span>
+    <span class="n">verbose</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>  <span class="c1"># 日志详细程度，最详细</span>
+    <span class="n">seed</span> <span class="o">=</span> <span class="mi">40</span>
+<span class="p">)</span>
+
+<span class="c1"># 3.模型保存</span>
+<span class="c1"># 模型保存路径为config.ft_model_save_path中的pkl文件名称添加后缀word_1</span>
+<span class="n">model</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">ft_model_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.bin&quot;</span><span class="p">,</span> <span class="s2">&quot;_word_2_auto.bin&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;保存模型为：</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">ft_model_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.bin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;_word_2_auto.bin&quot;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="c1"># 4.模型评估</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">word_test_path</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;评估结果(样本数, 精确率, 召回率)：</span><span class="si">{</span><span class="n">results</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;F1: </span><span class="si">{</span><span class="mi">2</span><span class="o">*</span><span class="n">results</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">results</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">/</span><span class="p">(</span><span class="n">results</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">results</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># 5.打印模型训练后关键信息</span>
+<span class="c1"># 词向量</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">get_word_vector</span><span class="p">(</span><span class="s2">&quot;武&quot;</span><span class="p">))</span>
+<span class="c1"># 类别标签</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">labels</span><span class="p">)</span>
+<span class="c1"># # 词和词频</span>
+<span class="c1"># print(model.get_words(include_freq=True))</span>
+<span class="c1"># # 词-词频的列表</span>
+<span class="c1"># print(list(zip(*model.get_words(include_freq=True))))</span>
+</pre></div>
+</div>
+<pre><code>保存模型为：project/01-data\save_model\ft_model_word_2_auto.bin
+评估结果(样本数, 精确率, 召回率)：(10000, 0.9201, 0.9201)
+F1: 0.9201
+[ 3.11307721e-02 -1.67090185e-02 -7.69228092e-04 -1.75748374e-02
+  1.14657851e-02  1.87074766e-02 -4.24360577e-03 -1.82458591e-02
+  9.06496681e-03  6.57241151e-04  5.49079990e-03 -9.35889594e-03
+  1.50436824e-02 -5.28714098e-02 -2.26619840e-02  8.51097982e-03
+  8.69008247e-03 -3.85670178e-02  1.08065819e-02  4.03028540e-02
+  9.78424028e-03 -4.19572229e-03  1.82714835e-02  9.44608124e-04
+ -7.01940758e-03 -3.99002898e-03 -8.64784140e-03 -2.65155956e-02
+  1.46337105e-02 -3.33880261e-02  2.42980886e-02 -3.03938054e-02
+  2.15215385e-02  7.27505749e-03  1.59742273e-02  1.42424954e-02
+  6.61621056e-03 -1.09693063e-02  1.88465398e-02  1.63375940e-02
+ -1.72153842e-02  3.10335420e-02  6.41568471e-03 -1.93636902e-02
+ -3.24901752e-02 -2.55151615e-02 -1.44766942e-02  1.32799186e-02
+ -3.50802243e-02 -1.87097699e-03 -8.96299817e-03 -1.08504510e-02
+  2.50764377e-02 -3.64187709e-03  4.90628462e-03  6.75530545e-03
+  7.28338258e-04  2.41132267e-02  2.56251101e-03  1.84003916e-02
+ -2.98634768e-02 -1.42339943e-02 -1.10451477e-02  1.61470659e-02
+ -3.65338661e-02  2.20340248e-02 -2.69650463e-02 -7.73717370e-03
+ -2.72928998e-02 -7.58460443e-03 -7.57744769e-04 -1.53173963e-02
+ -5.48009761e-03  2.90961023e-02  3.20772314e-03 -2.58093458e-02
+ -2.73206700e-02 -1.51486658e-02  8.26278760e-04 -5.70014934e-04
+ -5.46794152e-03  4.22642455e-02 -2.43137646e-02  6.83830772e-03
+ -1.02195814e-02 -4.03527394e-02  1.57784633e-02 -3.13244388e-02
+ -8.39535054e-03  6.60255831e-03 -2.11314242e-02 -1.49152363e-02
+  4.47217971e-02 -4.23852056e-02  7.06567708e-03  1.53823737e-02
+  2.47239657e-02  4.17339392e-02 -5.09602949e-03  1.52632501e-02
+  4.18665539e-03  2.71120612e-02 -4.10612226e-02 -3.11160311e-02
+  1.18039530e-02  1.33949537e-02 -5.68231614e-03  4.48113754e-02
+ -2.82525197e-02  6.24767225e-03 -3.08494046e-02  1.66367386e-02
+  2.33989730e-02  1.03479931e-02 -2.06928998e-02 -6.76120399e-03
+ -1.25885885e-02  5.71586750e-03  3.37685905e-02  1.20281111e-02
+  1.09786410e-02  5.61597059e-03 -7.09117390e-03  4.20105085e-02
+  1.54741518e-02 -3.41759808e-03  1.35240164e-02  1.73282828e-02
+ -1.29983365e-03  3.62045690e-02 -4.00251225e-02 -3.17393383e-03
+  2.43458580e-02 -1.32439258e-02 -3.38693410e-02  1.06466692e-02
+  1.75454970e-02  8.42186064e-03  1.03057222e-03 -2.92220935e-02
+ -8.14399857e-04 -1.17898709e-03  2.21335720e-02  4.35308646e-03
+ -4.27201297e-03  2.40028510e-03  2.37123780e-02  2.55403556e-02
+  3.15040536e-02  5.16552525e-03  4.76622349e-03 -1.94130279e-02
+ -5.01008108e-02 -4.24671452e-03  1.69317871e-02  1.41180968e-02
+ -2.80464999e-02  3.02776229e-03  3.46527509e-02 -7.64971133e-04
+  8.35685246e-03 -1.35473432e-02 -2.87875091e-03  4.88582253e-02
+  1.69905145e-02  2.01450451e-03  8.84544849e-03  3.85545427e-03
+  2.99788415e-02  1.13445334e-02 -1.14844250e-03  8.65302235e-03
+  2.11693272e-02 -1.06549030e-02  1.64770372e-02 -1.94154994e-03
+  1.71996411e-02 -4.51412089e-02  1.39102358e-02 -5.96244261e-03
+ -2.73416080e-02  2.25873594e-03 -5.13987290e-03  1.73210017e-02
+  4.83420640e-02 -1.85768493e-02  1.85658634e-02 -1.66782606e-02
+  9.41186585e-03 -4.49249567e-03 -2.65753884e-02 -3.24646086e-02
+ -9.72120091e-03 -1.76333971e-02  1.05632814e-02  2.72650681e-02
+ -1.85644515e-02 -1.37650883e-02 -1.91056170e-04 -3.18786725e-02
+ -4.30270657e-03 -9.27180238e-03  3.49012762e-02  2.82330699e-02
+  3.35368849e-02 -2.06355099e-02  2.19249278e-02 -3.23851826e-03
+ -1.53091485e-02 -1.67134926e-02 -2.02404000e-02  3.42662819e-02
+ -5.02160564e-03 -3.75983049e-03  6.59081293e-03  4.07157764e-02
+  5.21994084e-02  1.86379552e-02 -1.40547962e-03  1.62907466e-02
+  2.80000232e-02  1.26985628e-02  2.19453014e-02 -2.12891027e-02
+  1.40470220e-04 -2.26513320e-03 -1.64792547e-03  5.30296713e-02
+ -8.99616256e-03  9.58172698e-03  1.40207373e-02 -1.89176109e-03
+  2.35963278e-02  4.42089699e-03  4.89089638e-02 -4.58457787e-03
+  2.37712376e-02  7.06935348e-03 -1.80008747e-02 -3.17859724e-02
+  7.32398406e-03  3.81394697e-04  9.62584000e-03  1.45305553e-02
+ -4.72152140e-03  4.42796946e-03 -4.19316255e-03 -3.47032445e-03
+  1.29845887e-02 -1.08364653e-02  1.35036255e-03 -5.71732223e-03
+  6.90371497e-03  1.30697414e-02  2.35692374e-02  1.01598976e-02
+  1.64227374e-02  4.30149445e-03  2.05148719e-02  2.04990320e-02
+  4.03173603e-02  2.33687218e-02 -4.88515245e-03 -2.11962070e-02
+  1.59128252e-02 -3.09886271e-03 -1.73156522e-02  1.50258681e-02
+ -7.76638370e-03 -8.19001067e-03 -1.71310548e-02  2.69568041e-02
+  1.33393873e-02  2.29068031e-03 -6.61399681e-05 -1.89383924e-02
+ -2.28339583e-02  1.20517714e-02  2.82171415e-03 -9.07934643e-03
+ -3.67865972e-02 -5.22640673e-03  1.22148087e-02  1.24169998e-02
+  2.33278424e-02 -2.44935299e-03  1.63270365e-02 -9.35977232e-03
+ -1.80437788e-02  2.56752390e-02  1.03914412e-02 -1.13222050e-02
+ -1.05873868e-02  3.62259522e-02 -2.62314491e-02  2.25543827e-02
+  4.04980779e-03  2.57926062e-03 -3.38417180e-02  2.36848146e-02
+  4.87227133e-03 -3.09092123e-02  1.44205429e-02  6.53068116e-03
+ -1.72998402e-02]
+['__label__realty', '__label__sports', '__label__society', '__label__entertainment', '__label__game', '__label__stocks', '__label__politics', '__label__finance', '__label__education', '__label__science']
+</code></pre>
+<h4>7 predict_fun离线预测</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">演示</span>
+<span class="sd">    模型预测</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">fasttext</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jieba</span>
+<span class="c1"># from config import Config</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pickle</span>
+
+<span class="c1"># 取消警告显示</span>
+<span class="c1"># import warnings</span>
+<span class="c1"># warnings.filterwarnings(&quot;ignore&quot;)</span>
+
+<span class="c1"># 1.加载配置文件</span>
+<span class="n">conf</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+
+<span class="c1"># 2.加载fasttext模型</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">fasttext</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="n">conf</span><span class="o">.</span><span class="n">ft_model_path</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.bin&quot;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;_word_2_auto.bin&quot;</span><span class="p">))</span>
+<span class="c1"># 3.模型预测函数</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">predict_fun</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="c1"># 1.jieba分词</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">jieba</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]))[:</span><span class="mi">30</span><span class="p">]</span>
+    <span class="c1"># 2.模型预测</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>   <span class="c1"># (标签, 概率)</span>
+    <span class="c1"># 3.获取预测类别</span>
+    <span class="n">y_pred_class</span> <span class="o">=</span> <span class="n">y_pred</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;__&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># y_pred_class = y_pred[0][0][9:]</span>
+    <span class="n">data</span><span class="p">[</span><span class="s1">&#39;pred_class&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_pred_class</span>
+    <span class="k">return</span> <span class="n">data</span>
+
+<span class="c1"># 4.测试</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;《射雕》群侠战高三：指点考生应考秘籍(图)&quot;</span><span class="p">}</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">predict_fun</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="c1"># {&#39;text&#39;: &#39;《射雕》群侠战高三：指点考生应考秘籍(图)&#39;, &#39;pred_class&#39;: &#39;education&#39;}</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="c1"># 计算推理延迟</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+        <span class="n">predict_fun</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="n">end</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;推理延迟：</span><span class="si">{</span><span class="p">(</span><span class="n">end</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mi">100</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>{'text': '《射雕》群侠战高三：指点考生应考秘籍(图)', 'pred_class': 'education'}
+</code></pre>
+<h4>8 api模型部署</h4>
+<p>本次对fastText这个基于词级别的自动调参模型，进行部署，核心是强化大家理解整个建模到对外提供服务的整个流程。</p>
+<ul>
+<li>第一步: 编写主服务逻辑代码.</li>
+<li>第二步: 启动Flask服务. （http://127.0.0.1:5000）</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">通过Flask组件，构建 路由 + 预测函数 的应用</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">flask</span><span class="w"> </span><span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">jsonify</span>
+<span class="c1"># from ft_predict_fun import predict_fun</span>
+<span class="c1"># from config import Config</span>
+
+<span class="c1"># 1.创建App应用</span>
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+<span class="c1"># 2.创建预测接口(路由 + 预测函数)</span>
+<span class="c1"># HTTP请求方法：GET（获取资源）, POST（提交数据）, PUT（更新资源）, DELETE（删除资源）</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">&#39;/predict&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;POST&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">():</span>
+    <span class="c1"># 获取用户请求中的数据</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;data: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># 调用预测函数</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">predict_fun</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<span class="c1"># 3.启动App应用</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># 支持局域网访问</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">api_host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">api_port</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code> * Serving Flask app '__main__'
+ * Debug mode: off
+
+
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://192.168.1.4:5000
+Press CTRL+C to quit
+</code></pre>
+<h4>9 api_test.py模型接口测试</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">创建一个Flask应用，并启动应用</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="c1"># from config import Config</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+<span class="c1"># 定义接口地址</span>
+<span class="n">url</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;http://</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">api_host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">api_port</span><span class="si">}</span><span class="s2">/predict&quot;</span>
+
+<span class="c1"># 测试调用</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="c1"># 1.测试通用API接口</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;请输入新闻标题：&quot;</span><span class="p">)</span>
+    <span class="c1"># 2.发送请求</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">text</span><span class="p">})</span>
+    <span class="c1"># 3.打印结果</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;预测结果为: </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;出问题了：</span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>预测结果为: {'pred_class': 'society', 'text': '男子为买网游装备深夜拦路抢劫女生'}
+</code></pre>
+<p>启动streamlit前端：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>streamlit<span class="w"> </span>run<span class="w"> </span>streamlit_app.py
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="image.png" src="../assets/img/project01-02/figure-723f8feeb00d.png" /></p>
+<h3 id="sec-7">2.3 总结</h3>
+<ul>
+<li>完成了fastText模型训练以及优化，其中包括数据处理、模型训练、模型评估以及模型部署及调用等。</li>
+</ul>
+<h2 id="sec-8">3 扩展-分类指标的 macro / micro /weighted 平均值有何区别</h2>
+<blockquote>
+<p>下面用 <strong>F1 分数</strong>说明三种平均方式。<br />
+单类 F1 公式：<strong>F1 = 2PR / (P+R)</strong></p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>平均方式</th>
+<th>怎么算（基于F1）</th>
+<th>直观理解</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Macro-F1</strong></td>
+<td>各类别 F1 先分别计算，再平均：<code>(F1_1 + ... + F1_k)/k</code></td>
+<td>每个类别“同等重要”</td>
+<td>想看模型对小类是否友好</td>
+</tr>
+<tr>
+<td><strong>Micro-F1</strong></td>
+<td>先汇总所有类别的 TP/FP/FN ，再算一个总 F1</td>
+<td>每个样本“同等重要”</td>
+<td>关注整体预测能力（大类影响更大）</td>
+</tr>
+<tr>
+<td><strong>Weighted-F1</strong></td>
+<td>各类别 F1 按该类样本数加权平均：<code>Σ(F1_i * support_i)/Σsupport_i</code></td>
+<td>介于 macro 和 micro 之间，考虑类别占比</td>
+<td>类别不平衡且希望结果更贴近真实数据分布</td>
+</tr>
+</tbody>
+</table></div>
+<p>举个栗子
+| 简单例子（3分类） | A类 | B类 | C类 | 结果 |
+|---|---:|---:|---:|---:|
+| 每类样本数（support） | 90 | 8 | 2 | 总计100 |
+| 每类 F1 | 0.95 | 0.60 | 0.20 | 假设汇总后<code>TP=92，FP=8，FN=8</code>  |
+| <strong>Macro-F1</strong> |  |  |  | <code>(0.95+0.60+0.20)/3 = 0.58</code> |
+| <strong>Weighted-F1</strong> |  |  |  | <code>(90×0.95 + 8×0.60 + 2×0.20)/100 = 0.91</code> |
+| <strong>Micro-F1</strong>（汇总后） |  |  |  | <code>Micro-Precision=92/(92+8)=0.92，Micro-Recall=92/(92+8)=0.92；2×0.92×0.92/(0.92+0.92)=0.92</code> |</p>
+<p><strong>一句话记忆：</strong><br />
+- <strong>Macro</strong>：看“每一类”表现（最公平）<br />
+- <strong>Micro</strong>：看“所有样本”整体表现<br />
+- <strong>Weighted</strong>：看“按样本占比”后的平均表现</p>
+<h2 id="sec-9">4 扩展-Flask框架 和 Streamlit框架</h2>
+<ol>
+<li>Flask 是一个用 Python 编写的轻量级 Web 应用框架，适合快速开发小型应用。教程 https://www.runoob.com/flask/flask-tutorial.html</li>
+<li>Streamlit 是一个用 Python 编写的面向数据科学的开源框架，可快速构建交互式 Web 页面。教程 https://docs.streamlit.io/; https://30days.streamlit.app/</li>
+</ol>
+<h2 id="sec-10">5 常见面试题</h2>
+<h4>1 简述随机森林的模型原理</h4>
+<pre><code>1. 随机森林是一种基于 Bagging 的集成学习方法，通过构建多棵相互独立的决策树来降低模型方差，提高泛化能力。
+2. 随机选择样本和特征构造训练子集；
+3. 多个决策树并行训练，最终以分类投票 / 回归平均方式输出结果。
+</code></pre>
+<h4>2 为什么要做基线模型？</h4>
+<pre><code>1. 快速验证任务可行性与数据质量；
+2. 提供性能参考基准，便于后续优化对比；
+</code></pre>
+<h4>3 说说 TF-IDF 的核心思想</h4>
+<pre><code>1. 将文本转为数值向量;
+2. 每个词的TF-IDF值 = 词频 * 逆文档频率;
+3. 词频高且在语料中不常见的词更重要。
+</code></pre>
+<h4>4 训练与评估时常用哪些指标？</h4>
+<pre><code>1. 准确率、精确率、召回率、F1；
+2. 多分类常用 weighted/macro/micro 平均方式评估。
+</code></pre>
+<h4>5 fastText 有哪些优势？</h4>
+<pre><code>1. fastText 端到端训练，输入为分词后的文本;
+2. 支持 n-gram特征 和 子词建模，训练快、模型小。
+</code></pre>
+<h4>6 fastText 中文常见预处理方式</h4>
+<pre><code>1. subword字词建模：适合低资源或 OOV；
+2. n-gram词级分词：表达更完整语义。
+</code></pre>
+<h4>7 如何部署文本分类模型到服务端？</h4>
+<pre><code>1. 封装预测函数，提供 Flask 接口；
+2. 构造streamlit前端，通过 HTTP 请求调用服务并展示结果。
+</code></pre><div class="done-bar"><button class="mark-done-btn" data-key="project01-02" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="project01-01.html"><div class="dir">← 上一篇</div><div class="name">🧭 项目背景、架构与数据分析</div></a><a class="next" href="project01-03.html"><div class="dir">下一篇 →</div><div class="name">🧠 BERT 微调与服务部署</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">1 随机森林模型</a><a class="lv3" href="#sec-2">1.1 代码结构图</a><a class="lv3" href="#sec-3">1.2 代码实现</a><a class="lv2" href="#sec-4">2 Fastext 模型</a><a class="lv3" href="#sec-5">2.1 代码结构图</a><a class="lv3" href="#sec-6">2.2 代码实现</a><a class="lv3" href="#sec-7">2.3 总结</a><a class="lv2" href="#sec-8">3 扩展-分类指标的 macro / micro /weighted 平均值有何区别</a><a class="lv2" href="#sec-9">4 扩展-Flask框架 和 Streamlit框架</a><a class="lv2" href="#sec-10">5 常见面试题</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
