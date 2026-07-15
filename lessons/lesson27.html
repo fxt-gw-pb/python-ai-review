@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>决策树：ID3、C4.5 与 CART · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 27 讲</div>
+<h1>🌳 决策树：ID3、C4.5 与 CART</h1>
+<div class="chips"><span class="chip">🏷️ ID3 / C4.5</span><span class="chip">🏷️ CART</span><span class="chip">🏷️ 剪枝</span></div>
+</div>
+<h2 id="sec-1">决策树简介</h2>
+<p><strong>学习目标</strong></p>
+<p>1.理解决策树算法的基本思想</p>
+<p>2.知道构建决策树的步骤</p>
+<hr />
+<h3 id="sec-2">【理解】决策树例子</h3>
+<p>决策树算法是一种监督学习算法，英文是Decision tree。</p>
+<p>决策树思想的来源非常朴素，试想每个人的大脑都有类似于if-else这样的逻辑判断，这其中的if表示的是条件，if之后的else就是一种选择或决策。程序设计中的条件分支结构就是if-else结构，最早的决策树就是利用这类结构分割数据的一种分类学习方法。</p>
+<p>比如：你母亲要给你介绍男朋友，是这么来对话的：</p>
+<p>女儿：多大年纪了？</p>
+<p>母亲：26。</p>
+<p>女儿：长的帅不帅？</p>
+<p>母亲：挺帅的。</p>
+<p>女儿：收入高不？</p>
+<p>母亲：不算很高，中等情况。</p>
+<p>女儿：是公务员不？</p>
+<p>母亲：是，在税务局上班呢。</p>
+<p>女儿：那好，我去见见。</p>
+<p>于是你在脑袋里面就有了下面这张图：</p>
+<p><img loading="lazy" decoding="async" src="../assets/img/lesson27/01.png" /> </p>
+<p>作为女孩的你在决策过程就是典型的分类树决策。相当于通过年龄、长相、收入和是否公务员对将男人分为两个类别：见和不见。</p>
+<h3 id="sec-3">【知道】决策树简介</h3>
+<p><strong>决策树是什么？</strong></p>
+<p>决策树是一种树形结构，树中每个内部节点表示一个特征上的判断，每个分支代表一个判断结果的输出，每个叶子节点代表一种分类结果</p>
+<p><strong>决策树的建立过程</strong>：</p>
+<p>1.特征选择：选取有较强分类能力的特征。</p>
+<p>2.决策树生成：根据选择的特征生成决策树。</p>
+<p>3.决策树也易过拟合，采用剪枝的方法缓解过拟合。</p>
+<h2 id="sec-4">ID3决策树</h2>
+<p><strong>学习目标：</strong></p>
+<p>1.理解信息熵的意义</p>
+<p>2.理解信息增益的作用</p>
+<p>3.知道ID3树的构建流程</p>
+<h3 id="sec-5">【理解】信息熵</h3>
+<p>ID3 树是基于信息增益构建的决策树.</p>
+<p>定义</p>
+<ul>
+<li>熵在信息论中代表随机变量不确定度的度量。</li>
+<li>熵越大，数据的不确定性度越高</li>
+<li>熵越小，数据的不确定性越低</li>
+</ul>
+<p>公式</p>
+<p>$$
+\large
+H = -\sum_{i=1}^{k}p_i\log(p_i)
+$$</p>
+<p>例子1：假如有三个类别，分别占比为：{1/3,1/3,1/3}，信息熵计算结果为：</p>
+<p>$H=-\frac{1}{3}\log(\frac{1}{3})-\frac{1}{3}\log(\frac{1}{3})-\frac{1}{3}\log(\frac{1}{3})=1.0986$</p>
+<p>例子2：假如有三个类别，分别占比为：{1/10,2/10,7/10}，信息熵计算结果为：</p>
+<p>$H=-\frac{1}{10}\log(\frac{1}{10})-\frac{2}{10}\log(\frac{2}{10})-\frac{7}{10}\log(\frac{7}{10})=0.8018$</p>
+<p>熵越大，表示整个系统不确定性越大，越随机，反之确定性越强。</p>
+<p>例子3：假如有三个类别，分别占比为：{1,0,0}，信息熵计算结果为：</p>
+<p>$H=-1\log(1)=0$</p>
+<h3 id="sec-6">【理解】信息增益</h3>
+<p>定义</p>
+<p>特征$A$对训练数据集D的信息增益$g(D,A)$，定义为集合$D$的熵$H(D)$与特征A给定条件下D的熵$H(D|A)$之差。即</p>
+<p>$$
+\large
+g(D,A)=H(D)-H(D|A)
+$$</p>
+<p>根据信息增益选择特征方法是：对训练数据集D，计算其每个特征的信息增益，并比较它们的大小，并选择信息增益最大的特征进行划分。<strong>表示由于特征$A$而使得对数据D的分类不确定性减少的程度。</strong></p>
+<p>算法：</p>
+<p>设训练数据集为D，$\mid D\mid$表示其样本个数。设有$K$个类$C_k$，$k=1,2,\cdots,K$，$\mid C_k\mid$为属于类$C_k$的样本个数，$\sum\limits_{k=1}^{K}=\mid{D}\mid$。设特征A有$n$个不同取值${a_1, a_2, \cdots,a_n}$，根据特征A的取值将D划分为$n$个子集$D_1, D_2, \cdots,D_n$，$\mid D_i\mid$为$D_i$样本个数，$\sum\limits_{i=1}^n\mid D_i\mid=\mid D\mid$。子集中属于类$C_k$的样本集合为$D_{ik}$，即$D_{ik}=D_i\bigcap C_k$，$\mid D_{ik}\mid$为$D_{ik}$的样本个数。信息增益算法如下：</p>
+<ul>
+<li>
+<p>输入：训练数据集D和特征A；</p>
+</li>
+<li>
+<p>输出：特征A对训练数据集D的信息增益$g(D,A)$</p>
+</li>
+<li>
+<p>(1) 计算数据集D的经验熵$H(D)$</p>
+</li>
+</ul>
+<p>$H(D)=-\sum\limits_{k=1}^{K}\frac{\mid C_k\mid}{\mid D\mid}\log_2\frac{\mid C_k\mid}{\mid D\mid}$</p>
+<ul>
+<li>(2) 计算特征A对数据集D的经验条件熵$H(D\mid A)$</li>
+</ul>
+<p>$H(D\mid A)=\sum\limits_{i=1}^{n}\frac{\mid D_i\mid}{\mid D\mid}H(D_i)=-\sum\limits_{i=1}^{n}\frac{\mid D_i\mid}{\mid D\mid}\sum_\limits{k=1}^{K}\frac{\mid D_{ik}\mid}{\mid D_i\mid}\log_2\frac{\mid D_{ik}\mid}{\mid D_i\mid}$</p>
+<ul>
+<li>(3) 计算信息增益</li>
+</ul>
+<p>$g(D,A)=H(D)-H(D|A)$</p>
+<p>例子：</p>
+<p>已知6个样本，根据特征a：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>特征a</th>
+<th>目标值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>α</td>
+<td>A</td>
+</tr>
+<tr>
+<td>α</td>
+<td>A</td>
+</tr>
+<tr>
+<td>β</td>
+<td>B</td>
+</tr>
+<tr>
+<td>α</td>
+<td>A</td>
+</tr>
+<tr>
+<td>β</td>
+<td>B</td>
+</tr>
+<tr>
+<td>α</td>
+<td>B</td>
+</tr>
+</tbody>
+</table></div>
+<p>α 部分对应的目标值为： AAAB</p>
+<p>β 部分对应的目标值为：BB</p>
+<p><img loading="lazy" decoding="async" alt="image-20230905115142450" src="../assets/img/lesson27/image-20230905115142450.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230905115310935" src="../assets/img/lesson27/image-20230905115310935.png" /></p>
+<h3 id="sec-7">【知道】ID3树构建流程</h3>
+<p><strong>构建流程：</strong></p>
+<ol>
+<li>计算每个特征的信息增益</li>
+<li>使用信息增益最大的特征将数据集 S 拆分为子集</li>
+<li>使用该特征（信息增益最大的特征）作为决策树的一个节点</li>
+<li>使用剩余特征对子集重复上述（1，2，3）过程</li>
+</ol>
+<p><strong>案例：</strong></p>
+<p>已知：某一个论坛客户流失率数据</p>
+<p>需求：考察性别、活跃度特征哪一个特征对流失率的影响更大</p>
+<p><img loading="lazy" decoding="async" alt="image-20230905142136958" src="../assets/img/lesson27/image-20230905142136958.png" /></p>
+<p>分析：</p>
+<p>15条样本：5正样本、10个负样本</p>
+<ul>
+<li>
+<p>计算熵</p>
+</li>
+<li>
+<p>计算性别信息增益</p>
+</li>
+<li>
+<p>计算活跃度信息增益</p>
+</li>
+<li>
+<p>比较两个特征的信息增益 </p>
+</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image-20230905142204113" src="../assets/img/lesson27/image-20230905142204113.png" /></p>
+<p>1.计算熵</p>
+<p><img loading="lazy" decoding="async" alt="image-20230905142647180" src="../assets/img/lesson27/image-20230905142647180.png" /></p>
+<p>2.计算性别条件熵(a="性别")：</p>
+<p><img loading="lazy" decoding="async" alt="image-20230905142707392" src="../assets/img/lesson27/image-20230905142707392.png" /></p>
+<p>计算性别信息增益(a="性别")</p>
+<p><img loading="lazy" decoding="async" alt="image-20230905142723434" src="../assets/img/lesson27/image-20230905142723434.png" /></p>
+<ol start="3">
+<li>计算活跃度条件熵(a=“活跃度")</li>
+</ol>
+<p><img loading="lazy" decoding="async" alt="image-20230905142802304" src="../assets/img/lesson27/image-20230905142802304.png" /></p>
+<p>计算活跃度信息增益(a=活跃度")</p>
+<p><img loading="lazy" decoding="async" alt="image-20230905142825748" src="../assets/img/lesson27/image-20230905142825748.png" /></p>
+<p><strong>结论</strong>：活跃度的信息增益比性别的信息增益大，对用户流失的影响比性别大。</p>
+<p><img loading="lazy" decoding="async" alt="image-20230914160802488" src="../assets/img/lesson27/image-20230914160802488.png" /></p>
+<h2 id="sec-8">C4.5决策树</h2>
+<p><strong>学习目标：</strong></p>
+<p>1.理解信息增益率的意义</p>
+<p>2.知道C4.5树的构建方法</p>
+<h3 id="sec-9">【理解】信息增益率</h3>
+<p><img loading="lazy" decoding="async" alt="image-20230905150018847" src="../assets/img/lesson27/image-20230905150018847.png" /></p>
+<ol>
+<li>Gain_Ratio 表示信息增益率</li>
+<li>IV 表示分裂信息、内在信息</li>
+<li>特征的信息增益 ➗ 内在信息</li>
+<li>如果某个特征的特征值种类较多，则其内在信息值就越大。即：特征值种类越多，除以的系数就越大。</li>
+<li>如果某个特征的特征值种类较小，则其内在信息值就越小。即：特征值种类越小，除以的系数就越小。</li>
+</ol>
+<p><strong>信息增益比本质： 是在信息增益的基础之上乘上一个惩罚参数。特征个数较多时，惩罚参数较小；特征个数较少时，惩罚参数较大。惩罚参数：数据集D以特征A作为随机变量的熵的倒数。</strong></p>
+<h3 id="sec-10">【知道】C4.5树构建说明</h3>
+<p><img loading="lazy" decoding="async" alt="image-20230905150001475" src="../assets/img/lesson27/image-20230905150001475.png" /></p>
+<p>特征a的信息增益率：</p>
+<ol>
+<li>信息增益：<code>1-0.5408520829727552=0.46</code></li>
+<li>特征熵：<code>-4/6*math.log(4/6, 2) -2/6*math.log(2/6, 2)=0.9182958340544896</code></li>
+<li>信息增益率：<code>信息增益/分裂信息=0.46/0.9182958340544896=0.5</code></li>
+</ol>
+<p>特征b的信息增益率：</p>
+<ol>
+<li>信息增益：1</li>
+<li>特征熵：<code>-1/6*math.log(1/6, 2) * 6=2.584962500721156</code></li>
+<li>信息增益率：<code>信息增益/信息熵=1/2.584962500721156=0.38685280723454163</code></li>
+</ol>
+<p>由计算结果可见，特征1的信息增益率大于特征2的信息增益率，根据信息增益率，我们应该选择特征1作为分裂特征。</p>
+<h2 id="sec-11">CART决策树</h2>
+<p><strong>学习目标：</strong></p>
+<p>1.理解基尼指数的作用</p>
+<p>2.知道cart构建的特征选择方法</p>
+<h3 id="sec-12">【知道】Cart树简介</h3>
+<p>Cart模型是一种决策树模型，它即可以用于分类，也可以用于回归。</p>
+<p>分类和回归树模型采用不同的最优化策略。Cart回归树使用平方误差最小化策略，Cart分类生成树采用的基尼指数最小化策略。</p>
+<h3 id="sec-13">【理解】基尼指数计算方法</h3>
+<p><img loading="lazy" decoding="async" alt="image-20230905153217302" src="../assets/img/lesson27/image-20230905153217302.png" /></p>
+<ol>
+<li>
+<p>信息增益（ID3）、信息增益率值越大（C4.5），则说明优先选择该特征。</p>
+</li>
+<li>
+<p>基尼指数值越小（cart），则说明优先选择该特征。</p>
+</li>
+</ol>
+<h3 id="sec-14">【理解】基尼指数计算举例</h3>
+<p><img loading="lazy" decoding="async" alt="image-20230905155453855" src="../assets/img/lesson27/image-20230905155453855.png" /></p>
+<h4>是否有房</h4>
+<p>计算过程如下：根据是否有房将目标值划分为两部分：</p>
+<ol>
+<li>计算有房子的基尼值： <strong>有房子有 1、4、7 共计三个样本，对应：3个no、0个yes</strong></li>
+</ol>
+<p>$G i n i(\text {是否有房，yes })=1-\left(\frac{0}{3}\right)^{2}-\left(\frac{3}{3}\right)^{2}=0$</p>
+<ol start="2">
+<li>计算无房子的基尼值：<strong>无房子有 2、3、5、6、8、9、10 共七个样本，对应：4个no、3个yes</strong></li>
+</ol>
+<p>$\operatorname{Gini}(\text {是否有房，no })=1-\left(\frac{3}{7}\right)^{2}-\left(\frac{4}{7}\right)^{2}=0.4898$</p>
+<ol start="3">
+<li>计算基尼指数：<strong>第一部分样本数量占了总样本的 3/10、第二部分样本数量占了总样本的 7/10：</strong></li>
+</ol>
+<p>$\operatorname{Gini_{-}} i n \operatorname{dex}(D, \text { 是否有房 })=\frac{7}{10} * 0.4898+\frac{3}{10} * 0=0.343$</p>
+<p><img loading="lazy" decoding="async" alt="image-20230905153119221" src="../assets/img/lesson27/image-20230905153119221.png" /></p>
+<h4>婚姻状况</h4>
+<ol>
+<li>计算  <strong>{married} 和 {single,divorced}</strong> 情况下的基尼指数：</li>
+</ol>
+<p>结婚的基尼值，有 2、4、6、9 共 4 个样本，并且对应目标值全部为 no：</p>
+<p>$\operatorname{Gini_index}(D,\text{{married}})=0$</p>
+<p>不结婚的基尼值，有 1、3、5、7、8、10 共 6 个样本，并且对应 3 个 no，3 个 yes：</p>
+<p>$\operatorname{Gini_index}(D, \text { {single,divorced} })=1-\left(\frac{3}{6}\right)^{2}-\left(\frac{3}{6}\right)^{2}=0.5$</p>
+<p>以 married 作为分裂点的基尼指数：</p>
+<p>$\operatorname{Gini_index}(D, \text { married })=\frac{4}{10} * 0+\frac{6}{10} *\left[1-\left(\frac{3}{6}\right)^{2}-\left(\frac{3}{6}\right)^{2}\right]=0.3$</p>
+<ol start="2">
+<li>计算  <strong>{single} | {married,divorced}</strong> 情况下的基尼指数</li>
+</ol>
+<p>$\operatorname{Gini_index}(D,\text{婚姻状况})=\frac{4}{10} * 0.5+\frac{6}{10} *\left[1-\left(\frac{1}{6}\right)^{2}-\left(\frac{5}{6}\right)^{2}\right]=0.367$</p>
+<ol start="3">
+<li>计算  <strong>{divorced} | {single,married}</strong> 情况下基尼指数</li>
+</ol>
+<p>$\operatorname{Gini_index}(D, \text { 婚姻状况 })=\frac{2}{10} * 0.5+\frac{8}{10} *\left[1-\left(\frac{2}{8}\right)^{2}-\left(\frac{6}{8}\right)^{2}\right]=0.4$</p>
+<ol start="4">
+<li>最终：该特征的基尼值为 0.3，并且预选分裂点为：<strong>{married} 和 {single,divorced}</strong></li>
+</ol>
+<p><img loading="lazy" decoding="async" alt="image-20230905153103621" src="../assets/img/lesson27/image-20230905153103621.png" /></p>
+<h4>年收入</h4>
+<p>先将数值型属性升序排列，以相邻中间值作为待确定分裂点：</p>
+<p><img loading="lazy" decoding="async" alt="image-20230905153041427" src="../assets/img/lesson27/image-20230905153041427.png" /></p>
+<p>以年收入 65 将样本分为两部分，计算基尼指数:</p>
+<p>$节点为65时:{年收入}=\frac{1}{10} * 0 + \frac{9}{10} *\left[1-\left(\frac{6}{9}\right)^{2}-\left(\frac{3}{9}\right)^{2}\right]=0.4$</p>
+<p>以此类推计算所有分割点的基尼指数，我们发现最小的基尼指数为 0.3。</p>
+<p>此时，我们发现：</p>
+<ol>
+<li>以是否有房作为分裂点的基尼指数为：0.343</li>
+<li>以婚姻状况为分裂特征、以 married 作为分裂点的基尼指数为：0.3</li>
+<li>以年收入作为分裂特征、以 97.5 作为分裂点的的基尼指数为：0.3</li>
+</ol>
+<p>最小基尼指数有两个分裂点，我们随机选择一个即可，假设婚姻状况，则可确定决策树如下：</p>
+<p><img loading="lazy" decoding="async" src="../assets/img/lesson27/13.png" /></p>
+<p>重复上面步骤，直到每个叶子结点纯度达到最高.</p>
+<h3 id="sec-15">【知道】比较</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th><strong>名称</strong></th>
+<th><strong>提出时间</strong></th>
+<th><strong>分支方式</strong></th>
+<th><strong>特点</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ID3</td>
+<td>1975</td>
+<td>信息增益</td>
+<td>1.ID3只能对离散属性的数据集构成决策树  2.倾向于选择取值较多的属性</td>
+</tr>
+<tr>
+<td>C4.5</td>
+<td>1993</td>
+<td>信息增益率</td>
+<td>1.缓解了ID3分支过程中总喜欢偏向选择值较多的属性  2.可处理连续数值型属性，也增加了对缺失值的处理方法  3.只适合于能够驻留于内存的数据集,大数据集无能为力</td>
+</tr>
+<tr>
+<td>CART</td>
+<td>1984</td>
+<td>基尼指数</td>
+<td>1.可以进行分类和回归，可处理离散属性，也可以处理连续属性  2.采用基尼指数，计算量减小  3.一定是二叉树</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="sec-16">【实践】泰坦尼克号生存案例</h2>
+<h3 id="sec-17">案例背景</h3>
+<p>泰坦尼克号沉没是历史上最著名的沉船事件。1912年4月15日，在她的处女航中，泰坦尼克号在与冰山相撞后沉没，在2224名乘客和船员中造成1502人死亡。这场耸人听闻的悲剧震惊了国际社会，并为船舶制定了更好的安全规定。 造成海难失事的原因之一是乘客和船员没有足够的救生艇。尽管幸存下来有一些运气因素，但有些人比其他人更容易生存，例如妇女，儿童和社会地位较高的人群。 在这个案例中，我们要求您完成对哪些人可能存活的分析。</p>
+<p>数据集中的特征包括票的类别，是否存活，乘坐班次，姓名，年龄，上船港口，房间，性别等。</p>
+<p><img loading="lazy" decoding="async" alt="image-20230905161031728" src="../assets/img/lesson27/image-20230905161031728.png" /></p>
+<h3 id="sec-18">API介绍</h3>
+<p>class sklearn.tree.DecisionTreeClassifier(criterion=’gini’, max_depth=None,random_state=None)</p>
+<ul>
+<li>criterion</li>
+<li>特征选择标准</li>
+<li>"gini"或者"entropy"，前者代表基尼系数，后者代表信息增益。一默认"gini"，即CART算法。</li>
+<li>min_samples_split</li>
+<li>内部节点再划分所需最小样本数</li>
+<li>这个值限制了子树继续划分的条件，如果某节点的样本数少于min_samples_split，则不会继续再尝试选择最优特征来进行划分。 默认是2.如果样本量不大，不需要管这个值。如果样本量数量级非常大，则推荐增大这个值。我之前的一个项目例子，有大概10万样本，建立决策树时，我选择了min_samples_split=10。可以作为参考。</li>
+<li>min_samples_leaf</li>
+<li>叶子节点最少样本数</li>
+<li>这个值限制了叶子节点最少的样本数，如果某叶子节点数目小于样本数，则会和兄弟节点一起被剪枝。 默认是1,可以输入最少的样本数的整数，或者最少样本数占样本总数的百分比。如果样本量不大，不需要管这个值。如果样本量数量级非常大，则推荐增大这个值。之前的10万样本项目使用min_samples_leaf的值为5，仅供参考。</li>
+<li>max_depth</li>
+<li>决策树最大深度</li>
+<li>决策树的最大深度，默认可以不输入，如果不输入的话，决策树在建立子树的时候不会限制子树的深度。一般来说，数据少或者特征少的时候可以不管这个值。如果模型样本量多，特征也多的情况下，推荐限制这个最大深度，具体的取值取决于数据的分布。常用的可以取值10-100之间</li>
+<li>random_state</li>
+<li>随机数种子</li>
+</ul>
+<h3 id="sec-19">案例实现</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.compose</span><span class="w"> </span><span class="kn">import</span> <span class="n">ColumnTransformer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.impute</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleImputer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">classification_report</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">OneHotEncoder</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">DecisionTreeClassifier</span><span class="p">,</span> <span class="n">plot_tree</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;data/train.csv&quot;</span><span class="p">)</span>
+<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Pclass&quot;</span><span class="p">,</span> <span class="s2">&quot;Sex&quot;</span><span class="p">,</span> <span class="s2">&quot;Age&quot;</span><span class="p">,</span> <span class="s2">&quot;Fare&quot;</span><span class="p">,</span> <span class="s2">&quot;Embarked&quot;</span><span class="p">]</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">features</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Survived&quot;</span><span class="p">]</span>
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="n">numeric</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Pclass&quot;</span><span class="p">,</span> <span class="s2">&quot;Age&quot;</span><span class="p">,</span> <span class="s2">&quot;Fare&quot;</span><span class="p">]</span>
+<span class="n">category</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Sex&quot;</span><span class="p">,</span> <span class="s2">&quot;Embarked&quot;</span><span class="p">]</span>
+<span class="n">preprocess</span> <span class="o">=</span> <span class="n">ColumnTransformer</span><span class="p">([</span>
+    <span class="p">(</span><span class="s2">&quot;num&quot;</span><span class="p">,</span> <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;median&quot;</span><span class="p">),</span> <span class="n">numeric</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;cat&quot;</span><span class="p">,</span> <span class="n">Pipeline</span><span class="p">([</span>
+        <span class="p">(</span><span class="s2">&quot;imputer&quot;</span><span class="p">,</span> <span class="n">SimpleImputer</span><span class="p">(</span><span class="n">strategy</span><span class="o">=</span><span class="s2">&quot;most_frequent&quot;</span><span class="p">)),</span>
+        <span class="p">(</span><span class="s2">&quot;onehot&quot;</span><span class="p">,</span> <span class="n">OneHotEncoder</span><span class="p">(</span><span class="n">handle_unknown</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">)),</span>
+    <span class="p">]),</span> <span class="n">category</span><span class="p">),</span>
+<span class="p">])</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Pipeline</span><span class="p">([</span>
+    <span class="p">(</span><span class="s2">&quot;preprocess&quot;</span><span class="p">,</span> <span class="n">preprocess</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;tree&quot;</span><span class="p">,</span> <span class="n">DecisionTreeClassifier</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)),</span>
+<span class="p">])</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">),</span> <span class="n">zero_division</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+<span class="n">plot_tree</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">named_steps</span><span class="p">[</span><span class="s2">&quot;tree&quot;</span><span class="p">],</span>
+    <span class="n">feature_names</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">named_steps</span><span class="p">[</span><span class="s2">&quot;preprocess&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">(),</span>
+    <span class="n">class_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;未生还&quot;</span><span class="p">,</span> <span class="s2">&quot;生还&quot;</span><span class="p">],</span>
+    <span class="n">filled</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">max_depth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>相比其他学习模型，决策树在模型描述上有巨大的优势，决策树的逻辑推断非常直观，具有清晰的可解释性，也有很方便的模型的可视化。在决策树的使用中，无需考虑对数据量化和标准化，就能达到比较好的识别率。</p>
+<h2 id="sec-20">回归决策树</h2>
+<p><strong>学习目标</strong>：</p>
+<p>1.了解回归决策树的构建原理</p>
+<p>2.能利用回归决策树API解决问题</p>
+<h3 id="sec-21">【了解】回归决策树构建原理</h3>
+<p>CART 回归树和 CART 分类树的不同之处在于:</p>
+<ol>
+<li>CART 分类树预测输出的是一个离散值，CART 回归树预测输出的是一个连续值。</li>
+<li>CART 分类树使用基尼指数作为划分、构建树的依据，CART 回归树使用平方损失。</li>
+<li>分类树使用叶子节点里出现更多次数的类别作为预测类别，回归树则采用叶子节点里均值作为预测输出</li>
+</ol>
+<p><strong>CART 回归树构建:</strong></p>
+<p>$$
+\operatorname{Loss}(y, f(x))=(f(x)-y)^{2}
+$$</p>
+<p><strong>例子：</strong></p>
+<p>假设：数据集只有 1 个特征 x, 目标值值为 y，如下图所示：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>x</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+<th>10</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>y</td>
+<td>5.56</td>
+<td>5.7</td>
+<td>5.91</td>
+<td>6.4</td>
+<td>6.8</td>
+<td>7.05</td>
+<td>8.9</td>
+<td>8.7</td>
+<td>9</td>
+<td>9.05</td>
+</tr>
+</tbody>
+</table></div>
+<p>由于只有 1 个特征，所以只需要选择该特征的最优划分点，并不需要计算其他特征。</p>
+<ol>
+<li><strong>先将特征 x 的值排序，并取相邻元素均值作为待划分点，如下图所示：</strong></li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>s</th>
+<th>1.5</th>
+<th>2.5</th>
+<th>3.5</th>
+<th>4.5</th>
+<th>5.5</th>
+<th>6.5</th>
+<th>7.5</th>
+<th>8.5</th>
+<th>9.5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<ol start="2">
+<li><strong>计算每一个划分点的平方损失，例如：1.5 的平方损失计算过程为：</strong></li>
+</ol>
+<p>R1 为 小于 1.5 的样本个数，样本数量为：1，其输出值为：5.56</p>
+<p>$R_1 =5.56$</p>
+<p>R2 为 大于 1.5 的样本个数，样本数量为：9 ，其输出值为：</p>
+<p>$R_2=(5.7+5.91+6.4+6.8+7.05+8.9+8.7+9+9.05) / 9=7.50$</p>
+<p>该划分点的平方损失：</p>
+<p>$L(1.5)=(5.56-5.56)^{2}+\left[(5.7-7.5)^{2}+(5.91-7.5)^{2}+\ldots+(9.05-7.5)^{2}\right]=0+15.72=15.72$</p>
+<ol start="3">
+<li><strong>以此方式计算 2.5、3.5... 等划分点的平方损失，结果如下所示：</strong></li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>s</th>
+<th>1.5</th>
+<th>2.5</th>
+<th>3.5</th>
+<th>4.5</th>
+<th>5.5</th>
+<th>6.5</th>
+<th>7.5</th>
+<th>8.5</th>
+<th>9.5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>m(s)</td>
+<td>15.72</td>
+<td>12.07</td>
+<td>8.36</td>
+<td>5.78</td>
+<td>3.91</td>
+<td><strong>1.93</strong></td>
+<td>8.01</td>
+<td>11.73</td>
+<td>15.74</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="4">
+<li><strong>当划分点 s=6.5 时，m(s) 最小。因此，第一个划分变量：特征为 X, 切分点为 6.5，即：j=x,  s=6.5</strong></li>
+</ol>
+<p><img loading="lazy" decoding="async" alt="image-20220305183857165" src="../assets/img/lesson27/cart1.png" /></p>
+<ol start="5">
+<li><strong>对左子树的 6 个结点计算每个划分点的平方式损失，找出最优划分点：</strong></li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>x</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>y</td>
+<td>5.56</td>
+<td>5.7</td>
+<td>5.91</td>
+<td>6.4</td>
+<td>6.8</td>
+<td>7.05</td>
+</tr>
+</tbody>
+</table></div>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>s</th>
+<th>1.5</th>
+<th>2.5</th>
+<th>3.5</th>
+<th>4.5</th>
+<th>5.5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>c1</td>
+<td>5.56</td>
+<td>5.63</td>
+<td>5.72</td>
+<td>5.89</td>
+<td>6.07</td>
+</tr>
+<tr>
+<td>c2</td>
+<td>6.37</td>
+<td>6.54</td>
+<td>6.75</td>
+<td>6.93</td>
+<td>7.05</td>
+</tr>
+</tbody>
+</table></div>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>s</th>
+<th>1.5</th>
+<th>2.5</th>
+<th>3.5</th>
+<th>4.5</th>
+<th>5.5</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>m(s)</td>
+<td>1.3087</td>
+<td>0.754</td>
+<td>0.2771</td>
+<td>0.4368</td>
+<td>1.0644</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="6">
+<li><strong>s=3.5时，m(s) 最小，所以左子树继续以 3.5 进行分裂:</strong></li>
+</ol>
+<p><img loading="lazy" decoding="async" alt="" src="../assets/img/lesson27/cart2.png" /></p>
+<ol start="7">
+<li><strong>假设在生成3个区域</strong> 之后停止划分，以上就是回归树。每一个叶子结点的输出为：挂在该结点上的所有样本均值。</li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>x</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+<th>10</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>y</td>
+<td>5.56</td>
+<td>5.7</td>
+<td>5.91</td>
+<td>6.4</td>
+<td>6.8</td>
+<td>7.05</td>
+<td>8.9</td>
+<td>8.7</td>
+<td>9</td>
+<td>9.05</td>
+</tr>
+</tbody>
+</table></div>
+<p>1号样本真实值  5.56 预测结果：5.72</p>
+<p>2号样本真实值是 5.7 预测结果：5.72</p>
+<p>3 号样本真实值是 5.91 预测结果 5.72</p>
+<p>CART 回归树构建过程如下：</p>
+<ol>
+<li>选择第一个特征，将该特征的值进行排序，取相邻点计算均值作为待划分点</li>
+<li>根据所有划分点，将数据集分成两部分：R1、R2</li>
+<li>R1 和 R2 两部分的平方损失相加作为该切分点平方损失</li>
+<li>取最小的平方损失的划分点，作为当前特征的划分点</li>
+<li>以此计算其他特征的最优划分点、以及该划分点对应的损失值</li>
+<li>在所有的特征的划分点中，选择出最小平方损失的划分点，作为当前树的分裂点</li>
+</ol>
+<h3 id="sec-22">【实践】回归决策树实践</h3>
+<p>已知数据：</p>
+<p><img loading="lazy" decoding="async" alt="image-20230905163851528" src="../assets/img/lesson27/image-20230905163851528.png" /></p>
+<p>分别训练线性回归、回归决策树模型，并预测对比</p>
+<p>训练模型，并使用1000个[0.0, 10]之间的数据，让模型预测，画出预测值图线</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearRegression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.tree</span><span class="w"> </span><span class="kn">import</span> <span class="n">DecisionTreeRegressor</span>
+
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">((</span><span class="mi">80</span><span class="p">,</span> <span class="mi">1</span><span class="p">)),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+
+<span class="n">linear</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">tree</span> <span class="o">=</span> <span class="n">DecisionTreeRegressor</span><span class="p">(</span><span class="n">max_depth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">X_plot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;samples&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X_plot</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">linear</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_plot</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;linear regression&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">X_plot</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">tree</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_plot</span><span class="p">),</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;CART&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;tomato&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="image-20230905163934119" src="../assets/img/lesson27/image-20230905163934119.png" /></p>
+<p>从预测效果来看：</p>
+<p>1、线性回归是一条直线</p>
+<p>2、决策树是曲线</p>
+<p>3、树的拟合能力是很强的，易过拟合</p>
+<h2 id="sec-23">决策树剪枝</h2>
+<p><strong>学习目标：</strong></p>
+<ol>
+<li>知道什么是剪枝</li>
+<li>理解剪枝的作用</li>
+<li>知道常用剪枝方法</li>
+<li>了解不同剪枝方法的优缺点</li>
+</ol>
+<h3 id="sec-24">【知道】什么是剪枝?</h3>
+<blockquote>
+<p>剪枝 (pruning)是决策树学习算法对付 <strong>过拟合</strong> 的主要手段。</p>
+<p>在决策树学习中，为了尽可能正确分类训练样本，结点划分过程将不断重复，有时会造成决策树分支过多，这时就可能因训练样本学得"太好"了，以致于把训练集自身的一些特点当作所有数据都具有的一般性质而导致过拟合。因此，可通过主动去掉一些分支来降低过拟合的风险。</p>
+</blockquote>
+<p>剪枝是指将一颗子树的子节点全部删掉，利用叶子节点替换子树(实质上是后剪枝技术)，也可以（假定当前对以root为根的子树进行剪枝）只保留根节点本身而删除所有的叶子，以下图为例：</p>
+<p><img loading="lazy" decoding="async" alt="img" src="../assets/img/lesson27/wpsarP0jT.png" /> </p>
+<h3 id="sec-25">【知道】常见减枝方法汇总</h3>
+<p>决策树剪枝的基本策略有"预剪枝" (pre-pruning）和"后剪枝"（post- pruning) 。</p>
+<ol>
+<li>预剪枝是指在决策树生成过程中，对每个结点在划分前先进行估计，若当前结点的划分不能带来决策树泛化性能提升，则停止划分并将当前结点标记为叶结点;</li>
+<li>后剪枝则是先从训练集生成一棵完整的决策树，然后自底向上地对非叶结点进行考察，若将该结点对应的子树替换为叶结点能带来决策树泛化性能提升，则将该子树替换为叶结点。</li>
+</ol>
+<h3 id="sec-26">【理解】例子</h3>
+<p>在构建树时, 为了能够实现剪枝, 可预留一部分数据用作 "验证集" 以进行性能评估。我们的训练集如下:</p>
+<p><img loading="lazy" decoding="async" src="../assets/img/lesson27/15.png" /></p>
+<p>验证集如下:</p>
+<p><img loading="lazy" decoding="async" src="../assets/img/lesson27/16.png" /></p>
+<h4>预剪枝</h4>
+<p><img loading="lazy" decoding="async" src="../assets/img/lesson27/17.png" /></p>
+<ol>
+<li>
+<p>假设: 当前树只有一个结点, 即编号为1的结点. 此时, 所有的样本预测类别为: 其类别标记为训练样例数最多的类别，假设我们将这个叶结点标记为 "好瓜"。此时, 在验证集上所有的样本都会被预测为 "好瓜", 此时的准确率为: 3/7</p>
+</li>
+<li>
+<p>如果进行此次分裂, 则树的深度为 2, 有三个分支. 在用属性"脐部"划分之后，上图中的结点2、3、4分别包含编号为 {1，2，3， 14}、 {6，7， 15， 17}、 {10， 16} 的训练样例，因此这 3 个结点分别被标记为叶结点"好瓜"、 "好瓜"、 "坏瓜"。此时, 在验证集上 4、5、8、11、12 样本预测正确，准确率为: 5/7。很显然, 通过此次分裂准确率有所提升, 值得分裂.</p>
+</li>
+<li>
+<p>接下来，对结点2进行划分，基于信息增益准则将挑选出划分属性"色泽"。然而，在使用"色泽"划分后，编号为 {5} 的验证集样本分类结果会由正确转为错误，使得验证集精度下降为 57.1%。于是，预剪枝策略将禁止结点2被划分。</p>
+</li>
+<li>
+<p>对结点3，最优划分属性为"根蒂"，划分后验证集精度仍为 5/7. 这个 划分不能提升验证集精度，于是，预剪枝策略禁止结点3被划分。</p>
+</li>
+<li>
+<p>对结点4，其所含训练样例己属于同一类，不再进行划分.</p>
+</li>
+</ol>
+<p>于是，基于预剪枝策略从上表数据所生成的决策树如上图所示，其验证集精度为 71.4%. 这是一棵仅有一层划分的决策树。</p>
+<p><img loading="lazy" decoding="async" src="../assets/img/lesson27/18.png" /></p>
+<h4>后剪枝</h4>
+<p>后剪枝先从训练集生成一棵完整决策树，继续使用上面的案例，从前面计算，我们知前面构造的决策树的验证集精度为42.9%。</p>
+<p><img loading="lazy" decoding="async" alt="image-20230905171420720" src="../assets/img/lesson27/image-20230905171420720.png" /></p>
+<ol>
+<li>首先考察结点6，若将其领衔的分支剪除则相当于把6替换为叶结点。替换后的叶结点包含编号为 {7， 15} 的训练样本，于是该叶结点的类别标记为"好瓜", 此时决策树的验证集精度提高至 57.1%。</li>
+</ol>
+<p><img loading="lazy" decoding="async" src="../assets/img/lesson27/20.png" /></p>
+<ol start="2">
+<li>然后考察结点5，若将其领衔的子树替换为叶结点，则替换后的叶结点包含编号为 {6，7，15}的训练样例，叶结点类别标记为"好瓜'；此时决策树验证集精度仍为 57.1%. 于是，可以不进行剪枝.</li>
+<li>对结点2，若将其领衔的子树替换为叶结点，则替换后的叶结点包含编号 为 {1， 2， 3， 14} 的训练样例，叶结点标记为"好瓜"此时决策树的验证集精度提高至 71.4%. 于是，后剪枝策略决定剪枝.</li>
+<li>对结点3和1，若将其领衔的子树替换为叶结点，则所得决策树的验证集 精度分别为 71.4% 与 42.9%，均未得到提高，于是它们被保留。</li>
+<li>最终, 基于后剪枝策略生成的决策树如上图所示, 其验证集精度为 71.4%。</li>
+</ol>
+<h3 id="sec-27">【了解】剪枝方法对比</h3>
+<p>预剪枝优点：</p>
+<ul>
+<li>预剪枝使决策树的很多分支没有展开，不单降低了过拟合风险，还显著减少了决策树的训练、测试时间开销</li>
+</ul>
+<p>预剪枝缺点：</p>
+<ul>
+<li>有些分支的当前划分虽不能提升泛化性能，甚至会导致泛化性能降低，但在其基础上进行的后续划分却有可能导致性能的显著提高</li>
+<li>预剪枝决策树也带来了欠拟合的风险</li>
+</ul>
+<p>后剪枝优点：</p>
+<ul>
+<li>比预剪枝保留了更多的分支。一般情况下，后剪枝决策树的欠拟合风险很小，泛化性能往往优于预剪枝</li>
+</ul>
+<p>后剪枝缺点：</p>
+<ul>
+<li>但后剪枝过程是在生成完全决策树之后进行的，并且要自底向上地对树中所有非叶子节点进行逐一考察，因此在训练时间开销比未剪枝的决策树和预剪枝的决策树都要大得多。</li>
+</ul>
+<h2 id="sec-28">作业</h2>
+<p>1.完成决策树部分的思维导图</p>
+<p>2.课上所有的案例都要自己手动完成</p>
+<p>3.</p>
+<p>下面以常用的贷款申请样本数据表为样本集，计算信息增益计算过程，并构建ID3决策树。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: center;">ID</th>
+<th style="text-align: center;">年龄</th>
+<th style="text-align: center;">有工作</th>
+<th style="text-align: center;">有房子</th>
+<th style="text-align: center;">信贷情况</th>
+<th style="text-align: center;">类别</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">青年</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">一般</td>
+<td style="text-align: center;">拒绝</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">青年</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">好</td>
+<td style="text-align: center;">拒绝</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">青年</td>
+<td style="text-align: center;">是</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">好</td>
+<td style="text-align: center;">同意</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">青年</td>
+<td style="text-align: center;">是</td>
+<td style="text-align: center;">是</td>
+<td style="text-align: center;">一般</td>
+<td style="text-align: center;">同意</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">青年</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">一般</td>
+<td style="text-align: center;">拒绝</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">中年</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">一般</td>
+<td style="text-align: center;">拒绝</td>
+</tr>
+<tr>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">中年</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">好</td>
+<td style="text-align: center;">拒绝</td>
+</tr>
+<tr>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">中年</td>
+<td style="text-align: center;">是</td>
+<td style="text-align: center;">是</td>
+<td style="text-align: center;">好</td>
+<td style="text-align: center;">同意</td>
+</tr>
+<tr>
+<td style="text-align: center;">9</td>
+<td style="text-align: center;">中年</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">是</td>
+<td style="text-align: center;">非常好</td>
+<td style="text-align: center;">同意</td>
+</tr>
+<tr>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">中年</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">是</td>
+<td style="text-align: center;">非常好</td>
+<td style="text-align: center;">同意</td>
+</tr>
+<tr>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">老年</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">是</td>
+<td style="text-align: center;">非常好</td>
+<td style="text-align: center;">同意</td>
+</tr>
+<tr>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">老年</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">是</td>
+<td style="text-align: center;">好</td>
+<td style="text-align: center;">同意</td>
+</tr>
+<tr>
+<td style="text-align: center;">13</td>
+<td style="text-align: center;">老年</td>
+<td style="text-align: center;">是</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">好</td>
+<td style="text-align: center;">同意</td>
+</tr>
+<tr>
+<td style="text-align: center;">14</td>
+<td style="text-align: center;">老年</td>
+<td style="text-align: center;">是</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">非常好</td>
+<td style="text-align: center;">同意</td>
+</tr>
+<tr>
+<td style="text-align: center;">15</td>
+<td style="text-align: center;">老年</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">否</td>
+<td style="text-align: center;">一般</td>
+<td style="text-align: center;">拒绝</td>
+</tr>
+</tbody>
+</table></div>
+<p>4.说明CART分类树和回归树的特点，并说明构建过程</p>
+<p>5.说明决策树剪枝的方法有哪些？及各自的特点是什么？</p><div class="done-bar"><button class="mark-done-btn" data-key="lesson27" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson26.html"><div class="dir">← 上一篇</div><div class="name">🎯 逻辑回归与分类评估</div></a><a class="next" href="lesson28.html"><div class="dir">下一篇 →</div><div class="name">🌲 集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">决策树简介</a><a class="lv3" href="#sec-2">【理解】决策树例子</a><a class="lv3" href="#sec-3">【知道】决策树简介</a><a class="lv2" href="#sec-4">ID3决策树</a><a class="lv3" href="#sec-5">【理解】信息熵</a><a class="lv3" href="#sec-6">【理解】信息增益</a><a class="lv3" href="#sec-7">【知道】ID3树构建流程</a><a class="lv2" href="#sec-8">C4.5决策树</a><a class="lv3" href="#sec-9">【理解】信息增益率</a><a class="lv3" href="#sec-10">【知道】C4.5树构建说明</a><a class="lv2" href="#sec-11">CART决策树</a><a class="lv3" href="#sec-12">【知道】Cart树简介</a><a class="lv3" href="#sec-13">【理解】基尼指数计算方法</a><a class="lv3" href="#sec-14">【理解】基尼指数计算举例</a><a class="lv3" href="#sec-15">【知道】比较</a><a class="lv2" href="#sec-16">【实践】泰坦尼克号生存案例</a><a class="lv3" href="#sec-17">案例背景</a><a class="lv3" href="#sec-18">API介绍</a><a class="lv3" href="#sec-19">案例实现</a><a class="lv2" href="#sec-20">回归决策树</a><a class="lv3" href="#sec-21">【了解】回归决策树构建原理</a><a class="lv3" href="#sec-22">【实践】回归决策树实践</a><a class="lv2" href="#sec-23">决策树剪枝</a><a class="lv3" href="#sec-24">【知道】什么是剪枝?</a><a class="lv3" href="#sec-25">【知道】常见减枝方法汇总</a><a class="lv3" href="#sec-26">【理解】例子</a><a class="lv3" href="#sec-27">【了解】剪枝方法对比</a><a class="lv2" href="#sec-28">作业</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

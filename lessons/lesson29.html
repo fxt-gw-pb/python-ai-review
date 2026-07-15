@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>朴素贝叶斯与文本情感分析 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 29 讲</div>
+<h1>📨 朴素贝叶斯与文本情感分析</h1>
+<div class="chips"><span class="chip">🏷️ 贝叶斯公式</span><span class="chip">🏷️ 拉普拉斯平滑</span><span class="chip">🏷️ 文本分类</span></div>
+</div>
+<h2 id="sec-1">朴素贝叶斯介绍</h2>
+<ol>
+<li>复习常见概率的计算</li>
+<li>知道贝叶斯公式</li>
+<li>了解朴素贝叶斯是什么</li>
+<li>了解拉普拉斯平滑系数的作用</li>
+</ol>
+<h3 id="sec-2">【知道】常见的概率公式</h3>
+<p><img loading="lazy" decoding="async" src="../assets/img/lesson29/01.png" /></p>
+<p><strong>条件概率：</strong> 表示事件A在另外一个事件B已经发生条件下的发生概率，P(A|B)</p>
+<p>在女神喜欢的条件下，职业是程序员的概率？</p>
+<ol>
+<li>女神喜欢条件下，有 2、3、4、7 共 4 个样本</li>
+<li>4 个样本中，有程序员 3、4 共 2 个样本</li>
+<li>则 P(程序员|喜欢) = 2/4 = 0.5</li>
+</ol>
+<p><strong>联合概率：</strong> 表示多个条件同时成立的概率，P(AB)   =  P(A)   P(B|A)  <br />
+特征条件独立性假设：P(AB) = P(A) P(B)</p>
+<p>职业是程序员并且体型匀称的概率？</p>
+<ol>
+<li>数据集中，共有 7 个样本    </li>
+<li>职业是程序员有 1、3、4 共 3 个样本，则其概率为：3/7</li>
+<li>在职业是程序员，体型是匀称有 3  共 1 个样本，则其概率为：1/3</li>
+<li>则即是程序员又体型匀称的概率为：3/7 * 1/3 = 1/7</li>
+</ol>
+<p><strong>联合概率 + 条件概率：</strong></p>
+<p>在女神喜欢的条件下，职业是程序员、体重超重的概率？  P(AB|C) = P(A|C) P(B|AC)</p>
+<ol>
+<li>在女神喜欢的条件下，有 2、3、4、7 共 4 个样本</li>
+<li>在这 4 个样本中，职业是程序员有 3、4 共 2 个样本，则其概率为：2/4=0.5</li>
+<li>在在 2 个样本中，体型超重的有 4 共 1 个样本，则其概率为：1/2 = 0.5</li>
+<li>则 P(程序员, 超重|喜欢) = 0.5 * 0.5 = 0.25</li>
+</ol>
+<blockquote>
+<p>简言之：
+条件概率：在去掉部分样本的情况下，计算某些样本的出现的概率，表示为：P(B|A)
+联合概率：多个事件同时发生的概率是多少，表示为：P(AB) = P(B)*P(A|B)</p>
+</blockquote>
+<h3 id="sec-3">【理解】贝叶斯公式</h3>
+<p><img loading="lazy" decoding="async" src="../assets/img/lesson29/03.png" /></p>
+<ol>
+<li>P(C) 表示 C 出现的概率</li>
+<li>P(W|C) 表示 C 条件 W 出现的概率</li>
+<li>P(W) 表示 W 出现的概率</li>
+</ol>
+<p><img loading="lazy" decoding="async" src="../assets/img/lesson29/04.png" /></p>
+<ol>
+<li>P(C|W) = P(喜欢|程序员，超重)</li>
+<li>P(W|C) = P(程序员，超重|喜欢)</li>
+<li>P(C) = P(喜欢)</li>
+<li>P(W) = P(程序员，超重)</li>
+</ol>
+<p><br /></p>
+<ol>
+<li>根据训练样本估计先验概率P(C)：P(喜欢) = 4/7</li>
+<li>根据条件概率P(W|C)调整先验概率：P(程序员,超重|喜欢) = 1/4</li>
+<li>此时我们的后验概率P(C|W)为：P(程序员,超重|喜欢) * P(喜欢) = 4/7 * 1/4 = 1/7 </li>
+<li>那么该部分数据占所有既为程序员，又超重的人中的比例是多少呢？</li>
+<li>P(程序员,超重) = P(程序员) * P(超重|程序员) = 3/7 * 2/3 = 2/7</li>
+<li>P(喜欢|程序员, 超重) = 1/7 ➗ 2/7 = 0.5</li>
+</ol>
+<h3 id="sec-4">【理解】朴素贝叶斯</h3>
+<p>我们发现，在前面的贝叶斯概率计算过程中，需要计算 P(程序员,超重|喜欢) 和 P(程序员, 超重) 等联合概率，为了简化联合概率的计算，朴素贝叶斯在贝叶斯基础上增加：<strong>特征条件独立假设</strong>，即：特征之间是互为独立的。</p>
+<p>此时，联合概率的计算即可简化为：</p>
+<ol>
+<li>P(程序员,超重|喜欢)  = P(程序员|喜欢) * P(超重|喜欢)</li>
+<li>P(程序员,超重) = P(程序员) * P(超重)</li>
+</ol>
+<h3 id="sec-5">【知道】拉普拉斯平滑系数</h3>
+<p>由于训练样本的不足，导致概率计算时出现 0 的情况。为了解决这个问题，我们引入了拉普拉斯平滑系数。</p>
+<ol>
+<li>α 是拉普拉斯平滑系数，一般指定为 1</li>
+<li>N<sub>i</sub> 是 F1 中符合条件 C 的样本数量</li>
+<li>N 是在条件 C 下所有样本的总数</li>
+<li>m 表示<strong>所有独立样本</strong>的总数</li>
+</ol>
+<p>我们只需要知道为了避免概率值为 0，我们在分子和分母分别加上一个数值，这就是拉普拉斯平滑系数的作用。</p>
+<h2 id="sec-6">【案例】情感分析</h2>
+<p><strong>学习目标：</strong></p>
+<p>1.知道朴素贝叶斯的API</p>
+<p>2.能够应用朴素贝叶斯实现商品评论情感分析</p>
+<h3 id="sec-7">【知道】api介绍</h3>
+<ul>
+<li>sklearn.naive_bayes.MultinomialNB(alpha = 1.0)</li>
+<li>朴素贝叶斯分类</li>
+<li>alpha：拉普拉斯平滑系数</li>
+</ul>
+<h3 id="sec-8">【实践】商品评论情感分析</h3>
+<p>已知商品评论数据，根据数据进行情感分类（好评、差评</p>
+<p><img loading="lazy" decoding="async" alt="image-20230906224506412" src="../assets/img/lesson29/image-20230906224506412.png" /></p>
+<h4>步骤分析</h4>
+<ul>
+<li>1）获取数据</li>
+<li>2）数据基本处理</li>
+<li>2.1） 取出内容列，对数据进行分析</li>
+<li>2.2） 判定评判标准</li>
+<li>2.3） 选择停用词</li>
+<li>2.4） 把内容处理，转化成标准格式</li>
+<li>2.5） 统计词的个数</li>
+<li>2.6）准备训练集和测试集</li>
+<li>3）模型训练</li>
+<li>4）模型评估</li>
+</ul>
+<h4>代码实现</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 首次运行前安装：pip install jieba</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jieba</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_extraction.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">CountVectorizer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">accuracy_score</span><span class="p">,</span> <span class="n">classification_report</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.naive_bayes</span><span class="w"> </span><span class="kn">import</span> <span class="n">MultinomialNB</span>
+</pre></div>
+</div>
+<ul>
+<li>1）获取数据</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;data/书籍评价.csv&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;gbk&quot;</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="s2">&quot;内容&quot;</span><span class="p">,</span> <span class="s2">&quot;评价&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;评价&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="s2">&quot;好评&quot;</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;标签分布：</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;评价&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">())</span>
+</pre></div>
+</div>
+<ul>
+<li>2）数据基本处理</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;data/stopwords.txt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">stopwords</span> <span class="o">=</span> <span class="p">{</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()}</span>
+
+<span class="n">texts</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;内容&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">text</span><span class="p">:</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">jieba</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">text</span><span class="p">)))</span>
+<span class="n">X_train_text</span><span class="p">,</span> <span class="n">X_test_text</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">texts</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">],</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">],</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+
+<span class="c1"># 只在训练集上学习词表，避免把测试集信息泄漏给模型</span>
+<span class="n">vectorizer</span> <span class="o">=</span> <span class="n">CountVectorizer</span><span class="p">(</span><span class="n">stop_words</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">stopwords</span><span class="p">))</span>
+<span class="n">X_train</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X_train_text</span><span class="p">)</span>
+<span class="n">X_test</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X_test_text</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;词频矩阵形状：&quot;</span><span class="p">,</span> <span class="n">X_train</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul>
+<li>3）模型训练</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">MultinomialNB</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>  <span class="c1"># alpha=1 即拉普拉斯平滑</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul>
+<li>4）模型评估</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;准确率：&quot;</span><span class="p">,</span> <span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span>
+    <span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">target_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;差评&quot;</span><span class="p">,</span> <span class="s2">&quot;好评&quot;</span><span class="p">],</span> <span class="n">zero_division</span><span class="o">=</span><span class="mi">0</span>
+<span class="p">))</span>
+
+<span class="n">new_comment</span> <span class="o">=</span> <span class="s2">&quot;内容清楚，适合初学者&quot;</span>
+<span class="n">new_words</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">jieba</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">new_comment</span><span class="p">))</span>
+<span class="n">new_vector</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">transform</span><span class="p">([</span><span class="n">new_words</span><span class="p">])</span>
+<span class="n">label</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">new_vector</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;新评论预测：&quot;</span><span class="p">,</span> <span class="s2">&quot;好评&quot;</span> <span class="k">if</span> <span class="n">label</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;差评&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<h2 id="sec-9">作业</h2>
+<p>1.使用思维导图整理朴素贝叶斯的内容</p>
+<p>2.动手实现商品评论情感分析案例</p><div class="done-bar"><button class="mark-done-btn" data-key="lesson29" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson28.html"><div class="dir">← 上一篇</div><div class="name">🌲 集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</div></a><a class="next" href="lesson30.html"><div class="dir">下一篇 →</div><div class="name">🪐 K-Means 聚类与聚类评估</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">朴素贝叶斯介绍</a><a class="lv3" href="#sec-2">【知道】常见的概率公式</a><a class="lv3" href="#sec-3">【理解】贝叶斯公式</a><a class="lv3" href="#sec-4">【理解】朴素贝叶斯</a><a class="lv3" href="#sec-5">【知道】拉普拉斯平滑系数</a><a class="lv2" href="#sec-6">【案例】情感分析</a><a class="lv3" href="#sec-7">【知道】api介绍</a><a class="lv3" href="#sec-8">【实践】商品评论情感分析</a><a class="lv2" href="#sec-9">作业</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

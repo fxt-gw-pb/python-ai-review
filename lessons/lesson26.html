@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>逻辑回归与分类评估 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 26 讲</div>
+<h1>🎯 逻辑回归与分类评估</h1>
+<div class="chips"><span class="chip">🏷️ Logistic Regression</span><span class="chip">🏷️ 混淆矩阵</span><span class="chip">🏷️ ROC / AUC</span></div>
+</div>
+<h2 id="sec-1">逻辑回归简介</h2>
+<p><strong>学习目标：</strong></p>
+<p>1.知道逻辑回归的应用场景</p>
+<p>2.复习逻辑回归应用到的数学知识</p>
+<h3 id="sec-2">【了解】应用场景</h3>
+<p><img loading="lazy" decoding="async" alt="image-20230904115156371" src="../assets/img/lesson26/image-20230904115156371.png" /></p>
+<p>逻辑回归是解决【      】问题的利器</p>
+<h3 id="sec-3">【熟悉】数学知识</h3>
+<h4>【知道】sigmoid函数</h4>
+<p><img loading="lazy" decoding="async" alt="image-20230913152535607" src="../assets/img/lesson26/image-20230913152535607.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230904144434180" src="../assets/img/lesson26/image-20230904144434180.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230904144454316" src="../assets/img/lesson26/image-20230904144454316.png" /></p>
+<h4>【理解】概率</h4>
+<p><img loading="lazy" decoding="async" alt="image-20230904144658969" src="../assets/img/lesson26/image-20230904144658969.png" /></p>
+<h4>【理解】极大似然估计</h4>
+<p>核心思想：</p>
+<p>设模型中含有待估参数w，可以取很多值。已经知道了样本观测值，从w的一切可能值中（选出一个使该观察值出现的概率为最大的值，作为w参数的估计值，这就是极大似然估计。（顾名思义：就是看上去那个是最大可能的意思）</p>
+<p>举个例子：</p>
+<p>假设有一枚不均匀的硬币，出现正面的概率和反面的概率是不同的。假定出现正面的概率为𝜃， 抛了6次得到如下现象 D = {正面，反面，反面，正面，正面，正面}。每次投掷事件都是相互独立的。 则根据产生的现象D，来估计参数𝜃是多少?</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>P(D|𝜃) = P {正面，反面，反面，正面，正面，正面}
+ = P(正面|𝜃) P(正面|𝜃) P(正面|𝜃) P(正面|𝜃) P(正面|𝜃) P(正面|𝜃)
+
+=𝜃 *(1-𝜃)*(1-𝜃)𝜃*𝜃*𝜃 = 𝜃4(1 − 𝜃)
+</pre></div>
+</div>
+<p>问题转化为:求此函数的极大值时，估计𝜃为多少</p>
+<p><img loading="lazy" decoding="async" alt="image-20230904145453737" src="../assets/img/lesson26/image-20230904145453737.png" /></p>
+<h4>【知道】对数函数</h4>
+<p><img loading="lazy" decoding="async" alt="image-20230904145530932" src="../assets/img/lesson26/image-20230904145530932.png" /></p>
+<h2 id="sec-4">逻辑回归原理</h2>
+<p><strong>学习目标</strong>
+1.理解逻辑回归算法的原理</p>
+<p>2.知道逻辑回归的损失函数</p>
+<h3 id="sec-5">【理解】原理</h3>
+<p>逻辑回归概念 Logistic Regression</p>
+<p>• 一种分类模型，把线性回归的输出，作为逻辑回归的输入。 </p>
+<p>• 输出是  【     】   之间的值</p>
+<p>• 基本思想</p>
+<ol>
+<li>利用线性模型 f(x) = wx + b 根据特征的重要性计算出一个值</li>
+<li>再使用 sigmoid 函数将 f(x) 的输出值映射为概率值</li>
+<li>设置阈值(eg:0.5)，输出概率值大于 0.5，则将未知样本输出为 1 类</li>
+<li>否则输出为 0 类</li>
+</ol>
+<p>3.逻辑回归的假设函数
+ h(w) = sigmoid(wx + b )</p>
+<p>线性回归的输出，作为逻辑回归的输入</p>
+<p>​      </p>
+<p><strong>在逻辑回归中，当预测结果不对的时候，我们该怎么衡量其损失呢？</strong></p>
+<p>我们来看下图(下图中，设置阈值为0.6)，</p>
+<p><img loading="lazy" decoding="async" alt="image-20220121161828121" src="../assets/img/lesson26/image-20220121161828121.png" /> </p>
+<p>那么如何去衡量逻辑回归的预测结果与真实结果的差异？</p>
+<h3 id="sec-6">【知道】损失函数</h3>
+<p><img loading="lazy" decoding="async" alt="image-20230904151300483" src="../assets/img/lesson26/image-20230904151300483.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230904151334262" src="../assets/img/lesson26/image-20230904151334262.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230904151343779" src="../assets/img/lesson26/image-20230904151343779.png" /></p>
+<h2 id="sec-7">逻辑回归API</h2>
+<p><strong>学习目标：</strong></p>
+<p>1.知道逻辑回归的API</p>
+<p>2.动手实现癌症分类案例</p>
+<h3 id="sec-8">【知道】API介绍</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">sklearn</span><span class="o">.</span><span class="n">linear_model</span><span class="o">.</span><span class="n">LogisticRegression</span><span class="p">(</span><span class="n">solver</span><span class="o">=</span><span class="s1">&#39;liblinear&#39;</span><span class="p">,</span> <span class="n">penalty</span><span class="o">=</span><span class="err">‘</span><span class="n">l2</span><span class="err">’</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>solver</strong> <strong>损失函数优化方法</strong>:</p>
+<p>训练速度:liblinear 对小数据集场景训练速度更快，sag 和 saga 对大数据集更快一些。 2 正则化:</p>
+<ol>
+<li>newton-cg、lbfgs、sag、saga 支持 L2 正则化或者没有正则化</li>
+<li>2liblinear 和 saga 支持 L1 正则化</li>
+</ol>
+<p><strong>penalty</strong>:正则化的种类，l1 或者 l2</p>
+<p><strong>C</strong>:正则化力度</p>
+<p>默认将类别数量少的当做正例</p>
+<h3 id="sec-9">【实践】癌症分类案例</h3>
+<ul>
+<li>数据介绍</li>
+</ul>
+<p>（1）699条样本，共11列数据，第一列用语检索的id，后9列分别是与肿瘤相关的医学特征，</p>
+<p>​     最后一列表示肿瘤类型的数值。</p>
+<p>（2）包含16个缺失值，用”?”标出。</p>
+<p>（3）2表示良性，4表示恶性</p>
+<blockquote>
+<p>数据描述</p>
+<p>（1）699条样本，共11列数据，第一列用语检索的id，后9列分别是与肿瘤</p>
+<p>相关的医学特征，最后一列表示肿瘤类型的数值。</p>
+<p>（2）包含16个缺失值，用”?”标出。</p>
+</blockquote>
+<p>​   </p>
+<ul>
+<li>案例分析</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>1.获取数据
+2.基本数据处理
+2.1 缺失值处理
+2.2 确定特征值,目标值
+2.3 分割数据
+3.特征工程(标准化)
+4.机器学习(逻辑回归)
+5.模型评估
+</pre></div>
+</div>
+<ul>
+<li>代码实现</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">癌症分类预测</span>
+
+<span class="sd">步骤：</span>
+<span class="sd">1.获取数据</span>
+<span class="sd">2.基本数据处理</span>
+<span class="sd">    2.1 缺失值处理</span>
+<span class="sd">    2.2 确定特征值,目标值</span>
+<span class="sd">2.3 分割数据</span>
+<span class="sd">3.特征工程(标准化)</span>
+<span class="sd">4.机器学习(逻辑回归)</span>
+<span class="sd">5.模型评估</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>  <span class="c1"># 逻辑回归模型</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>  <span class="c1"># 数据集分割</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>     <span class="c1"># 标准化工具</span>
+
+<span class="c1">#步骤：</span>
+<span class="c1">#1.获取数据</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;../datasets/breast-cancer-wisconsin.csv&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">20</span><span class="p">:</span><span class="mi">28</span> <span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">info</span><span class="p">())</span>   <span class="c1"># 打印数据集信息</span>
+
+<span class="c1">#2.基本数据处理</span>
+<span class="c1">#    2.1 缺失值处理   将问号换成NaN（空值）</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">to_replace</span><span class="o">=</span><span class="s1">&#39;?&#39;</span><span class="p">,</span><span class="n">value</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+<span class="c1">#print(data.iloc[20:28 , 6])</span>
+
+<span class="c1"># 删除带有空值的样本 行</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+
+<span class="c1">#    2.2 确定特征值,目标值</span>
+<span class="c1">#2.3 分割数据</span>
+<span class="c1"># 先给出特征矩阵和 标签列</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1">#  第一列特征不要（序号）</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># 分割训练集 和 测试集</span>
+<span class="c1"># test_size=测试集的分割比例</span>
+<span class="c1"># stratify=分割训练集和测试集后，保持他们标签比例和 原始数据集一致</span>
+<span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">22</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="c1">#3.特征工程(标准化)</span>
+<span class="c1">#transfer = StandardScaler()</span>
+<span class="c1">#x_train = transfer.fit_transform(x)</span>
+<span class="c1">#x_test = transfer.transform(x_test)</span>
+
+<span class="c1">#4.机器学习(逻辑回归)</span>
+<span class="c1"># 实例化模型</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>  <span class="c1">#  模型的训练</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>   <span class="c1">#  模型的预测结果</span>
+
+<span class="c1">#5.模型评估</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;打印模型的测试评分&#39;</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">))</span>  <span class="c1"># 模型的评估</span>
+</pre></div>
+</div>
+<h2 id="sec-10">分类评估方法</h2>
+<p><strong>学习目标：</strong></p>
+<p>1.理解混淆矩阵的构建方法</p>
+<p>2.掌握精确率，召回率和F1score的计算方法</p>
+<p>3.知道ROC曲线和AUC指标</p>
+<h3 id="sec-11">【理解】混淆矩阵</h3>
+<p><img loading="lazy" decoding="async" alt="image-20230904162952115" src="../assets/img/lesson26/image-20230904162952115.png" /></p>
+<p>混淆矩阵作用在测试集样本集中：</p>
+<ol>
+<li>真实值是 <strong>正例</strong> 的样本中，被分类为 <strong>正例</strong> 的样本数量有多少，这部分样本叫做真正例（TP，True Positive）</li>
+<li>真实值是 <strong>正例</strong> 的样本中，被分类为 <strong>假例</strong> 的样本数量有多少，这部分样本叫做伪反例（FN，False Negative）</li>
+<li>真实值是 <strong>假例</strong> 的样本中，被分类为 <strong>正例</strong> 的样本数量有多少，这部分样本叫做伪正例（FP，False Positive）</li>
+<li>真实值是 <strong>假例</strong> 的样本中，被分类为 <strong>假例</strong> 的样本数量有多少，这部分样本叫做真反例（TN，True Negative）</li>
+</ol>
+<blockquote>
+<p>True Positive ：表示样本真实的类别
+Positive ：表示样本被预测为的类别</p>
+</blockquote>
+<p><strong>例子：</strong></p>
+<p>样本集中有 6 个恶性肿瘤样本，4 个良性肿瘤样本，我们假设恶性肿瘤为正例，则：</p>
+<p><strong>模型 A：</strong> 预测对了 3 个恶性肿瘤样本，4 个良性肿瘤样本</p>
+<ol>
+<li>真正例 TP 为：3 </li>
+<li>伪反例 FN 为：3</li>
+<li>伪正例 FP 为：0</li>
+<li>真反例 TN：4</li>
+</ol>
+<p><strong>模型 B：</strong> 预测对了 6 个恶性肿瘤样本，1个良性肿瘤样本</p>
+<ol>
+<li>真正例 TP 为：6</li>
+<li>伪反例 FN 为：0</li>
+<li>伪正例 FP 为：3</li>
+<li>真反例 TN：1</li>
+</ol>
+<p>我们会发现：TP+FN+FP+TN = 总样本数量</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">打印混淆矩阵</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">confusion_matrix</span>    <span class="c1">#  加载混淆矩阵的API</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+
+<span class="c1">#  定义真实二分类标签</span>
+<span class="n">y_true</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;恶性&quot;</span><span class="p">,</span> <span class="s2">&quot;恶性&quot;</span><span class="p">,</span> <span class="s2">&quot;恶性&quot;</span><span class="p">,</span> <span class="s2">&quot;恶性&quot;</span><span class="p">,</span> <span class="s2">&quot;恶性&quot;</span><span class="p">,</span> <span class="s2">&quot;恶性&quot;</span><span class="p">,</span> <span class="s2">&quot;良性&quot;</span><span class="p">,</span> <span class="s2">&quot;良性&quot;</span><span class="p">,</span> <span class="s2">&quot;良性&quot;</span><span class="p">,</span> <span class="s2">&quot;良性&quot;</span><span class="p">]</span>
+
+
+<span class="c1"># 定义混淆矩阵的 列顺序</span>
+<span class="c1"># 第一个是‘恶性 （正例）’  第二列为‘良性（反例）’</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;恶性&quot;</span><span class="p">,</span> <span class="s2">&quot;良性&quot;</span><span class="p">]</span>
+
+<span class="c1"># 为打印混淆矩阵，添加更清晰的列名 便于理解</span>
+<span class="n">dataframe_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;恶性(正例)&quot;</span><span class="p">,</span> <span class="s2">&quot;良性(反例)&quot;</span><span class="p">]</span>
+
+<span class="c1">#模型A 的预测结果  预测对了3个恶性样本，4个良性样本</span>
+<span class="n">y_pred1</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;恶性&quot;</span><span class="p">,</span> <span class="s2">&quot;恶性&quot;</span><span class="p">,</span> <span class="s2">&quot;恶性&quot;</span><span class="p">,</span> <span class="s2">&quot;良性&quot;</span><span class="p">,</span> <span class="s2">&quot;良性&quot;</span><span class="p">,</span> <span class="s2">&quot;良性&quot;</span><span class="p">,</span> <span class="s2">&quot;良性&quot;</span><span class="p">,</span> <span class="s2">&quot;良性&quot;</span><span class="p">,</span> <span class="s2">&quot;良性&quot;</span><span class="p">,</span> <span class="s2">&quot;良性&quot;</span><span class="p">]</span>
+
+<span class="c1">#模型B 的预测结果  预测对了6个恶性样本，1个良性样本</span>
+<span class="n">y_pred2</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;恶性&quot;</span><span class="p">,</span> <span class="s2">&quot;恶性&quot;</span><span class="p">,</span> <span class="s2">&quot;恶性&quot;</span><span class="p">,</span> <span class="s2">&quot;恶性&quot;</span><span class="p">,</span> <span class="s2">&quot;恶性&quot;</span><span class="p">,</span> <span class="s2">&quot;恶性&quot;</span><span class="p">,</span> <span class="s2">&quot;恶性&quot;</span><span class="p">,</span> <span class="s2">&quot;恶性&quot;</span><span class="p">,</span> <span class="s2">&quot;恶性&quot;</span><span class="p">,</span> <span class="s2">&quot;良性&quot;</span><span class="p">]</span>
+
+
+<span class="c1"># 计算混淆矩阵</span>
+<span class="c1"># 参数1 ： 标签     参数2 ： 预测结果     参数3 ： 指定列顺序</span>
+<span class="n">result1</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred1</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+<span class="c1">#print(result1)</span>
+
+<span class="n">result2</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred2</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+<span class="c1">#print(result2)</span>
+
+<span class="c1"># 将预测结果转化为dataframe格式，方便观察</span>
+<span class="n">result1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">result1</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">dataframe_labels</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">dataframe_labels</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result1</span><span class="p">)</span>
+
+<span class="n">result2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">result2</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">dataframe_labels</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">dataframe_labels</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result2</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-12">【掌握】Precision（精确率）</h3>
+<p>精确率也叫做查准率，指的是对正例样本的预测准确率。比如：我们把恶性肿瘤当做正例样本，则我们就需要知道模型对恶性肿瘤的预测准确率。</p>
+<p><img loading="lazy" decoding="async" src="../assets/img/lesson26/05.png" alt="image-20210709223432330" style="zoom:50%;" /></p>
+<p><strong>例子：</strong></p>
+<p>样本集中有 6 个恶性肿瘤样本，4 个良性肿瘤样本，我们假设恶性肿瘤为正例，则：</p>
+<p><strong>模型 A：</strong> 预测对了 3 个恶性肿瘤样本，4 个良性肿瘤样本</p>
+<ol>
+<li>真正例 TP 为：3 </li>
+<li>伪反例 FN 为：3</li>
+<li>假正例 FP 为：0</li>
+<li>真反例 TN：4</li>
+<li><strong>精准率：3/(3+0) = 100%</strong></li>
+</ol>
+<p><strong>模型 B：</strong> 预测对了 6 个恶性肿瘤样本，1个良性肿瘤样本</p>
+<ol>
+<li>真正例 TP 为：6</li>
+<li>伪反例 FN 为：0</li>
+<li>假正例 FP 为：3</li>
+<li>真反例 TN：1</li>
+<li><strong>精准率：6/(6+3) = 67%</strong></li>
+</ol>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>&#39;&#39;&#39;
+展示精确率、召回率、F1的指标的API
+&#39;&#39;&#39;
+
+from sklearn.metrics import precision_score   #  计算精确率 精准率  衡量检测出来的阳性样本中，有多少是正确的（衡量模型的误报）
+from sklearn.metrics import recall_score      #  计算召回率 查全率   实际的正例中，有多少被模型检测出 （衡量的是模型的漏报）
+from sklearn.metrics import f1_score          #  精准率和召回率的调和平均，综合衡量模型的分类性能
+
+
+#  定义真实二分类标签
+y_true = [&quot;恶性&quot;, &quot;恶性&quot;, &quot;恶性&quot;, &quot;恶性&quot;, &quot;恶性&quot;, &quot;恶性&quot;, &quot;良性&quot;, &quot;良性&quot;, &quot;良性&quot;, &quot;良性&quot;]
+
+#模型A 的预测结果  预测对了3个恶性样本，4个良性样本
+y_pred1 = [&quot;恶性&quot;, &quot;恶性&quot;, &quot;恶性&quot;, &quot;良性&quot;, &quot;良性&quot;, &quot;良性&quot;, &quot;良性&quot;, &quot;良性&quot;, &quot;良性&quot;, &quot;良性&quot;]
+
+#模型B 的预测结果  预测对了6个恶性样本，1个良性样本
+y_pred2 = [&quot;恶性&quot;, &quot;恶性&quot;, &quot;恶性&quot;, &quot;恶性&quot;, &quot;恶性&quot;, &quot;恶性&quot;, &quot;恶性&quot;, &quot;恶性&quot;, &quot;恶性&quot;, &quot;良性&quot;]
+
+#衡量模型 的精准率
+#参数1 ： 真实分类标签    参数2 ： 预测结果    参数3 ： 正例的标签
+print(&#39;模型A 的 精准率&#39;,precision_score(y_true, y_pred1, pos_label=&#39;恶性&#39; ))
+print(&#39;模型B 的 精准率&#39;,precision_score(y_true, y_pred2, pos_label=&#39;恶性&#39; ))
+
+#衡量模型 的召回率
+#参数1 ： 真实分类标签    参数2 ： 预测结果    参数3 ： 正例的标签
+print(&#39;模型A 的 召回率&#39;,recall_score(y_true, y_pred1, pos_label=&#39;恶性&#39; ))
+print(&#39;模型B 的 召回率&#39;,recall_score(y_true, y_pred2, pos_label=&#39;恶性&#39; ))
+
+#打印模型的F1 得分
+#参数1 ： 真实分类标签    参数2 ： 预测结果    参数3 ： 正例的标签
+print(&#39;模型A 的 F1分数&#39;,f1_score(y_true, y_pred1, pos_label=&#39;恶性&#39; ))
+print(&#39;模型B 的 F1分数&#39;,f1_score(y_true, y_pred2, pos_label=&#39;恶性&#39; ))
+</pre></div>
+</div>
+<h3 id="sec-13">【掌握】Recall（召回率）</h3>
+<p>召回率也叫做查全率，指的是预测为真正例样本占所有真实正例样本的比重。例如：我们把恶性肿瘤当做正例样本，则我们想知道模型是否能把所有的恶性肿瘤患者都预测出来。</p>
+<p><img loading="lazy" decoding="async" src="../assets/img/lesson26/06.png" /></p>
+<p><strong>例子：</strong></p>
+<p>样本集中有 6 个恶性肿瘤样本，4 个良性肿瘤样本，我们假设恶性肿瘤为正例，则：</p>
+<p><strong>模型 A：</strong> 预测对了 3 个恶性肿瘤样本，4 个良性肿瘤样本</p>
+<ol>
+<li>真正例 TP 为：3 </li>
+<li>伪反例 FN 为：3</li>
+<li>假正例 FP 为：0</li>
+<li>真反例 TN：4</li>
+<li><strong>精准率：3/(3+0) = 100%</strong></li>
+<li><strong>召回率：3/(3+3)=50%</strong></li>
+</ol>
+<p><strong>模型 B：</strong> 预测对了 6 个恶性肿瘤样本，1个良性肿瘤样本</p>
+<ol>
+<li>真正例 TP 为：6</li>
+<li>伪反例 FN 为：0</li>
+<li>假正例 FP 为：3</li>
+<li>真反例 TN：1</li>
+<li><strong>精准率：6/(6+3) = 67%</strong></li>
+<li><strong>召回率：6/(6+0)= 100%</strong> </li>
+</ol>
+<h3 id="sec-14">【掌握】F1-score</h3>
+<p>如果我们对模型的精度、召回率都有要求，希望知道模型在这两个评估方向的综合预测能力如何？则可以使用 F1-score 指标。</p>
+<p><img loading="lazy" decoding="async" src="../assets/img/lesson26/07.png" /></p>
+<p>样本集中有 6 个恶性肿瘤样本，4 个良性肿瘤样本，我们假设恶性肿瘤为正例，则：</p>
+<p><strong>模型 A：</strong> 预测对了 3 个恶性肿瘤样本，4 个良性肿瘤样本</p>
+<ol>
+<li>真正例 TP 为：3 </li>
+<li>伪反例 FN 为：3</li>
+<li>假正例 FP 为：0</li>
+<li>真反例 TN：4</li>
+<li><strong>精准率：3/(3+0) = 100%</strong></li>
+<li><strong>召回率：3/(3+3)=50%</strong></li>
+<li><strong>F1-score：(2*3)/(2*3+3+0)=67%</strong></li>
+</ol>
+<p><strong>模型 B：</strong> 预测对了 6 个恶性肿瘤样本，1个良性肿瘤样本</p>
+<ol>
+<li>真正例 TP 为：6</li>
+<li>伪反例 FN 为：0</li>
+<li>假正例 FP 为：3</li>
+<li>真反例 TN：1</li>
+<li><strong>精准率：6/(6+3) = 67%</strong></li>
+<li><strong>召回率：6/(6+0)= 100%</strong> </li>
+<li><strong>F1-score：(2*6)/(2*6+0+3)=80%</strong></li>
+</ol>
+<h3 id="sec-15">【知道】ROC曲线和AUC指标</h3>
+<h4>ROC 曲线</h4>
+<p>ROC 曲线：我们分别考虑正负样本的情况：</p>
+<ol>
+<li>正样本中被预测为正样本的概率，即：TPR （True Positive Rate）</li>
+<li>负样本中被预测为正样本的概率，即：FPR （False Positive Rate）</li>
+</ol>
+<p><img loading="lazy" decoding="async" alt="image-20230904182146483" src="../assets/img/lesson26/image-20230904182146483.png" /></p>
+<p>ROC 曲线图像中，4 个特殊点的含义：</p>
+<ol>
+<li>(0, 0) 表示所有的正样本都预测为错误，所有的负样本都预测正确</li>
+<li>(1, 0) 表示所有的正样本都预测错误，所有的负样本都预测错误</li>
+<li>(1, 1) 表示所有的正样本都预测正确，所有的负样本都预测错误</li>
+<li>(0, 1) 表示所有的正样本都预测正确，所有的负样本都预测正确</li>
+</ol>
+<h4>绘制 ROC 曲线</h4>
+<p>假设：在网页某个位置有一个广告图片或者文字，该广告共被展示了 6 次，有 2 次被浏览者点击了。每次点击的概率如下：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: center;">样本</th>
+<th style="text-align: center;">是否被点击</th>
+<th style="text-align: center;">预测点击概率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.9</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0.7</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.8</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0.6</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0.5</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0.4</td>
+</tr>
+</tbody>
+</table></div>
+<p>根据预测点击概率排序之后：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: center;">样本</th>
+<th style="text-align: center;">是否被点击</th>
+<th style="text-align: center;">预测点击概率</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.9</td>
+</tr>
+<tr>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0.8</td>
+</tr>
+<tr>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0.7</td>
+</tr>
+<tr>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0.6</td>
+</tr>
+<tr>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0.5</td>
+</tr>
+<tr>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0.4</td>
+</tr>
+</tbody>
+</table></div>
+<p>绘制 ROC 曲线：</p>
+<p><strong>阈值：0.9</strong></p>
+<ol>
+<li>原本为正例的 1、3 号的样本中 3 号样本被分类错误，则 TPR = 1/2 = 0.5</li>
+<li>原本为负例的 2、4、5、6 号样本没有一个被分为正例，则 FPR = 0</li>
+</ol>
+<p><strong>阈值：0.8</strong></p>
+<ol>
+<li>原本为正例的 1、3 号样本被分类正确，则 TPR = 2/2 = 1</li>
+<li>原本为负例的 2、4、5、6 号样本没有一个被分为正例，则 FPR = 0</li>
+</ol>
+<p><strong>阈值：0.7</strong></p>
+<ol>
+<li>原本为正例的 1、3 号样本被分类正确，则 TPR = 2/2 = 1</li>
+<li>原本为负类的 2、4、5、6 号样本中 2 号样本被分类错误，则 FPR = 1/4 = 0.25</li>
+</ol>
+<p><strong>阈值：0.6</strong></p>
+<ol>
+<li>原本为正例的 1、3 号样本被分类正确，则 TPR = 2/2 = 1</li>
+<li>原本为负类的 2、4、5、6 号样本中 2、4 号样本被分类错误，则 FPR = 2/4 = 0.5</li>
+</ol>
+<p><strong>阈值：0.5</strong></p>
+<ol>
+<li>原本为正例的 1、3 号样本被分类正确，则 TPR = 2/2 = 1</li>
+<li>原本为负类的 2、4、5、6 号样本中 2、4、5 号样本被分类错误，则 FPR = 3/4 = 0.75</li>
+</ol>
+<p><strong>阈值 0.4</strong></p>
+<ol>
+<li>原本为正例的 1、3 号样本被分类正确，则 TPR = 2/2 = 1</li>
+<li>原本为负类的 2、4、5、6 号样本全部被分类错误，则 FPR = 4/4 = 1</li>
+</ol>
+<p>(0, 0.5)、(0, 1)、(0.25, 1)、(0.5, 1)、(0.75, 1)、(1, 1)</p>
+<p>由 TPR 和 FPR 构成的 ROC 图像为：</p>
+<p><img loading="lazy" decoding="async" alt="image-20230914105309023" src="../assets/img/lesson26/image-20230914105309023.png" /></p>
+<h4>AUC 值</h4>
+<ol>
+<li>我们发现：图像越靠近 (0,1) 点则模型对正负样本的辨别能力就越强</li>
+<li>我们发现：图像越靠近 (0, 1) 点则 ROC 曲线下面的面积就会越大</li>
+<li>AUC 是 ROC 曲线下面的面积，该值越大，则模型的辨别能力就越强</li>
+<li>AUC  范围在 [0, 1] 之间</li>
+<li>当 AUC= 1 时，该模型被认为是完美的分类器，但是几乎不存在完美分类器</li>
+</ol>
+<blockquote>
+<p>AUC 值主要评估模型对正例样本、负例样本的辨别能力.</p>
+</blockquote>
+<h4><strong>分类评估报告api</strong></h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">sklearn</span><span class="o">.</span><span class="n">metrics</span><span class="o">.</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_true</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[],</span> <span class="n">target_names</span><span class="o">=</span><span class="kc">None</span> <span class="p">)</span>
+<span class="w">  </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">  y_true：真实目标值</span>
+<span class="sd">  y_pred：估计器预测目标值</span>
+<span class="sd">  labels:指定类别对应的数字</span>
+<span class="sd">  target_names：目标类别名称</span>
+<span class="sd">  return：每个类别精确率与召回率</span>
+<span class="sd">  &#39;&#39;&#39;</span>
+</pre></div>
+</div>
+<h4><strong>AUC计算API</strong></h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>from sklearn.metrics import roc_auc_score
+  sklearn.metrics.roc_auc_score(y_true, y_score)
+    计算ROC曲线面积，即AUC值
+    y_true：每个样本的真实类别，必须为0(反例),1(正例)标记
+    y_score：预测得分，可以是正例的估计概率、置信值或者分类器方法的返回值
+</pre></div>
+</div>
+<h2 id="sec-16">【实践】电信客户流失预测</h2>
+<p><strong>学习目标：</strong></p>
+<p>1.了解案例的背景信息</p>
+<p>2.知道案例的处理流程</p>
+<p>3.动手实现电信客户流失案例的代码</p>
+<h3 id="sec-17">数据集介绍</h3>
+<ul>
+<li>流失用户指的使用过产品因为某些原因不再使用该产品。随着产品的更新迭代，都会存在一定的流失情况，这时正常现象。流失用户的比例和变化趋势能够反映该产品当前是否存在问题以及未来的发展趋势。</li>
+<li>当用户群体庞大时，有限的人力和精力不能为每个用户都投入大量的时间。如果公司可以预测哪些用户可能提前流失，这样就能将主要精力聚焦于这些用户，实施有效的用户挽留策略，提高用户粘性。</li>
+<li>本项目旨在通过分析特征属性确定用户流失的原因，以及哪些因素可能导致用户流失。建立预测模型来判断用户是否流失，并提出用户流失预警策略。</li>
+<li>具体数据说明如下：数据集中总计7043条数据，21个特征字段，最终分类特征为Churn：用户是否流失，具体内容如下所示：
+  customerID：用户ID
+  gender：性别
+  SeniorCitizen：是否是老人
+  Partner：是否有伴侣
+  Dependents：是否有需要抚养的孩子
+  tenure：任职
+  PhoneService：是否办理电话服务
+  MultipleLines：是否开通了多条线路
+  InternetService：是否开通网络服务和开通的服务类型（光纤、电话拨号）
+  TechSupport：是否办理技术支持服务
+  OnlineBackup：是否办理在线备份服务
+  OnlineSecurity：是否办理在线安全服务
+  DeviceProtection：是否办理设备保护服务
+  StreamingTV：是否办理电视服务
+  StreamingMovies：是否办理电影服务
+  Contract：签订合约的时长
+  PaperlessBilling：是否申请了无纸化账单
+  PaymentMethod：付款方式（电子支票、邮寄支票、银行自动转账、信用卡自动转账）
+  MonthlyCharges：月消费
+  TotalCharges：总消费
+  Churn：用户是否流失</li>
+</ul>
+<h3 id="sec-18">处理流程</h3>
+<p>1、数据基本处理</p>
+<pre><code>查看数据的基本信息
+</code></pre>
+<p>​   对类别数据数据进行one-hot处理</p>
+<p>​   查看标签分布情况</p>
+<p>2、特征筛选</p>
+<p>​   分析哪些特征对标签值影响大</p>
+<p>​   初步筛选出对标签影响比较大的特征，形成x、y</p>
+<p>3、模型训练</p>
+<p>​   模型训练</p>
+<p>​   交叉验证网格搜索等</p>
+<p>4、模型评估</p>
+<p>​   精确率</p>
+<p>​   Roc_AUC指标计算</p>
+<h3 id="sec-19">案例实现</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">案例：电信用户流失预测</span>
+
+<span class="sd">目的：  1 演示逻辑回归的相关操作，二分类（流失 正样本 ，不流失 负样本 ）</span>
+<span class="sd">       2 演示逻辑回归的评估操作， 混淆矩阵 准确率  精准率  召回率  F1   ROC曲线的AUC值， 分类评估报告</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="c1"># 导包：</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>   <span class="c1"># 基于matplotlib的高级统计可视化库</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="kn">import</span> <span class="n">value_counts</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LogisticRegression</span>  <span class="c1">#  加载逻辑回归模型</span>
+<span class="kn">from</span><span class="w">  </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>  <span class="c1"># 数据集分割</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">accuracy_score</span><span class="p">,</span>  <span class="c1"># 准确率   (TP+TN)/(TP+TN+FP+FN) 适合类别平衡时的模型分类性能评估</span>
+    <span class="n">precision_score</span><span class="p">,</span> <span class="c1"># 精准率  TP/(TP+FP)  所有检测出的阳性样本中，有多少是正确的，衡量模型的误报</span>
+    <span class="n">recall_score</span><span class="p">,</span>    <span class="c1"># 召回率  TP/(TP+FN)  实际的正例中，有多少被模型检测出， 衡量的是模型的漏报</span>
+    <span class="n">f1_score</span><span class="p">,</span>        <span class="c1"># F1   (2*precision*recall)/(precision+recall)   F1= 准确率，召回率的调和平均值</span>
+    <span class="n">confusion_matrix</span><span class="p">,</span><span class="c1"># 混淆矩阵</span>
+    <span class="n">roc_curve</span><span class="p">,</span>       <span class="c1"># ROC曲线   绘制ROC曲线</span>
+    <span class="n">roc_auc_score</span><span class="p">,</span>   <span class="c1"># 计算 ROC 曲线下的面积 衡量的是模型在不同的二分类阈值下的分类性能 下方面积越大，模型性能越好</span>
+    <span class="n">classification_report</span>  <span class="c1"># 生成详细的分类评估报告</span>
+<span class="p">)</span>
+
+<span class="c1"># 数据预处理</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dm01_data_preprocess</span><span class="p">():</span>
+    <span class="n">churn_pd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;../datasets/churn.csv&#39;</span><span class="p">)</span>
+    <span class="c1">#churn_pd.info()     #打印每一列的数据类型信息</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-----------------</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;当前发现 churn 和 gender列为字符串类型，将其转为 bool型</span>
+<span class="sd">    gender --&gt;    gender_male    gender_femail</span>
+<span class="sd">       male              1             0</span>
+<span class="sd">       female            0             1</span>
+<span class="sd">    pd.get_dummies()  自动识别object类型  并对每个类别生成一个二进制列   </span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">churn_pd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">churn_pd</span><span class="p">)</span>
+    <span class="c1">#churn_pd.info()</span>
+
+    <span class="c1">#print(churn_pd.head(5)) # 查看前5行数据</span>
+
+    <span class="c1"># 去除冗余列</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    One-hot 编码后，对于二分类的类别 （churn ： yes /no ），只要保留一列即可</span>
+<span class="sd">    gender列 同理</span>
+<span class="sd">    本项目中，选择删除 Churn_no  以及  gender_male 列。</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="c1"># 参数1 ： 指定删除的列名  参数2 ： 原位修改   参3 ： 按 axis = 1 （列）进行删除</span>
+    <span class="n">churn_pd</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Churn_No&#39;</span><span class="p">,</span> <span class="s1">&#39;gender_Male&#39;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="c1">#churn_pd.info()</span>
+
+    <span class="c1"># 重命名标签列，使其语义更为清晰 ， 为了方便画柱状图</span>
+    <span class="c1"># 将 churn_yes 列重命名为  &#39;flag&#39;,作为模型的目标变量 （1=流失， 0=未流失）</span>
+    <span class="n">churn_pd</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Churn_Yes&#39;</span><span class="p">:</span> <span class="s1">&#39;flag&#39;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1">#churn_pd.info()</span>
+
+    <span class="c1"># 打印标签类别统计信息</span>
+    <span class="c1"># 参数 打印归一化的类别比例</span>
+    <span class="n">value_counts</span> <span class="o">=</span> <span class="n">churn_pd</span><span class="o">.</span><span class="n">flag</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;类别统计比例：</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">value_counts</span><span class="p">)</span>
+
+    <span class="c1"># 画柱状图  绘制（月度会员）的流失情况</span>
+    <span class="c1"># 参1 是数据集   参2 是X轴的列名(是否为月度会员   0 表示不是会员，  1 表示是月度会员)</span>
+    <span class="c1"># hue ：色调， 将flag的值（是否流失） 作为两个分类的柱状图的颜色</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">churn_pd</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Contract_Month&#39;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s1">&#39;flag&#39;</span>   <span class="p">)</span>          <span class="c1">#  plt.hist()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># 模型训练</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">dm02_model_train</span><span class="p">():</span>
+
+    <span class="c1">#  数据预处理（直接复制）</span>
+    <span class="n">churn_pd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;../datasets/churn.csv&#39;</span><span class="p">)</span>
+    <span class="n">churn_pd</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">churn_pd</span><span class="p">)</span>
+    <span class="n">churn_pd</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Churn_No&#39;</span><span class="p">,</span> <span class="s1">&#39;gender_Male&#39;</span><span class="p">],</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">churn_pd</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Churn_Yes&#39;</span><span class="p">:</span> <span class="s1">&#39;flag&#39;</span><span class="p">},</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1">#定义所用的特征列，以及标签列</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">churn_pd</span><span class="p">[[</span><span class="s1">&#39;Contract_Month&#39;</span><span class="p">,</span> <span class="s1">&#39;internet_other&#39;</span><span class="p">,</span> <span class="s1">&#39;PaymentElectronic&#39;</span><span class="p">]]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">churn_pd</span><span class="p">[</span><span class="s1">&#39;flag&#39;</span><span class="p">]</span>  <span class="c1"># 7000+ 个样本</span>
+
+    <span class="c1"># 特征的量纲一致，无需标准化</span>
+
+    <span class="c1"># 训练集和测试集的划分</span>
+    <span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">22</span><span class="p">,</span> <span class="n">stratify</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+
+    <span class="c1"># 实例化 逻辑回归模型，并进行训练</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">LogisticRegression</span><span class="p">()</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+    <span class="c1"># 模型预测</span>
+    <span class="n">y_predict</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;模型预测结果：</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">y_predict</span><span class="p">)</span>
+
+    <span class="c1"># 模型评估</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    accuracy_score,  # 准确率   (TP+TN)/(TP+TN+FP+FN) 适合类别平衡时的模型分类性能评估</span>
+<span class="sd">    precision_score,  # 精准率  TP/(TP+FP)  所有检测出的阳性样本中，有多少是正确的，衡量模型的误报</span>
+<span class="sd">    recall_score,  # 召回率  TP/(TP+FN)  实际的正例中，有多少被模型检测出， 衡量的是模型的漏报</span>
+<span class="sd">    f1_score,  # F1   (2*precision*recall)/(precision+recall)   F1= 准确率，召回率的调和平均值</span>
+<span class="sd">    confusion_matrix,  # 混淆矩阵</span>
+<span class="sd">    roc_curve,  # ROC曲线   绘制ROC曲线</span>
+<span class="sd">    roc_auc_score,  # 计算 ROC 曲线下的面积 衡量的是模型在不同的二分类阈值下的分类性能 下方面积越大，模型性能越好</span>
+<span class="sd">    classification_report  # 生成详细的分类评估报告</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;准确率 方法1&#39;</span><span class="p">,</span><span class="n">model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">x_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;准确率 方法2&#39;</span><span class="p">,</span><span class="n">accuracy_score</span><span class="p">(</span><span class="n">y_predict</span><span class="p">,</span> <span class="n">y_test</span><span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;模型 的 精准率&#39;</span><span class="p">,</span><span class="n">precision_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predict</span> <span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;模型 的 召回率&#39;</span><span class="p">,</span><span class="n">recall_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predict</span> <span class="p">))</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;模型 的 F1分数&#39;</span><span class="p">,</span><span class="n">f1_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predict</span>  <span class="p">))</span>
+
+    <span class="c1"># ROC曲线下方的面积  AUC</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ROC曲线下的面积&#39;</span><span class="p">,</span><span class="n">roc_auc_score</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predict</span><span class="p">))</span>
+
+    <span class="c1"># 分类模型的评估报告</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">classification_report</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predict</span><span class="p">))</span>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1">#dm01_data_preprocess()</span>
+    <span class="n">dm02_model_train</span><span class="p">()</span>
+</pre></div>
+</div>
+<h2 id="sec-20">作业</h2>
+<ol>
+<li>
+<p>使用思维导图总结逻辑回归的内容</p>
+</li>
+<li>
+<p>理解分类评估方法并进行详细的描述</p>
+</li>
+</ol>
+<p>3.动手实现癌症分类和电信用户流失案例(数据处理，特征工程，Cross Validation 。。。。)</p><div class="done-bar"><button class="mark-done-btn" data-key="lesson26" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson25.html"><div class="dir">← 上一篇</div><div class="name">📈 线性回归、梯度下降与正则化</div></a><a class="next" href="lesson27.html"><div class="dir">下一篇 →</div><div class="name">🌳 决策树：ID3、C4.5 与 CART</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">逻辑回归简介</a><a class="lv3" href="#sec-2">【了解】应用场景</a><a class="lv3" href="#sec-3">【熟悉】数学知识</a><a class="lv2" href="#sec-4">逻辑回归原理</a><a class="lv3" href="#sec-5">【理解】原理</a><a class="lv3" href="#sec-6">【知道】损失函数</a><a class="lv2" href="#sec-7">逻辑回归API</a><a class="lv3" href="#sec-8">【知道】API介绍</a><a class="lv3" href="#sec-9">【实践】癌症分类案例</a><a class="lv2" href="#sec-10">分类评估方法</a><a class="lv3" href="#sec-11">【理解】混淆矩阵</a><a class="lv3" href="#sec-12">【掌握】Precision（精确率）</a><a class="lv3" href="#sec-13">【掌握】Recall（召回率）</a><a class="lv3" href="#sec-14">【掌握】F1-score</a><a class="lv3" href="#sec-15">【知道】ROC曲线和AUC指标</a><a class="lv2" href="#sec-16">【实践】电信客户流失预测</a><a class="lv3" href="#sec-17">数据集介绍</a><a class="lv3" href="#sec-18">处理流程</a><a class="lv3" href="#sec-19">案例实现</a><a class="lv2" href="#sec-20">作业</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

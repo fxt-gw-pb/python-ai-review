@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>线性回归、梯度下降与正则化 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 25 讲</div>
+<h1>📈 线性回归、梯度下降与正则化</h1>
+<div class="chips"><span class="chip">🏷️ 线性回归</span><span class="chip">🏷️ 梯度下降</span><span class="chip">🏷️ Lasso / Ridge</span></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="image-20230912090316271" src="../assets/img/lesson25/image-20230912090316271.png" /></p>
+<h2 id="sec-1">线性回归介绍</h2>
+<p><strong>学习目标：</strong></p>
+<p>1.理解线性回归是什么？</p>
+<p>2.知道一元线性回归和多元线性回归的区别</p>
+<p>3.知道线性回归的应用场景</p>
+<h3 id="sec-2">【理解】举个栗子</h3>
+<p>假若有了身高和体重数据，来了播仔的身高，你能预测播仔体重吗?</p>
+<p><img loading="lazy" decoding="async" alt="image-20230901101426794" src="../assets/img/lesson25/image-20230901101426794.png" /></p>
+<p>这是一个回归问题，该如何求解呢?</p>
+<p><strong>思路</strong>:先从已知身高X和体重Y中找规律，再预测</p>
+<p><img loading="lazy" decoding="async" alt="image-20230901101621761" src="../assets/img/lesson25/image-20230901101621761.png" /></p>
+<p>•数学问题：用一条线来拟合身高和体重之间的关系，再对新数据进行预测</p>
+<p><img loading="lazy" decoding="async" alt="image-20230901101918502" src="../assets/img/lesson25/image-20230901101918502.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901101931661" src="../assets/img/lesson25/image-20230901101931661.png" /></p>
+<p>方程 Y = kX + b</p>
+<p>k160 + b = 56.3  -- (1)</p>
+<p>k166 + b = 60.6  –- (2)</p>
+<p>。。。。</p>
+<p>k: 斜率  b:截距</p>
+<p>若：y = 0.9 x + (-93)</p>
+<p>​    0.9*176 +（-93）= ? </p>
+<h3 id="sec-3">【理解】线性回归</h3>
+<p>线性回归(Linear regression)是利用 <strong>回归方程(函数)</strong> 对 <strong>一个或多个自变量(特征值)和因变量(目标值)之间</strong> 关系进行建模的一种分析方式。</p>
+<p><img loading="lazy" decoding="async" alt="image-20230901102250602" src="../assets/img/lesson25/image-20230901102250602.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901102402944" src="../assets/img/lesson25/image-20230901102402944.png" /></p>
+<p>注意事项：</p>
+<p>1 为什么叫线性模型？因为求解的w，都是w的零次幂（常数项）所以叫成线性模型</p>
+<p>2 在线性回归中，从数据中获取的规律其实就是学习权重系数w</p>
+<p>3 某一个权重值w越大，说明这个权重的数据对房子价格影响越大 </p>
+<h3 id="sec-4">【知道】线性回归分类</h3>
+<ul>
+<li>一元线性回归</li>
+</ul>
+<p>y = kx +b </p>
+<p>目标值只与一个因变量有关系</p>
+<p><img loading="lazy" decoding="async" alt="image-20230901102857178" src="../assets/img/lesson25/image-20230901102857178.png" /></p>
+<ul>
+<li>多元线性回归</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image-20230901102940614" src="../assets/img/lesson25/image-20230901102940614.png" /></p>
+<p>目标值只与多个因变量有关系</p>
+<p><img loading="lazy" decoding="async" alt="image-20230901103000204" src="../assets/img/lesson25/image-20230901103000204.png" /></p>
+<h3 id="sec-5">【知道】应用场景</h3>
+<p><img loading="lazy" decoding="async" alt="image-20230901103123601" src="../assets/img/lesson25/image-20230901103123601.png" /></p>
+<h2 id="sec-6">线性回归问题的求解</h2>
+<p><strong>学习目标：</strong></p>
+<p>1.知道线性回归API的使用</p>
+<p>2.知道损失函数是什么</p>
+<p>3.复习导数和矩阵的相关内容</p>
+<p>4.理解正规方程法</p>
+<p>5.掌握梯度下降算法的内容</p>
+<h3 id="sec-7">【实操】线性回归API的应用</h3>
+<p>预测播仔身高</p>
+<p>已知数据:</p>
+<p><img loading="lazy" decoding="async" alt="image-20230901104147248" src="../assets/img/lesson25/image-20230901104147248.png" /></p>
+<p>需求:播仔身高是176，请预测体重?</p>
+<p><img loading="lazy" decoding="async" alt="image-20230901104237860" src="../assets/img/lesson25/image-20230901104237860.png" /></p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearRegression</span>
+
+<span class="c1"># 身高（cm）与体重（kg）的示例数据</span>
+<span class="n">X</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">160</span><span class="p">],</span> <span class="p">[</span><span class="mi">165</span><span class="p">],</span> <span class="p">[</span><span class="mi">170</span><span class="p">],</span> <span class="p">[</span><span class="mi">175</span><span class="p">],</span> <span class="p">[</span><span class="mi">180</span><span class="p">]]</span>
+<span class="n">y</span> <span class="o">=</span> <span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="mi">55</span><span class="p">,</span> <span class="mi">60</span><span class="p">,</span> <span class="mi">65</span><span class="p">,</span> <span class="mi">70</span><span class="p">]</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="n">height</span> <span class="o">=</span> <span class="mi">176</span>
+<span class="n">weight</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">([[</span><span class="n">height</span><span class="p">]])[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;回归方程：y = </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">coef_</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">x + </span><span class="si">{</span><span class="n">model</span><span class="o">.</span><span class="n">intercept_</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;身高 </span><span class="si">{</span><span class="n">height</span><span class="si">}</span><span class="s2"> cm 的预测体重：</span><span class="si">{</span><span class="n">weight</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> kg&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>通过线性回归API可快速的找到一条红色直线，是怎么求解的呢？</p>
+<p><img loading="lazy" decoding="async" alt="image-20230901104626001" src="../assets/img/lesson25/image-20230901104626001.png" /></p>
+<h3 id="sec-8">【掌握】损失函数</h3>
+<p>需要设置一个评判标准</p>
+<p><img loading="lazy" decoding="async" alt="image-20230901110253313" src="../assets/img/lesson25/image-20230901110253313.png" /></p>
+<p><strong>误差概念</strong>：用预测值y – 真实值y就是误差</p>
+<p><strong>损失函数</strong>：衡量每个样本预测值与真实值效果的函数</p>
+<p>“红色直线能更好的拟合所有点”也就是误差最小，误差和最小</p>
+<p>损失函数数学如何表达呢？又如何求损失函数的最小值呢？</p>
+<p><img loading="lazy" decoding="async" alt="image-20230901110606206" src="../assets/img/lesson25/image-20230901110606206.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901110842936" src="../assets/img/lesson25/image-20230901110842936.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901110853094" src="../assets/img/lesson25/image-20230901110853094.png" /></p>
+<p>当损失函数取最小值时，得到k就是最优解</p>
+<p><img loading="lazy" decoding="async" alt="image-20230901113810862" src="../assets/img/lesson25/image-20230901113810862.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901113822728" src="../assets/img/lesson25/image-20230901113822728.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901113834036" src="../assets/img/lesson25/image-20230901113834036.png" /></p>
+<p>想求一条直线更好的拟合所有点 y = kx + b </p>
+<ul>
+<li>
+<p>​     引入损失函数(衡量预测值和真实值效果) Loss(k, b) </p>
+</li>
+<li>
+<p>​     通过一个优化方法，求损失函数最小值，得到K最优解</p>
+</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image-20230912103729099" src="../assets/img/lesson25/image-20230912103729099.png" /></p>
+<p>回归的损失函数：</p>
+<ul>
+<li><em>均方误差</em> <em>(</em>Mean-Square Error, MSE<em>)</em></li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image-20230901114527268" src="../assets/img/lesson25/image-20230901114527268.png" /></p>
+<ul>
+<li><em>平均绝对误差</em> <em>(</em><em>Mean Absolute Error</em> <em>,</em> <em>MAE</em><em>)</em></li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image-20230901114539398" src="../assets/img/lesson25/image-20230901114539398.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901114816872" src="../assets/img/lesson25/image-20230901114816872.png" /></p>
+<h3 id="sec-9">【复习】导数和矩阵</h3>
+<h4>【知道】常见的数据表述</h4>
+<ul>
+<li>为什么要学习标量、向量、矩阵、张量?</li>
+<li>因机器学习、深度学习中经常用，不要因是数学就害怕</li>
+<li>宗旨:用到就学什么，不要盲目的展开、大篇幅学数学</li>
+<li>标量scalar :一个独立存在的数，只有大小没有方向</li>
+<li>向量vector :向量指一列顺序排列的元素。默认是列向量</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image-20230901115201758" src="../assets/img/lesson25/image-20230901115201758.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901115210623" src="../assets/img/lesson25/image-20230901115210623.png" /></p>
+<ul>
+<li>矩阵matrix :二维数组</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image-20230901115223778" src="../assets/img/lesson25/image-20230901115223778.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901115232323" src="../assets/img/lesson25/image-20230901115232323.png" /></p>
+<ul>
+<li>张量Tensor :多维数组，张量是基于向量和矩阵的推广</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image-20230901115246275" src="../assets/img/lesson25/image-20230901115246275.png" /></p>
+<h4>【知道】导数</h4>
+<p>当函数y=f（x）的自变量x在一点$x_0$上产生一个增量Δx时，函数输出值的增量Δy与自变量增量Δx的比值在Δx趋于0时的极限a如果存在，a即为在$x_0$处的导数，记作$f^\prime(x_0)$或df($x_0$)/dx。</p>
+<p><img loading="lazy" decoding="async" alt="" src="../assets/img/lesson25/%E5%AF%BC%E6%95%B0.jpeg" /></p>
+<p>导数是函数的局部性质。一个函数在某一点的导数描述了这个函数在这一点附近的变化率。</p>
+<p>函数在某一点的导数就是该函数所代表的曲线在这一点上的切线斜率</p>
+<p>常见函数的导数：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: center;">公式</th>
+<th style="text-align: center;">例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">$(C)^\prime=0$</td>
+<td style="text-align: center;">$\left(5\right)^\prime=0$         $\left(10\right)^\prime=0$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\left(x^\alpha\right)^\prime=\alpha x^{\alpha-1}$</td>
+<td style="text-align: center;">$\left(x^3\right)^\prime=3 x^{2}$      $\left(x^5\right)^\prime=5 x^{4}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\left(a^x\right)^\prime=a^{x}\ln{a}$</td>
+<td style="text-align: center;">$\left(2^x\right)^\prime=2^x\ln{2}$      $\left(7^x\right)^\prime=7^x\ln{7}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\left(e^x\right)^\prime=e^{x}$</td>
+<td style="text-align: center;">$\left(e^x\right)^\prime=e^{x}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\left(\log{_a}x\right)^\prime=\frac{1}{x\ln{a}}$</td>
+<td style="text-align: center;">$\left(\log{<em>{10}}x\right)^\prime=\frac{1}{x\ln{10}}$      $\left(\log{</em>{6}}x\right)^\prime=\frac{1}{x\ln{6}}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\left(\ln{x}\right)^\prime=\frac{1}{x}$</td>
+<td style="text-align: center;">$\left(\ln{x}\right)^\prime=\frac{1}{x}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\left(\sin{x}\right)^\prime=\cos{x}$</td>
+<td style="text-align: center;">$\left(\sin{x}\right)^\prime=\cos{x}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\left(\cos{x}\right)^\prime=-\sin{x}$</td>
+<td style="text-align: center;">$\left(\cos{x}\right)^\prime=-\sin{x}$</td>
+</tr>
+</tbody>
+</table></div>
+<p>导数的四则运算：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: center;">公式</th>
+<th style="text-align: center;">例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">$\left[u(x)\pm v(x)\right]^\prime=u^\prime(x) \pm v^\prime(x)$</td>
+<td style="text-align: center;">$(e^x+4\ln{x})^\prime=(e^x)^\prime+(4\ln{x})^\prime=e^x+\frac{4}{x}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\left[u(x)\cdot v(x)\right]^\prime=u^\prime(x) \cdot v(x) + u(x) \cdot v^\prime(x)$</td>
+<td style="text-align: center;">$(\sin{x}\cdot\ln{x})^\prime=\cos{x}\cdot\ln{x}+\sin{x}\cdot\frac{1}{x}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">$\left[\frac{u(x)}{v(x)}\right]^\prime=\frac{u^\prime(x) \cdot v(x) - u(x) \cdot v^\prime(x)}{v^2(x)}$</td>
+<td style="text-align: center;">$\left(\frac{e^x}{\cos{x}}\right)^\prime=\frac{e^x\cdot\cos{x}-e^x\cdot(-\sin{x})}{cos^2(x)}$</td>
+</tr>
+<tr>
+<td style="text-align: center;">${g[h(x)]}^\prime=g^\prime(h)*h^\prime(x)$</td>
+<td style="text-align: center;">$(\sin{2x})^\prime=\cos{2x}\cdot(2x)^\prime=2\cos(2x)$</td>
+</tr>
+</tbody>
+</table></div>
+<p>复合函数求导：g(h)是外函数 h(x)是内函数。先对外函数求导，再对内函数求导</p>
+<p><img loading="lazy" decoding="async" alt="image-20230901143204713" src="../assets/img/lesson25/image-20230901143204713.png" /></p>
+<p>导数求极值：</p>
+<p>导数为0的位置是函数的极值点 </p>
+<p><img loading="lazy" decoding="async" alt="image-20230901143529603" src="../assets/img/lesson25/image-20230901143529603.png" /></p>
+<h4>【知道】偏导</h4>
+<p><img loading="lazy" decoding="async" alt="image-20230901144053678" src="../assets/img/lesson25/image-20230901144053678.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901144102962" src="../assets/img/lesson25/image-20230901144102962.png" /></p>
+<h4>【知道】向量</h4>
+<p>向量运算：</p>
+<p><img loading="lazy" decoding="async" alt="image-20230901144711751" src="../assets/img/lesson25/image-20230901144711751.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901145009232" src="../assets/img/lesson25/image-20230901145009232.png" /></p>
+<h4>【知道】矩阵</h4>
+<p><img loading="lazy" decoding="async" alt="image-20230901145231388" src="../assets/img/lesson25/image-20230901145231388.png" /></p>
+<p><img loading="lazy" decoding="async" src="../assets/img/lesson25/image-20230901145322438.png" alt="image-20230901145322438" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901145840373" src="../assets/img/lesson25/image-20230901145840373.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901150113602" src="../assets/img/lesson25/image-20230901150113602.png" /></p>
+<h3 id="sec-10">【了解】一元线性回归的解析解</h3>
+<p><img loading="lazy" decoding="async" alt="image-20230901150406897" src="../assets/img/lesson25/image-20230901150406897.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901150708528" src="../assets/img/lesson25/image-20230901150708528.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230912145402703" src="../assets/img/lesson25/image-20230912145402703.png" /></p>
+<h3 id="sec-11">【了解】多元线性回归的解析解-正规方程法</h3>
+<p><img loading="lazy" decoding="async" alt="image-20230901152528805" src="../assets/img/lesson25/image-20230901152528805.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230911234116911" src="../assets/img/lesson25/image-20230911234116911.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901152745308" src="../assets/img/lesson25/image-20230901152745308.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901152758396" src="../assets/img/lesson25/image-20230901152758396.png" /></p>
+<h3 id="sec-12">梯度下降算法</h3>
+<h4>【掌握】梯度下降算法思想</h4>
+<p>什么是梯度下降法</p>
+<p>• 求解函数极值还有更通用的方法就是梯度下降法。顾名思义:沿着梯度下降的方向求解极小值 • 举个例子:坡度最陡下山法</p>
+<p><img loading="lazy" decoding="async" alt="image-20230901183007785" src="../assets/img/lesson25/image-20230901183007785.png" /></p>
+<ul>
+<li>输入:初始化位置S;每步距离为a 。输出:从位置S到达山底</li>
+<li>步骤1:令初始化位置为山的任意位置S</li>
+<li>步骤2:在当前位置环顾四周，如果四周都比S高返回S;否则执行步骤3</li>
+<li>步骤3: 在当前位置环顾四周，寻找坡度最陡的方向，令其为x方向</li>
+<li>步骤4:沿着x方向往下走，长度为a，到达新的位置S‘</li>
+<li>步骤5:在S‘位置环顾四周，如果四周都比S‘高，则返回S‘。否则转到步骤3</li>
+</ul>
+<p>小结:通过循环迭代的方法不断更新位置S (相当于不断更新权重参数w)</p>
+<p><img loading="lazy" decoding="async" alt="image-20230901183020726" src="../assets/img/lesson25/image-20230901183020726.png" /></p>
+<p>最终找到最优解 这个方法可用来求损失函数最优解， 比正规方程更通用</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>梯度下降过程就和下山场景类似
+可微分的损失函数，代表着一座山
+寻找的函数的最小值，也就是山底
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="image-20230901183113930" src="../assets/img/lesson25/image-20230901183113930.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901183125661" src="../assets/img/lesson25/image-20230901183125661.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230912163031832" src="../assets/img/lesson25/image-20230912163031832.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901183139728" src="../assets/img/lesson25/image-20230901183139728.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901183152966" src="../assets/img/lesson25/image-20230901183152966.png" /></p>
+<h4>【理解】银行信贷案例</h4>
+<p><img loading="lazy" decoding="async" alt="image-20230901183222050" src="../assets/img/lesson25/image-20230901183222050.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901183240178" src="../assets/img/lesson25/image-20230901183240178.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901183301618" src="../assets/img/lesson25/image-20230901183301618.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901183315009" src="../assets/img/lesson25/image-20230901183315009.png" /></p>
+<h4>【了解】梯度下降算法分类</h4>
+<p><img loading="lazy" decoding="async" alt="image-20230901183333299" src="../assets/img/lesson25/image-20230901183333299.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230901183346878" src="../assets/img/lesson25/image-20230901183346878.png" /></p>
+<h4>【理解】正规方程和梯度下降算法的对比</h4>
+<p><img loading="lazy" decoding="async" alt="image-20230901162716376" src="../assets/img/lesson25/image-20230901162716376.png" /></p>
+<h2 id="sec-13">回归评估方法</h2>
+<p><strong>学习目标：</strong></p>
+<p>1.掌握常用的回归评估方法</p>
+<p>2.了解不同评估方法的特点</p>
+<p><strong>为什么要进行线性回归模型的评估</strong></p>
+<p>我们希望衡量预测值和真实值之间的差距，</p>
+<p>会用到MAE、MSE、RMSE多种测评函数进行评价</p>
+<h3 id="sec-14">【知道】平均绝对误差</h3>
+<p><strong>Mean Absolute Error (MAE)</strong></p>
+<p><img loading="lazy" decoding="async" alt="img" src="../assets/img/lesson25/mae.png" /></p>
+<ul>
+<li>
+<p>上面的公式中：n 为样本数量, y 为实际值, $\hat{y}$ 为预测值</p>
+</li>
+<li>
+<p>MAE 越小模型预测约准确</p>
+</li>
+</ul>
+<p>Sklearn 中MAE的API</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_absolute_error</span>
+<span class="n">mean_absolute_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="n">y_predict</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-15">【知道】均方误差</h3>
+<p><strong>Mean Squared Error (MSE)</strong></p>
+<p><img loading="lazy" decoding="async" alt="img" src="../assets/img/lesson25/mse.png" /></p>
+<ul>
+<li>上面的公式中：n 为样本数量, y 为实际值, $\hat{y}$ 为预测值</li>
+<li>MSE 越小模型预测约准确</li>
+</ul>
+<p>Sklearn 中MSE的API</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_squared_error</span>
+<span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="n">y_predict</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-16">【知道】 均方根误差</h3>
+<p><strong>Root Mean Squared Error (RMSE)</strong></p>
+<p><img loading="lazy" decoding="async" alt="img" src="../assets/img/lesson25/rmse.png" /></p>
+<ul>
+<li>上面的公式中：n 为样本数量, y 为实际值, $\hat{y}$ 为预测值</li>
+<li>RMSE 越小模型预测约准确</li>
+</ul>
+<h3 id="sec-17">【了解】 三种指标的比较</h3>
+<p>我们绘制了一条直线 <strong>y = 2x +5</strong> 用来拟合 <strong>y = 2x + 5 + e.</strong> 这些数据点，其中e为噪声</p>
+<p><img loading="lazy" decoding="async" alt="img" src="../assets/img/lesson25/rmse2.png" /></p>
+<p>从上图中我们发现 MAE 和 RMSE 非常接近，都表明模型的误差很低（MAE 或 RMSE 越小，误差越小！）。 但是MAE 和 RMSE 有什么区别？为什么MAE较低？</p>
+<ul>
+<li>
+<p>对比MAE 和 RMSE的公式，RMSE的计算公式中有一个平方项，因此：大的误差将被平方，因此会增加 RMSE 的值</p>
+</li>
+<li>
+<p>可以得出结论，RMSE 会放大预测误差较大的样本对结果的影响，而 MAE 只是给出了平均误差</p>
+</li>
+<li>
+<p>由于 RMSE 对误差的 <strong>平方和求平均</strong> 再开根号，大多数情况下RMSE&gt;MAE</p>
+</li>
+</ul>
+<p>举例 (1+3)/2 = 2   $\sqrt{(1^2+3^2)/2 }= \sqrt{10/2} = \sqrt{5} = 2.236$</p>
+<p>我们再看下一个例子</p>
+<p><img loading="lazy" decoding="async" alt="img" src="../assets/img/lesson25/rmse3.png" /></p>
+<p>橙色线与第一张图中的直线一样：<strong>y = 2x +5</strong> </p>
+<p>蓝色的点为： <strong>y = y + sin(x)*exp(x/20) + e</strong>  其中 exp() 表示指数函数</p>
+<p>我们看到对比第一张图，所有的指标都变大了，RMSE 几乎是 MAE 值的两倍，因为它对预测误差较大的点比较敏感</p>
+<p>我们是否可以得出结论： RMSE是更好的指标？ 某些情况下MAE更有优势，例如：</p>
+<ul>
+<li>假设数据中有少数异常点偏差很大，如果此时根据 RMSE 选择线性回归模型，可能会选出过拟合的模型来</li>
+<li>在这种情况下，由于数据中的异常点极少，选择具有最低 MAE 的回归模型可能更合适</li>
+<li>除此之外，当两个模型计算RMSE时数据量不一致，也不适合在一起比较 </li>
+</ul>
+<h2 id="sec-18">【实操】波士顿房价预测案例</h2>
+<h3 id="sec-19">【知道】线性回归API</h3>
+<p>sklearn.linear_model.LinearRegression(fit_intercept=True)</p>
+<ul>
+<li>通过正规方程优化</li>
+<li>参数：fit_intercept，是否计算偏置</li>
+<li>属性：LinearRegression.coef_ （回归系数） LinearRegression.intercept_（偏置）</li>
+</ul>
+<p>sklearn.linear_model.SGDRegressor(loss="squared_loss", fit_intercept=True, learning_rate ='constant', eta0=0.01)</p>
+<ul>
+<li>参数：loss（损失函数类型），fit_intercept（是否计算偏置）learning_rate （学习率）</li>
+<li>属性：SGDRegressor.coef_ （回归系数）SGDRegressor.intercept_ （偏置）</li>
+</ul>
+<h3 id="sec-20">【实操】波士顿房价预测</h3>
+<p><img loading="lazy" decoding="async" alt="image-20230913092037241" src="../assets/img/lesson25/image-20230913092037241.png" /></p>
+<h4>案例背景介绍</h4>
+<p>数据介绍</p>
+<p><img loading="lazy" decoding="async" alt="" src="../assets/img/lesson25/006tNbRwly1ga8u37zooxj317g0tc7dk.jpg" /></p>
+<p><img loading="lazy" decoding="async" alt="å±æ§" src="../assets/img/lesson25/006tNbRwly1ga8u39xrmlj30xo0ryk16.jpg" /></p>
+<blockquote>
+<p>给定的这些特征，是专家们得出的影响房价的结果属性。我们此阶段不需要自己去探究特征是否有用，只需要使用这些特征。到后面量化很多特征需要我们自己去寻找</p>
+</blockquote>
+<h4>案例分析</h4>
+<p>回归当中的数据大小不一致，是否会导致结果影响较大。所以需要做标准化处理。</p>
+<ul>
+<li>数据分割与标准化处理</li>
+<li>回归预测</li>
+<li>线性回归的算法效果评估</li>
+</ul>
+<h4>回归性能评估</h4>
+<p>均方误差(Mean Squared Error, MSE)评价机制：</p>
+<p>$\Large MSE = \frac{1}{m}\sum_{i=1}^{m}(y^i-\hat{y})^2$</p>
+<p>sklearn中的API：sklearn.metrics.mean_squared_error(y_true, y_pred)</p>
+<ul>
+<li>均方误差回归损失</li>
+<li>y_true:真实值</li>
+<li>y_pred:预测值</li>
+<li>return:浮点数结果</li>
+</ul>
+<h4>代码实现</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">多元线性归回之波士顿房价预测</span>
+<span class="sd">利用sklearn 的正规方程解法以及梯度下降法</span>
+
+<span class="sd">步骤</span>
+<span class="sd">1  获取数据</span>
+<span class="sd">2  数据集划分</span>
+<span class="sd">3  数据预处理-标准化</span>
+<span class="sd">4  机器学习方法 （1正规方程法  不求逆矩阵，用奇异值分解SVD   2 梯度下降）</span>
+<span class="sd">5  模型测试  获取模型参数</span>
+<span class="sd">6  模型评估</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="c1">#导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>        <span class="c1"># 特征标准化</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>    <span class="c1"># 数据集划分</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearRegression</span>       <span class="c1"># 回归模型API</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">SGDRegressor</span>           <span class="c1"># 梯度下降的回归模型</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_squared_error</span>          <span class="c1"># 均方误差评估</span>
+
+
+<span class="c1"># 正规方程</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">linear_model1</span><span class="p">():</span>
+    <span class="c1"># 1 获取数据</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;data/boston.csv&#39;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="c1"># 2 数据集划分为特征和标签</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># 所有列除了最后一列</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># 最后一列</span>
+
+    <span class="c1"># 打印信息</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">label</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>   <span class="c1">#特征是二维数据，n行:n个样本  d列:d个特征</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
+
+    <span class="c1"># 2 数据集划分</span>
+    <span class="c1"># 参1 数据集  参2 标签   参3 测试集所占比例  参4 是否打乱数据集  参5 随机数种子</span>
+    <span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="n">label</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">22</span><span class="p">)</span>
+
+    <span class="c1"># 3 特征工程-标准化</span>
+    <span class="n">transfer</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+
+    <span class="c1"># 数据集预处理-数据标准化     fit + transform  记录均值方差   针对训练集</span>
+    <span class="n">x_train</span> <span class="o">=</span> <span class="n">transfer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">x_train</span><span class="p">)</span>
+
+    <span class="c1"># 让测试集的均值和方差, 转换测试集数据;   仅仅transform  针对测试集</span>
+    <span class="n">x_test</span> <span class="o">=</span> <span class="n">transfer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+
+
+    <span class="c1"># 4 机器学习-线性回归(正规方程法 + 奇异值分解)</span>
+    <span class="n">estimator</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+    <span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+    <span class="c1"># 5 模型评估 # 获取模型系数</span>
+    <span class="n">y_predict</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;预测值为:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">y_predict</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;模型的权重系数为:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">estimator</span><span class="o">.</span><span class="n">coef_</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;模型的偏置为:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">estimator</span><span class="o">.</span><span class="n">intercept_</span><span class="p">)</span>
+
+    <span class="c1"># 5.2 评价 均方误差</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predict</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;误差为:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+
+<span class="c1">#梯度下降方式</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">linear_model2</span><span class="p">():</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;data/boston.csv&#39;</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="c1"># 2 数据集划分为特征和标签</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># 所有列除了最后一列</span>
+    <span class="n">label</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># 最后一列</span>
+
+    <span class="c1"># 2 数据集划分</span>
+    <span class="c1"># 参1 数据集  参2 标签   参3 测试集所占比例  参4 是否打乱数据集  参5 随机数种子</span>
+    <span class="n">x_train</span><span class="p">,</span> <span class="n">x_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">22</span><span class="p">)</span>
+
+    <span class="c1"># 3.特征工程-标准化</span>
+    <span class="n">transfer</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+    <span class="n">x_train</span> <span class="o">=</span> <span class="n">transfer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">x_train</span><span class="p">)</span>
+    <span class="n">x_test</span> <span class="o">=</span> <span class="n">transfer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+
+    <span class="c1"># 4.机器学习-线性回归(梯度下降)  </span>
+    <span class="n">estimator</span> <span class="o">=</span> <span class="n">SGDRegressor</span><span class="p">(</span><span class="n">learning_rate</span><span class="o">=</span><span class="s1">&#39;invscaling&#39;</span><span class="p">,</span> <span class="n">eta0</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+    <span class="c1"># estimator = SGDRegressor(max_iter=1000, learning_rate=&quot;constant&quot;, eta0=0.001)</span>
+    <span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;性能会略差，因为之前是理论计算值&#39;&#39;&#39;</span>
+
+    <span class="c1"># 5.模型评估 # 5.1 获取模型参数</span>
+    <span class="n">y_predict</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_test</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;预测值为:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">y_predict</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;模型的权重系数为:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">estimator</span><span class="o">.</span><span class="n">coef_</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;模型的偏置为:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">estimator</span><span class="o">.</span><span class="n">intercept_</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;模型实际跑了多少轮：&#39;</span><span class="p">,</span> <span class="n">estimator</span><span class="o">.</span><span class="n">n_iter_</span><span class="p">)</span>
+
+
+    <span class="c1"># 5.2 评价 均方误差</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_predict</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;误差为:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+
+<span class="k">if</span>  <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">linear_model1</span><span class="p">()</span>
+    <span class="n">linear_model2</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>1.2.0 以上版本实现</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearRegression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_squared_error</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+
+<span class="c1"># 新版 sklearn 已移除 load_boston，这里直接读取课程配套 CSV</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;data/boston.csv&quot;</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="s2">&quot;medv&quot;</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;medv&quot;</span><span class="p">]</span>
+
+<span class="n">X_train</span><span class="p">,</span> <span class="n">X_test</span><span class="p">,</span> <span class="n">y_train</span><span class="p">,</span> <span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span>
+    <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span>
+<span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">LinearRegression</span><span class="p">())</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">y_train</span><span class="p">)</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;测试集 MSE：&quot;</span><span class="p">,</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;测试集 R²：&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">score</span><span class="p">(</span><span class="n">X_test</span><span class="p">,</span> <span class="n">y_test</span><span class="p">))</span>
+</pre></div>
+</div>
+<h2 id="sec-21">正则化</h2>
+<p><strong>学习目标：</strong></p>
+<p>1.掌握过拟合、欠拟合的概念</p>
+<p>2.掌握过拟合、欠拟合产生的原因</p>
+<p>3.知道什么是正则化，以及正则化的方法</p>
+<h3 id="sec-22">【理解】 欠拟合与过拟合</h3>
+<p>过拟合：一个假设 <strong>在训练数据上能够获得比其他假设更好的拟合， 但是在测试数据集上却不能很好地拟合数据</strong> (体现在准确率下降)，此时认为这个假设出现了过拟合的现象。(模型过于复杂)</p>
+<p>欠拟合：一个假设 <strong>在训练数据上不能获得更好的拟合，并且在测试数据集上也不能很好地拟合数据</strong> ，此时认为这个假设出现了欠拟合的现象。(模型过于简单)</p>
+<p>过拟合和欠拟合的区别：</p>
+<p><img loading="lazy" decoding="async" src="../assets/img/lesson25/006tNbRwly1ga8u2rlw69j315m0oc40y.jpg" alt="æ¬ æåè¿æåå¾ç¤º" style="zoom: 33%;" /></p>
+<p>欠拟合在训练集和测试集上的误差都较大</p>
+<p>过拟合在训练集上误差较小，而测试集上误差较大</p>
+<p><img loading="lazy" decoding="async" alt="image-20230913101352444" src="../assets/img/lesson25/image-20230913101352444.png" /></p>
+<h3 id="sec-23">【实践】通过代码认识过拟合和欠拟合</h3>
+<p>绘制数据</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">演示：</span>
+<span class="sd">    拟合问题</span>
+
+<span class="sd">    回顾：</span>
+<span class="sd">        拟合：指的是模型和数据之前存在关系， 即：预测值和真实值之间的关系</span>
+
+<span class="sd">        欠拟合：模型在训练集、测试集表现都不好</span>
+<span class="sd">            原因：模型（特征太少）太简单了</span>
+<span class="sd">        过拟合：模型在训练集表现好，在测试集表现不好</span>
+<span class="sd">            原因：模型（特征太多）过于复杂了  数据不纯、数据量少</span>
+<span class="sd">        正好拟合（泛化）：模型在训练集，测试集都好</span>
+
+<span class="sd">        奥卡姆剃刀：在误差相同（泛化程度一样）的情况下，优先选择简单的模型</span>
+<span class="sd">        </span>
+<span class="sd">步骤：</span>
+<span class="sd">1  准备数据x y(增加上噪声)</span>
+<span class="sd">2  实例化线性回归模型</span>
+<span class="sd">3  训练模型</span>
+<span class="sd">4  模型预测</span>
+<span class="sd">5  计算误差</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearRegression</span>    <span class="c1"># 梯度下降的回归模型</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_squared_error</span> <span class="c1"># 计算均方误差</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dm01_underfitting</span><span class="p">():</span>
+    <span class="c1"># 1 准备数据x y(增加上噪声)</span>
+    <span class="c1"># 锁定随机数种子</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">666</span><span class="p">)</span>
+    <span class="c1"># 产生100个随机数 （100个特征值）</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="c1">#得到标签  2次幂的映射</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">2</span>
+    <span class="c1"># 增加标签噪声 --&gt; 模拟真实数据</span>
+    <span class="n">y</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+    <span class="c1">#plt.scatter(x,y)</span>
+    <span class="c1">#plt.show()</span>
+
+    <span class="c1"># 2 实例化线性回归模型</span>
+    <span class="n">estimator</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+
+    <span class="c1"># 3 训练模型</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># 将特征转为n行1列 ！ n个样本 1个特征</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;X.shape--&gt;&#39;</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+    <span class="c1"># 训练</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;  仅有的一列特征作为输入,  即X  ，  y = wx + b  导致欠拟合   &#39;&#39;&#39;</span>
+    <span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="c1"># 4 模型预测</span>
+    <span class="n">y_predict</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+    <span class="c1"># 5 计算均方误差</span>
+    <span class="n">myret</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_predict</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;myret--&gt;&#39;</span><span class="p">,</span> <span class="n">myret</span><span class="p">)</span>      <span class="c1">#   3.0750025765636577</span>
+
+    <span class="c1"># 6 画图</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_predict</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="c1"># 不连线</span>
+    <span class="c1"># 画图plot折线图时 需要对x进行排序, 取x排序后对应的y值      </span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;重点讲解，需要画图说明&#39;&#39;&#39;</span>
+    <span class="c1">#plt.plot(np.sort(x), y_predict[np.argsort(x)], color=&#39;r&#39;)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dm02_justfitting</span><span class="p">():</span>
+    <span class="c1"># 略写</span>
+
+    <span class="c1"># 1 准备数据x y(增加上噪声)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">666</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;演示 如果不排序， 画图不正常&#39;&#39;&#39;</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+
+    <span class="n">y</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="c1"># 2 实例化线性回归模型</span>
+    <span class="n">estimator</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+
+    <span class="c1"># 3 训练模型</span>
+    <span class="c1"># 转为 n行 1列</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># print(‘X.shape--&gt;’, X.shape)</span>
+
+    <span class="c1">#       特征名       x       x²     </span>
+    <span class="c1">#样本1              1.3     1.69</span>
+    <span class="c1">#样本2              0.5     0.25</span>
+    <span class="c1">#样本3              1.1     1.21</span>
+    <span class="c1"># ...</span>
+
+    <span class="c1">#增加第二列特征  平方项，  其特征值是 x 特征值的平方</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;   输入的特征2列，  模型参数增加，避免过拟合   y = w1 x + w2 x² + b  正好拟合   &#39;&#39;&#39;</span>
+
+    <span class="n">X2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">X</span><span class="p">,</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">2</span><span class="p">])</span>
+
+    <span class="c1"># 训练</span>
+    <span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X2</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="c1"># 4 模型预测</span>
+    <span class="n">y_predict</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X2</span><span class="p">)</span>
+    <span class="c1"># 5 计算均方误差</span>
+    <span class="n">myret</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_predict</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;myret--&gt;&#39;</span><span class="p">,</span> <span class="n">myret</span><span class="p">)</span>        <span class="c1">#  1.093798773963645</span>
+
+ <span class="c1"># 6 画图</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_predict</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>  <span class="c1"># 不连线</span>
+    <span class="c1"># 画图plot折线图时 需要对x进行排序, 取x排序后对应的y值</span>
+    <span class="c1">#plt.plot(np.sort(x), y_predict[np.argsort(x)], color=&#39;r&#39;)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dm03_overfitting</span><span class="p">():</span>
+    <span class="c1"># 略写</span>
+
+    <span class="c1"># 1 准备数据x y(增加上噪声)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">666</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;演示 如果不排序， 画图不正常&#39;&#39;&#39;</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">y</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="c1"># 2 实例化线性回归模型</span>
+    <span class="n">estimator</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+
+    <span class="c1"># 3 训练模型</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="c1"># print(‘X.shape--&gt;’, X.shape)</span>
+
+    <span class="c1">#       特征名      x       x²     x³     x⁴    x⁵    x⁶    x⁷    x⁸    x⁹    x¹⁰</span>
+    <span class="c1">#样本1             1.3     1.69   2.2   2.86   3.71  4.83  6.27  8.16  10.6  13.79</span>
+    <span class="c1">#样本2             1.1     1.21   1.33  1.46   1.61  1.77  1.95  2.14  2.36  2.59</span>
+    <span class="c1">#样本3             0.5     0.25   0.13  0.06   0.03  0.02  0.01   ...</span>
+
+    <span class="c1"># ...</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;特征太多， 模型参数过多    y = w1x1 + w2x² +w3x³ + ...  w10x^10 + b&#39;&#39;&#39;</span>
+
+
+
+    <span class="c1"># 增加特征， 高次项</span>
+    <span class="n">X3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">X</span><span class="p">,</span> <span class="n">X</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">X</span><span class="o">**</span><span class="mi">3</span><span class="p">,</span> <span class="n">X</span><span class="o">**</span><span class="mi">4</span><span class="p">,</span> <span class="n">X</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="n">X</span><span class="o">**</span><span class="mi">6</span><span class="p">,</span> <span class="n">X</span><span class="o">**</span><span class="mi">7</span><span class="p">,</span> <span class="n">X</span><span class="o">**</span><span class="mi">8</span><span class="p">,</span> <span class="n">X</span><span class="o">**</span><span class="mi">9</span><span class="p">,</span> <span class="n">X</span><span class="o">**</span><span class="mi">10</span><span class="p">])</span>
+<span class="w">    </span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; 尝试更多的特征？  x**30 ？     或者更小的数据弥散 ？ σ=0.2 ？ &#39;&#39;&#39;</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;X3 = np.hstack([X**(i+1) for i in range(40)]) &#39;&#39;&#39;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">X3</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+
+
+    <span class="c1">#  每个特征的量纲不一样， 需要标准化</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+    <span class="n">scalar</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+    <span class="n">X3</span> <span class="o">=</span> <span class="n">scalar</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X3</span><span class="p">)</span>
+
+
+    <span class="c1"># 训练</span>
+    <span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X3</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="c1"># 4 模型预测</span>
+    <span class="n">y_predict</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X3</span><span class="p">)</span>
+
+    <span class="c1"># 5 计算均方误差</span>
+    <span class="n">myret</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_predict</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;myret--&gt;&#39;</span><span class="p">,</span> <span class="n">myret</span><span class="p">)</span>      <span class="c1">#  0.9530293790558859</span>
+
+    <span class="c1"># 查看权重</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">estimator</span><span class="o">.</span><span class="n">coef_</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    [4.09240017   2.49296294 -21.35688901  -5.30682997  63.10014981  </span>
+<span class="sd">  10.87454772 -71.7709558  -10.87776102  27.82629309   4.25436815]</span>
+<span class="sd"> 证明  高阶特征也被重视。    后期用了正则，效果立杆见影</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+
+ <span class="c1"># 6 画图</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_predict</span><span class="p">,</span><span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>  <span class="c1"># 不连线</span>
+
+    <span class="c1"># 画图plot折线图时 需要对x进行排序, 取x排序后对应的y值      </span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;重点讲解，需要画图说明&#39;&#39;&#39;</span>
+    <span class="c1">#plt.plot(np.sort(x), y_predict[np.argsort(x)], color=&#39;r&#39;)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">dm01_underfitting</span><span class="p">()</span>
+    <span class="n">dm02_justfitting</span><span class="p">()</span>
+    <span class="n">dm03_overfitting</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="1" src="../assets/img/lesson25/1.png" /></p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1">#计算均方误差</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_squared_error</span>
+<span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">y_predict</span><span class="p">)</span>
+
+<span class="c1">#3.0750025765636577</span>
+</pre></div>
+</div>
+<p>添加二次项，绘制图像</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearRegression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_squared_error</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">PolynomialFeatures</span>
+
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">poly</span> <span class="o">=</span> <span class="n">PolynomialFeatures</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">include_bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">X_poly</span> <span class="o">=</span> <span class="n">poly</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_poly</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">y_pred</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_poly</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;二次模型 MSE：&quot;</span><span class="p">,</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;samples&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y_pred</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;tomato&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;degree=2&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="2" src="../assets/img/lesson25/2.png" /></p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1">#计算均方误差和准确率</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_squared_error</span>
+<span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">y_predict2</span><span class="p">)</span>
+
+<span class="c1">#1.0987392142417858</span>
+</pre></div>
+</div>
+<p>再次加入高次项，绘制图像，观察均方误差结果</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">LinearRegression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_squared_error</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">PolynomialFeatures</span><span class="p">,</span> <span class="n">StandardScaler</span>
+
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># 阶数过高时，模型会追逐训练集中的噪声</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">make_pipeline</span><span class="p">(</span>
+    <span class="n">PolynomialFeatures</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">include_bias</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="n">StandardScaler</span><span class="p">(),</span>
+    <span class="n">LinearRegression</span><span class="p">(),</span>
+<span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">x_plot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">y_plot</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">x_plot</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;15 次模型训练 MSE：&quot;</span><span class="p">,</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">)))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;samples&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_plot</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">y_plot</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;tomato&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;degree=15&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="mi">3</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="" src="../assets/img/lesson25/3.png" /></p>
+<p>通过上述观察发现，随着加入的高次项越来越多，拟合程度越来越高，均方误差也随着加入越来越小。说明已经不再欠拟合了。</p>
+<p>问题：如何判断出现过拟合呢？</p>
+<p>将数据集进行划分：对比X、X2、X5的测试集的均方误差</p>
+<p>X的测试集均方误差</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">X_train</span><span class="p">,</span><span class="n">X_test</span><span class="p">,</span><span class="n">y_train</span><span class="p">,</span><span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">random_state</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+<span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">)</span>
+<span class="n">y_predict</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+
+<span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="n">y_predict</span><span class="p">)</span>
+<span class="c1">#3.153139806483088</span>
+</pre></div>
+</div>
+<p>X2的测试集均方误差</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">X_train</span><span class="p">,</span><span class="n">X_test</span><span class="p">,</span><span class="n">y_train</span><span class="p">,</span><span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X2</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">random_state</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+<span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">)</span>
+<span class="n">y_predict</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="n">y_predict</span><span class="p">)</span>
+<span class="c1">#1.111873885731967</span>
+</pre></div>
+</div>
+<p>X5的测试集的均方误差</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">X_train</span><span class="p">,</span><span class="n">X_test</span><span class="p">,</span><span class="n">y_train</span><span class="p">,</span><span class="n">y_test</span> <span class="o">=</span> <span class="n">train_test_split</span><span class="p">(</span><span class="n">X5</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">random_state</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">estimator</span> <span class="o">=</span> <span class="n">LinearRegression</span><span class="p">()</span>
+<span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span><span class="n">y_train</span><span class="p">)</span>
+<span class="n">y_predict</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X_test</span><span class="p">)</span>
+<span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y_test</span><span class="p">,</span><span class="n">y_predict</span><span class="p">)</span>
+<span class="c1">#1.4145580542309835</span>
+</pre></div>
+</div>
+<h3 id="sec-24">【理解】 原因以及解决办法</h3>
+<p><strong>欠拟合产生原因：</strong> 学习到数据的特征过少</p>
+<p>解决办法：</p>
+<p><strong>1）添加其他特征项</strong>，有时出现欠拟合是因为特征项不够导致的，可以添加其他特征项来解决</p>
+<p><strong>2）添加多项式特征</strong>，模型过于简单时的常用套路，例如将线性模型通过添加二次项或三次项使模型泛化能力更强</p>
+<p><strong>过拟合产生原因：</strong> 原始特征过多，存在一些嘈杂特征， 模型过于复杂是因为模型尝试去兼顾所有测试样本</p>
+<p>解决办法：</p>
+<p>1）重新清洗数据，导致过拟合的一个原因有可能是数据不纯，如果出现了过拟合就需要重新清洗数据。</p>
+<p>2）增大数据的训练量，还有一个原因就是我们用于训练的数据量太小导致的，训练数据占总数据的比例过小。</p>
+<p><strong>3）正则化</strong></p>
+<p>4）减少特征维度</p>
+<h3 id="sec-25">【理解】正则化</h3>
+<p>在解决回归过拟合中，我们选择正则化。但是对于其他机器学习算法如分类算法来说也会出现这样的问题，除了一些算法本身作用之外（决策树、神经网络），我们更多的也是去自己做特征选择，包括之前说的删除、合并一些特征</p>
+<p><img loading="lazy" decoding="async" src="../assets/img/lesson25/006tNbRwly1ga8u2sjcw9j314o0g8wkd.jpg" style="zoom:50%;" /></p>
+<p><strong>如何解决？</strong></p>
+<p><img loading="lazy" decoding="async" src="../assets/img/lesson25/006tNbRwly1ga8u2tduvuj30zs0kctav.jpg" alt="æ­£åå" style="zoom: 33%;" /></p>
+<p><strong>在学习的时候，数据提供的特征有些影响模型复杂度或者这个特征的数据点异常较多，所以算法在学习的时候尽量减少这个特征的影响（甚至删除某个特征的影响），这就是正则化</strong></p>
+<p>注：调整时候，算法并不知道某个特征影响，而是去调整参数得出优化的结</p>
+<h4><strong>L1正则化</strong></h4>
+<ul>
+<li>假设𝐿(𝑊)是未加正则项的损失，𝜆是一个超参，控制正则化项的大小。</li>
+<li>则最终的损失函数：$𝐿=𝐿(𝑊)+ \lambda*\sum_{i=1}^{n}\lvert w_i\rvert$ </li>
+</ul>
+<p>作用：用来进行特征选择，主要原因在于L1正则化会使得较多的参数为0，从而产生稀疏解,可以将0对应的特征遗弃，进而用来选择特征。一定程度上L1正则也可以防止模型过拟合。</p>
+<p><img loading="lazy" decoding="async" alt="image-20230913145042318" src="../assets/img/lesson25/image-20230913145042318.png" /></p>
+<p><strong>L1正则为什么可以产生稀疏解（可以特征选择）</strong></p>
+<p>稀疏性：向量中很多维度值为0</p>
+<ul>
+<li>对其中的一个参数 $ w_i $ 计算梯度，其他参数同理，α是学习率，sign(wi)是符号函数。</li>
+</ul>
+<p><img loading="lazy" decoding="async" src="../assets/img/lesson25/l2_4.png" alt="l2" style="zoom:50%;" /></p>
+<p>L1的梯度：</p>
+<p>$𝐿=𝐿(𝑊)+ \lambda*\sum_{i=1}^{n}\lvert w_i\rvert$ </p>
+<p>$\frac{\partial L}{\partial w_{i}} = \frac{\partial L(W)}{\partial w_{i}}+\lambda sign(w_{i})$</p>
+<p>LASSO回归: from sklearn.linear_model import Lasso</p>
+<h4><strong>L2正则化</strong></h4>
+<ul>
+<li>假设𝐿(𝑊)是未加正则项的损失，𝜆是一个超参，控制正则化项的大小。</li>
+<li>则最终的损失函数：$𝐿=𝐿(𝑊)+ \lambda*\sum_{i=1}^{n}w_{i}^{2}$ </li>
+</ul>
+<p>作用：主要用来防止模型过拟合，可以减小特征的权重</p>
+<p>优点：越小的参数说明模型越简单，越简单的模型则越不容易产生过拟合现象</p>
+<p>Ridge回归: from sklearn.linear_model import Ridge</p>
+<h4><strong>正则化案例</strong></h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">展示L1  L2正则化的作用</span>
+
+<span class="sd">1 准备数据x y(增加上噪声)</span>
+<span class="sd">2 实例化L1正则化模型</span>
+<span class="sd">3 训练模型</span>
+<span class="sd">4 训练预测</span>
+<span class="sd">5 计算均方误差</span>
+<span class="sd">6 画图</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="c1">#导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="c1">#from sklearn.linear_model import LinearRegression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_squared_error</span> <span class="c1"># 计算均方误差</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lasso</span>    <span class="c1">#  L1正则</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ridge</span>    <span class="c1">#  L2 正则</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+
+
+<span class="sd">&#39;&#39;&#39;接着过拟合的代码  少量修改&#39;&#39;&#39;</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dm04_L1regualization</span><span class="p">():</span>
+    <span class="c1"># 1 准备数据x y(增加上噪声)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">666</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">y</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+    <span class="c1"># 2 实例化L1正则化模型 做实验:alpha惩罚力度越来越大k值越来越小,反而会欠拟合</span>
+    <span class="c1">#  某些权重为 -5   -6 次方 接近0</span>
+    <span class="n">estimator</span> <span class="o">=</span> <span class="n">Lasso</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.005</span><span class="p">)</span>
+
+    <span class="c1"># 3 训练模型</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+     <span class="c1"># 数据增加新特征 ，  高次项</span>
+    <span class="n">X3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">X</span><span class="p">,</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">3</span><span class="p">,</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">4</span><span class="p">,</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">5</span><span class="p">,</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">6</span><span class="p">,</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">7</span><span class="p">,</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">8</span><span class="p">,</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">9</span><span class="p">,</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">10</span><span class="p">])</span>
+
+
+    <span class="c1">#  每个特征的量纲不一样， 需要标准化</span>
+    <span class="n">scalar</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+    <span class="n">X3</span> <span class="o">=</span> <span class="n">scalar</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X3</span><span class="p">)</span>
+
+
+    <span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X3</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+    <span class="c1"># 打印模型系数  发现高阶特征的的权重大幅萎缩，有些为0</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;estimator.coef_&#39;</span><span class="p">,</span> <span class="n">estimator</span><span class="o">.</span><span class="n">coef_</span><span class="p">)</span>
+
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;[ 1.29859891  1.49281832  1.05248659 -0.09780303  0.         -0.</span>
+<span class="sd"> -0.          0.         -0.55154167  0.03318437]  许多零值  其余的萎缩 &#39;&#39;&#39;</span>
+
+
+    <span class="c1"># 4 模型预测</span>
+    <span class="n">y_predict</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X3</span><span class="p">)</span>
+
+    <span class="c1"># 5 计算均方误差</span>
+    <span class="n">myresult</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_predict</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;myresult--&gt;&#39;</span><span class="p">,</span> <span class="n">myresult</span><span class="p">)</span>  <span class="c1">#   1.050917863506633</span>
+
+    <span class="c1"># 6 画图</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="c1"># 画图时输入的x数据: 要求是从小到大</span>
+    <span class="c1">#plt.plot(np.sort(x), y_predict[np.argsort(x)], color=&#39;r&#39;)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y_predict</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">dm05_L2regualization</span><span class="p">():</span>
+    <span class="c1"># 1 准备数据x y(增加上噪声)</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">666</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">y</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+
+    <span class="c1"># 2 实例化L2正则化模型</span>
+    <span class="n">estimator</span> <span class="o">=</span> <span class="n">Ridge</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.005</span><span class="p">)</span>
+
+
+    <span class="c1"># 3 训练模型</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">X3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">hstack</span><span class="p">([</span><span class="n">X</span><span class="p">,</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">3</span><span class="p">,</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">4</span><span class="p">,</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">5</span><span class="p">,</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">6</span><span class="p">,</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">7</span><span class="p">,</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">8</span><span class="p">,</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">9</span><span class="p">,</span> <span class="n">X</span> <span class="o">**</span> <span class="mi">10</span><span class="p">])</span>  <span class="c1"># 数据增加二次项</span>
+
+     <span class="c1">#  每个特征的量纲不一样， 需要标准化</span>
+    <span class="n">scalar</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+    <span class="n">X3</span> <span class="o">=</span> <span class="n">scalar</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X3</span><span class="p">)</span>
+
+
+    <span class="n">estimator</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X3</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="c1"># 打印模型系数  发现高阶特征 的 权重仅衰减</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;estimator.coef_&#39;</span><span class="p">,</span> <span class="n">estimator</span><span class="o">.</span><span class="n">coef_</span><span class="p">)</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39; [ 1.97793804  1.84606472 -3.46811099 -0.51157252 10.01059977 -0.13776927</span>
+<span class="sd"> -8.43148067 -0.59689086  1.71595026  0.85738089]   权重萎缩&#39;&#39;&#39;</span>
+
+
+    <span class="c1"># 4 模型预测</span>
+    <span class="n">y_predict</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X3</span><span class="p">)</span>
+
+    <span class="c1"># 5 计算均方误差</span>
+    <span class="n">myresult</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">y_predict</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;myresult--&gt;&#39;</span><span class="p">,</span> <span class="n">myresult</span><span class="p">)</span>       <span class="c1">#   1.012414860990333</span>
+
+    <span class="c1"># 6 画图</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="c1"># 画图时输入的x数据: 要求是从小到大</span>
+    <span class="c1">#plt.plot(np.sort(x), y_predict[np.argsort(x)], color=&#39;r&#39;)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y_predict</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">dm04_L1regualization</span><span class="p">()</span>
+    <span class="n">dm05_L2regualization</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="img" src="../assets/img/lesson25/l2_5.png" /></p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lasso</span><span class="p">,</span> <span class="n">LinearRegression</span><span class="p">,</span> <span class="n">Ridge</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">mean_squared_error</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">PolynomialFeatures</span><span class="p">,</span> <span class="n">StandardScaler</span>
+
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">PolynomialFeatures</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">include_bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+<span class="n">models</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;无正则&quot;</span><span class="p">:</span> <span class="n">LinearRegression</span><span class="p">(),</span>
+    <span class="s2">&quot;Ridge(L2)&quot;</span><span class="p">:</span> <span class="n">Ridge</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">1.0</span><span class="p">),</span>
+    <span class="s2">&quot;Lasso(L1)&quot;</span><span class="p">:</span> <span class="n">Lasso</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.03</span><span class="p">,</span> <span class="n">max_iter</span><span class="o">=</span><span class="mi">20_000</span><span class="p">),</span>
+<span class="p">}</span>
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">model</span> <span class="ow">in</span> <span class="n">models</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">zero_count</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">count_nonzero</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">coef_</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+    <span class="n">mse</span> <span class="o">=</span> <span class="n">mean_squared_error</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="s2">10s</span><span class="si">}</span><span class="s2"> MSE=</span><span class="si">{</span><span class="n">mse</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">，零系数=</span><span class="si">{</span><span class="n">zero_count</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="img" src="../assets/img/lesson25/l2_6.png" /></p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.linear_model</span><span class="w"> </span><span class="kn">import</span> <span class="n">Lasso</span><span class="p">,</span> <span class="n">Ridge</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.model_selection</span><span class="w"> </span><span class="kn">import</span> <span class="n">GridSearchCV</span><span class="p">,</span> <span class="n">KFold</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_pipeline</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">PolynomialFeatures</span><span class="p">,</span> <span class="n">StandardScaler</span>
+
+<span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">80</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">PolynomialFeatures</span><span class="p">(</span><span class="n">degree</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">include_bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
+    <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">alphas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logspace</span><span class="p">(</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+<span class="n">cv</span> <span class="o">=</span> <span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">lasso</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span>
+    <span class="n">make_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">Lasso</span><span class="p">(</span><span class="n">max_iter</span><span class="o">=</span><span class="mi">100_000</span><span class="p">)),</span>
+    <span class="p">{</span><span class="s2">&quot;lasso__alpha&quot;</span><span class="p">:</span> <span class="n">alphas</span><span class="p">},</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">&quot;neg_mean_squared_error&quot;</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">ridge</span> <span class="o">=</span> <span class="n">GridSearchCV</span><span class="p">(</span>
+    <span class="n">make_pipeline</span><span class="p">(</span><span class="n">StandardScaler</span><span class="p">(),</span> <span class="n">Ridge</span><span class="p">()),</span>
+    <span class="p">{</span><span class="s2">&quot;ridge__alpha&quot;</span><span class="p">:</span> <span class="n">alphas</span><span class="p">},</span> <span class="n">cv</span><span class="o">=</span><span class="n">cv</span><span class="p">,</span> <span class="n">scoring</span><span class="o">=</span><span class="s2">&quot;neg_mean_squared_error&quot;</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Lasso 最佳 alpha：&quot;</span><span class="p">,</span> <span class="n">lasso</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s2">&quot;lasso__alpha&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Ridge 最佳 alpha：&quot;</span><span class="p">,</span> <span class="n">ridge</span><span class="o">.</span><span class="n">best_params_</span><span class="p">[</span><span class="s2">&quot;ridge__alpha&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="img" src="../assets/img/lesson25/l2_7.png" /></p>
+<h2 id="sec-26">作业</h2>
+<p>1.完成线性回归部分的思维导图</p>
+<p>2.描述梯度下降算法思想，自己推导银行信贷的案例</p>
+<p>3.说明欠拟合和过拟合的相关内容</p>
+<p>3.使用L1和L2正则化方法实现波士顿房价预测</p><div class="done-bar"><button class="mark-done-btn" data-key="lesson25" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson24.html"><div class="dir">← 上一篇</div><div class="name">🧭 K 近邻算法与模型调优</div></a><a class="next" href="lesson26.html"><div class="dir">下一篇 →</div><div class="name">🎯 逻辑回归与分类评估</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">线性回归介绍</a><a class="lv3" href="#sec-2">【理解】举个栗子</a><a class="lv3" href="#sec-3">【理解】线性回归</a><a class="lv3" href="#sec-4">【知道】线性回归分类</a><a class="lv3" href="#sec-5">【知道】应用场景</a><a class="lv2" href="#sec-6">线性回归问题的求解</a><a class="lv3" href="#sec-7">【实操】线性回归API的应用</a><a class="lv3" href="#sec-8">【掌握】损失函数</a><a class="lv3" href="#sec-9">【复习】导数和矩阵</a><a class="lv3" href="#sec-10">【了解】一元线性回归的解析解</a><a class="lv3" href="#sec-11">【了解】多元线性回归的解析解-正规方程法</a><a class="lv3" href="#sec-12">梯度下降算法</a><a class="lv2" href="#sec-13">回归评估方法</a><a class="lv3" href="#sec-14">【知道】平均绝对误差</a><a class="lv3" href="#sec-15">【知道】均方误差</a><a class="lv3" href="#sec-16">【知道】 均方根误差</a><a class="lv3" href="#sec-17">【了解】 三种指标的比较</a><a class="lv2" href="#sec-18">【实操】波士顿房价预测案例</a><a class="lv3" href="#sec-19">【知道】线性回归API</a><a class="lv3" href="#sec-20">【实操】波士顿房价预测</a><a class="lv2" href="#sec-21">正则化</a><a class="lv3" href="#sec-22">【理解】 欠拟合与过拟合</a><a class="lv3" href="#sec-23">【实践】通过代码认识过拟合和欠拟合</a><a class="lv3" href="#sec-24">【理解】 原因以及解决办法</a><a class="lv3" href="#sec-25">【理解】正则化</a><a class="lv2" href="#sec-26">作业</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

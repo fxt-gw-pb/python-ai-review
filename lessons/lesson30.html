@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>K-Means 聚类与聚类评估 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 30 讲</div>
+<h1>🪐 K-Means 聚类与聚类评估</h1>
+<div class="chips"><span class="chip">🏷️ K-Means</span><span class="chip">🏷️ 轮廓系数</span><span class="chip">🏷️ 肘部法</span></div>
+</div>
+<h2 id="sec-1">聚类算法简介</h2>
+<p><strong>学习目标：</strong></p>
+<p>1.知道什么是聚类</p>
+<p>2.了解聚类算法的应用场景</p>
+<p>3.知道聚类算法的分类</p>
+<h3 id="sec-2">【知道】聚类算法介绍</h3>
+<p>一种典型的无监督学习算法，主要用于将相似的样本自动归到一个类别中。</p>
+<p>在聚类算法中根据样本之间的相似性，将样本划分到不同的类别中，对于不同的相似度计算方法，会得到不同的聚类结果，常用的相似度计算方法有欧式距离法。</p>
+<p><img loading="lazy" decoding="async" alt="image-20230907095150331" src="../assets/img/lesson30/image-20230907095150331.png" /></p>
+<h3 id="sec-3">【了解】聚类算法在现实中的应用</h3>
+<ul>
+<li>用户画像，广告推荐，Data Segmentation，搜索引擎的流量推荐，恶意流量识别</li>
+<li>基于位置信息的商业推送，新闻聚类，筛选排序</li>
+<li>图像分割，降维，识别；离群点检测；信用卡异常消费；发掘相同功能的基因片段</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image-20230907095330384" src="../assets/img/lesson30/image-20230907095330384.png" /></p>
+<h3 id="sec-4">【知道】分类</h3>
+<p><img loading="lazy" decoding="async" alt="image-20230907101036326" src="../assets/img/lesson30/image-20230907101036326.png" /></p>
+<h2 id="sec-5">聚类API的初步使用</h2>
+<p><strong>学习目标：</strong></p>
+<p>1.了解Kmeans算法的API</p>
+<p>2.动手实践Kmeans算法</p>
+<h3 id="sec-6">【了解】api介绍</h3>
+<ul>
+<li>sklearn.cluster.KMeans(n_clusters=8)</li>
+<li>参数:<ul>
+<li>n_clusters:开始的聚类中心数量</li>
+<li>整型，缺省值=8，生成的聚类数，即产生的质心（centroids）数。</li>
+</ul>
+</li>
+<li>方法:<ul>
+<li>estimator.fit(x)</li>
+<li>estimator.predict(x)</li>
+<li>estimator.fit_predict(x)</li>
+<li>计算聚类中心并预测每个样本属于哪个类别,相当于先调用fit(x),然后再调用predict(x)</li>
+</ul>
+</li>
+</ul>
+<h3 id="sec-7">【实践】 案例</h3>
+<p>随机创建不同二维数据集作为训练集，并结合k-means算法将其聚类，你可以尝试分别聚类不同数量的簇，并观察聚类效果：</p>
+<p><img loading="lazy" decoding="async" alt="image-20230907102501138" src="../assets/img/lesson30/image-20230907102501138.png" /></p>
+<p>1.创建数据集</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_blobs</span>
+
+<span class="n">X</span><span class="p">,</span> <span class="n">y_true</span> <span class="o">=</span> <span class="n">make_blobs</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
+    <span class="n">centers</span><span class="o">=</span><span class="p">[[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]],</span>
+    <span class="n">cluster_std</span><span class="o">=</span><span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Generated samples&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>2.使用k-means进行聚类,并使用CH方法评估</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">KMeans</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">calinski_harabasz_score</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CH 指标：&quot;</span><span class="p">,</span> <span class="n">calinski_harabasz_score</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">labels</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;viridis&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+    <span class="n">c</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span>
+    <span class="n">s</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span>
+    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;centers&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<h2 id="sec-8">Kmeans算法流程</h2>
+<p><strong>学习目标</strong></p>
+<p>1、理解Kmeans算法的执行过程</p>
+<h3 id="sec-9">【掌握】k-means聚类流程</h3>
+<p>1、随机设置K个特征空间内的点作为初始的聚类中心</p>
+<p>2、对于其他每个点计算到K个中心的距离，未知的点选择最近的一个聚类中心点作为标记类别</p>
+<p>3、接着对着标记的聚类中心之后，重新计算出每个聚类的新中心点（平均值）</p>
+<p>4、如果计算得出的新中心点与原中心点一样（质心不再移动），那么结束，否则重新进行第二步过程</p>
+<p>通过下图解释实现流程：</p>
+<p><img loading="lazy" decoding="async" alt="image-20230907103735327" src="../assets/img/lesson30/image-20230907103735327.png" /></p>
+<p>k-means聚类动态效果图：</p>
+<p><img loading="lazy" decoding="async" alt="image-20230907103801026" src="../assets/img/lesson30/image-20230907103801026.png" /></p>
+<h3 id="sec-10">【练习】案例练习</h3>
+<ul>
+<li>案例：</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image-20230907103836985" src="../assets/img/lesson30/image-20230907103836985.png" /></p>
+<p>1、随机设置K个特征空间内的点作为初始的聚类中心（本案例中设置p1和p2）</p>
+<p><img loading="lazy" decoding="async" alt="image-20230907103854967" src="../assets/img/lesson30/image-20230907103854967.png" /></p>
+<p>2、对于其他每个点计算到K个中心的距离，未知的点选择最近的一个聚类中心点作为标记类别</p>
+<p><img loading="lazy" decoding="async" alt="image-20230907104250565" src="../assets/img/lesson30/image-20230907104250565.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230907104255878" src="../assets/img/lesson30/image-20230907104255878.png" /></p>
+<p>3、接着对着标记的聚类中心之后，重新计算出每个聚类的新中心点（平均值）</p>
+<p><img loading="lazy" decoding="async" alt="image-20230907104345786" src="../assets/img/lesson30/image-20230907104345786.png" /></p>
+<p>注意：这里P2′=(2.3,3.3)，下同。</p>
+<p>4、如果计算得出的新中心点与原中心点一样（质心不再移动），那么结束，否则重新进行第二步过程【经过判断，需要重复上述步骤，开始新一轮迭代】</p>
+<p><img loading="lazy" decoding="async" alt="image-20230907104603930" src="../assets/img/lesson30/image-20230907104603930.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image-20230907104612455" src="../assets/img/lesson30/image-20230907104612455.png" /></p>
+<p>5、当每次迭代结果不变时，认为算法收敛，聚类完成，<strong>K-Means一定会停下，不可能陷入一直选质心的过程。</strong></p>
+<p><img loading="lazy" decoding="async" alt="image-20230907104715886" src="../assets/img/lesson30/image-20230907104715886.png" /></p>
+<h2 id="sec-11">评价指标</h2>
+<p>学习目标:</p>
+<ol>
+<li>了解 SSE 聚类评估指标</li>
+<li>了解 SC 聚类评估指标</li>
+<li>了解 CH 聚类评估指标</li>
+<li>了解肘方法的作用</li>
+</ol>
+<h3 id="sec-12">【了解】 SSE-误差平方和</h3>
+<p><img loading="lazy" decoding="async" alt="image-20230907110141764" src="../assets/img/lesson30/image-20230907110141764.png" /></p>
+<ol>
+<li>
+<p>K 表示聚类中心的个数</p>
+</li>
+<li>
+<p>C<sub>i</sub> 表示簇</p>
+</li>
+<li>
+<p>p 表示样本</p>
+</li>
+<li>
+<p>m<sub>i</sub> 表示簇的质心</p>
+</li>
+</ol>
+<p><img loading="lazy" decoding="async" alt="image-20230907110135000" src="../assets/img/lesson30/image-20230907110135000.png" /></p>
+<p>SSE 越小，表示数据点越接近它们的中心，聚类效果越好。</p>
+<h3 id="sec-13">【了解】SC 系数</h3>
+<p>结合了聚类的凝聚度（Cohesion）和分离度（Separation），用于评估聚类的效果。</p>
+<p><img loading="lazy" decoding="async" alt="image-20230907111546495" src="../assets/img/lesson30/image-20230907111546495.png" /></p>
+<p>其计算过程如下：</p>
+<ol>
+<li>计算每一个样本 i 到同簇内其他样本的平均距离 a<sub>i</sub>，该值越小，说明簇内的相似程度越大</li>
+<li>计算每一个样本 i 到最近簇 j 内的所有样本的平均距离 b<sub>ij</sub>，该值越大，说明该样本越不属于其他簇 j</li>
+<li>计算所有样本的平均轮廓系数</li>
+<li>轮廓系数的范围为：[-1, 1]，值越大聚类效果越好</li>
+</ol>
+<h3 id="sec-14">【了解】肘部法</h3>
+<p>肘部法可以用来确定 K 值.</p>
+<ul>
+<li>
+<p>对于n个点的数据集，迭代计算 k from 1 to n，每次聚类完成后计算 SSE </p>
+</li>
+<li>
+<p>SSE 是会逐渐变小的，因为每个点都是它所在的簇中心本身。</p>
+</li>
+<li>
+<p>SSE 变化过程中会出现一个拐点，下降率突然变缓时即认为是最佳 n_clusters 值。</p>
+</li>
+<li>
+<p>在决定什么时候停止训练时，肘形判据同样有效，数据通常有更多的噪音，在增加分类无法带来更多回报时，我们停止增加类别。</p>
+</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image-20230907113314803" src="../assets/img/lesson30/image-20230907113314803.png" /></p>
+<h3 id="sec-15">【了解】CH 系数</h3>
+<p>CH 系数结合了聚类的凝聚度（Cohesion）和分离度（Separation）、质心的个数，希望用最少的簇进行聚类。</p>
+<p><img loading="lazy" decoding="async" alt="image-20230907111524608" src="../assets/img/lesson30/image-20230907111524608.png" /></p>
+<p>SSW 的含义：</p>
+<ol>
+<li>C<sub>pi</sub> 表示质心</li>
+<li>x<sub>i</sub> 表示某个样本</li>
+<li>SSW 值是计算每个样本点到质心的距离，并累加起来</li>
+<li>SSW 表示表示簇内的内聚程度，越小越好</li>
+<li>m 表示样本数量</li>
+<li>k 表示质心个数</li>
+</ol>
+<p>SSB 的含义：</p>
+<ol>
+<li>C<sub>j</sub> 表示质心，X 表示质心与质心之间的中心点，n<sub>j</sub> 表示样本的个数</li>
+<li>SSB 表示簇与簇之间的分离度，SSB 越大越好</li>
+</ol>
+<h3 id="sec-16">【实践】聚类评估的使用</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">KMeans</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_blobs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics</span><span class="w"> </span><span class="kn">import</span> <span class="n">calinski_harabasz_score</span><span class="p">,</span> <span class="n">silhouette_score</span>
+
+<span class="n">X</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">make_blobs</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">centers</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">cluster_std</span><span class="o">=</span><span class="mf">0.45</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+    <span class="n">rows</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+        <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span>
+        <span class="s2">&quot;SSE&quot;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">inertia_</span><span class="p">,</span>
+        <span class="s2">&quot;silhouette&quot;</span><span class="p">:</span> <span class="n">silhouette_score</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">labels</span><span class="p">),</span>
+        <span class="s2">&quot;CH&quot;</span><span class="p">:</span> <span class="n">calinski_harabasz_score</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">labels</span><span class="p">),</span>
+    <span class="p">})</span>
+
+<span class="n">scores</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;k&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">scores</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="n">scores</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">subplots</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;聚类评估指标&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<h2 id="sec-17">【实践】案例</h2>
+<h3 id="sec-18">【了解】案例介绍</h3>
+<p>已知：客户性别、年龄、年收入、消费指数</p>
+<p>需求：对客户进行分析，找到业务突破口，寻找黄金客户</p>
+<p><img loading="lazy" decoding="async" alt="image-20230907112055346" src="../assets/img/lesson30/image-20230907112055346.png" /></p>
+<p>数据集共包含顾客的数据, 数据共有 4 个特征, 数据共有 200 条。接下来，使用聚类算法对具有相似特征的的顾客进行聚类，并可视化聚类结果。</p>
+<h3 id="sec-19">【实践】案例实现</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">KMeans</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;data/customers.csv&quot;</span><span class="p">)</span>
+<span class="n">features</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Annual Income (k$)&quot;</span><span class="p">,</span> <span class="s2">&quot;Spending Score (1-100)&quot;</span><span class="p">]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">features</span><span class="p">]</span>
+
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+<span class="n">X_scaled</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">KMeans</span><span class="p">(</span><span class="n">n_clusters</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">n_init</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;cluster&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">fit_predict</span><span class="p">(</span><span class="n">X_scaled</span><span class="p">)</span>
+<span class="n">centers</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">inverse_transform</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">cluster_centers_</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">X</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;cluster&quot;</span><span class="p">],</span> <span class="n">cmap</span><span class="o">=</span><span class="s2">&quot;viridis&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">centers</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">centers</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">160</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="n">features</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Customer segments&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;cluster&quot;</span><span class="p">)[</span><span class="n">features</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<h2 id="sec-20">作业</h2>
+<p>1.使用思维导图总结聚类算法部分的内容</p>
+<p>2.动手实现课程中的代码</p><div class="done-bar"><button class="mark-done-btn" data-key="lesson30" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson29.html"><div class="dir">← 上一篇</div><div class="name">📨 朴素贝叶斯与文本情感分析</div></a><a class="disabled next"></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">聚类算法简介</a><a class="lv3" href="#sec-2">【知道】聚类算法介绍</a><a class="lv3" href="#sec-3">【了解】聚类算法在现实中的应用</a><a class="lv3" href="#sec-4">【知道】分类</a><a class="lv2" href="#sec-5">聚类API的初步使用</a><a class="lv3" href="#sec-6">【了解】api介绍</a><a class="lv3" href="#sec-7">【实践】 案例</a><a class="lv2" href="#sec-8">Kmeans算法流程</a><a class="lv3" href="#sec-9">【掌握】k-means聚类流程</a><a class="lv3" href="#sec-10">【练习】案例练习</a><a class="lv2" href="#sec-11">评价指标</a><a class="lv3" href="#sec-12">【了解】 SSE-误差平方和</a><a class="lv3" href="#sec-13">【了解】SC 系数</a><a class="lv3" href="#sec-14">【了解】肘部法</a><a class="lv3" href="#sec-15">【了解】CH 系数</a><a class="lv3" href="#sec-16">【实践】聚类评估的使用</a><a class="lv2" href="#sec-17">【实践】案例</a><a class="lv3" href="#sec-18">【了解】案例介绍</a><a class="lv3" href="#sec-19">【实践】案例实现</a><a class="lv2" href="#sec-20">作业</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
