@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Milvus：向量数据库原理与操作 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#projects" class="active">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">32</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">33</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">34</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">35</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">39</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">40</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">42</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">21</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">22</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">23</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">24</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">25</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">26</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">27</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">28</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">29</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">30</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project active" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="project02.html">EduRAG：企业私有知识智能问答</a> / 第 4 章</div>
+<h1>🧊 Milvus：向量数据库原理与操作</h1>
+<div class="chips"><span class="chip green">🏷️ Milvus</span><span class="chip green">🏷️ 向量索引</span><span class="chip green">🏷️ 相似度检索</span><a class="chip" href="project02.html">🚀 返回项目总览</a></div>
+</div>
+<nav class="project-chapter-nav" aria-label="项目章节"><div class="project-nav-label">项目进度 · 共 26 章</div><div class="project-steps"><a class="project-step" href="project02-01.html"><span>01</span>RAG 项目背景、原理与工程结构</a><a class="project-step" href="project02-02.html"><span>02</span>Ollama：本地大模型运行与调用</a><a class="project-step" href="project02-03.html"><span>03</span>LangChain：模型、Prompt、链与 Agent</a><a class="project-step active" href="project02-04.html"><span>04</span>Milvus：向量数据库原理与操作</a><a class="project-step" href="project02-05.html"><span>05</span>Docker 部署 Milvus 与 Redis</a><a class="project-step" href="project02-06.html"><span>06</span>Python Logging：项目日志体系</a><a class="project-step" href="project02-07.html"><span>07</span>BM25：稀疏检索原理与实现</a><a class="project-step" href="project02-08.html"><span>08</span>Redis：缓存数据库与 Python 操作</a><a class="project-step" href="project02-09.html"><span>09</span>MySQL FAQ 问答系统</a><a class="project-step" href="project02-10.html"><span>10</span>EduRAG 整体架构与工作流程</a><a class="project-step" href="project02-11.html"><span>11</span>基础模块：配置管理与日志</a><a class="project-step" href="project02-12.html"><span>12</span>文档处理与知识库加载</a><a class="project-step" href="project02-13.html"><span>13</span>自定义文档解析与文本切分</a><a class="project-step" href="project02-14.html"><span>14</span>向量存储、混合检索与重排序</a><a class="project-step" href="project02-15.html"><span>15</span>Prompt 管理与 Query 意图识别</a><a class="project-step" href="project02-16.html"><span>16</span>检索策略选择与 RAG 核心逻辑</a><a class="project-step" href="project02-17.html"><span>17</span>RAG Query 改写策略</a><a class="project-step" href="project02-18.html"><span>18</span>知识数据集生成与优化</a><a class="project-step" href="project02-19.html"><span>19</span>EduRAG 命令行运行与调试</a><a class="project-step" href="project02-20.html"><span>20</span>RAG 评估框架与指标</a><a class="project-step" href="project02-21.html"><span>21</span>实现 EduRAG 的 RAGAS 评估</a><a class="project-step" href="project02-22.html"><span>22</span>构造 RAG 评估数据集</a><a class="project-step" href="project02-23.html"><span>23</span>融合 FAQ 与知识库查询</a><a class="project-step" href="project02-24.html"><span>24</span>增强型融合查询与会话历史</a><a class="project-step" href="project02-25.html"><span>25</span>FastAPI 接口与 WebUI 应用</a><a class="project-step" href="project02-26.html"><span>26</span>FastAPI 与 Flask 选型</a></div></nav><div class="callout tip course-note"><span class="ico">🧭</span><p><strong>工程实践提示：</strong>示例中的模型地址、数据库账号和密钥均应通过环境变量或独立配置文件注入；部署前还需补充权限控制、输入校验、超时重试、日志脱敏、来源引用与离线评估。</p></div>
+
+<h2 id="sec-1">学习目标</h2>
+<ul>
+<li>理解什么是向量数据库</li>
+<li>理解Milvus和MySQL的区别和联系</li>
+<li>掌握Milvus数据库的增删改查</li>
+</ul>
+<h2 id="sec-2">1 什么是 Milvus 向量数据库？</h2>
+<p>Milvus 是一款开源的向量数据库（2019年提出），其唯一目标是存储、索引和管理由深度神经网络和其他机器学习（ML）模型生成的大规模<a href="https://www.milvus-io.com/overview#Embedding-vectors">嵌入向量</a>。</p>
+<p>作为一个专门设计用于处理输入向量查询的数据库，它能够处理万亿级别的向量索引。与现有的关系型数据库主要处理遵循预定义模式的结构化数据不同，Milvus 从底层设计用于处理从非结构化数据转换而来的嵌入向量。</p>
+<p>随着互联网的发展和演变，非结构化数据变得越来越常见，包括电子邮件、论文、物联网传感器数据、Facebook 照片、蛋白质结构等等。为了使计算机能够理解和处理非结构化数据，使用嵌入技术将它们转换为向量。Milvus 存储和索引这些向量。Milvus 能够通过计算它们的相似距离来分析两个向量之间的相关性。如果两个嵌入向量非常相似，则意味着原始数据源也很相似。</p>
+<h2 id="sec-3">2 关键概念</h2>
+<h3 id="sec-4">2.1 非结构化数据</h3>
+<p>非结构化数据包括图像、视频、音频和自然语言等信息，这些信息不遵循预定义的模型或组织方式。这种数据类型占据了世界数据的约 80%，可以使用各种人工智能（AI）和机器学习（ML）模型将其转换为向量。</p>
+<h3 id="sec-5">2.2 嵌入向量</h3>
+<p>嵌入向量是对非结构化数据（如电子邮件、物联网传感器数据、Instagram 照片、蛋白质结构等）的特征抽象。数学上，嵌入向量是一个浮点数或二进制数的数组。现代的嵌入技术被用于将非结构化数据转换为嵌入向量。</p>
+<h3 id="sec-6">2.3 向量相似度搜索</h3>
+<p>向量相似度搜索是将向量与数据库进行比较，以找到与查询向量最相似的向量的过程。使用近似最近邻搜索算法加速搜索过程。如果两个嵌入向量非常相似，那么原始数据源也是相似的。</p>
+<h3 id="sec-7">2.4 Collection 和 Field</h3>
+<p>与传统数据库引擎类似，您也可以在 Milvus 中创建数据库，并为某些用户分配权限来管理它们。那么这些用户就有权管理数据库中的集合。一个 Milvus 集群最多支持 64 个数据库.</p>
+<p>在关系数据库中，表和字段的结构可以与Milvus中的Collection和Field进行对应：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Milvus</th>
+<th>关系数据库</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Collection</td>
+<td>表</td>
+<td>集合相当于关系数据库中的表，用于组织数据</td>
+</tr>
+<tr>
+<td>Field</td>
+<td>字段</td>
+<td>字段Schema相当于表中的列</td>
+</tr>
+<tr>
+<td>is_primary</td>
+<td>主键</td>
+<td>在Field Schema中标记为主键对应该列的主键</td>
+</tr>
+<tr>
+<td>dtype</td>
+<td>数据类型</td>
+<td>字段的数据类型，如INT, VARCHAR等</td>
+</tr>
+<tr>
+<td>max_length</td>
+<td>最大长度</td>
+<td>对应VARCHAR类型字段的最大字符数</td>
+</tr>
+<tr>
+<td>dim</td>
+<td>-</td>
+<td>向量字段的维度没有直接对应，但可以视为特殊数据处理</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p>注意：1个collection最多支持4个向量Field</p>
+</blockquote>
+<h4>2.4.1 Field schema</h4>
+<p><code>Field schema</code> 是字段的逻辑定义。我们在定义集合架构和管理集合之前需要定义的第一件事就是定义 <code>Field schema</code>。</p>
+<blockquote>
+<p>Milvus 集合中仅支持一个主键字段。</p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>name</code></td>
+<td>要创建的集合中的字段名称</td>
+<td>String，必填</td>
+</tr>
+<tr>
+<td><code>dtype</code></td>
+<td>字段的数据类型</td>
+<td>必填</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>字段描述</td>
+<td>String，选填</td>
+</tr>
+<tr>
+<td><code>is_primary</code></td>
+<td>是否设置该字段为主键字段</td>
+<td>Boolean (<code>true</code> or <code>false</code>) 主键字段必填</td>
+</tr>
+<tr>
+<td><code>auto_id</code>（主键字段必填）</td>
+<td>切换以启用或禁用自动 ID（主键）分配</td>
+<td><code>True</code>或<code>False</code></td>
+</tr>
+<tr>
+<td><code>max_length</code>（VARCHAR 字段必需）</td>
+<td>允许插入的字符串的最大长度。</td>
+<td><code>[1, 65,535]</code></td>
+</tr>
+<tr>
+<td><code>dim</code></td>
+<td>向量的维数</td>
+<td><code>∈[1, 32768]</code></td>
+</tr>
+<tr>
+<td><code>is_partition_key</code></td>
+<td>该字段是否是分区键字段</td>
+<td>布尔值（<code>true</code> 或 <code>false</code>）</td>
+</tr>
+</tbody>
+</table></div>
+<h4>2.4.2 collection schema</h4>
+<p><code>collection schema</code> 是 <code>collection</code> 的逻辑定义。我们需要在定义 <code>collection schema</code> 之前定义 <code>field schema</code>。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>属性</th>
+<th>描述</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>field</code></td>
+<td>集合中要创建的字段</td>
+<td>必填</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>集合描述</td>
+<td>String,选填</td>
+</tr>
+<tr>
+<td><code>partition_key_field</code></td>
+<td>设计用作分区键的字段的名称。</td>
+<td>String， 选填</td>
+</tr>
+<tr>
+<td><code>enable_dynamic_field</code></td>
+<td>是否启用动态模式</td>
+<td>Boolean (<code>true</code> or <code>false</code>)</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="sec-8">3 为什么选择 Milvus？</h2>
+<ul>
+<li>在处理大规模数据集的向量搜索时具有高性能。</li>
+<li>开发者优先的社区，提供多语言支持和工具链。</li>
+<li>云扩展性和高可靠性，即使出现故障也不会受到影响。</li>
+<li>通过将标量过滤与向量相似度搜索配对，实现混合搜索。</li>
+</ul>
+<h2 id="sec-9">4 支持哪些索引和度量？</h2>
+<p>索引是数据的组织单位。在搜索或查询插入的实体之前，必须声明索引类型和相似度度量。<strong>如果您未指定索引类型，则 Milvus 将默认使用暴力搜索。</strong></p>
+<h3 id="sec-10">4.1 索引类型</h3>
+<p>大多数由 Milvus 支持的向量索引类型使用近似最近邻搜索（ANNS），包括：</p>
+<ul>
+<li>
+<p>FLAT：FLAT最适合在小型、百万级数据集上寻求完全准确和精确搜索结果的场景。</p>
+<ul>
+<li>这是最简单的索引方式，进行暴力搜索（brute-force），可以保证精确度，但效率低，尤其在数据量大时。适合场景：在小型、百万级数据集上寻求完全精确的搜索结果。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>
+<p>IVF_FLAT： 是一种基于倒排的索引方法，广泛用于在大规模数据集上实现高效的近似最近邻搜索。它适用于在精度和查询速度之间寻求平衡的场景。</p>
+<div align="center"><img alt="EduRAG 项目配图" decoding="async" loading="lazy" src="../assets/img/project02-04/figure-78bb35ab2cf4.png"/></div>
+<p><strong>1. 聚类</strong> ：IVF_FLAT通过聚类算法（如k-means）将高维空间中的向量划分为多个子空间（簇）。每个簇包含一组相似的向量，并且每个簇会有一个代表向量，通常是簇的中心点。</p>
+<p><strong>2. 倒排索引</strong> ：为每个簇创建倒排索引。每个向量会被映射到它所属的簇，这样在查询时，系统只需关注与查询向量相似的簇，而不需要搜索整个高维空间，从而显著降低搜索的时间复杂度。</p>
+<p><strong>3. 查询处理</strong> ：</p>
+<ul>
+<li>查询时，IVF_FLAT首先将查询向量分配到距离最近的簇中心（即子空间）。</li>
+</ul>
+<ul>
+<li>然后在该簇内执行精确的线性搜索，从而查找与查询向量相似的向量。</li>
+</ul>
+<ul>
+<li>为了优化查询，IVF_FLAT使用一个参数 <code>nprobe</code> 来控制搜索的簇数。 <code>nprobe</code> 控制搜索时考虑的簇的数量，从而平衡查询精度和查询速度：</li>
+</ul>
+<ul>
+<li>增大 <code>nprobe</code> 可以搜索更多簇，返回更多候选向量，提高结果的精确度，但查询时间也会增加。减少 <code>nprobe</code> 可以缩小搜索范围，降低计算时间，查询速度更快，但可能会牺牲一些精度</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>
+<p>IVF_SQ8：是在 IVF_FLAT 基础上增加了量化步骤的一种索引方法，其核心思想与 IVF_FLAT 类似；IVF_SQ8通过 <strong>标量量化</strong> （Scalar Quantization）将每个维度的 4 字节浮点数表示压缩为 1 字节整数表示。</p>
+<div align="center"><img alt="EduRAG 项目配图" decoding="async" loading="lazy" src="../assets/img/project02-04/figure-348061f80b01.png"/></div>
+</li>
+</ul>
+<ul>
+<li>
+<p>IVF_PQ：是一种高效的向量索引方式，结合了倒排文件索引和乘积量化（Product Quantization）技术，旨在加速大规模高维数据集的检索。</p>
+<ul>
+<li><strong>倒排文件索引</strong>：IVF_PQ首先将数据集划分为多个簇，每个簇由一个聚类中心表示。查询时，系统首先计算查询向量与这些聚类中心的距离，选择最接近的几个簇进行详细搜索，从而减少计算量。</li>
+<li><strong>乘积量化</strong>：在每个簇内，向量被进一步量化为多个子向量，这些子向量通过独立的量化过程进行编码。这样可以显著降低存储需求，并加快相似度计算。</li>
+<li><strong>存储与速度</strong>：IVF_PQ通过减少存储空间的占用，同时保持较高的查询速度和准确性，适用于处理大规模高维向量数据。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>HNSW：HNSW是基于图的索引，最适合对搜索效率有高要求的场景。</li>
+</ul>
+<p>请参阅<a href="https://www.milvus-io.com/reference/index">向量索引</a>以了解更多详细信息。</p>
+<h3 id="sec-11">4.2 相似度度量</h3>
+<p>在 Milvus 中，相似度度量用于衡量向量之间的相似性。选择一个好的距离度量方法可以显著提高分类和聚类的性能。根据输入数据的形式，选择特定的相似度度量方法可以获得最优的性能。</p>
+<p>对于浮点嵌入，通常使用以下指标：</p>
+<ul>
+<li>欧几里得距离（L2）</li>
+<li>内积（IP）</li>
+<li>余弦相似度 (COSINE)</li>
+</ul>
+<hr/>
+<h2 id="sec-12">5 Milvus数据库操作</h2>
+<p>在次项目中，我们使用 Milvus Lite，它是<code>pymilvus</code> 中包含的一个 python 库，可以嵌入到客户端应用程序中。Milvus 还支持在<a href="https://milvus.io/docs/install_standalone-docker.md">Docker</a>和<a href="https://milvus.io/docs/install_cluster-milvusoperator.md">Kubernetes</a>上部署，适用于生产用例。</p>
+<p>开始之前，请确保本地环境中有 Python 3.8+ 可用。安装<code>pymilvus</code> ，其中包含 python 客户端库和 Milvus Lite：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>pymilvus
+</pre></div>
+</div>
+<h3 id="sec-13">5.1 设置向量数据库</h3>
+<p>要创建本地的 Milvus 向量数据库，只需实例化一个<code>MilvusClient</code> ，指定一个存储所有数据的文件名，如 "milvus_demo.db"。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 1 数据库的操作</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">operate_db</span><span class="p">():</span>
+    <span class="c1"># 如果uri为数据库名称路径，代表本地操作数据库</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">MilvusClient</span><span class="p">(</span><span class="n">uri</span><span class="o">=</span><span class="s2">"milvus_demo.db"</span><span class="p">)</span>
+    <span class="c1"># 如果uri为链接地址，代表Milvus属于单机服务，需要开启Milvus后台服务操作</span>
+    <span class="c1"># client = MilvusClient(uri="http://localhost:19530")</span>
+    <span class="c1"># # # 创建名称为milvus_demo的数据库</span>
+    <span class="c1"># #</span>
+    <span class="c1"># databases = client.list_databases()</span>
+    <span class="c1"># if "milvus_demo" not in databases:</span>
+    <span class="c1">#     client.create_database(db_name="milvus_demo")</span>
+    <span class="c1"># else:</span>
+    <span class="c1">#     client.using_database(db_name="milvus_demo")</span>
+    <span class="k">return</span> <span class="n">client</span>
+</pre></div>
+</div>
+<h3 id="sec-14">5.2 Collections操作</h3>
+<p>在 Milvus 中，我们需要一个 Collections 来存储向量及其相关元数据。你可以把它想象成传统 SQL 数据库中的表格。创建 Collections 时，可以定义 Schema 和索引参数来配置向量规格，如维度、索引类型和远距离度量。此外，还有一些复杂的概念来优化索引以提高向量搜索性能。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 2 collection集合的操作</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">operate_table</span><span class="p">():</span>
+    <span class="c1"># 定义schema</span>
+    <span class="c1">## 注意：在定义集合 Schema 时，enable_dynamic_field=True 使得您可以插入未定义的字段。一般动态字段以 JSON 格式存储，通常命名为 $meta。在插入数据时，所有未定义的字段及其值将被保存为键值对。</span>
+    <span class="c1">## 在定义集合 Schema 时，auto_id=True 可以对主键自动增长id。</span>
+    <span class="n">schema</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">create_schema</span><span class="p">(</span><span class="n">auto_id</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">enable_dynamic_field</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># # schema添加字段id, vector</span>
+    <span class="n">schema</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s1">'id'</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">DataType</span><span class="o">.</span><span class="n">INT64</span><span class="p">,</span> <span class="n">is_primary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">schema</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s1">'vector'</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT_VECTOR</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">schema</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s1">'scalar1'</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">DataType</span><span class="o">.</span><span class="n">VARCHAR</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">256</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">'标量字段'</span><span class="p">)</span>
+
+    <span class="c1"># # 创建集合</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">create_collection</span><span class="p">(</span><span class="n">collection_name</span><span class="o">=</span><span class="s1">'demo_v1'</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span>
+    <span class="c1"># # 设置索引</span>
+    <span class="n">index_params</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">prepare_index_params</span><span class="p">()</span>
+    <span class="c1"># # 在向量字段vector上面添加一个索引；</span>
+    <span class="c1"># index_type='',  # 留空以使用自动索引</span>
+    <span class="c1"># 对于向量字段，常见的默认索引类型包括IVF_FLAT或HNSW等，具体取决于数据的特性和查询需求。</span>
+    <span class="c1"># 对于标量字段，常见的默认索引可能是INVERTED等。</span>
+    <span class="n">index_params</span><span class="o">.</span><span class="n">add_index</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s1">'vector'</span><span class="p">,</span> <span class="n">metric_type</span><span class="o">=</span><span class="s2">"COSINE"</span><span class="p">,</span> <span class="n">index_type</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">index_name</span><span class="o">=</span><span class="s2">"vector_index"</span><span class="p">)</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">create_index</span><span class="p">(</span><span class="n">collection_name</span><span class="o">=</span><span class="s1">'demo_v1'</span><span class="p">,</span> <span class="n">index_params</span><span class="o">=</span><span class="n">index_params</span><span class="p">)</span>
+    <span class="c1">#</span>
+    <span class="c1"># # 查看索引信息</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_indexes</span><span class="p">(</span><span class="n">collection_name</span><span class="o">=</span><span class="s1">'demo_v1'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'索引信息--》</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">describe_index</span><span class="p">(</span><span class="n">collection_name</span><span class="o">=</span><span class="s1">'demo_v1'</span><span class="p">,</span> <span class="n">index_name</span><span class="o">=</span><span class="s1">'vector_index'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'指定索引详细信息--&gt;</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+
+    <span class="c1"># 查看索引状态</span>
+    <span class="c1"># client.load_collection(collection_name='demo_v1')</span>
+    <span class="c1"># print(client.get_load_state(collection_name='demo_v1'))</span>
+    <span class="c1"># 如果不需要索引，可以删除相关索引</span>
+    <span class="c1"># client.release_collection(collection_name='demo_v1')</span>
+    <span class="c1"># client.drop_index(collection_name='demo_v1', index_name='vector_index')</span>
+
+    <span class="c1"># # 检索标量字段</span>
+    <span class="n">index_params1</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">prepare_index_params</span><span class="p">()</span>
+    <span class="n">index_params1</span><span class="o">.</span><span class="n">add_index</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s1">'scalar1'</span><span class="p">,</span> <span class="n">index_type</span><span class="o">=</span><span class="s1">''</span><span class="p">,</span> <span class="n">index_name</span><span class="o">=</span><span class="s1">'default_index'</span><span class="p">)</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">create_index</span><span class="p">(</span><span class="n">collection_name</span><span class="o">=</span><span class="s1">'demo_v1'</span><span class="p">,</span> <span class="n">index_params</span><span class="o">=</span><span class="n">index_params1</span><span class="p">)</span>
+    <span class="c1"># #</span>
+    <span class="c1"># # # 查看索引信息</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_indexes</span><span class="p">(</span><span class="n">collection_name</span><span class="o">=</span><span class="s1">'demo_v1'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'索引信息--》</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+    <span class="c1">#</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">describe_index</span><span class="p">(</span><span class="n">collection_name</span><span class="o">=</span><span class="s1">'demo_v1'</span><span class="p">,</span> <span class="n">index_name</span><span class="o">=</span><span class="s1">'vector_index'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'指定索引详细信息--&gt;</span><span class="si">{</span><span class="n">res</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-15">5.3 Entity实体数据操作</h3>
+<p>在 Milvus 中，<strong>实体**指的是**Collections**中共享相同**Schema</strong> 的数据记录，行中每个字段的数据构成一个实体。因此，同一 Collections 中的实体具有相同的属性（如字段名称、数据类型和其他约束）。</p>
+<h4>5.3.1数据的增、删、改</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">operate_entity</span><span class="p">():</span>
+    <span class="c1"># # todo:1. 创建集合collection</span>
+    <span class="c1"># 这种方式: collection 只包括两个字段. id 作为主键， vector 作为向量字段，以及自动设置 auto_id、enable_dynamic_field 为 True</span>
+    <span class="c1"># auto_id 启用此设置可确保主键自动递增。在数据插入期间无需手动提供主键。</span>
+    <span class="c1"># enable_dynamic_field 启用后，要插入的数据中除 id 和 vector 之外的所有字段都将被视为动态字段。</span>
+    <span class="c1"># # 这些附加字段作为键值对保存在名为 $meta 的特殊字段中。此功能允许在数据插入期间包含额外的字段。</span>
+    <span class="c1"># client.create_collection(collection_name='demo_v2', dimension=5, metric_type='IP')</span>
+    <span class="c1">#</span>
+    <span class="c1"># # todo:2. 插入数据（也叫实体）</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.3580376395471989</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.6023495712049978</span><span class="p">,</span> <span class="mf">0.18414012509913835</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.26286205330961354</span><span class="p">,</span>
+                             <span class="mf">0.9029438446296592</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"pink_8682"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.19886812562848388</span><span class="p">,</span> <span class="mf">0.06023560599112088</span><span class="p">,</span> <span class="mf">0.6976963061752597</span><span class="p">,</span> <span class="mf">0.2614474506242501</span><span class="p">,</span>
+                             <span class="mf">0.838729485096104</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"red_7025"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.43742130801983836</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5597502546264526</span><span class="p">,</span> <span class="mf">0.6457887650909682</span><span class="p">,</span> <span class="mf">0.7894058910881185</span><span class="p">,</span>
+                             <span class="mf">0.20785793220625592</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"orange_6781"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.3172005263489739</span><span class="p">,</span> <span class="mf">0.9719044792798428</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.36981146090600725</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.4860894583077995</span><span class="p">,</span>
+                             <span class="mf">0.95791889146345</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"pink_9298"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.4452349528804562</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8757026943054742</span><span class="p">,</span> <span class="mf">0.8220779437047674</span><span class="p">,</span> <span class="mf">0.46406290649483184</span><span class="p">,</span>
+                             <span class="mf">0.30337481143159106</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"red_4794"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.985825131989184</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8144651566660419</span><span class="p">,</span> <span class="mf">0.6299267002202009</span><span class="p">,</span> <span class="mf">0.1206906911183383</span><span class="p">,</span>
+                             <span class="o">-</span><span class="mf">0.1446277761879955</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"yellow_4222"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.8371977790571115</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.015764369584852833</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.31062937026679327</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.562666951622192</span><span class="p">,</span>
+                             <span class="o">-</span><span class="mf">0.8984947637863987</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"red_9392"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.33445148015177995</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2567135004164067</span><span class="p">,</span> <span class="mf">0.8987539745369246</span><span class="p">,</span> <span class="mf">0.9402995886420709</span><span class="p">,</span>
+                             <span class="mf">0.5378064918413052</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"grey_8510"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.39524717779832685</span><span class="p">,</span> <span class="mf">0.4000257286739164</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5890507376891594</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8650502298996872</span><span class="p">,</span>
+                             <span class="o">-</span><span class="mf">0.6140360785406336</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"white_9381"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.5718280481994695</span><span class="p">,</span> <span class="mf">0.24070317428066512</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3737913482606834</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.06726932177492717</span><span class="p">,</span>
+                             <span class="o">-</span><span class="mf">0.6980531615588608</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"purple_4976"</span><span class="p">}</span>
+    <span class="p">]</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">collection_name</span><span class="o">=</span><span class="s1">'demo_v2'</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+    <span class="c1"># print(res)</span>
+
+    <span class="c1">## todo:2.1 将数据插入到特定分区，可以在插入请求中指定分区名称，如下所示：</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.5570353903748935</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8997887893201304</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7123782431855732</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.6298990746450119</span><span class="p">,</span>
+                              <span class="mf">0.6699215060604258</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"red_1202"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.6319019033373907</span><span class="p">,</span> <span class="mf">0.6821488267878275</span><span class="p">,</span> <span class="mf">0.8552303045704168</span><span class="p">,</span> <span class="mf">0.36929791364943054</span><span class="p">,</span>
+                              <span class="o">-</span><span class="mf">0.14152860714878068</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"blue_4150"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.9483947484855766</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.32294203351925344</span><span class="p">,</span> <span class="mf">0.9759290319978025</span><span class="p">,</span> <span class="mf">0.8262982148666174</span><span class="p">,</span>
+                              <span class="o">-</span><span class="mf">0.8351194181285713</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"orange_4590"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.5449109892498731</span><span class="p">,</span> <span class="mf">0.043511240563786524</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.25105249484790804</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.012030655265886425</span><span class="p">,</span>
+                              <span class="o">-</span><span class="mf">0.0010987671273892108</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"pink_9619"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.6603339372951424</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.10866551787442225</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.9435597754324891</span><span class="p">,</span> <span class="mf">0.8230244263466688</span><span class="p">,</span>
+                              <span class="o">-</span><span class="mf">0.7986720938400362</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"orange_4863"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">15</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.8825129181091456</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.9204557711667729</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.935350065513425</span><span class="p">,</span> <span class="mf">0.5484069690287079</span><span class="p">,</span>
+                              <span class="mf">0.24448151140671204</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"orange_7984"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.6285586391568163</span><span class="p">,</span> <span class="mf">0.5389064528263487</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3163366239905099</span><span class="p">,</span> <span class="mf">0.22036279378888013</span><span class="p">,</span>
+                              <span class="mf">0.15077052220816167</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"blue_9010"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">17</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.20151825016059233</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.905239387635804</span><span class="p">,</span> <span class="mf">0.6749305353372479</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7324272081377843</span><span class="p">,</span>
+                              <span class="o">-</span><span class="mf">0.33007998971889263</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"blue_4521"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">18</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.2432286610792349</span><span class="p">,</span> <span class="mf">0.01785636564206139</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.651356982731391</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.35848148851027895</span><span class="p">,</span>
+                              <span class="o">-</span><span class="mf">0.7387383128324057</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"orange_2529"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">19</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.055512329053363674</span><span class="p">,</span> <span class="mf">0.7100266349039421</span><span class="p">,</span> <span class="mf">0.4956956543575197</span><span class="p">,</span> <span class="mf">0.24541352586717702</span><span class="p">,</span>
+                              <span class="mf">0.4209030729923515</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"red_9437"</span><span class="p">}</span>
+    <span class="p">]</span>
+
+    <span class="c1"># ##  todo:3. 创建分区</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">create_partition</span><span class="p">(</span><span class="n">collection_name</span><span class="o">=</span><span class="s1">'demo_v2'</span><span class="p">,</span> <span class="n">partition_name</span><span class="o">=</span><span class="s1">'partitionA'</span><span class="p">)</span>
+    <span class="c1">#</span>
+    <span class="c1"># # # # todo: 3.1 分区中插入数据</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">collection_name</span><span class="o">=</span><span class="s1">'demo_v2'</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">partition_name</span><span class="o">=</span><span class="s1">'partitionA'</span><span class="p">)</span>
+    <span class="c1"># print(res)</span>
+    <span class="c1">## todo:4. 更新插入数据</span>
+    <span class="c1"># 在 Milvus 中，upsert 操作执行数据级操作，根据集合中是否已存在主键来插入或更新实体。具体来说：</span>
+    <span class="c1"># 如果集合中已存在该实体的主键，则现有实体将被覆盖。</span>
+    <span class="c1"># 如果集合中不存在主键，则将插入一个新实体。</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.619954382375778</span><span class="p">,</span> <span class="mf">0.4479436794798608</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.17493894838751745</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.4248030059917294</span><span class="p">,</span>
+                             <span class="o">-</span><span class="mf">0.8648452746018911</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"black_9898"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.4762662251462588</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.6942502138717026</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.4490002642657902</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.628696575798281</span><span class="p">,</span>
+                             <span class="mf">0.9660395877041965</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"red_7319"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.8864122635045097</span><span class="p">,</span> <span class="mf">0.9260170474445351</span><span class="p">,</span> <span class="mf">0.801326976181461</span><span class="p">,</span> <span class="mf">0.6383943392381306</span><span class="p">,</span>
+                             <span class="mf">0.7563037341572827</span><span class="p">],</span><span class="s2">"color"</span><span class="p">:</span> <span class="s2">"white_6465"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.14594326235891586</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3775407299900644</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3765479013078812</span><span class="p">,</span> <span class="mf">0.20612075380355122</span><span class="p">,</span>
+                             <span class="mf">0.4902678929632145</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"orange_7580"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.4548498669607359</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.887610217681605</span><span class="p">,</span> <span class="mf">0.5655081329910452</span><span class="p">,</span> <span class="mf">0.19220509387904117</span><span class="p">,</span>
+                             <span class="mf">0.016513983433433577</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"red_3314"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.11755001847051827</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7295149788999611</span><span class="p">,</span> <span class="mf">0.2608115847524266</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1719167007897875</span><span class="p">,</span>
+                             <span class="mf">0.7417611743754855</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"black_9955"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.9363032158314308</span><span class="p">,</span> <span class="mf">0.030699901477745373</span><span class="p">,</span> <span class="mf">0.8365910312319647</span><span class="p">,</span> <span class="mf">0.7823840208444011</span><span class="p">,</span>
+                             <span class="mf">0.2625222076909237</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"yellow_2461"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0754823906014721</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.6390658668265143</span><span class="p">,</span> <span class="mf">0.5610517334334937</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8986261118798251</span><span class="p">,</span>
+                             <span class="mf">0.9372056764266794</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"white_5015"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.3038434006935904</span><span class="p">,</span> <span class="mf">0.1279149203380523</span><span class="p">,</span> <span class="mf">0.503958664270957</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2622661156746988</span><span class="p">,</span>
+                             <span class="mf">0.7407627307791929</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"purple_6414"</span><span class="p">},</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span> <span class="s2">"vector"</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.7125086947677588</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8050968321012257</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.32608864121785786</span><span class="p">,</span> <span class="mf">0.3255654958645424</span><span class="p">,</span>
+                             <span class="mf">0.26227968923834233</span><span class="p">],</span> <span class="s2">"color"</span><span class="p">:</span> <span class="s2">"brown_7231"</span><span class="p">}</span>
+    <span class="p">]</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">upsert</span><span class="p">(</span><span class="n">collection_name</span><span class="o">=</span><span class="s1">'demo_v2'</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span>
+    <span class="c1"># print(res)</span>
+    <span class="c1"># 注意如果分区中不存在更新数据的id，就不会受影响，但是会影响集合里已经存在的相同id的实体</span>
+    <span class="c1"># res = client.upsert(collection_name='demo_v2', data=data, partition_name="partitionA")</span>
+    <span class="c1"># todo:5. 删除实体（数据）</span>
+    <span class="c1"># 按照过滤器删除；如果不指定分区，默认情况下会在整个集合中进行删除</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">collection_name</span><span class="o">=</span><span class="s1">'demo_v2'</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="s1">'id in [12, 5, 6]'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="c1"># 按照id进行删除；指定分区删除数据</span>
+    <span class="c1"># res = client.delete(collection_name='demo_v2', ids=[1, 2, 3, 4], partition_name='partitionA')</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+</pre></div>
+</div>
+<h4>5.3.2 数据的查询</h4>
+<p>简单查询：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># entity实体数据的操作：查询</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">query_operation</span><span class="p">():</span>
+    <span class="c1"># # todo: 1. 单向量搜索</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">collection_name</span><span class="o">=</span><span class="s1">'demo_v2'</span><span class="p">,</span>
+                        <span class="n">data</span><span class="o">=</span><span class="p">[[</span><span class="mf">0.19886812562848388</span><span class="p">,</span> <span class="mf">0.06023560599112088</span><span class="p">,</span> <span class="mf">0.6976963061752597</span><span class="p">,</span> <span class="mf">0.2614474506242501</span><span class="p">,</span> <span class="mf">0.838729485096104</span><span class="p">]],</span>
+                        <span class="n">limit</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                        <span class="n">search_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"metric_type"</span><span class="p">:</span> <span class="s2">"IP"</span><span class="p">},</span>
+                        <span class="n">output_fields</span><span class="o">=</span><span class="p">[</span><span class="s2">"id"</span><span class="p">,</span> <span class="s1">'vector'</span><span class="p">])</span> <span class="c1"># search_params是在查询时执行距离计算方式，如果定义索引的时候，已经制定了方式可以不写</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="c1"># todo: 2. 批量向量搜索</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">collection_name</span><span class="o">=</span><span class="s1">'demo_v2'</span><span class="p">,</span>
+                        <span class="n">data</span><span class="o">=</span><span class="p">[[</span><span class="mf">0.19886812562848388</span><span class="p">,</span> <span class="mf">0.06023560599112088</span><span class="p">,</span> <span class="mf">0.6976963061752597</span><span class="p">,</span> <span class="mf">0.2614474506242501</span><span class="p">,</span> <span class="mf">0.838729485096104</span><span class="p">],</span>
+                              <span class="p">[</span><span class="mf">0.3172005263489739</span><span class="p">,</span> <span class="mf">0.9719044792798428</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.36981146090600725</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.4860894583077995</span><span class="p">,</span> <span class="mf">0.95791889146345</span><span class="p">]],</span>
+                        <span class="n">limit</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                        <span class="n">search_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"metric_type"</span><span class="p">:</span> <span class="s2">"IP"</span><span class="p">},</span>
+                        <span class="n">output_fields</span><span class="o">=</span><span class="p">[</span><span class="s2">"id"</span><span class="p">,</span> <span class="s1">'vector'</span><span class="p">])</span> <span class="c1"># search_params是在查询时执行距离计算方式，如果定义索引的时候，已经制定了方式可以不写</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="c1"># todo: 3. 分区搜索</span>
+    <span class="c1"># 要进行分区搜索，只需在搜索请求的 partition_names 中包含目标分区的名称即可。这指定search操作仅考虑指定分区内的向量。</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+        <span class="n">collection_name</span><span class="o">=</span><span class="s2">"demo_v2"</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="p">[[</span><span class="mf">0.02174828545444263</span><span class="p">,</span> <span class="mf">0.058611125483182924</span><span class="p">,</span> <span class="mf">0.6168633415965343</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7944160935612321</span><span class="p">,</span> <span class="mf">0.5554828317581426</span><span class="p">]],</span>
+        <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">search_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"metric_type"</span><span class="p">:</span> <span class="s2">"IP"</span><span class="p">,</span> <span class="s2">"params"</span><span class="p">:</span> <span class="p">{}},</span>
+        <span class="n">partition_names</span><span class="o">=</span><span class="p">[</span><span class="s2">"partitionA"</span><span class="p">]</span>  <span class="c1"># 这里指定搜索的分区</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="c1"># todo: 4.使用输出字段进行搜索</span>
+    <span class="c1"># 使用输出字段进行搜索允许您指定搜索结果中应包含匹配向量的哪些属性或字段。</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+        <span class="n">collection_name</span><span class="o">=</span><span class="s2">"demo_v2"</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="p">[[</span><span class="mf">0.3580376395471989</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.6023495712049978</span><span class="p">,</span> <span class="mf">0.18414012509913835</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.26286205330961354</span><span class="p">,</span> <span class="mf">0.9029438446296592</span><span class="p">]],</span>
+        <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">search_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"metric_type"</span><span class="p">:</span> <span class="s2">"IP"</span><span class="p">,</span> <span class="s2">"params"</span><span class="p">:</span> <span class="p">{}},</span>
+        <span class="n">output_fields</span><span class="o">=</span><span class="p">[</span><span class="s1">'vector'</span><span class="p">,</span> <span class="s2">"color"</span><span class="p">]</span>  <span class="c1"># 返回定义的字段</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="c1"># todo: 5.过滤搜索</span>
+    <span class="c1"># 过滤器搜索：筛选搜索将标量筛选器应用于矢量搜索，允许我们根据特定条件优化搜索结果。</span>
+    <span class="c1"># 例如，要根据字符串模式优化搜索结果，可以使用 like 运算符。此运算符通过考虑前缀、中缀和后缀来启用字符串匹配：</span>
+    <span class="c1"># 筛选颜色以红色为前缀的结果：</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+        <span class="n">collection_name</span><span class="o">=</span><span class="s2">"demo_v2"</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="p">[[</span><span class="mf">0.3580376395471989</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.6023495712049978</span><span class="p">,</span> <span class="mf">0.18414012509913835</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.26286205330961354</span><span class="p">,</span> <span class="mf">0.9029438446296592</span><span class="p">]],</span>
+        <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+        <span class="n">search_params</span><span class="o">=</span><span class="p">{</span><span class="s2">"metric_type"</span><span class="p">:</span> <span class="s2">"IP"</span><span class="p">,</span> <span class="s2">"params"</span><span class="p">:</span> <span class="p">{}},</span>
+        <span class="n">output_fields</span><span class="o">=</span><span class="p">[</span><span class="s2">"color"</span><span class="p">],</span>
+        <span class="nb">filter</span><span class="o">=</span><span class="s1">'color like "red%"'</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="c1"># todo: 6.范围搜索</span>
+    <span class="c1"># 范围搜索允许查找距查询向量指定距离范围内的向量。</span>
+    <span class="c1"># 范围搜索:radius：定义搜索空间的外边界。只有距查询向量在此距离内的向量才被视为潜在匹配。</span>
+    <span class="c1"># range_filter：虽然radius设置搜索的外部限制，但可以选择使用range_filter来定义内部边界，创建一个距离范围，在该范围内向量必须落下才被视为匹配。</span>
+    <span class="n">search_params</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">"metric_type"</span><span class="p">:</span> <span class="s2">"IP"</span><span class="p">,</span>
+        <span class="s2">"params"</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">"radius"</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span>  <span class="c1"># 搜索圆的半径</span>
+            <span class="s2">"range_filter"</span><span class="p">:</span> <span class="mi">1</span>  <span class="c1"># 范围过滤器，用于过滤出不在搜索圆内的向量。</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+        <span class="n">collection_name</span><span class="o">=</span><span class="s2">"demo_v2"</span><span class="p">,</span>
+        <span class="n">data</span><span class="o">=</span><span class="p">[[</span><span class="mf">0.3580376395471989</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.6023495712049978</span><span class="p">,</span> <span class="mf">0.18414012509913835</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.26286205330961354</span><span class="p">,</span> <span class="mf">0.9029438446296592</span><span class="p">]],</span>
+        <span class="n">limit</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>  <span class="c1"># 返回的搜索结果最大数量</span>
+        <span class="n">search_params</span><span class="o">=</span><span class="n">search_params</span><span class="p">,</span>
+        <span class="n">output_fields</span><span class="o">=</span><span class="p">[</span><span class="s2">"color"</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="c1">#</span>
+    <span class="c1">#</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>复杂查询</p>
+<ul>
+<li>混合检索：要对两组 ANN 搜索结果进行合并和重新排序，有必要选择适当的重新排序策略。支持两种重排策略：<strong>加权排名策略（WeightedRanker</strong>）和**重排序策略**（<strong>RRFRanker</strong>）。在选择重排策略时，需要考虑的一个问题是，在向量场中是否需要强调一个或多个基本 ANN 搜索。</li>
+</ul>
+<ul>
+<li>
+<p><strong>加权排名</strong>：如果您要求结果强调特定的向量场，建议使用该策略。通过 WeightedRanker，您可以为某些向量场分配更高的权重，从而更加强调这些向量场。例如，在多模态搜索中，图片的文字描述可能比图片的颜色更重要。</p>
+<ul>
+<li>
+<p>使用 WeightedRanker 策略时，需要在<code>WeightedRanker</code> 函数中输入权重值。混合搜索中的基本 ANN 搜索次数与需要输入的值的次数相对应。输入值的范围应为 [0,1]，数值越接近 1 表示重要性越高。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pymilvus</span><span class="w"> </span><span class="kn">import</span> <span class="n">WeightedRanker</span>
+<span class="n">rerank</span><span class="o">=</span> <span class="n">WeightedRanker</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>
+<p><strong>RRFRanker（倒数排序融合）</strong>：在没有特定重点的情况下，建议采用这种策略。RRF 可以有效平衡每个向量场的重要性。</p>
+<ul>
+<li>RRFRanker的核心思想是根据每个结果在其检索列表中的排名位置来计算分数。具体而言，算法使用以下公式为每个结果分配分数：</li>
+</ul>
+<div align="center"><img alt="EduRAG 项目配图" decoding="async" loading="lazy" src="../assets/img/project02-04/figure-28dd13007950.png"/></div>
+<blockquote>
+<ul>
+<li>d：表示文档。</li>
+<li>N：表示不同检索路径的数量。</li>
+<li>ranki(d)：表示文档 <em>d</em> 在第 <em>i</em> 个检索器中的排名位置，从0开始计数。</li>
+<li>k：是一个平滑参数，用于控制随着排名增加分数的降低速度。默认值通常设置为60。</li>
+</ul>
+</blockquote>
+<ul>
+<li>
+<p>使用 RRFRanker 策略时，需要将参数值<code>k</code> 输入 RRFRanker。<code>k</code> 的默认值为 60。该参数有助于确定如何组合来自不同 ANN 搜索的排名，目的是平衡和混合所有搜索的重要性。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pymilvus</span><span class="w"> </span><span class="kn">import</span> <span class="n">RRFRanker</span>
+
+<span class="n">ranker</span> <span class="o">=</span> <span class="n">RRFRanker</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+</ul>
+<p>代码实现：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">complex_query</span><span class="p">():</span>
+    <span class="c1"># # 定义schema</span>
+
+    <span class="n">schema</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">create_schema</span><span class="p">(</span><span class="n">enable_dynamic_field</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">schema</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s1">'film_id'</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">DataType</span><span class="o">.</span><span class="n">INT64</span><span class="p">,</span> <span class="n">is_primary</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">schema</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s1">'filmVector'</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT_VECTOR</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="c1"># 向量字段</span>
+    <span class="n">schema</span><span class="o">.</span><span class="n">add_field</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s2">"posterVector"</span><span class="p">,</span> <span class="n">datatype</span><span class="o">=</span><span class="n">DataType</span><span class="o">.</span><span class="n">FLOAT_VECTOR</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="c1"># 向量字段</span>
+    <span class="c1"># #</span>
+    <span class="c1"># 定义索引</span>
+    <span class="n">index_params</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">prepare_index_params</span><span class="p">()</span>
+    <span class="n">index_params</span><span class="o">.</span><span class="n">add_index</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s1">'filmVector'</span><span class="p">,</span> <span class="n">index_type</span><span class="o">=</span><span class="s2">"IVF_FLAT"</span><span class="p">,</span>
+                           <span class="n">metric_type</span><span class="o">=</span><span class="s2">"L2"</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">"nlist"</span><span class="p">:</span> <span class="mi">128</span><span class="p">})</span>
+    <span class="n">index_params</span><span class="o">.</span><span class="n">add_index</span><span class="p">(</span><span class="n">field_name</span><span class="o">=</span><span class="s1">'posterVector'</span><span class="p">,</span> <span class="n">index_type</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span>
+                           <span class="n">metric_type</span><span class="o">=</span><span class="s2">"COSINE"</span><span class="p">)</span>
+
+    <span class="c1"># 创建集合</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">create_collection</span><span class="p">(</span><span class="n">collection_name</span><span class="o">=</span><span class="s1">'demo_v3'</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">,</span> <span class="n">index_params</span><span class="o">=</span><span class="n">index_params</span><span class="p">)</span>
+
+    <span class="c1"># 向量库中插入实体</span>
+    <span class="n">entities</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span>  <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">):</span>
+        <span class="c1"># 构造实体</span>
+        <span class="n">film_id</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10000</span><span class="p">)</span>
+        <span class="n">film_vector</span> <span class="o">=</span> <span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+        <span class="n">poster_vector</span> <span class="o">=</span> <span class="p">[</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+        <span class="n">entity</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"film_id"</span><span class="p">:</span> <span class="n">film_id</span><span class="p">,</span> <span class="s2">"filmVector"</span><span class="p">:</span> <span class="n">film_vector</span><span class="p">,</span> <span class="s2">"posterVector"</span><span class="p">:</span> <span class="n">poster_vector</span><span class="p">}</span>
+        <span class="n">entities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+
+    <span class="n">client</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">collection_name</span><span class="o">=</span><span class="s1">'demo_v3'</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">entities</span><span class="p">)</span>
+
+    <span class="c1"># 多向量查询（注意和批量向量查询不同）</span>
+    <span class="c1"># 多向量搜索使用 hybrid_search() API 在一次调用中执行多个 ANN 搜索请求。每个 AnnSearchRequest 代表特定矢量场上的单个搜索请求。</span>
+    <span class="c1"># 示例创建两个 AnnSearchRequest 实例以对两个向量字段执行单独的相似性搜索。</span>
+    <span class="c1"># 创建多搜索请求 filmVector</span>
+    <span class="n">query_filmVector</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.8896863042430693</span><span class="p">,</span> <span class="mf">0.370613100114602</span><span class="p">,</span> <span class="mf">0.23779315077113428</span><span class="p">,</span> <span class="mf">0.38227915951132996</span><span class="p">,</span> <span class="mf">0.5997064603128835</span><span class="p">]]</span>
+    <span class="n">dense_search_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"data"</span><span class="p">:</span> <span class="n">query_filmVector</span><span class="p">,</span>
+                           <span class="s2">"anns_field"</span><span class="p">:</span> <span class="s2">"filmVector"</span><span class="p">,</span><span class="c1"># 该参数值必须与集合模式中使用的值相同。</span>
+                           <span class="s2">"param"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"metric_type"</span><span class="p">:</span> <span class="s2">"L2"</span><span class="p">,</span> <span class="s2">"nprobe"</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span><span class="c1"># nprobe代表访问簇的数量</span>
+                           <span class="s2">"limit"</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+    <span class="n">request_1</span> <span class="o">=</span> <span class="n">AnnSearchRequest</span><span class="p">(</span><span class="o">**</span><span class="n">dense_search_params</span><span class="p">)</span>
+
+    <span class="c1"># 创建多搜索请求 posterVector</span>
+    <span class="n">query_posterVector</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.02550758562349764</span><span class="p">,</span> <span class="mf">0.006085637357292062</span><span class="p">,</span> <span class="mf">0.5325251250159071</span><span class="p">,</span> <span class="mf">0.7676432650114147</span><span class="p">,</span> <span class="mf">0.5521074424751443</span><span class="p">]]</span>
+    <span class="n">sparse_search_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"data"</span><span class="p">:</span> <span class="n">query_posterVector</span><span class="p">,</span>
+                            <span class="s2">"anns_field"</span><span class="p">:</span> <span class="s2">"posterVector"</span><span class="p">,</span>
+                            <span class="c1"># 该参数值必须与集合模式中使用的值相同。</span>
+                            <span class="s2">"param"</span><span class="p">:</span> <span class="p">{</span><span class="s2">"metric_type"</span><span class="p">:</span> <span class="s2">"COSINE"</span><span class="p">},</span>
+                            <span class="s2">"limit"</span><span class="p">:</span> <span class="mi">2</span>
+                            <span class="p">}</span>
+    <span class="n">request_2</span> <span class="o">=</span> <span class="n">AnnSearchRequest</span><span class="p">(</span><span class="o">**</span><span class="n">sparse_search_params</span><span class="p">)</span>
+
+    <span class="n">reqs</span> <span class="o">=</span> <span class="p">[</span><span class="n">request_1</span><span class="p">,</span> <span class="n">request_2</span><span class="p">]</span>
+    <span class="n">ranker</span> <span class="o">=</span> <span class="n">RRFRanker</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span>
+
+    <span class="n">res</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">hybrid_search</span><span class="p">(</span>
+        <span class="n">collection_name</span><span class="o">=</span><span class="s2">"demo_v3"</span><span class="p">,</span>
+        <span class="n">reqs</span><span class="o">=</span><span class="n">reqs</span><span class="p">,</span>
+        <span class="n">ranker</span><span class="o">=</span><span class="n">ranker</span><span class="p">,</span>
+        <span class="n">limit</span><span class="o">=</span><span class="mi">2</span>
+    <span class="p">)</span>
+    <span class="k">for</span> <span class="n">hits</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"TopK results:"</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">hit</span> <span class="ow">in</span> <span class="n">hits</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">hit</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-16">5.4 加载现有数据</h3>
+<p>由于 Milvus Lite 的所有数据都存储在本地文件中，因此即使在程序终止后，你也可以通过创建一个带有现有文件的<code>MilvusClient</code> ，将所有数据加载到内存中。例如，这将恢复 "milvus_demo.db "文件中的 Collections，并继续向其中写入数据。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pymilvus</span><span class="w"> </span><span class="kn">import</span> <span class="n">MilvusClient</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">MilvusClient</span><span class="p">(</span><span class="s2">"milvus_demo.db"</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-17">5.5 删除 Collections</h3>
+<p>如果想删除某个 Collections 中的所有数据，可以通过以下方法丢弃该 Collections</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Config</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># Drop collection</span>
+<span class="na">client.drop_collection(collection_name</span><span class="o">=</span><span class="s">"demo_collection"</span><span class="na">)</span>
+</pre></div>
+</div>
+<hr/>
+<h3 id="sec-18">本节小结</h3>
+<p>本章节主要介绍了什么是Milvus向量数据库，并对该数据库的增删改查等操作进行了详细的讲解</p>
+<div class="done-bar"><button class="mark-done-btn" data-key="project02-04" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="project02-03.html"><div class="dir">← 上一篇</div><div class="name">⛓️ LangChain：模型、Prompt、链与 Agent</div></a><a class="next" href="project02-05.html"><div class="dir">下一篇 →</div><div class="name">🐳 Docker 部署 Milvus 与 Redis</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">学习目标</a><a class="lv2" href="#sec-2">1 什么是 Milvus 向量数据库？</a><a class="lv2" href="#sec-3">2 关键概念</a><a class="lv3" href="#sec-4">2.1 非结构化数据</a><a class="lv3" href="#sec-5">2.2 嵌入向量</a><a class="lv3" href="#sec-6">2.3 向量相似度搜索</a><a class="lv3" href="#sec-7">2.4 Collection 和 Field</a><a class="lv2" href="#sec-8">3 为什么选择 Milvus？</a><a class="lv2" href="#sec-9">4 支持哪些索引和度量？</a><a class="lv3" href="#sec-10">4.1 索引类型</a><a class="lv3" href="#sec-11">4.2 相似度度量</a><a class="lv2" href="#sec-12">5 Milvus数据库操作</a><a class="lv3" href="#sec-13">5.1 设置向量数据库</a><a class="lv3" href="#sec-14">5.2 Collections操作</a><a class="lv3" href="#sec-15">5.3 Entity实体数据操作</a><a class="lv3" href="#sec-16">5.4 加载现有数据</a><a class="lv3" href="#sec-17">5.5 删除 Collections</a><a class="lv3" href="#sec-18">本节小结</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

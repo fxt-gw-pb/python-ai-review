@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LangChain：模型、Prompt、链与 Agent · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#projects" class="active">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">32</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">33</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">34</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">35</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">39</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">40</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">42</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">21</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">22</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">23</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">24</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">25</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">26</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">27</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">28</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">29</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">30</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project active" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="project02.html">EduRAG：企业私有知识智能问答</a> / 第 3 章</div>
+<h1>⛓️ LangChain：模型、Prompt、链与 Agent</h1>
+<div class="chips"><span class="chip green">🏷️ LangChain</span><span class="chip green">🏷️ Chains / Agents</span><span class="chip green">🏷️ Memory / Indexes</span><a class="chip" href="project02.html">🚀 返回项目总览</a></div>
+</div>
+<nav class="project-chapter-nav" aria-label="项目章节"><div class="project-nav-label">项目进度 · 共 26 章</div><div class="project-steps"><a class="project-step" href="project02-01.html"><span>01</span>RAG 项目背景、原理与工程结构</a><a class="project-step" href="project02-02.html"><span>02</span>Ollama：本地大模型运行与调用</a><a class="project-step active" href="project02-03.html"><span>03</span>LangChain：模型、Prompt、链与 Agent</a><a class="project-step" href="project02-04.html"><span>04</span>Milvus：向量数据库原理与操作</a><a class="project-step" href="project02-05.html"><span>05</span>Docker 部署 Milvus 与 Redis</a><a class="project-step" href="project02-06.html"><span>06</span>Python Logging：项目日志体系</a><a class="project-step" href="project02-07.html"><span>07</span>BM25：稀疏检索原理与实现</a><a class="project-step" href="project02-08.html"><span>08</span>Redis：缓存数据库与 Python 操作</a><a class="project-step" href="project02-09.html"><span>09</span>MySQL FAQ 问答系统</a><a class="project-step" href="project02-10.html"><span>10</span>EduRAG 整体架构与工作流程</a><a class="project-step" href="project02-11.html"><span>11</span>基础模块：配置管理与日志</a><a class="project-step" href="project02-12.html"><span>12</span>文档处理与知识库加载</a><a class="project-step" href="project02-13.html"><span>13</span>自定义文档解析与文本切分</a><a class="project-step" href="project02-14.html"><span>14</span>向量存储、混合检索与重排序</a><a class="project-step" href="project02-15.html"><span>15</span>Prompt 管理与 Query 意图识别</a><a class="project-step" href="project02-16.html"><span>16</span>检索策略选择与 RAG 核心逻辑</a><a class="project-step" href="project02-17.html"><span>17</span>RAG Query 改写策略</a><a class="project-step" href="project02-18.html"><span>18</span>知识数据集生成与优化</a><a class="project-step" href="project02-19.html"><span>19</span>EduRAG 命令行运行与调试</a><a class="project-step" href="project02-20.html"><span>20</span>RAG 评估框架与指标</a><a class="project-step" href="project02-21.html"><span>21</span>实现 EduRAG 的 RAGAS 评估</a><a class="project-step" href="project02-22.html"><span>22</span>构造 RAG 评估数据集</a><a class="project-step" href="project02-23.html"><span>23</span>融合 FAQ 与知识库查询</a><a class="project-step" href="project02-24.html"><span>24</span>增强型融合查询与会话历史</a><a class="project-step" href="project02-25.html"><span>25</span>FastAPI 接口与 WebUI 应用</a><a class="project-step" href="project02-26.html"><span>26</span>FastAPI 与 Flask 选型</a></div></nav><div class="callout tip course-note"><span class="ico">🧭</span><p><strong>工程实践提示：</strong>示例中的模型地址、数据库账号和密钥均应通过环境变量或独立配置文件注入；部署前还需补充权限控制、输入校验、超时重试、日志脱敏、来源引用与离线评估。</p></div>
+
+<h3 id="sec-1">学习目标</h3>
+<ul>
+<li>理解什么是LangChain</li>
+<li>明确LangChain主要组件的作用</li>
+<li>了解LangChain常见的使用场景</li>
+</ul>
+<hr/>
+<h2 id="sec-2">1 什么是LangChain</h2>
+<div align="center"><img alt="EduRAG 项目配图" decoding="async" loading="lazy" src="../assets/img/project02-03/figure-81f0ced39936.png"/></div>
+<p>LangChain由 Harrison Chase 创建于2022年10月，它是围绕LLMs（大语言模型）建立的一个框架，LLMs使用机器学习算法和海量数据来分析和理解自然语言，GPT3.5、GPT4是LLMs最先进的代表，国内百度的文心一言、阿里的通义千问也属于LLMs。LangChain自身并不开发LLMs，它的核心理念是为各种LLMs实现通用的接口，把LLMs相关的组件“链接”在一起，简化LLMs应用的开发难度，方便开发者快速地开发复杂的LLMs应用。LangChain目前有两个语言的实现：python、nodejs。</p>
+<hr/>
+<p>本章节将会从两个方面全面介绍LangChain：一个是LangChain组件的基本概念和应用；另一个是LangChain常见的使用场景。</p>
+<p>参考官网介绍：<a href="https://python.langchain.com/docs/integrations/text_embedding/huggingfacehub">https://python.langchain.com/docs/integrations/text_embedding/huggingfacehub</a></p>
+<hr/>
+<h2 id="sec-3">2 LangChain主要组件</h2>
+<p>一个LangChain的应用是需要多个组件共同实现的，LangChain主要支持6种组件：</p>
+<ul>
+<li>Models：模型，各种类型的模型和模型集成，比如GPT-4</li>
+<li>Prompts：提示，包括提示管理、提示优化和提示序列化</li>
+<li>Memory：记忆，用来保存和模型交互时的上下文状态</li>
+<li>Indexes：索引，用来结构化文档，以便和模型交互</li>
+<li>Chains：链，一系列对各种组件的调用</li>
+<li>Agents：代理，决定模型采取哪些行动，执行并且观察流程，直到完成为止</li>
+</ul>
+<hr/>
+<h3 id="sec-4">2.1 Models</h3>
+<p>现在市面上的模型多如牛毛，各种各样的模型不断出现，LangChain模型组件提供了与各种模型的集成，并为所有模型提供一个精简的统一接口。</p>
+<p>LangChain目前支持三种类型的模型：LLMs、Chat Models(聊天模型)、Embeddings Models(嵌入模型）.</p>
+<ul>
+<li>LLMs: 大语言模型接收文本字符作为输入，返回的也是文本字符.</li>
+</ul>
+<ul>
+<li>聊天模型: 基于LLMs, 不同的是它接收聊天消息(一种特定格式的数据)作为输入，返回的也是聊天消息.</li>
+</ul>
+<ul>
+<li>文本嵌入模型: 文本嵌入模型接收文本作为输入, 返回的是浮点数列表.</li>
+</ul>
+<p>LangChain支持的三类模型，它们的使用场景不同，输入和输出不同，开发者需要根据项目需要选择相应。</p>
+<hr/>
+<h4>2.1.1 LLMs (大语言模型)</h4>
+<p>LLMs使用场景最多，常用大模型的下载库：<a href="https://huggingface.co/models">https://huggingface.co/models</a>：</p>
+<div align="center"><img alt="EduRAG 项目配图" decoding="async" loading="lazy" src="../assets/img/project02-03/figure-611dabd73241.png"/></div>
+<p>接下来我们借助Ollama工具进行模型的使用：</p>
+<ul>
+<li>第一步：安装必备的工具包</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>安装langchain库: pip install langchain
+安装langchain_community库: pip install langchain_community
+</pre></div>
+</div>
+<ul>
+<li>第二步：代码实现</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>from langchain_community.llms import Ollama
+model = Ollama(model="qwen2:1.5b", temperature=0)
+result = model.invoke("请给我讲个鬼故事")
+print(result)
+##打印结果：
+好的，我来给您讲一个鬼故事。很久以前，在一座古老的城堡里，住着一位年轻的公主和她的家人。一天晚上，当他们准备睡觉时，突然听到了一阵奇怪的声音。声音越来越近，最后停在了公主的房间门口。
+公主感到非常害怕，但还是决定去看看。她打开门，发现一个穿着破旧衣服、长发披散的女孩站在那里。女孩看起来很虚弱，似乎已经好几天没有进食。公主问她为什么在这里，女孩回答说她迷路了，找不到回家的路。
+公主同情这个可怜的女孩，并邀请她进来休息。女孩在公主的床上躺下后，开始讲述她的故事。原来，城堡的主人是一个残忍的统治者，他经常虐待他的臣民。有一天，他发现了一个美丽的年轻女子，便决定将她作为自己的妻子。然而，当女子试图反抗时，她被囚禁在一个地下室里。
+女孩说，她一直在寻找回家的路，直到她遇到了公主。她请求公主帮助她找到出路，回到她的家。公主答应了，并开始为她祈祷。最后，奇迹发生了，城堡的主人被愤怒的人民杀死，而女孩也终于回到了自己的家中。
+这个故事告诉我们，即使是最强大的统治者也无法忽视善良和同情心的力量。
+</pre></div>
+</div>
+<h4>2.1.2 Chat Models (聊天模型)</h4>
+<p>聊天消息包含下面几种类型，使用时需要按照约定传入合适的值：</p>
+<ul>
+<li>AIMessage: 就是 AI 输出的消息，可以是针对问题的回答.</li>
+<li>HumanMessage: 人类消息就是用户信息，由人给出的信息发送给LLMs的提示信息，比如“实现一个快速排序方法”.</li>
+<li>SystemMessage: 可以用于指定模型具体所处的环境和背景，如角色扮演等。你可以在这里给出具体的指示，比如“作为一个代码专家”，或者“返回json格式”.</li>
+<li>ChatMessage: Chat 消息可以接受任意角色的参数，但是在大多数时间，我们应该使用上面的三种类型.</li>
+</ul>
+<p>LangChain支持的常见聊天模型有：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">模型</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">ChatOpenAI</td>
+<td align="center">OpenAI聊天模型</td>
+</tr>
+<tr>
+<td align="center">AzureChatOpenAI</td>
+<td align="center">Azure提供的OpenAI聊天模型</td>
+</tr>
+<tr>
+<td align="center">PromptLayerChatOpenAI</td>
+<td align="center">基于OpenAI的提示模版平台</td>
+</tr>
+</tbody>
+</table></div>
+<p>举例说明：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">HumanMessage</span><span class="p">,</span> <span class="n">SystemMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_community.chat_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatOllama</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">ChatOllama</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"qwen2.5:7b"</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">messages</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">SystemMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">"现在你是一个著名的歌手"</span><span class="p">),</span>
+        <span class="n">HumanMessage</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="s2">"给我写一首歌词"</span><span class="p">)</span>
+<span class="p">]</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">messages</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+<span class="c1"># 打印结果：</span>
+<span class="sd">'''</span>
+<span class="sd">好的，以下是一首简短的歌词：</span>
+
+<span class="sd">在每一个黎明前醒来，</span>
+<span class="sd">心中充满希望和梦想。</span>
+<span class="sd">每一次心跳都带着力量，</span>
+<span class="sd">为了心中的目标，我永不放弃。</span>
+
+<span class="sd">在这条漫长的路上，</span>
+<span class="sd">我学会了坚强和勇敢。</span>
+<span class="sd">无论前方有多少困难，</span>
+<span class="sd">我都会坚持到底，直到胜利。</span>
+
+<span class="sd">因为我知道，</span>
+<span class="sd">我的梦想不会被打败，</span>
+<span class="sd">因为我有勇气去追求，</span>
+<span class="sd">因为我相信自己能够成功。</span>
+<span class="sd">'''</span>
+</pre></div>
+</div>
+<h4>2.1.3 提示模板</h4>
+<p>在上面的例子中，模型默认是返回纯文本结果的，如果想让模型返回想要的数据格式（比如json格式），可以使用提示模版。</p>
+<p>提示模板就是把一些常见的提示整理成模板，用户只需要修改模板中特定的词语，就能快速准确地告诉模型自己的需求。我们看个例子：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_community.chat_models</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatOllama</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.prompts</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatPromptTemplate</span>
+
+
+<span class="c1"># 创建原始模板</span>
+<span class="n">template_str</span> <span class="o">=</span> <span class="s2">"""您是一位专业的鲜花店文案撰写员。</span><span class="se">\n</span>
+<span class="s2">对于售价为 </span><span class="si">{price}</span><span class="s2"> 元的 </span><span class="si">{flower_name}</span><span class="s2"> ，您能提供一个吸引人的简短描述吗？</span>
+<span class="s2"># """</span>
+
+
+<span class="c1"># 根据原始模板创建LangChain提示模板</span>
+<span class="n">promp_emplate</span> <span class="o">=</span> <span class="n">ChatPromptTemplate</span><span class="o">.</span><span class="n">from_template</span><span class="p">(</span><span class="n">template_str</span><span class="p">)</span>
+<span class="n">prompt</span> <span class="o">=</span> <span class="n">promp_emplate</span><span class="o">.</span><span class="n">format_messages</span><span class="p">(</span><span class="n">price</span><span class="o">=</span><span class="s1">'50'</span><span class="p">,</span> <span class="n">flower_name</span><span class="o">=</span><span class="p">[</span><span class="s2">"玫瑰"</span><span class="p">],</span> <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'prompt--&gt;'</span><span class="p">,</span> <span class="n">prompt</span><span class="p">)</span>
+<span class="c1"># prompt--&gt; [HumanMessage(content="您是一位专业的鲜花店文案撰写员。\n\n对于售价为 50 元的 ['玫瑰'] ，您能提供一个吸引人的简短描述吗？\n# ", additional_kwargs={}, response_metadata={})]</span>
+
+<span class="c1"># 实例化模型</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">ChatOllama</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"qwen2.5:7b"</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># 打印结果</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">invoke</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+<span class="c1">#当然可以！"玫瑰，售价 50 元，是爱情与浪漫的象征。每一朵都是精心挑选和包装，确保其完美无瑕。无论是在庆祝特别的日子还是简单的日常问候中，这束玫瑰都能传达你的爱意。现在就为你的爱人或自己选择一份特别的礼物吧！"</span>
+</pre></div>
+</div>
+<h4>2.1.4 Embeddings Models(嵌入模型)</h4>
+<p>Embeddings Models特点：将字符串作为输入，返回一个浮动数的列表。在NLP中，Embedding的作用就是将数据进行文本向量化。</p>
+<div align="center"><img alt="EduRAG 项目配图" decoding="async" loading="lazy" src="../assets/img/project02-03/figure-e324cd721412.png"/></div>
+<p>Embeddings Models可以为文本创建向量映射，这样就能在向量空间里去考虑文本，执行诸如语义搜索之类的操作，比如说寻找相似的文本片段。</p>
+<p>接下来我们以一个qwen文本嵌入模型的例子进行说明：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_community.embeddings</span><span class="w"> </span><span class="kn">import</span> <span class="n">OllamaEmbeddings</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">OllamaEmbeddings</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"mxbai-embed-large"</span><span class="p">,</span> <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">res1</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">embed_query</span><span class="p">(</span><span class="s1">'这是第一个测试文档'</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">res1</span><span class="p">)</span>
+
+<span class="n">res2</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">embed_documents</span><span class="p">([</span><span class="s1">'这是第一个测试文档'</span><span class="p">,</span> <span class="s1">'这是第二个测试文档'</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">res2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>上述代码中，我们分别使用了两种方法来进行文本的向量表示，他们最大不同在于：embed_query()接收一个字符串的输入，而embed_documents可以接收一组字符串。</p>
+<p>LangChain集成的文本嵌入模型有：</p>
+<ul>
+<li>AzureOpenAI、Baidu Qianfan、Hugging Face Hub、OpenAI、Llama-cpp、SentenceTransformers</li>
+</ul>
+<h3 id="sec-5">2.2 Prompts</h3>
+<p>Prompt是指当用户输入信息给模型时加入的提示，这个提示的形式可以是zero-shot或者few-shot等方式，目的是让模型理解更为复杂的业务场景以便更好的解决问题。</p>
+<p>提示模板：如果你有了一个起作用的提示，你可能想把它作为一个模板用于解决其他问题，LangChain就提供了PromptTemplates组件，它可以帮助你更方便的构建提示。</p>
+<p>zero-shot提示方式：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">langchain</span><span class="w"> </span><span class="kn">import</span> <span class="n">PromptTemplate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_community.llms</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ollama</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Ollama</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"qwen2.5:7b"</span><span class="p">)</span>
+<span class="c1"># 定义模板</span>
+<span class="n">template</span> <span class="o">=</span> <span class="s2">"我的邻居姓</span><span class="si">{lastname}</span><span class="s2">，他生了个儿子，给他儿子起个名字"</span>
+
+<span class="n">prompt</span> <span class="o">=</span> <span class="n">PromptTemplate</span><span class="p">(</span>
+    <span class="n">input_variables</span><span class="o">=</span><span class="p">[</span><span class="s2">"lastname"</span><span class="p">],</span>
+    <span class="n">template</span><span class="o">=</span><span class="n">template</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">prompt_text</span> <span class="o">=</span> <span class="n">prompt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">lastname</span><span class="o">=</span><span class="s2">"王"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">prompt_text</span><span class="p">)</span>
+<span class="c1"># result: 我的邻居姓王，他生了个儿子，给他儿子起个名字</span>
+
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">prompt_text</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+<span class="sd">'''</span>
+<span class="sd">如果您的邻居想要给他的儿子起一个名字，可以考虑以下建议：</span>
+
+<span class="sd">1. **个性化选择**：根据孩子的性别、年龄或者其他个人喜好来命名。</span>
+<span class="sd">2. **传统或流行的名字**：可以从传统文化中寻找灵感，或者参考当前比较流行的男孩名字。例如，如果孩子是男孩，可以选择“宇航”、“浩然”、“启明”等富有寓意的汉字作为名字。</span>
+
+<span class="sd">3. **结合家族背景和姓氏**：如果您想保持与邻居的关系，可以考虑使用他的姓氏作为孩子的名字的一部分，如“王宇航”、“王浩然”。</span>
+
+<span class="sd">4. **简单易读的名字**：避免过于复杂的或拗口的名字，以便于孩子成长过程中的发音。</span>
+
+<span class="sd">请记住，无论选择哪种方式命名，重要的是要考虑到孩子的性格特点和未来发展。</span>
+<span class="sd">'''</span>
+</pre></div>
+</div>
+<p>few-shot提示方式：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">langchain</span><span class="w"> </span><span class="kn">import</span> <span class="n">PromptTemplate</span><span class="p">,</span> <span class="n">FewShotPromptTemplate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_community.llms</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ollama</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Ollama</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"qwen2.5:7b"</span><span class="p">)</span>
+
+<span class="n">examples</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">"word"</span><span class="p">:</span> <span class="s2">"开心"</span><span class="p">,</span> <span class="s2">"antonym"</span><span class="p">:</span> <span class="s2">"难过"</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">"word"</span><span class="p">:</span> <span class="s2">"高"</span><span class="p">,</span> <span class="s2">"antonym"</span><span class="p">:</span> <span class="s2">"矮"</span><span class="p">},</span>
+<span class="p">]</span>
+
+<span class="n">example_template</span> <span class="o">=</span> <span class="s2">"""</span>
+<span class="s2">单词: </span><span class="si">{word}</span>
+<span class="s2">反义词: </span><span class="si">{antonym}</span><span class="se">\\</span><span class="s2">n</span>
+<span class="s2">"""</span>
+
+<span class="n">example_prompt</span> <span class="o">=</span> <span class="n">PromptTemplate</span><span class="p">(</span>
+    <span class="n">input_variables</span><span class="o">=</span><span class="p">[</span><span class="s2">"word"</span><span class="p">,</span> <span class="s2">"antonym"</span><span class="p">],</span>
+    <span class="n">template</span><span class="o">=</span><span class="n">example_template</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">few_shot_prompt</span> <span class="o">=</span> <span class="n">FewShotPromptTemplate</span><span class="p">(</span>
+    <span class="n">examples</span><span class="o">=</span><span class="n">examples</span><span class="p">,</span>
+    <span class="n">example_prompt</span><span class="o">=</span><span class="n">example_prompt</span><span class="p">,</span>
+    <span class="n">prefix</span><span class="o">=</span><span class="s2">"给出每个单词的反义词"</span><span class="p">,</span>
+    <span class="n">suffix</span><span class="o">=</span><span class="s2">"单词: </span><span class="si">{input}</span><span class="se">\\</span><span class="s2">n反义词:"</span><span class="p">,</span>
+    <span class="n">input_variables</span><span class="o">=</span><span class="p">[</span><span class="s2">"input"</span><span class="p">],</span>
+    <span class="n">example_separator</span><span class="o">=</span><span class="s2">"</span><span class="se">\\</span><span class="s2">n"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">prompt_text</span> <span class="o">=</span> <span class="n">few_shot_prompt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="s2">"粗"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">prompt_text</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'*'</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+<span class="c1"># 给出每个单词的反义词</span>
+<span class="c1"># 单词: 开心</span>
+<span class="c1"># 反义词: 难过</span>
+
+<span class="c1"># 单词: 高</span>
+<span class="c1"># 反义词: 矮</span>
+
+<span class="c1"># 单词: 粗</span>
+<span class="c1"># 反义词:</span>
+
+<span class="c1"># 调用模型</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="p">(</span><span class="n">prompt_text</span><span class="p">))</span>
+
+<span class="c1"># 细</span>
+</pre></div>
+</div>
+<hr/>
+<h3 id="sec-6">2.3 Chains(链)</h3>
+<p>在LangChain中，Chains描述了将LLM与其他组件结合起来完成一个应用程序的过程.</p>
+<p>针对上一小节的提示模版例子，zero-shot里面，我们可以用链来连接提示模版组件和模型，进而可以实现代码的更改：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">langchain</span><span class="w"> </span><span class="kn">import</span> <span class="n">PromptTemplate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_community.llms</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ollama</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.chains</span><span class="w"> </span><span class="kn">import</span> <span class="n">LLMChain</span>
+
+<span class="c1"># 定义模板</span>
+<span class="n">template</span> <span class="o">=</span> <span class="s2">"我的邻居姓</span><span class="si">{lastname}</span><span class="s2">，他生了个儿子，给他儿子起个名字"</span>
+
+<span class="n">prompt</span> <span class="o">=</span> <span class="n">PromptTemplate</span><span class="p">(</span>
+    <span class="n">input_variables</span><span class="o">=</span><span class="p">[</span><span class="s2">"lastname"</span><span class="p">],</span>
+    <span class="n">template</span><span class="o">=</span><span class="n">template</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">llm</span> <span class="o">=</span> <span class="n">Ollama</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"qwen2.5:7b"</span><span class="p">)</span>
+
+<span class="n">chain</span> <span class="o">=</span> <span class="n">LLMChain</span><span class="p">(</span><span class="n">llm</span> <span class="o">=</span> <span class="n">llm</span><span class="p">,</span>
+                  <span class="n">prompt</span> <span class="o">=</span> <span class="n">prompt</span><span class="p">)</span>
+<span class="c1"># 执行链</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">"王"</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>如果你想将第一个模型输出的结果，直接作为第二个模型的输入，还可以使用LangChain的SimpleSequentialChain, 代码如下：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">langchain</span><span class="w"> </span><span class="kn">import</span> <span class="n">PromptTemplate</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_community.llms</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ollama</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.chains</span><span class="w"> </span><span class="kn">import</span> <span class="n">LLMChain</span><span class="p">,</span> <span class="n">SimpleSequentialChain</span>
+
+<span class="c1"># 创建第一条链</span>
+<span class="n">template</span> <span class="o">=</span> <span class="s2">"我的邻居姓</span><span class="si">{lastname}</span><span class="s2">，他生了个儿子，给他儿子起个名字"</span>
+
+<span class="n">first_prompt</span> <span class="o">=</span> <span class="n">PromptTemplate</span><span class="p">(</span>
+    <span class="n">input_variables</span><span class="o">=</span><span class="p">[</span><span class="s2">"lastname"</span><span class="p">],</span>
+    <span class="n">template</span><span class="o">=</span><span class="n">template</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">llm</span> <span class="o">=</span> <span class="n">Ollama</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"qwen2.5:7b"</span><span class="p">)</span>
+
+
+<span class="n">first_chain</span> <span class="o">=</span> <span class="n">LLMChain</span><span class="p">(</span><span class="n">llm</span> <span class="o">=</span> <span class="n">llm</span><span class="p">,</span> <span class="n">prompt</span> <span class="o">=</span> <span class="n">first_prompt</span><span class="p">)</span>
+
+<span class="c1"># 创建第二条链</span>
+<span class="n">second_prompt</span> <span class="o">=</span> <span class="n">PromptTemplate</span><span class="p">(</span>
+    <span class="n">input_variables</span><span class="o">=</span><span class="p">[</span><span class="s2">"child_name"</span><span class="p">],</span>
+    <span class="n">template</span><span class="o">=</span><span class="s2">"邻居的儿子名字叫</span><span class="si">{child_name}</span><span class="s2">，给他起一个小名"</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">second_chain</span> <span class="o">=</span> <span class="n">LLMChain</span><span class="p">(</span><span class="n">llm</span><span class="o">=</span><span class="n">llm</span><span class="p">,</span> <span class="n">prompt</span><span class="o">=</span><span class="n">second_prompt</span><span class="p">)</span>
+
+
+<span class="c1"># 链接两条链</span>
+<span class="n">overall_chain</span> <span class="o">=</span> <span class="n">SimpleSequentialChain</span><span class="p">(</span><span class="n">chains</span><span class="o">=</span><span class="p">[</span><span class="n">first_chain</span><span class="p">,</span> <span class="n">second_chain</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">overall_chain</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'*'</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+<span class="c1"># 执行链，只需要传入第一个参数</span>
+<span class="n">catchphrase</span> <span class="o">=</span> <span class="n">overall_chain</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="s2">"王"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">catchphrase</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-7">2.4 Agents (代理)</h3>
+<p>Agents 也就是代理，它的核心思想是利用一个语言模型来选择一系列要执行的动作。</p>
+<p>在 LangChain 中 Agents 的作用就是根据用户的需求，来访问一些第三方工具(比如：搜索引擎或者数据库)，进而来解决相关需求问题。</p>
+<p>为什么要借助第三方库？</p>
+<ul>
+<li>因为大模型虽然非常强大，但是也具备一定的局限性，比如不能回答实时信息、处理数学逻辑问题仍然非常的初级等等。因此，可以借助第三方工具来辅助大模型的应用。</li>
+</ul>
+<div align="center"><img alt="EduRAG 项目配图" decoding="async" loading="lazy" src="../assets/img/project02-03/figure-e92cd1fc9df3.png"/></div>
+<hr/>
+<p>几个重要的概念：</p>
+<ul>
+<li>Agent代理：<ul>
+<li>制定计划和思考下一步需要采取的行动。</li>
+<li>负责控制整段代码的逻辑和执行，代理暴露了一个接口，用来接收用户输入。</li>
+<li>LangChain 提供了不同类型的代理（以其中三种举例）:<ul>
+<li>zero-shot-react-description: 利用 ReAct 框架根据工具的描述来决定使用哪个工具，可以使用多个工具，但需要为每个工具提供描述信息。工具的选择单纯依靠工具的描述信息。</li>
+<li>structured-chat-zero-shot-react-description：相较于单一字符串作为输入的代理，该类型的代理可以通过工具的参数schema创建结构化的动作输入。</li>
+<li>conversational-react-description：这类代理专为对话场景设计，使用具有对话性的提示词，利用 ReAct 框架选择工具，并利用记忆功能来保存对话历史。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Tool工具：<ul>
+<li>解决问题的工具</li>
+<li>第三方服务的集成，例如计算、网络(谷歌、bing)、代码执行等等</li>
+</ul>
+</li>
+</ul>
+<hr/>
+<p>现在我们实现一个使用代理的例子：假设我们想 """解以下方程：3x + 4(x + 2) - 84 = y; 其中x为3，请问y是多少？"""？我们可以使用代理工具，让Agents选择执行。代码如下：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w">  </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.agents</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_tools</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.agents</span><span class="w"> </span><span class="kn">import</span> <span class="n">initialize_agent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.agents</span><span class="w"> </span><span class="kn">import</span> <span class="n">AgentType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_community.llms</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ollama</span>
+
+<span class="c1">#  实例化大模型</span>
+<span class="n">llm</span> <span class="o">=</span> <span class="n">Ollama</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"qwen2.5:7b"</span><span class="p">)</span>
+
+<span class="c1">#  设置工具</span>
+<span class="c1"># "serpapi"实时联网搜素工具、"math": 数学计算的工具</span>
+<span class="c1"># tools = load_tools(["serpapi", "llm-math"], llm=llm)</span>
+<span class="n">tools</span> <span class="o">=</span> <span class="n">load_tools</span><span class="p">([</span><span class="s2">"llm-math"</span><span class="p">],</span> <span class="n">llm</span><span class="o">=</span><span class="n">llm</span><span class="p">)</span>
+
+<span class="c1"># 实例化代理Agent:返回 AgentExecutor 类型的实例</span>
+<span class="n">agent</span> <span class="o">=</span> <span class="n">initialize_agent</span><span class="p">(</span><span class="n">tools</span><span class="p">,</span> <span class="n">llm</span><span class="p">,</span> <span class="n">agent</span><span class="o">=</span><span class="n">AgentType</span><span class="o">.</span><span class="n">ZERO_SHOT_REACT_DESCRIPTION</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">'agent'</span><span class="p">,</span> <span class="n">agent</span><span class="p">)</span>
+<span class="c1"># 准备提示词</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_core.prompts</span><span class="w"> </span><span class="kn">import</span> <span class="n">PromptTemplate</span>
+<span class="n">prompt_template</span> <span class="o">=</span> <span class="s2">"""解以下方程：3x + 4(x + 2) - 84 = y; 其中x为3，请问y是多少？"""</span>
+<span class="n">prompt</span> <span class="o">=</span> <span class="n">PromptTemplate</span><span class="o">.</span><span class="n">from_template</span><span class="p">(</span><span class="n">prompt_template</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'prompt--&gt;'</span><span class="p">,</span> <span class="n">prompt</span><span class="p">)</span>
+
+<span class="c1"># 代理Agent工作</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+<blockquote>
+<p>注意，如果运行这个示例你要使用serpapi， 需要申请<code>serpapi</code> token，并且设置到环境变量<code>SERPAPI_API_KEY</code> ，然后安装依赖包<code>google-search-results</code> </p>
+</blockquote>
+<p>查询所有工具的名称</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.agents</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_all_tool_names</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">get_all_tool_names</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+<span class="c1"># ['python_repl', 'requests', 'requests_get', 'requests_post', 'requests_patch', 'requests_put', 'requests_delete', 'terminal', 'sleep', 'wolfram-alpha', 'google-search', 'google-search-results-json', 'searx-search-results-json', 'bing-search', 'metaphor-search', 'ddg-search', 'google-serper', 'google-scholar', 'google-serper-results-json', 'searchapi', 'searchapi-results-json', 'serpapi', 'dalle-image-generator', 'twilio', 'searx-search', 'wikipedia', 'arxiv', 'golden-query', 'pubmed', 'human', 'awslambda', 'sceneXplain', 'graphql', 'openweathermap-api', 'dataforseo-api-search', 'dataforseo-api-search-json', 'eleven_labs_text2speech', 'google_cloud_texttospeech', 'news-api', 'tmdb-api', 'podcast-api', 'memorize', 'llm-math', 'open-meteo-api']</span>
+</pre></div>
+</div>
+<p>LangChain支持的工具如下：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">工具</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">Bing Search</td>
+<td align="center">Bing搜索</td>
+</tr>
+<tr>
+<td align="center">Google Search</td>
+<td align="center">Google搜索</td>
+</tr>
+<tr>
+<td align="center">Google Serper API</td>
+<td align="center">一个从google搜索提取数据的API</td>
+</tr>
+<tr>
+<td align="center">Python REPL</td>
+<td align="center">执行python代码</td>
+</tr>
+<tr>
+<td align="center">Requests</td>
+<td align="center">执行python代码</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="sec-8">2.5 Memory</h3>
+<p>大模型本身不具备上下文的概念，它并不保存上次交互的内容，ChatGPT之所以能够和人正常沟通对话，因为它进行了一层封装，将历史记录回传给了模型。</p>
+<p>因此 LangChain 也提供了Memory组件, Memory分为两种类型：短期记忆和长期记忆。短期记忆一般指单一会话时传递数据，长期记忆则是处理多个会话时获取和更新信息。</p>
+<p>目前的Memory组件只需要考虑ChatMessageHistory。举例分析：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatMessageHistory</span>
+
+<span class="n">history</span> <span class="o">=</span> <span class="n">ChatMessageHistory</span><span class="p">()</span>
+<span class="n">history</span><span class="o">.</span><span class="n">add_user_message</span><span class="p">(</span><span class="s2">"在吗？"</span><span class="p">)</span>
+<span class="n">history</span><span class="o">.</span><span class="n">add_ai_message</span><span class="p">(</span><span class="s2">"有什么事?"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">messages</span><span class="p">)</span>
+<span class="c1">#打印结果：</span>
+<span class="sd">'''</span>
+<span class="sd">[HumanMessage(content='在吗？'), AIMessage(content='有什么事?')]</span>
+<span class="sd">'''</span>
+</pre></div>
+</div>
+<p>和 Qianfan结合，直接使用<code>ConversationChain</code>：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">langchain</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConversationChain</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_community.llms</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ollama</span>
+
+<span class="c1">#  实例化大模型</span>
+<span class="n">llm</span> <span class="o">=</span> <span class="n">Ollama</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"qwen2.5:7b"</span><span class="p">)</span>
+<span class="n">conversation</span> <span class="o">=</span> <span class="n">ConversationChain</span><span class="p">(</span><span class="n">llm</span><span class="o">=</span><span class="n">llm</span><span class="p">)</span>
+<span class="n">resut1</span> <span class="o">=</span> <span class="n">conversation</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="s2">"小明有1只猫"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">resut1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'*'</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+<span class="n">resut2</span> <span class="o">=</span> <span class="n">conversation</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="s2">"小刚有2只狗"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">resut2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'*'</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+<span class="n">resut3</span> <span class="o">=</span> <span class="n">conversation</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="s2">"小明和小刚一共有几只宠物?"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">resut3</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'*'</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+<span class="c1"># 打印结果：</span>
+<span class="sd">'''</span>
+<span class="sd">小明有一只猫，那这只猫叫什么名字呢？或者你想要告诉我一些关于小明和他猫咪的故事吗？</span>
+<span class="sd">********************************************************************************</span>
+<span class="sd">小刚家有两只狗，那这两位忠诚的小伙伴叫什么呢？还是说你可以分享一下小刚和他的狗狗们的趣事吗？比如他们一起做了些什么有趣的事情呢？</span>
+<span class="sd">********************************************************************************</span>
+<span class="sd">小明和小刚总共有3只宠物。小明有1只猫，小刚有2只狗。如果你愿意分享更多关于他们的故事或想知道一些有趣的事情，请随时告诉我！</span>
+<span class="sd">********************************************************************************</span>
+<span class="sd">'''</span>
+</pre></div>
+</div>
+<p>如果要像chatGPT一样，长期保存历史消息，，可以使用<code>messages_to_dict</code> 方法</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">ChatMessageHistory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">messages_from_dict</span><span class="p">,</span> <span class="n">messages_to_dict</span>
+
+<span class="n">history</span> <span class="o">=</span> <span class="n">ChatMessageHistory</span><span class="p">()</span>
+<span class="n">history</span><span class="o">.</span><span class="n">add_user_message</span><span class="p">(</span><span class="s2">"hi!"</span><span class="p">)</span>
+<span class="n">history</span><span class="o">.</span><span class="n">add_ai_message</span><span class="p">(</span><span class="s2">"whats up?"</span><span class="p">)</span>
+
+<span class="n">dicts</span> <span class="o">=</span> <span class="n">messages_to_dict</span><span class="p">(</span><span class="n">history</span><span class="o">.</span><span class="n">messages</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">dicts</span><span class="p">)</span>
+
+<span class="sd">'''</span>
+<span class="sd">[{'type': 'human', 'data': {'content': 'hi!', 'additional_kwargs': {}, 'type': 'human', 'example': False}}, {'type': 'ai', 'data': {'content': 'whats up?', 'additional_kwargs': {}, 'type': 'ai', 'example': False}}]</span>
+<span class="sd">'''</span>
+
+
+<span class="c1"># 读取历史消息</span>
+<span class="n">new_messages</span> <span class="o">=</span> <span class="n">messages_from_dict</span><span class="p">(</span><span class="n">dicts</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">new_messages</span><span class="p">)</span>
+<span class="c1">#[HumanMessage(content='hi!'), AIMessage(content='whats up?')]</span>
+</pre></div>
+</div>
+<h3 id="sec-9">2.6 Indexes (索引)</h3>
+<p>Indexes组件的目的是让LangChain具备处理文档处理的能力，包括：文档加载、检索等。注意，这里的文档不局限于txt、pdf等文本类内容，还涵盖email、区块链、视频等内容。</p>
+<p>Indexes组件主要包含类型：</p>
+<ul>
+<li>文档加载器</li>
+<li>文本分割器</li>
+<li>VectorStores</li>
+<li>检索器</li>
+</ul>
+<hr/>
+<h4>2.6.1 文档加载器</h4>
+<p>文档加载器主要基于<code>Unstructured</code> 包，<code>Unstructured</code> 是一个python包，可以把各种类型的文件转换成文本。</p>
+<p>文档加载器使用起来很简单，只需要引入相应的loader工具：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_community.document_loaders</span><span class="w"> </span><span class="kn">import</span> <span class="n">UnstructuredFileLoader</span>
+<span class="n">loader</span> <span class="o">=</span> <span class="n">UnstructuredFileLoader</span><span class="p">(</span><span class="s1">'衣服属性.txt'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf8'</span><span class="p">)</span>
+<span class="n">docs</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">))</span>
+<span class="n">first_01</span> <span class="o">=</span> <span class="n">docs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">page_content</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">first_01</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'*'</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_community.document_loaders</span><span class="w"> </span><span class="kn">import</span> <span class="n">TextLoader</span>
+<span class="n">loader</span> <span class="o">=</span> <span class="n">TextLoader</span><span class="p">(</span><span class="s1">'衣服属性.txt'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf8'</span><span class="p">)</span>
+<span class="n">docs</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">))</span>
+<span class="n">first_01</span> <span class="o">=</span> <span class="n">docs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">page_content</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">first_01</span><span class="p">)</span>
+
+<span class="c1"># 打印结果：</span>
+<span class="sd">'''</span>
+<span class="sd">[Document(page_content='身高：160-170cm， 体重：90-115斤，建议尺码M。\n身高：165-175cm， 体重：115-135斤，建议尺码L。\n身高：170-178cm， 体重：130-150斤，建议尺码XL。\n身高：175-182cm， 体重：145-165斤，建议尺码2XL。\n身高：178-185cm， 体重：160-180斤，建议尺码3XL。\n身高：180-190cm， 体重：180-210斤，建议尺码4XL。\n面料分类：其他\n图案：纯色\n领型：翻领\n衣门襟：单排扣\n颜色：黑色 卡其色 粉色 杏色\n袖型：收口袖\n适用季节：冬季\n袖长：长袖\n厚薄：厚款\n适用场景：其他休闲\n衣长：常规款\n版型：宽松型\n款式细节：假两件\n工艺处理：免烫处理\n适用对象：青年\n面料功能：保暖\n穿搭方式：外穿\n销售渠道类型：纯电商(只在线上销售)\n材质成分：棉100%', metadata={'source': '衣服属性.txt'})]</span>
+<span class="sd">1</span>
+<span class="sd">身高：1</span>
+<span class="sd">********************************************************************************</span>
+<span class="sd">[Document(page_content='身高：160-170cm， 体重：90-115斤，建议尺码M。\n\n身高：165-175cm， 体重：115-135斤，建议尺码L。\n\n身高：170-178cm， 体重：130-150斤，建议尺码XL。\n\n身高：175-182cm， 体重：145-165斤，建议尺码2XL。\n\n身高：178-185cm， 体重：160-180斤，建议尺码3XL。\n\n身高：180-190cm， 体重：180-210斤，建议尺码4XL。\n\n面料分类：其他\n\n图案：纯色\n\n领型：翻领\n\n衣门襟：单排扣\n\n颜色：黑色 卡其色 粉色 杏色\n\n袖型：收口袖\n\n适用季节：冬季\n\n袖长：长袖\n\n厚薄：厚款\n\n适用场景：其他休闲\n\n衣长：常规款\n\n版型：宽松型\n\n款式细节：假两件\n\n工艺处理：免烫处理\n\n适用对象：青年\n\n面料功能：保暖\n\n穿搭方式：外穿\n\n销售渠道类型：纯电商(只在线上销售)\n\n材质成分：棉100%', metadata={'source': '衣服属性.txt'})]</span>
+<span class="sd">1</span>
+<span class="sd">身高：1</span>
+<span class="sd">'''</span>
+</pre></div>
+</div>
+<p>LangChain支持的文档加载器 (部分)：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">文档加载器</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">CSV</td>
+<td align="center">CSV问价</td>
+</tr>
+<tr>
+<td align="center">JSON Files</td>
+<td align="center">加载JSON文件</td>
+</tr>
+<tr>
+<td align="center">Jupyter Notebook</td>
+<td align="center">加载notebook文件</td>
+</tr>
+<tr>
+<td align="center">Markdown</td>
+<td align="center">加载markdown文件</td>
+</tr>
+<tr>
+<td align="center">Microsoft PowerPoint</td>
+<td align="center">加载ppt文件</td>
+</tr>
+<tr>
+<td align="center">PDF</td>
+<td align="center">加载pdf文件</td>
+</tr>
+<tr>
+<td align="center">Images</td>
+<td align="center">加载图片</td>
+</tr>
+<tr>
+<td align="center">File Directory</td>
+<td align="center">加载目录下所有文件</td>
+</tr>
+<tr>
+<td align="center">HTML</td>
+<td align="center">网页</td>
+</tr>
+</tbody>
+</table></div>
+<h4>2.6.2 文档分割器</h4>
+<p>由于模型对输入的字符长度有限制，我们在碰到很长的文本时，需要把文本分割成多个小的文本片段。</p>
+<p>文本分割最简单的方式是按照字符长度进行分割，但是这会带来很多问题，比如说如果文本是一段代码，一个函数被分割到两段之后就成了没有意义的字符，所以整体的原则是把语义相关的文本片段放在一起。</p>
+<p>LangChain中最基本的文本分割器是<code>CharacterTextSplitter</code> ，它按照指定的分隔符（默认“\n\n”）进行分割，并且考虑文本片段的最大长度。我们看个例子：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.text_splitter</span><span class="w"> </span><span class="kn">import</span> <span class="n">CharacterTextSplitter</span>
+
+
+<span class="n">text_splitter</span> <span class="o">=</span> <span class="n">CharacterTextSplitter</span><span class="p">(</span>
+    <span class="n">separator</span> <span class="o">=</span> <span class="s2">" "</span><span class="p">,</span> <span class="c1"># 空格分割，但是空格也属于字符</span>
+    <span class="n">chunk_size</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="n">chunk_overlap</span>  <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="c1"># 一句分割</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">text_splitter</span><span class="o">.</span><span class="n">split_text</span><span class="p">(</span><span class="s2">"a b c d e f"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># ['a b c', 'd e f']</span>
+
+<span class="c1"># 多句话分割（文档分割）</span>
+<span class="n">texts</span> <span class="o">=</span> <span class="n">text_splitter</span><span class="o">.</span><span class="n">create_documents</span><span class="p">([</span><span class="s2">"a b c d e f"</span><span class="p">,</span> <span class="s2">"e f g h"</span><span class="p">],</span> <span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>
+<span class="c1"># [Document(page_content='a b c'), Document(page_content='d e f'), Document(page_content='e f g'), Document(page_content='h')]</span>
+</pre></div>
+</div>
+<p>除了CharacterTextSplitter分割器，LangChain还支持其他文档分割器 (部分)：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">文档加载器</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">LatexTextSplitter</td>
+<td align="center">沿着Latex标题、标题、枚举等分割文本。</td>
+</tr>
+<tr>
+<td align="center">MarkdownTextSplitter</td>
+<td align="center">沿着Markdown的标题、代码块或水平规则来分割文本。</td>
+</tr>
+<tr>
+<td align="center">TokenTextSplitter</td>
+<td align="center">根据openAI的token数进行分割</td>
+</tr>
+<tr>
+<td align="center">PythonCodeTextSplitter</td>
+<td align="center">沿着Python类和方法的定义分割文本。</td>
+</tr>
+</tbody>
+</table></div>
+<h4>2.6.3 VectorStores</h4>
+<p>VectorStores是一种特殊类型的数据库，它的作用是存储由嵌入创建的向量，提供相似查询等功能。我们使用其中一个<code>Chroma</code> 组件<code>pip install chromadb</code>作为例子：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">langchain_community.embeddings</span><span class="w"> </span><span class="kn">import</span> <span class="n">OllamaEmbeddings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.text_splitter</span><span class="w"> </span><span class="kn">import</span> <span class="n">CharacterTextSplitter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_community.vectorstores</span><span class="w"> </span><span class="kn">import</span> <span class="n">Chroma</span>
+
+<span class="c1"># pku.txt内容：&lt;https://www.pku.edu.cn/about.html&gt;</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">'./pku.txt'</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">state_of_the_union</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="n">text_splitter</span> <span class="o">=</span> <span class="n">CharacterTextSplitter</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">chunk_overlap</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">texts</span> <span class="o">=</span> <span class="n">text_splitter</span><span class="o">.</span><span class="n">split_text</span><span class="p">(</span><span class="n">state_of_the_union</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>
+
+<span class="n">embeddings</span> <span class="o">=</span> <span class="n">OllamaEmbeddings</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"mxbai-embed-large"</span><span class="p">)</span>
+
+<span class="n">docsearch</span> <span class="o">=</span> <span class="n">Chroma</span><span class="o">.</span><span class="n">from_texts</span><span class="p">(</span><span class="n">texts</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">)</span>
+
+<span class="n">query</span> <span class="o">=</span> <span class="s2">"1937年北京大学发生了什么？"</span>
+<span class="n">docs</span> <span class="o">=</span> <span class="n">docsearch</span><span class="o">.</span><span class="n">similarity_search</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+<span class="sd">'''</span>
+<span class="sd">[Document(metadata={}, page_content='1937年卢沟桥事变后，北京大学与清华大学、南开大学南迁长沙，共同组成国立长沙临时大学。1938年，临时大学又西迁昆明，更名为国立西南联合大学。抗日战争胜利后，北京大学于1946年10月在北平复员。'), Document(metadata={}, page_content='1917年，著名教育家蔡元培就任北京大学校长，他“循思想自由原则，取兼容并包主义”，对北京大学进行了卓有成效的改革，促进了思想解放和学术繁荣。陈独秀、李大钊、毛泽东以及鲁迅、胡适、李四光等一批杰出人士都曾在北京大学任教或任职。'), Document(metadata={}, page_content='北京大学创办于1898年，是戊戌变法的产物，也是中华民族救亡图存、兴学图强的结果，初名京师大学堂，是中国近现代第一所国立综合性大学，辛亥革命后，于1912年改为现名。'), Document(metadata={}, page_content='在悠久的文明历程中，古代中国曾创立太学、国子学、国子监等国家最高学府，在中国和世界教育史上具有重要影响。北京大学“上承太学正统，下立大学祖庭”，既是中华文脉和教育传统的传承者，也标志着中国现代高等教育的开端。其创办之初也是国家最高教育行政机关，对建立中国现代学制作出重要历史贡献。')]</span>
+
+<span class="sd">'''</span>
+</pre></div>
+</div>
+<p>LangChain支持的VectorStore如下：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th align="center">VectorStore</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">Chroma</td>
+<td align="center">一个开源嵌入式数据库</td>
+</tr>
+<tr>
+<td align="center">ElasticSearch</td>
+<td align="center">ElasticSearch</td>
+</tr>
+<tr>
+<td align="center">Milvus</td>
+<td align="center">用于存储、索引和管理由深度神经网络和其他机器学习（ML）模型产生的大量嵌入向量的数据库</td>
+</tr>
+<tr>
+<td align="center">Redis</td>
+<td align="center">基于redis的检索器</td>
+</tr>
+<tr>
+<td align="center">FAISS</td>
+<td align="center">Facebook AI相似性搜索服务</td>
+</tr>
+<tr>
+<td align="center">Pinecone</td>
+<td align="center">一个具有广泛功能的向量数据库</td>
+</tr>
+</tbody>
+</table></div>
+<h4>2.6.4 检索器</h4>
+<p>检索器是一种便于模型查询的存储数据的方式，LangChain约定检索器组件至少有一个方法<code>get_relevant_texts</code>，这个方法接收查询字符串，返回一组文档。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.document_loaders</span><span class="w"> </span><span class="kn">import</span> <span class="n">TextLoader</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.text_splitter</span><span class="w"> </span><span class="kn">import</span> <span class="n">CharacterTextSplitter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_community.vectorstores</span><span class="w"> </span><span class="kn">import</span> <span class="n">FAISS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain_community.embeddings</span><span class="w"> </span><span class="kn">import</span> <span class="n">OllamaEmbeddings</span>
+
+<span class="n">loader</span> <span class="o">=</span> <span class="n">TextLoader</span><span class="p">(</span><span class="s1">'./pku.txt'</span><span class="p">)</span>
+<span class="n">documents</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+<span class="n">text_splitter</span> <span class="o">=</span> <span class="n">CharacterTextSplitter</span><span class="p">(</span><span class="n">chunk_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">chunk_overlap</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">texts</span> <span class="o">=</span> <span class="n">text_splitter</span><span class="o">.</span><span class="n">split_documents</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span>
+
+<span class="n">embeddings</span> <span class="o">=</span> <span class="n">OllamaEmbeddings</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="s2">"mxbai-embed-large"</span><span class="p">)</span>
+
+<span class="n">db</span> <span class="o">=</span> <span class="n">FAISS</span><span class="o">.</span><span class="n">from_documents</span><span class="p">(</span><span class="n">texts</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">)</span>
+<span class="n">retriever</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">as_retriever</span><span class="p">(</span><span class="n">search_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">'k'</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span>
+<span class="n">docs</span> <span class="o">=</span> <span class="n">retriever</span><span class="o">.</span><span class="n">get_relevant_documents</span><span class="p">(</span><span class="s2">"北京大学什么时候成立的"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+
+<span class="c1">#打印结果：</span>
+<span class="sd">'''</span>
+<span class="sd">[Document(metadata={'source': './pku.txt'}, page_content='北京大学创办于1898年，是戊戌变法的产物，也是中华民族救亡图存、兴学图强的结果，初名京师大学堂，是中国近现代第一所国立综合性大学，辛亥革命后，于1912年改为现名。')]</span>
+<span class="sd">'''</span>
+</pre></div>
+</div>
+<p>LangChain支持的检索器组件如下：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>检索器</th>
+<th>介绍</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Azure Cognitive Search Retriever</td>
+<td>Amazon ACS检索服务</td>
+</tr>
+<tr>
+<td>ChatGPT Plugin Retriever</td>
+<td>ChatGPT检索插件</td>
+</tr>
+<tr>
+<td>Databerry</td>
+<td>Databerry检索</td>
+</tr>
+<tr>
+<td>ElasticSearch BM25</td>
+<td>ElasticSearch检索器</td>
+</tr>
+<tr>
+<td>Metal</td>
+<td>Metal检索器</td>
+</tr>
+<tr>
+<td>Pinecone Hybrid Search</td>
+<td>Pinecone检索服务</td>
+</tr>
+<tr>
+<td>SVM Retriever</td>
+<td>SVM检索器</td>
+</tr>
+<tr>
+<td>TF-IDF Retriever</td>
+<td>TF-IDF检索器</td>
+</tr>
+<tr>
+<td>VectorStore Retriever</td>
+<td>VectorStore检索器</td>
+</tr>
+<tr>
+<td>Vespa retriever</td>
+<td>一个支持结构化文本和向量搜索的平台</td>
+</tr>
+<tr>
+<td>Weaviate Hybrid Search</td>
+<td>一个开源的向量搜索引擎</td>
+</tr>
+<tr>
+<td>Wikipedia</td>
+<td>支持wikipedia内容检索</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="sec-10">3 LangChain使用场景</h2>
+<ul>
+<li>个人助手</li>
+<li>基于文档的问答系统</li>
+<li>聊天机器人</li>
+<li>Tabular数据查询</li>
+<li>API交互</li>
+<li>信息提取</li>
+<li>文档总结</li>
+</ul>
+<hr/>
+<h2 id="sec-11">4 本章小结</h2>
+<p>本章节主要对LangChain框架基础知识进行了介绍，让我们对LangChain有了一个初步认识，了解了LangChain的使用场景。</p>
+<div class="done-bar"><button class="mark-done-btn" data-key="project02-03" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="project02-02.html"><div class="dir">← 上一篇</div><div class="name">🦙 Ollama：本地大模型运行与调用</div></a><a class="next" href="project02-04.html"><div class="dir">下一篇 →</div><div class="name">🧊 Milvus：向量数据库原理与操作</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv3" href="#sec-1">学习目标</a><a class="lv2" href="#sec-2">1 什么是LangChain</a><a class="lv2" href="#sec-3">2 LangChain主要组件</a><a class="lv3" href="#sec-4">2.1 Models</a><a class="lv3" href="#sec-5">2.2 Prompts</a><a class="lv3" href="#sec-6">2.3 Chains(链)</a><a class="lv3" href="#sec-7">2.4 Agents (代理)</a><a class="lv3" href="#sec-8">2.5 Memory</a><a class="lv3" href="#sec-9">2.6 Indexes (索引)</a><a class="lv2" href="#sec-10">3 LangChain使用场景</a><a class="lv2" href="#sec-11">4 本章小结</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

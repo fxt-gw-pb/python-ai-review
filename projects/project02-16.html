@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>检索策略选择与 RAG 核心逻辑 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#projects" class="active">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">32</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">33</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">34</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">35</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">39</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">40</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">42</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">21</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">22</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">23</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">24</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">25</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">26</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">27</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">28</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">29</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">30</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project active" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="project02.html">EduRAG：企业私有知识智能问答</a> / 第 16 章</div>
+<h1>🛣️ 检索策略选择与 RAG 核心逻辑</h1>
+<div class="chips"><span class="chip green">🏷️ 检索路由</span><span class="chip green">🏷️ RAG Core</span><span class="chip green">🏷️ 上下文构造</span><a class="chip" href="project02.html">🚀 返回项目总览</a></div>
+</div>
+<nav class="project-chapter-nav" aria-label="项目章节"><div class="project-nav-label">项目进度 · 共 26 章</div><div class="project-steps"><a class="project-step" href="project02-01.html"><span>01</span>RAG 项目背景、原理与工程结构</a><a class="project-step" href="project02-02.html"><span>02</span>Ollama：本地大模型运行与调用</a><a class="project-step" href="project02-03.html"><span>03</span>LangChain：模型、Prompt、链与 Agent</a><a class="project-step" href="project02-04.html"><span>04</span>Milvus：向量数据库原理与操作</a><a class="project-step" href="project02-05.html"><span>05</span>Docker 部署 Milvus 与 Redis</a><a class="project-step" href="project02-06.html"><span>06</span>Python Logging：项目日志体系</a><a class="project-step" href="project02-07.html"><span>07</span>BM25：稀疏检索原理与实现</a><a class="project-step" href="project02-08.html"><span>08</span>Redis：缓存数据库与 Python 操作</a><a class="project-step" href="project02-09.html"><span>09</span>MySQL FAQ 问答系统</a><a class="project-step" href="project02-10.html"><span>10</span>EduRAG 整体架构与工作流程</a><a class="project-step" href="project02-11.html"><span>11</span>基础模块：配置管理与日志</a><a class="project-step" href="project02-12.html"><span>12</span>文档处理与知识库加载</a><a class="project-step" href="project02-13.html"><span>13</span>自定义文档解析与文本切分</a><a class="project-step" href="project02-14.html"><span>14</span>向量存储、混合检索与重排序</a><a class="project-step" href="project02-15.html"><span>15</span>Prompt 管理与 Query 意图识别</a><a class="project-step active" href="project02-16.html"><span>16</span>检索策略选择与 RAG 核心逻辑</a><a class="project-step" href="project02-17.html"><span>17</span>RAG Query 改写策略</a><a class="project-step" href="project02-18.html"><span>18</span>知识数据集生成与优化</a><a class="project-step" href="project02-19.html"><span>19</span>EduRAG 命令行运行与调试</a><a class="project-step" href="project02-20.html"><span>20</span>RAG 评估框架与指标</a><a class="project-step" href="project02-21.html"><span>21</span>实现 EduRAG 的 RAGAS 评估</a><a class="project-step" href="project02-22.html"><span>22</span>构造 RAG 评估数据集</a><a class="project-step" href="project02-23.html"><span>23</span>融合 FAQ 与知识库查询</a><a class="project-step" href="project02-24.html"><span>24</span>增强型融合查询与会话历史</a><a class="project-step" href="project02-25.html"><span>25</span>FastAPI 接口与 WebUI 应用</a><a class="project-step" href="project02-26.html"><span>26</span>FastAPI 与 Flask 选型</a></div></nav><div class="callout tip course-note"><span class="ico">🧭</span><p><strong>工程实践提示：</strong>示例中的模型地址、数据库账号和密钥均应通过环境变量或独立配置文件注入；部署前还需补充权限控制、输入校验、超时重试、日志脱敏、来源引用与离线评估。</p></div>
+
+<h2 id="sec-1">学习目标</h2>
+<ul>
+<li>掌握如何根据查询特点动态选择最优策略。</li>
+<li>理解RAG系统如何整合查询分类、检索和生成阶段。</li>
+<li>能够应用策略选择和RAG逻辑，构建一个从输入处理到答案生成的高效系统。</li>
+</ul>
+<hr/>
+<p><code>strategy_selector.py</code>和<code>rag_system.py</code>是EduRAG系统中<code>core</code>模块的核心组件，分别负责检索策略的选择和RAG系统的整体逻辑整合。<code>strategy_selector.py</code>通过大语言模型动态选择适合用户查询的检索策略，而<code>rag_system.py</code>则将前几章介绍的模块（如向量存储、Prompt管理和查询分类）整合起来，完成从查询输入到答案生成的完整流程。这两个模块共同确保系统能够高效、准确地响应用户的各种查询。</p>
+<h2 id="sec-2">6.1 检索策略选择</h2>
+<h3 id="sec-3">功能概述</h3>
+<p><code>strategy_selector.py</code>定义了<code>StrategySelector</code>类，通过调用大语言模型根据用户查询选择最合适的检索策略。支持的策略包括直接检索、HyDE（假设问题检索）、子查询检索和回溯问题检索，旨在优化检索阶段的输入处理。</p>
+<h3 id="sec-4">代码示例</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># core/strategy_selector.py 源码</span>
+<span class="c1"># 导入 LangChain 提示模板</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">langchain.prompts</span><span class="w"> </span><span class="kn">import</span> <span class="n">PromptTemplate</span>
+<span class="c1"># 导入日志和配置</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">base</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span><span class="p">,</span> <span class="n">Config</span>
+<span class="c1"># 导入 OpenAI</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">openai</span><span class="w"> </span><span class="kn">import</span> <span class="n">OpenAI</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">StrategySelector</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># 初始化 OpenAI 客户端</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">OpenAI</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">Config</span><span class="p">()</span><span class="o">.</span><span class="n">DASHSCOPE_API_KEY</span><span class="p">,</span>
+                             <span class="n">base_url</span><span class="o">=</span><span class="n">Config</span><span class="p">()</span><span class="o">.</span><span class="n">DASHSCOPE_BASE_URL</span><span class="p">)</span>
+        <span class="c1"># 获取策略选择提示模板</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strategy_prompt_template</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_strategy_prompt</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">call_dashscope</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt</span><span class="p">):</span>
+        <span class="c1"># 调用 DashScope API</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># 创建聊天完成请求</span>
+            <span class="n">completion</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="n">Config</span><span class="p">()</span><span class="o">.</span><span class="n">LLM_MODEL</span><span class="p">,</span>
+                <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
+                    <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"system"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="s2">"你是一个有用的助手。"</span><span class="p">},</span>
+                    <span class="p">{</span><span class="s2">"role"</span><span class="p">:</span> <span class="s2">"user"</span><span class="p">,</span> <span class="s2">"content"</span><span class="p">:</span> <span class="n">prompt</span><span class="p">},</span>
+                <span class="p">],</span>
+                <span class="n">temperature</span><span class="o">=</span><span class="mf">0.1</span>
+            <span class="p">)</span>
+            <span class="c1"># 返回完成结果</span>
+            <span class="k">return</span> <span class="n">completion</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span> <span class="k">if</span> <span class="n">completion</span><span class="o">.</span><span class="n">choices</span> <span class="k">else</span> <span class="s2">"直接检索"</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># 记录 API 调用失败</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"DashScope API 调用失败: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="c1"># 默认返回直接检索</span>
+            <span class="k">return</span> <span class="s2">"直接检索"</span>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_strategy_prompt</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1">#   定义私有方法，获取策略选择 Prompt 模板</span>
+        <span class="k">return</span> <span class="n">PromptTemplate</span><span class="p">(</span>
+            <span class="n">template</span><span class="o">=</span><span class="s2">"""</span>
+<span class="s2">            你是一个智能助手，负责分析用户查询 </span><span class="si">{query}</span><span class="s2">，并从以下四种检索增强策略中选择一个最适合的策略，直接返回策略名称，不需要解释过程。</span>
+
+<span class="s2">            以下是几种检索增强策略及其适用场景：</span>
+
+<span class="s2">            1.  **直接检索：**</span>
+<span class="s2">                * 描述：对用户查询直接进行检索，不进行任何增强处理。</span>
+<span class="s2">                * 适用场景：适用于查询意图明确，需要从知识库中检索**特定信息**的问题，例如：</span>
+<span class="s2">                    * 示例：</span>
+<span class="s2">                        * 查询：AI 学科学费是多少？</span>
+<span class="s2">                        * 策略：直接检索</span>
+<span class="s2">                    * 查询：JAVA的课程大纲是什么？</span>
+<span class="s2">                        * 策略：直接检索</span>
+<span class="s2">            2.  **假设问题检索（HyDE）：**</span>
+<span class="s2">                * 描述：使用 LLM 生成一个假设的答案，然后基于假设答案进行检索。</span>
+<span class="s2">                * 适用场景：适用于查询较为抽象，直接检索效果不佳的问题，例如：</span>
+<span class="s2">                    * 示例：</span>
+<span class="s2">                        * 查询：人工智能在教育领域的应用有哪些？</span>
+<span class="s2">                        * 策略：假设问题检索</span>
+<span class="s2">            3.  **子查询检索：**</span>
+<span class="s2">                * 描述：将复杂的用户查询拆分为多个简单的子查询，分别检索并合并结果。</span>
+<span class="s2">                * 适用场景：适用于查询涉及多个实体或方面，需要分别检索不同信息的问题，例如：</span>
+<span class="s2">                    * 示例：</span>
+<span class="s2">                        * 查询：比较 Milvus 和 Zilliz Cloud 的优缺点。</span>
+<span class="s2">                        * 策略：子查询检索</span>
+<span class="s2">            4.  **回溯问题检索：**</span>
+<span class="s2">                * 描述：将复杂的用户查询转化为更基础、更易于检索的问题，然后进行检索。</span>
+<span class="s2">                * 适用场景：适用于查询较为复杂，需要简化后才能有效检索的问题，例如：</span>
+<span class="s2">                    * 示例：</span>
+<span class="s2">                        * 查询：我有一个包含 100 亿条记录的数据集，想把它存储到 Milvus 中进行查询。可以吗？</span>
+<span class="s2">                        * 策略：回溯问题检索</span>
+
+<span class="s2">            根据用户查询 </span><span class="si">{query}</span><span class="s2">，直接返回最适合的策略名称，例如 "直接检索"。不要输出任何分析过程或其他内容。</span>
+<span class="s2">            """</span>
+            <span class="p">,</span>
+            <span class="n">input_variables</span><span class="o">=</span><span class="p">[</span><span class="s2">"query"</span><span class="p">],</span>
+        <span class="p">)</span>
+
+    <span class="c1">#   定义方法，选择检索策略</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">select_strategy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+        <span class="c1">#   调用 LLM 获取检索策略</span>
+        <span class="n">strategy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">call_dashscope</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">strategy_prompt_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"为查询 '</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">' 选择的检索策略：</span><span class="si">{</span><span class="n">strategy</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">strategy</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="n">ss</span> <span class="o">=</span> <span class="n">StrategySelector</span><span class="p">()</span>
+    <span class="n">ss</span><span class="o">.</span><span class="n">select_strategy</span><span class="p">(</span><span class="s1">'你好吗'</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-5">实现细节</h3>
+<ol>
+<li><strong><code>__init__</code></strong>：<ul>
+<li><strong>作用</strong>：初始化DashScope客户端和策略选择Prompt。</li>
+<li><strong>逻辑</strong>：连接大语言模型API，准备Prompt模板。</li>
+</ul>
+</li>
+<li><strong><code>call_dashscope</code></strong>：<ul>
+<li><strong>作用</strong>：封装DashScope API调用，处理异常并返回模型输出。</li>
+<li><strong>逻辑</strong>：确保API调用的鲁棒性，记录错误日志。</li>
+</ul>
+</li>
+<li><strong><code>_get_strategy_prompt</code></strong>：<ul>
+<li><strong>作用</strong>：定义用于策略选择的Prompt模板。</li>
+<li><strong>设计逻辑</strong>：简洁描述四种策略及其适用场景，要求模型直接返回策略名称。</li>
+</ul>
+</li>
+<li><strong><code>select_strategy</code></strong>：<ul>
+<li><strong>作用</strong>：根据查询调用模型选择策略并返回。</li>
+<li><strong>逻辑</strong>：记录选择的策略，便于调试。</li>
+</ul>
+</li>
+</ol>
+<h3 id="sec-6">说明</h3>
+<ul>
+<li><strong>动态选择</strong>：利用大语言模型的语义理解能力，灵活适应不同查询。</li>
+<li><strong>策略多样性</strong>：支持四种策略，覆盖常见查询场景。</li>
+<li><strong>效率</strong>：直接返回策略名称，避免冗余输出。</li>
+</ul>
+<hr/>
+<h2 id="sec-7">6.2 RAG核心逻辑</h2>
+<h3 id="sec-8">功能概述</h3>
+<p><code>rag_system.py</code>定义了<code>RAGSystem</code>类，整合系统的各个模块，完成从查询输入到答案生成的完整流程。它通过查询分类选择处理路径，利用检索策略优化文档检索，并结合上下文生成最终答案。</p>
+<h3 id="sec-9">代码示例</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># core/rag_system.py 源码</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">prompts</span><span class="w"> </span><span class="kn">import</span> <span class="n">RAGPrompts</span>
+<span class="c1">#   导入 time 模块，用于计算时间</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">base</span><span class="w"> </span><span class="kn">import</span> <span class="n">logger</span><span class="p">,</span> <span class="n">Config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">query_classifier</span><span class="w"> </span><span class="kn">import</span> <span class="n">QueryClassifier</span>  <span class="c1">#   导入查询分类器</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">strategy_selector</span><span class="w"> </span><span class="kn">import</span> <span class="n">StrategySelector</span>  <span class="c1">#   导入策略选择器</span>
+
+<span class="n">conf</span> <span class="o">=</span> <span class="n">Config</span><span class="p">()</span>
+
+<span class="c1">#   定义 RAGSystem 类，封装 RAG 系统的核心逻辑</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">RAGSystem</span><span class="p">:</span>
+    <span class="c1">#   初始化方法，设置 RAG 系统的基本参数</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vector_store</span><span class="p">,</span> <span class="n">llm</span><span class="p">):</span>
+        <span class="c1">#   设置向量数据库对象</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">vector_store</span> <span class="o">=</span> <span class="n">vector_store</span>
+        <span class="c1">#   设置大语言模型调用函数</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">llm</span> <span class="o">=</span> <span class="n">llm</span>
+        <span class="c1">#   获取 RAG 提示模板</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rag_prompt</span> <span class="o">=</span> <span class="n">RAGPrompts</span><span class="o">.</span><span class="n">rag_prompt</span><span class="p">()</span>
+        <span class="c1">#   初始化查询分类器</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">query_classifier</span> <span class="o">=</span> <span class="n">QueryClassifier</span><span class="p">(</span><span class="n">model_path</span><span class="o">=</span><span class="s1">'./core/bert_query_classifier'</span><span class="p">)</span>
+        <span class="c1">#   初始化策略选择器</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">strategy_selector</span> <span class="o">=</span> <span class="n">StrategySelector</span><span class="p">()</span>
+
+    <span class="c1">#   定义私有方法，使用假设文档进行检索（HyDE）</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_retrieve_with_hyde</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"使用 HyDE 策略进行检索 (查询: '</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">')"</span><span class="p">)</span>
+        <span class="c1">#   获取假设问题生成的 Prompt 模板</span>
+        <span class="n">hyde_prompt_template</span> <span class="o">=</span> <span class="n">RAGPrompts</span><span class="o">.</span><span class="n">hyde_prompt</span><span class="p">()</span> <span class="c1"># 使用 template 后缀区分</span>
+        <span class="c1">#   调用大语言模型生成假设答案</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">hypo_answer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">llm</span><span class="p">(</span><span class="n">hyde_prompt_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"HyDE 生成的假设答案: '</span><span class="si">{</span><span class="n">hypo_answer</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
+            <span class="c1">#   使用假设答案进行检索，并返回检索结果</span>
+            <span class="c1">#   注意：HyDE 通常只用于生成检索向量，不一定需要 rerank 这一步，但这里复用了</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_store</span><span class="o">.</span><span class="n">hybrid_search_with_rerank</span><span class="p">(</span>
+                <span class="n">hypo_answer</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">RETRIEVAL_K</span> <span class="c1"># 使用 K 而非 M</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"HyDE 策略执行失败: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+
+    <span class="c1">#   定义私有方法，使用子查询进行检索</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_retrieve_with_subqueries</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"使用子查询策略进行检索 (查询: '</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">')"</span><span class="p">)</span>
+        <span class="c1">#   获取子查询生成的 Prompt 模板</span>
+        <span class="n">subquery_prompt_template</span> <span class="o">=</span> <span class="n">RAGPrompts</span><span class="o">.</span><span class="n">subquery_prompt</span><span class="p">()</span> <span class="c1"># 使用 template 后缀区分</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1">#   调用大语言模型生成子查询列表</span>
+            <span class="n">subqueries_text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">llm</span><span class="p">(</span><span class="n">subquery_prompt_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">subqueries</span> <span class="o">=</span> <span class="p">[</span><span class="n">q</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">subqueries_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span> <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"生成的子查询: </span><span class="si">{</span><span class="n">subqueries</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">subqueries</span><span class="p">:</span>
+                 <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">"未能生成有效的子查询"</span><span class="p">)</span>
+                 <span class="k">return</span> <span class="p">[]</span>
+
+            <span class="c1">#   初始化空列表，用于存储所有子查询的检索结果</span>
+            <span class="n">all_docs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="c1">#   遍历每个子查询</span>
+            <span class="k">for</span> <span class="n">sub_q</span> <span class="ow">in</span> <span class="n">subqueries</span><span class="p">:</span>
+                <span class="c1">#   使用子查询进行检索，并将结果添加到列表中</span>
+                <span class="c1">#   这里对每个子查询都执行了 hybrid search + rerank，开销可能较大</span>
+                <span class="n">docs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_store</span><span class="o">.</span><span class="n">hybrid_search_with_rerank</span><span class="p">(</span>
+                    <span class="n">sub_q</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">RETRIEVAL_K</span> <span class="c1"># 使用 K</span>
+                <span class="p">)</span>
+                <span class="n">all_docs</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"子查询 '</span><span class="si">{</span><span class="n">sub_q</span><span class="si">}</span><span class="s2">' 检索到 </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span><span class="si">}</span><span class="s2"> 个文档"</span><span class="p">)</span>
+
+            <span class="c1">#   对所有检索结果进行去重 (基于对象内存地址，如果 Document 内容相同但对象不同则无法去重)</span>
+            <span class="c1">#   更可靠的去重方式是基于文档内容或 ID</span>
+            <span class="n">unique_docs_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">doc</span><span class="o">.</span><span class="n">page_content</span><span class="p">:</span> <span class="n">doc</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">all_docs</span><span class="p">}</span> <span class="c1"># 基于内容去重</span>
+            <span class="n">unique_docs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">unique_docs_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"所有子查询共检索到 </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_docs</span><span class="p">)</span><span class="si">}</span><span class="s2"> 个文档, 去重后剩 </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">unique_docs</span><span class="p">)</span><span class="si">}</span><span class="s2"> 个"</span><span class="p">)</span>
+            <span class="c1">#   返回去重后的文档，限制数量 (是否需要在此处限制? retrieve_and_merge 末尾会限制)</span>
+            <span class="c1"># return unique_docs[: Config.CANDIDATE_M]</span>
+            <span class="k">return</span> <span class="n">unique_docs</span> <span class="c1"># 返回所有唯一文档，让 retrieve_and_merge 处理数量</span>
+
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"子查询策略执行失败: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="c1">#   定义私有方法，使用回溯问题进行检索</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_retrieve_with_backtracking</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"使用回溯问题策略进行检索 (查询: '</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">')"</span><span class="p">)</span>
+        <span class="c1">#   获取回溯问题生成的 Prompt 模板</span>
+        <span class="n">backtrack_prompt_template</span> <span class="o">=</span> <span class="n">RAGPrompts</span><span class="o">.</span><span class="n">backtracking_prompt</span><span class="p">()</span> <span class="c1"># 使用 template 后缀区分</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1">#   调用大语言模型生成回溯问题</span>
+            <span class="n">simplified_query</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">llm</span><span class="p">(</span><span class="n">backtrack_prompt_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"生成的回溯问题: '</span><span class="si">{</span><span class="n">simplified_query</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
+            <span class="c1">#   使用回溯问题进行检索，并返回检索结果</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_store</span><span class="o">.</span><span class="n">hybrid_search_with_rerank</span><span class="p">(</span>
+                <span class="n">simplified_query</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">RETRIEVAL_K</span> <span class="c1"># 使用 K</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"回溯问题策略执行失败: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="c1">#   定义方法，检索并合并相关文档</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">retrieve_and_merge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">source_filter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>  <span class="c1">#   新增 strategy 参数</span>
+        <span class="c1">#   如果未指定检索策略，则使用策略选择器选择</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">strategy</span><span class="p">:</span>
+            <span class="n">strategy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy_selector</span><span class="o">.</span><span class="n">select_strategy</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+        <span class="c1">#   根据检索策略选择不同的检索方式</span>
+        <span class="n">ranked_sub_chunks</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># 初始化</span>
+        <span class="k">if</span> <span class="n">strategy</span> <span class="o">==</span> <span class="s2">"回溯问题检索"</span><span class="p">:</span>
+            <span class="n">ranked_sub_chunks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_retrieve_with_backtracking</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">strategy</span> <span class="o">==</span> <span class="s2">"子查询检索"</span><span class="p">:</span>
+            <span class="n">ranked_sub_chunks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_retrieve_with_subqueries</span><span class="p">(</span><span class="n">query</span><span class="p">)</span> <span class="c1"># 返回的是唯一文档列表</span>
+             <span class="c1"># 注意：子查询返回的是已 rerank 过的父文档或子块列表，后续合并逻辑可能需要调整</span>
+             <span class="c1"># 当前实现中，子查询返回的是初步检索（可能已rerank）的块，再进行合并</span>
+        <span class="k">elif</span> <span class="n">strategy</span> <span class="o">==</span> <span class="s2">"假设问题检索"</span><span class="p">:</span>
+            <span class="n">ranked_sub_chunks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_retrieve_with_hyde</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1">#   默认或“直接检索”</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"使用直接检索策略 (查询: '</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">')"</span><span class="p">)</span>
+            <span class="n">ranked_sub_chunks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">vector_store</span><span class="o">.</span><span class="n">hybrid_search_with_rerank</span><span class="p">(</span>
+                <span class="n">query</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">RETRIEVAL_K</span><span class="p">,</span> <span class="n">source_filter</span><span class="o">=</span><span class="n">source_filter</span>
+            <span class="p">)</span> <span class="c1"># 注意 hybrid_search_with_rerank 返回的是 rerank 后的父文档</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"策略 '</span><span class="si">{</span><span class="n">strategy</span><span class="si">}</span><span class="s2">' 检索到 </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ranked_sub_chunks</span><span class="p">)</span><span class="si">}</span><span class="s2"> 个候选文档 (可能已是父文档)"</span><span class="p">)</span>
+        <span class="n">final_context_docs</span> <span class="o">=</span> <span class="n">ranked_sub_chunks</span><span class="p">[:</span><span class="n">conf</span><span class="o">.</span><span class="n">CANDIDATE_M</span><span class="p">]</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"最终选取 </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">final_context_docs</span><span class="p">)</span><span class="si">}</span><span class="s2"> 个文档作为上下文"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">final_context_docs</span>
+
+    <span class="c1">#   定义方法，生成答案</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_answer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">source_filter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1">#   记录查询开始时间</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"开始处理查询: '</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">', 学科过滤: </span><span class="si">{</span><span class="n">source_filter</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+        <span class="c1">#   判断查询类型</span>
+        <span class="n">query_category</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_classifier</span><span class="o">.</span><span class="n">predict_category</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"查询分类结果：</span><span class="si">{</span><span class="n">query_category</span><span class="si">}</span><span class="s2"> (查询: '</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">')"</span><span class="p">)</span>
+
+        <span class="c1">#   如果查询属于“通用知识”类别，则直接使用 LLM 回答</span>
+        <span class="k">if</span> <span class="n">query_category</span> <span class="o">==</span> <span class="s2">"通用知识"</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"查询为通用知识，直接调用 LLM"</span><span class="p">)</span>
+            <span class="n">prompt_input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rag_prompt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">context</span><span class="o">=</span><span class="s2">""</span><span class="p">,</span> <span class="n">question</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">phone</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">CUSTOMER_SERVICE_PHONE</span>
+            <span class="p">)</span>  <span class="c1">#   不使用上下文</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">answer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">llm</span><span class="p">(</span><span class="n">prompt_input</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"直接调用 LLM 失败: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+                <span class="n">answer</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"抱歉，处理您的通用知识问题时出错。请联系人工客服：</span><span class="si">{</span><span class="n">conf</span><span class="o">.</span><span class="n">CUSTOMER_SERVICE_PHONE</span><span class="si">}</span><span class="s2">"</span>
+            <span class="n">processing_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"通用知识查询处理完成 (耗时: </span><span class="si">{</span><span class="n">processing_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s, 查询: '</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">')"</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">answer</span>
+
+        <span class="c1">#   否则，进行 RAG 检索并生成答案</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"查询为专业咨询，执行 RAG 流程"</span><span class="p">)</span>
+        <span class="c1">#   选择检索策略</span>
+        <span class="n">strategy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">strategy_selector</span><span class="o">.</span><span class="n">select_strategy</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+
+        <span class="c1">#   检索相关文档</span>
+        <span class="n">context_docs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">retrieve_and_merge</span><span class="p">(</span>
+            <span class="n">query</span><span class="p">,</span> <span class="n">source_filter</span><span class="o">=</span><span class="n">source_filter</span><span class="p">,</span> <span class="n">strategy</span><span class="o">=</span><span class="n">strategy</span>
+        <span class="p">)</span>  <span class="c1">#   传递 strategy</span>
+
+        <span class="c1">#   准备上下文</span>
+        <span class="k">if</span> <span class="n">context_docs</span><span class="p">:</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="s2">"</span><span class="se">\n\n</span><span class="s2">"</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">doc</span><span class="o">.</span><span class="n">page_content</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">context_docs</span><span class="p">])</span> <span class="c1"># 使用换行符分隔文档</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"构建上下文完成，包含 </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">context_docs</span><span class="p">)</span><span class="si">}</span><span class="s2"> 个文档块"</span><span class="p">)</span>
+            <span class="c1"># logger.debug(f"上下文内容:\n{context[:500]}...") # Debug 日志可以打印部分上下文</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">context</span> <span class="o">=</span> <span class="s2">""</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">"未检索到相关文档，上下文为空"</span><span class="p">)</span>
+
+        <span class="c1">#   构造 Prompt，调用大语言模型生成答案</span>
+        <span class="n">prompt_input</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rag_prompt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">context</span><span class="o">=</span><span class="n">context</span><span class="p">,</span> <span class="n">question</span><span class="o">=</span><span class="n">query</span><span class="p">,</span> <span class="n">phone</span><span class="o">=</span><span class="n">conf</span><span class="o">.</span><span class="n">CUSTOMER_SERVICE_PHONE</span>
+        <span class="p">)</span>
+        <span class="c1"># logger.debug(f"最终生成的 Prompt:\n{prompt_input}") # Debug 日志</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">answer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">llm</span><span class="p">(</span><span class="n">prompt_input</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">"调用 LLM 生成最终答案失败: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+            <span class="n">answer</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"抱歉，处理您的专业咨询问题时出错。请联系人工客服：</span><span class="si">{</span><span class="n">conf</span><span class="o">.</span><span class="n">CUSTOMER_SERVICE_PHONE</span><span class="si">}</span><span class="s2">"</span>
+
+
+        <span class="c1">#   记录查询处理完成的日志</span>
+        <span class="n">processing_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">"查询处理完成 (耗时: </span><span class="si">{</span><span class="n">processing_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s, 查询: '</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">')"</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">answer</span>
+</pre></div>
+</div>
+<h3 id="sec-10">实现细节</h3>
+<ol>
+<li><strong>init</strong>： <ul>
+<li><strong>作用</strong>：初始化RAG系统，整合向量存储、大语言模型和其他核心组件。</li>
+<li><strong>依赖</strong>：依赖VectorStore、RAGPrompts、QueryClassifier和StrategySelector。</li>
+</ul>
+</li>
+<li><strong>_retrieve_with_hyde</strong>： <ul>
+<li><strong>作用</strong>：生成假设答案并调用混合检索，适合抽象查询。</li>
+<li><strong>逻辑</strong>：使用hyde_prompt生成假设答案，传递给hybrid_search_with_rerank。</li>
+</ul>
+</li>
+<li><strong>_retrieve_with_subqueries</strong>： <ul>
+<li><strong>作用</strong>：分解查询为子查询，分别检索并去重。</li>
+<li><strong>逻辑</strong>：使用subquery_prompt分解查询，合并结果并限制数量。</li>
+</ul>
+</li>
+<li><strong>_retrieve_with_backtracking</strong>： <ul>
+<li><strong>作用</strong>：简化查询后检索，降低复杂度。</li>
+<li><strong>逻辑</strong>：使用backtracking_prompt简化查询，调用混合检索。</li>
+</ul>
+</li>
+<li><strong>retrieve_and_merge</strong>： <ul>
+<li><strong>作用</strong>：根据策略选择执行检索，直接返回结果。</li>
+<li><strong>优化</strong>：移除冗余的合并逻辑，直接使用hybrid_search_with_rerank的结果（去重的父文档）。</li>
+</ul>
+</li>
+<li><strong>generate_answer</strong>： <ul>
+<li><strong>作用</strong>：整合分类、检索和生成，输出最终答案。</li>
+<li>流程： <ul>
+<li>使用QueryClassifier判断查询类型。</li>
+<li>“通用知识”直接生成答案，“专业咨询”触发检索。</li>
+<li>结合上下文调用rag_prompt生成回答。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<hr/>
+<h2 id="sec-11">6.3 完整流程的整合</h2>
+<h3 id="sec-12">从查询到回答的流程</h3>
+<ol>
+<li><strong>输入处理</strong>：<ul>
+<li><code>QueryClassifier</code>分类查询，决定是否需要检索。</li>
+</ul>
+</li>
+<li><strong>策略选择</strong>：<ul>
+<li><code>StrategySelector</code>根据查询选择最佳检索策略。</li>
+</ul>
+</li>
+<li><strong>文档检索</strong>：<ul>
+<li>根据策略调用<code>VectorStore</code>的混合检索，获取相关文档。</li>
+</ul>
+</li>
+<li><strong>答案生成</strong>：<ul>
+<li>使用<code>RAGPrompts</code>的模板，结合上下文调用大语言模型生成答案。</li>
+</ul>
+</li>
+<li><strong>输出</strong>：<ul>
+<li>返回最终答案，并记录日志。</li>
+</ul>
+</li>
+</ol>
+<h3 id="sec-13">代码示例（整合逻辑）</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span># 示例：完整查询处理
+query = "AI学科学费是多少？"
+rag_system = RAGSystem(vector_store, llm)
+answer = rag_system.generate_answer(query)
+print(answer)
+</pre></div>
+</div>
+<h3 id="sec-14">说明</h3>
+<ul>
+<li><strong>端到端设计</strong>：从输入到输出无缝衔接。</li>
+<li><strong>智能优化</strong>：通过分类和策略选择减少不必要计算。</li>
+</ul>
+<hr/>
+<h2 id="sec-15">章节总结</h2>
+<p>本章节深入探讨了<code>strategy_selector.py</code>和<code>rag_system.py</code>：</p>
+<ul>
+<li><strong>strategy_selector.py</strong>：通过大语言模型动态选择检索策略（直接检索、HyDE、子查询、回溯），优化检索输入。</li>
+</ul>
+<ul>
+<li><strong><code>rag_system.py</code></strong>：整合查询分类、检索策略、向量存储和Prompt管理，完成从查询到回答的完整RAG流程。</li>
+<li><strong>协同作用</strong>：两者结合实现了灵活、高效的查询处理，确保系统能够准确响应用户需求。</li>
+</ul>
+<p>学习者通过本章节掌握了RAG系统的核心工作机制，为后续的系统运行和扩展奠定了基础。</p>
+<div class="done-bar"><button class="mark-done-btn" data-key="project02-16" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="project02-15.html"><div class="dir">← 上一篇</div><div class="name">🪄 Prompt 管理与 Query 意图识别</div></a><a class="next" href="project02-17.html"><div class="dir">下一篇 →</div><div class="name">✍️ RAG Query 改写策略</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">学习目标</a><a class="lv2" href="#sec-2">6.1 检索策略选择</a><a class="lv3" href="#sec-3">功能概述</a><a class="lv3" href="#sec-4">代码示例</a><a class="lv3" href="#sec-5">实现细节</a><a class="lv3" href="#sec-6">说明</a><a class="lv2" href="#sec-7">6.2 RAG核心逻辑</a><a class="lv3" href="#sec-8">功能概述</a><a class="lv3" href="#sec-9">代码示例</a><a class="lv3" href="#sec-10">实现细节</a><a class="lv2" href="#sec-11">6.3 完整流程的整合</a><a class="lv3" href="#sec-12">从查询到回答的流程</a><a class="lv3" href="#sec-13">代码示例（整合逻辑）</a><a class="lv3" href="#sec-14">说明</a><a class="lv2" href="#sec-15">章节总结</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
