@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PyTorch 基础：张量、自动微分与训练 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item active" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">21</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">22</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">23</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">24</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">25</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">26</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">27</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">28</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 31 讲</div>
+<h1>🔥 PyTorch 基础：张量、自动微分与训练</h1>
+<div class="chips"><span class="chip">🏷️ Tensor</span><span class="chip">🏷️ Autograd</span><span class="chip">🏷️ DataLoader / 训练循环</span></div>
+</div>
+<p>这一讲的目标不是背 API，而是建立一条完整主线：<strong>数据先变成张量，张量在指定设备上参与前向计算，自动微分得到梯度，优化器据此更新参数，<code>Dataset</code> 与 <code>DataLoader</code> 则负责稳定地送入一批批数据。</strong></p>
+<p>学完后，你应该能回答四个问题：</p>
+<ol>
+<li>一个张量的 <code>shape</code>、<code>dtype</code>、<code>device</code> 和 <code>requires_grad</code> 分别控制什么？</li>
+<li><code>reshape</code>、<code>transpose</code>、<code>permute</code>、<code>cat</code>、<code>stack</code> 的语义为什么不能混用？</li>
+<li><code>loss.backward()</code> 到底计算了什么，为什么每轮都要清梯度？</li>
+<li>怎样把数据、模型、损失函数和优化器组织成一个正确的 mini-batch 训练循环？</li>
+</ol>
+<hr />
+<h2 id="sec-1">一、PyTorch 在深度学习中的位置</h2>
+<p>PyTorch 是以 Python 为主要接口的深度学习框架。它以张量为统一的数据表示，提供自动微分、神经网络模块、优化器、数据加载和设备加速等能力，可用于计算机视觉、自然语言处理、语音、强化学习等任务。</p>
+<h3 id="sec-2">1. 核心能力</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>能力</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tensor 张量</td>
+<td>像 NumPy 数组一样存储和计算多维数据，并可放到加速设备上</td>
+</tr>
+<tr>
+<td><code>torch.autograd</code></td>
+<td>根据前向计算图自动求导</td>
+</tr>
+<tr>
+<td><code>torch.nn</code></td>
+<td>提供网络层、损失函数和模型容器</td>
+</tr>
+<tr>
+<td><code>torch.optim</code></td>
+<td>根据梯度更新模型参数</td>
+</tr>
+<tr>
+<td><code>torch.utils.data</code></td>
+<td>用 <code>Dataset</code>、<code>DataLoader</code> 组织训练数据</td>
+</tr>
+<tr>
+<td><code>torchvision</code> / <code>torchaudio</code></td>
+<td>提供视觉、音频领域常用数据集、模型和变换工具</td>
+</tr>
+</tbody>
+</table></div>
+<p>PyTorch 于 2016 年首次发布，早期优势是符合 Python 直觉的<strong>动态图</strong>：执行一次前向计算，就在运行时构建一次计算图，普通控制流和调试工具可以直接使用。2018 年的 1.0 版本进一步强化了生产部署能力。</p>
+<p>动态图不等于不能优化。现代 PyTorch 可以在保持易写、易调试体验的同时，通过编译层捕获计算并进行算子融合、内存复用、并行调度，最终调用更底层的 C++、CUDA 或硬件指令。需要时可把 <code>torch.compile(model)</code> 视为训练正确之后的性能扩展，而不是入门阶段的必需步骤。</p>
+<h3 id="sec-3">2. 安装与环境确认</h3>
+<p>先进入自己的虚拟环境，再按当前硬件和官方安装说明选择对应版本。只学习 CPU 基础时可先安装：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>torch<span class="w"> </span>torchvision
+</pre></div>
+</div>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;CUDA 是否可用：&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>不要仅凭“电脑有独立显卡”判断 CUDA 可用性；操作系统、驱动、显卡型号和 PyTorch 构建版本都必须匹配。</p>
+<hr />
+<h2 id="sec-4">二、Tensor：深度学习的数据语言</h2>
+<p>张量可以理解为<strong>元素类型相同的多维数组</strong>。标量是 0 维张量，向量是 1 维张量，矩阵是 2 维张量；更高维张量常用来表示成批图像、序列或视频。</p>
+<p><img loading="lazy" decoding="async" alt="0 到 3 维张量的直观表示" src="../assets/img/lesson31/tensor-dimensions.png" /></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: right;">维数</th>
+<th>常见称呼</th>
+<th>深度学习中的典型含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0D</td>
+<td>标量</td>
+<td>一个损失值、一个学习率</td>
+</tr>
+<tr>
+<td style="text-align: right;">1D</td>
+<td>向量</td>
+<td>一个样本的特征、一个偏置向量</td>
+</tr>
+<tr>
+<td style="text-align: right;">2D</td>
+<td>矩阵</td>
+<td><code>样本数 × 特征数</code>、线性层权重</td>
+</tr>
+<tr>
+<td style="text-align: right;">3D</td>
+<td>三维张量</td>
+<td>单张彩色图像 <code>C × H × W</code>、一批序列</td>
+</tr>
+<tr>
+<td style="text-align: right;">4D</td>
+<td>四维张量</td>
+<td>一批图像 <code>N × C × H × W</code></td>
+</tr>
+<tr>
+<td style="text-align: right;">5D</td>
+<td>五维张量</td>
+<td>一批视频 <code>N × C × T × H × W</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>维数只说明轴的数量，不自动说明业务含义。同为 <code>(32, 3, 224, 224)</code>，只有结合约定才能知道它表示 <code>NCHW</code> 图像。</p>
+<h3 id="sec-5">1. 每个张量的四个关键属性</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]],</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>          <span class="c1"># torch.Size([2, 2])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>          <span class="c1"># torch.float32</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>         <span class="c1"># 通常是 cpu</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">)</span>  <span class="c1"># True</span>
+</pre></div>
+</div>
+<ul>
+<li><code>shape</code>：每条轴有多长。</li>
+<li><code>dtype</code>：每个元素用什么数值类型存储。</li>
+<li><code>device</code>：数据位于 CPU、CUDA 等哪种设备。</li>
+<li><code>requires_grad</code>：自动微分是否追踪与该张量有关的运算。</li>
+</ul>
+<p>此外，<code>x.ndim</code> 是轴数，<code>x.numel()</code> 是元素总数，<code>x.size()</code> 与 <code>x.shape</code> 等价。</p>
+<h3 id="sec-6">2. 从 Python、NumPy 和形状创建张量</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">scalar</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">3.14</span><span class="p">)</span>
+<span class="n">vector</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">matrix</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+<span class="n">array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>
+<span class="n">from_array</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">array</span><span class="p">)</span>
+
+<span class="n">empty</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>   <span class="c1"># 只分配内存，不初始化内容</span>
+</pre></div>
+</div>
+<p><code>torch.tensor(data)</code> 适合从现有数据构造张量；<code>torch.empty(shape)</code> 适合只分配内存。旧代码里常见的 <code>torch.Tensor(2, 3)</code> 也会创建未初始化的浮点张量，但语义容易与“从数据构造”混淆，新代码更推荐明确使用 <code>torch.tensor</code> 或 <code>torch.empty</code>。</p>
+<p><code>torch.FloatTensor</code>、<code>DoubleTensor</code>、<code>HalfTensor</code>、<code>ShortTensor</code>、<code>IntTensor</code>、<code>LongTensor</code> 等类型构造器仍可能出现在旧代码中，现代代码通常统一写成 <code>dtype=torch.float32</code>、<code>dtype=torch.int64</code>，可读性更高，也更方便迁移设备。</p>
+<h3 id="sec-7">3. 常见数据类型与范围</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>PyTorch 类型</th>
+<th style="text-align: right;">位数</th>
+<th>典型范围或用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>torch.uint8</code></td>
+<td style="text-align: right;">8</td>
+<td>0～255，常见于原始图像像素</td>
+</tr>
+<tr>
+<td><code>torch.int8</code></td>
+<td style="text-align: right;">8</td>
+<td>-128～127，量化模型常见</td>
+</tr>
+<tr>
+<td><code>torch.int16</code> / <code>short</code></td>
+<td style="text-align: right;">16</td>
+<td>-32768～32767</td>
+</tr>
+<tr>
+<td><code>torch.int32</code> / <code>int</code></td>
+<td style="text-align: right;">32</td>
+<td>普通整数</td>
+</tr>
+<tr>
+<td><code>torch.int64</code> / <code>long</code></td>
+<td style="text-align: right;">64</td>
+<td>类别标签、索引的常见类型</td>
+</tr>
+<tr>
+<td><code>torch.float16</code> / <code>half</code></td>
+<td style="text-align: right;">16</td>
+<td>混合精度训练、节省显存</td>
+</tr>
+<tr>
+<td><code>torch.float32</code> / <code>float</code></td>
+<td style="text-align: right;">32</td>
+<td>模型参数与计算的常用默认类型</td>
+</tr>
+<tr>
+<td><code>torch.float64</code> / <code>double</code></td>
+<td style="text-align: right;">64</td>
+<td>更高数值精度，但更占内存、计算更慢</td>
+</tr>
+</tbody>
+</table></div>
+<p>Python 浮点列表构造的张量通常是 <code>float32</code>；NumPy 浮点数组通常是 <code>float64</code>，转换时会保留 NumPy 的类型。把 NumPy 数据交给默认 <code>float32</code> 模型前，要主动统一类型。</p>
+<p>整数类型有固定范围，超出范围会发生溢出或转换错误，不能把 <code>uint8</code> 当成“更省内存但行为完全相同”的普通整数：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">pixels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">255</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+<span class="n">features</span> <span class="o">=</span> <span class="n">pixels</span><span class="o">.</span><span class="n">float</span><span class="p">()</span> <span class="o">/</span> <span class="mi">255</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">pixels</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">labels</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">features</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-8">4. 等差数列、随机张量与常量张量</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="c1"># 左闭右开：[0, 2, 4, 6, 8]</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># 包含首尾，第三个参数是点的数量</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">steps</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>                 <span class="c1"># [0, 1) 均匀分布</span>
+<span class="n">n</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>                <span class="c1"># 标准正态分布 N(0, 1)</span>
+<span class="n">i</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>     <span class="c1"># 整数范围 [2, 10)</span>
+
+<span class="n">z</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">o</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="mi">7</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">full_like</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><code>randn</code> 产生的随机噪声既可用于一维信号扰动，也可加到图像上做噪声模拟或数据增强。真实训练中必须结合数据尺度控制噪声强度。</p>
+<h3 id="sec-9">5. 随机种子与可复现性</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;当前初始种子：&quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">initial_seed</span><span class="p">())</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">))</span>  <span class="c1"># True</span>
+</pre></div>
+</div>
+<p>固定种子能让相同环境中的随机序列更容易复现，但并不保证所有硬件、所有算子和所有版本之间逐位一致。严格实验还要固定数据划分、DataLoader 随机性和相关算法配置。</p>
+<h3 id="sec-10">6. 类型转换</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.9</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.9</span><span class="p">,</span> <span class="mf">3.2</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float64</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">type</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float16</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">half</span><span class="p">(),</span> <span class="n">x</span><span class="o">.</span><span class="n">float</span><span class="p">(),</span> <span class="n">x</span><span class="o">.</span><span class="n">double</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">short</span><span class="p">(),</span> <span class="n">x</span><span class="o">.</span><span class="n">int</span><span class="p">(),</span> <span class="n">x</span><span class="o">.</span><span class="n">long</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>浮点数转整数采用<strong>向零截断</strong>：<code>1.9 → 1</code>，<code>-1.9 → -1</code>，不是统一向下取整。若想显式向下、向上或四舍五入，应先使用 <code>floor</code>、<code>ceil</code> 或 <code>round</code>。</p>
+<hr />
+<h2 id="sec-11">三、CPU、GPU 与 NumPy 之间的数据流</h2>
+<p>典型数据流是：磁盘文件 → CPU 内存中的 NumPy/图片 → PyTorch 张量 → 计算设备 → 模型；结果显示或交给 NumPy 时再回到 CPU。</p>
+<h3 id="sec-12">1. 统一管理设备</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">device</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>参与同一次运算的张量和模型参数必须位于兼容设备。最常见错误是模型已经 <code>.to("cuda")</code>，输入却仍在 CPU。</p>
+<h3 id="sec-13">2. NumPy 与 Tensor 的三种关系</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+<span class="n">shared</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>  <span class="c1"># 与 arr 共享 CPU 内存</span>
+<span class="n">copied</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>      <span class="c1"># 复制数据，不共享</span>
+
+<span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">99</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">shared</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>         <span class="c1"># 99</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">copied</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>         <span class="c1"># 1</span>
+
+<span class="n">back_to_numpy</span> <span class="o">=</span> <span class="n">shared</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>  <span class="c1"># CPU 且不需梯度时可直接转换，也共享内存</span>
+<span class="n">independent</span> <span class="o">=</span> <span class="n">shared</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>写法</th>
+<th>是否通常共享内存</th>
+<th>关键限制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>torch.from_numpy(arr)</code></td>
+<td>是</td>
+<td>只能从 CPU NumPy 数组出发</td>
+</tr>
+<tr>
+<td><code>torch.tensor(arr)</code></td>
+<td>否</td>
+<td>会复制，适合需要隔离修改的场景</td>
+</tr>
+<tr>
+<td><code>tensor.numpy()</code></td>
+<td>是</td>
+<td>张量必须在 CPU，且不能处于需要梯度的状态</td>
+</tr>
+<tr>
+<td><code>tensor.clone()</code></td>
+<td>否</td>
+<td>复制张量数据，仍可保留梯度关系</td>
+</tr>
+<tr>
+<td><code>tensor.detach()</code></td>
+<td>是</td>
+<td>与计算图断开，但通常仍共享底层存储</td>
+</tr>
+</tbody>
+</table></div>
+<p>因此，“断开梯度”和“复制数据”是两个不同操作。要同时做到两件事，应写 <code>tensor.detach().clone()</code>。</p>
+<p>模型输出转 NumPy 的稳妥模板是：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>若图像张量采用 <code>C × H × W</code>，而绘图库需要 <code>H × W × C</code>，还要重排轴：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">image_array</span> <span class="o">=</span> <span class="n">image_tensor</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><code>tensor.item()</code> 只适用于单元素张量，常用于把标量损失变成普通 Python 数字：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">loss_value</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">0.125</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+</pre></div>
+</div>
+<hr />
+<h2 id="sec-14">四、张量运算：逐元素、矩阵与统计</h2>
+<h3 id="sec-15">1. 基本算术与原地操作</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">4.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">mul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span> <span class="o">/</span> <span class="n">y</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">div</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">neg</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span> <span class="o">%</span> <span class="mi">2</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">remainder</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>函数名末尾带下划线通常表示<strong>原地修改</strong>，例如 <code>x.add_(1)</code>、<code>x.zero_()</code>。原地操作能减少部分临时内存，但会改变原对象，且可能破坏自动微分所需的中间值；入门时优先使用非原地写法。</p>
+<h3 id="sec-16">2. Hadamard 乘法与矩阵乘法</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]])</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">7.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">]])</span>
+
+<span class="n">elementwise</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>          <span class="c1"># 对应位置相乘</span>
+<span class="n">matrix_product</span> <span class="o">=</span> <span class="n">a</span> <span class="o">@</span> <span class="n">b</span>       <span class="c1"># 矩阵乘法</span>
+<span class="n">same_result</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">elementwise</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">matrix_product</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">matrix_product</span><span class="p">,</span> <span class="n">same_result</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>对二维矩阵，<code>(m, n) @ (n, p) → (m, p)</code>。对高维张量，<code>matmul</code> 把最后两维当矩阵维度，前面的维度视为批次维，并允许可兼容的广播。</p>
+<p>逐元素运算也支持广播，例如 <code>(3, 1) + (1, 4) → (3, 4)</code>。广播从末尾维度向前比较：对应维度相等，或其中一个为 1，才可扩展。</p>
+<h3 id="sec-17">3. 数学函数与规约</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>       <span class="c1"># 沿第 0 维规约，得到各列之和</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>      <span class="c1"># 沿第 1 维规约，得到各行均值</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">x</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
+<p><code>sum</code> 可直接处理整数张量；<code>mean</code>、<code>var</code>、<code>std</code> 通常要求浮点或复数输入，因此整数数据要先 <code>.float()</code>。</p>
+<h3 id="sec-18">4. 方差与标准差的校正参数</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">])</span>
+
+<span class="n">population_var</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">correction</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># 分母 n</span>
+<span class="n">sample_var</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">correction</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>      <span class="c1"># 分母 n - 1</span>
+
+<span class="n">population_std</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">correction</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">sample_std</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">correction</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>总体统计用 <code>correction=0</code>，样本无偏估计常用 <code>correction=1</code>。不要只记默认值，要根据问题含义选择。</p>
+<h3 id="sec-19">5. <code>round</code> 的边界行为</h3>
+<p>PyTorch 的 <code>round</code> 对恰好位于中点的数采用 ties-to-even，也叫“银行家舍入”，把结果舍入到最近的偶数，而不是一律“五入”：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.5</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>  <span class="c1"># 0, 2, 2, 4, -0, -2</span>
+</pre></div>
+</div>
+<hr />
+<h2 id="sec-20">五、逻辑形状、物理存储与连续性</h2>
+<p>一个张量同时有“看起来如何排列”的逻辑视图，以及“元素怎样躺在内存里”的物理布局。默认二维张量通常按行优先（C-style）连续存储：先放完第一行，再放第二行。</p>
+<p><img loading="lazy" decoding="async" alt="二维张量按行优先连续存储" src="../assets/img/lesson31/row-major-contiguous.png" /></p>
+<p>转置往往只改变 <code>shape</code> 和 stride，不搬动底层数据，所以转置后的逻辑顺序变了，物理存储顺序仍可能保持原样。</p>
+<p><img loading="lazy" decoding="async" alt="转置改变逻辑视图但不一定重排底层存储" src="../assets/img/lesson31/transpose-noncontiguous.png" /></p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">stride</span><span class="p">(),</span> <span class="n">x</span><span class="o">.</span><span class="n">is_contiguous</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">stride</span><span class="p">(),</span> <span class="n">y</span><span class="o">.</span><span class="n">is_contiguous</span><span class="p">())</span>
+
+<span class="n">z</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">is_contiguous</span><span class="p">())</span>
+</pre></div>
+</div>
+<ul>
+<li><code>stride</code> 表示沿某个轴前进一步时，底层存储位置要跨过多少元素。</li>
+<li><code>transpose</code>、<code>permute</code> 通常返回视图，共享原存储。</li>
+<li><code>view</code> 要求形状与现有 stride 兼容；对典型非连续转置结果直接 <code>view</code> 会报错。</li>
+<li><code>contiguous()</code> 在需要时复制并重排数据；本来连续时通常直接返回等价张量。</li>
+<li><code>reshape</code> 和 <code>flatten</code> 会尽量返回视图，必要时也可能复制，所以不要依赖它们一定共享内存。</li>
+</ul>
+<p>连续布局常更符合底层算子的访问模式，因此可能更快，也被部分 API 所要求。但不要为了“连续”到处无条件复制；在明确遇到布局要求或性能瓶颈时处理。</p>
+<hr />
+<h2 id="sec-21">六、索引与切片</h2>
+<p>先构造一个便于观察的矩阵：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+<span class="c1"># tensor([[ 0,  1,  2,  3],</span>
+<span class="c1">#         [ 4,  5,  6,  7],</span>
+<span class="c1">#         [ 8,  9, 10, 11]])</span>
+</pre></div>
+</div>
+<h3 id="sec-22">1. 基础索引与切片</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>          <span class="c1"># 第 1 行</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>       <span class="c1"># 第 1 行第 2 列：6</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">[:</span><span class="mi">2</span><span class="p">])</span>         <span class="c1"># 前两行</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">])</span>      <span class="c1"># 前两列</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">[:,</span> <span class="p">::</span><span class="mi">2</span><span class="p">])</span>     <span class="c1"># 第 0、2 列，即偶数位置的列</span>
+</pre></div>
+</div>
+<p>PyTorch 张量切片不支持负步长，因此 <code>a[::-1]</code> 会报错；反转应使用 <code>torch.flip(a, dims=[0])</code>。</p>
+<h3 id="sec-23">2. 高级索引：配对选择与笛卡尔选择</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 配对选择坐标 (0, 1) 和 (1, 2)</span>
+<span class="n">points</span> <span class="o">=</span> <span class="n">a</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>  <span class="c1"># tensor([1, 6])</span>
+
+<span class="c1"># 选择第 0、1 行与第 1、2 列形成的 2×2 子矩阵</span>
+<span class="n">rows</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])[:,</span> <span class="kc">None</span><span class="p">]</span>
+<span class="n">cols</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">block</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+<span class="c1"># tensor([[1, 2],</span>
+<span class="c1">#         [5, 6]])</span>
+</pre></div>
+</div>
+<p>两个一维索引数组会按位置配对，不会自动产生所有行列组合。要获得子矩阵，可以像上面一样把行索引变成列形，也可以使用 <code>index_select</code> 等接口。</p>
+<h3 id="sec-24">3. 布尔索引</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 根据第 0 列筛选整行</span>
+<span class="n">rows_kept</span> <span class="o">=</span> <span class="n">a</span><span class="p">[</span><span class="n">a</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">4</span><span class="p">]</span>
+
+<span class="c1"># 根据第 0 行的奇偶性筛选整列</span>
+<span class="n">cols_kept</span> <span class="o">=</span> <span class="n">a</span><span class="p">[:,</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">rows_kept</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cols_kept</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>布尔掩码的形状必须与它所筛选的轴或元素集合匹配。</p>
+<h3 id="sec-25">4. 三维张量按轴索引</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">x3</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">24</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+<span class="n">first_block</span> <span class="o">=</span> <span class="n">x3</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:]</span>   <span class="c1"># 固定第 0 轴</span>
+<span class="n">first_row_each</span> <span class="o">=</span> <span class="n">x3</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># 固定第 1 轴</span>
+<span class="n">first_col_each</span> <span class="o">=</span> <span class="n">x3</span><span class="p">[:,</span> <span class="p">:,</span> <span class="mi">0</span><span class="p">]</span>  <span class="c1"># 固定第 2 轴</span>
+</pre></div>
+</div>
+<p>理解方法是：每写一个整数索引，就固定并消去一条轴；每写一个 <code>:</code>，就保留该轴。</p>
+<hr />
+<h2 id="sec-26">七、形状变换与轴变换</h2>
+<h3 id="sec-27">1. <code>reshape</code>、<code>flatten</code> 与 <code>-1</code></h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">24</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># 自动推断为 (2, 12)</span>
+<span class="n">flat</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>     <span class="c1"># 一维，共 24 个元素</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">flat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>这类变换不能改变元素总数。<code>-1</code> 只能出现一次，由其他维度和总元素数自动推断。</p>
+<h3 id="sec-28">2. <code>squeeze</code> 与 <code>unsqueeze</code></h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">squeeze</span><span class="p">()</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>      <span class="c1"># (3, 4)，移除全部长度为 1 的轴</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>     <span class="c1"># (3, 1, 4)，只尝试移除第 0 轴</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>   <span class="c1"># (1, 1, 3, 1, 4)，新增一条轴</span>
+</pre></div>
+</div>
+<p>模型需要 batch 维时，经常用 <code>unsqueeze(0)</code> 把单个样本变成大小为 1 的批次。</p>
+<h3 id="sec-29">3. <code>transpose</code> 与 <code>permute</code></h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">image</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">224</span><span class="p">,</span> <span class="mi">320</span><span class="p">)</span>  <span class="c1"># C, H, W</span>
+
+<span class="n">swap_hw</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>   <span class="c1"># C, W, H，只交换两条轴</span>
+<span class="n">hwc</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>      <span class="c1"># H, W, C，任意重排全部轴</span>
+</pre></div>
+</div>
+<p><code>transpose(dim0, dim1)</code> 只交换两条轴；<code>permute(dims)</code> 给出所有轴的新顺序。二者与 <code>reshape</code> 的语义完全不同：前者重排轴，后者只重新解释连续元素。如果把 <code>C × H × W</code> 图像误用 <code>reshape(H, W, C)</code>，像素与通道关系会被打乱。</p>
+<h3 id="sec-30">4. 与 NumPy 的常见对应关系</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>PyTorch</th>
+<th>NumPy</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>x.reshape(...)</code></td>
+<td><code>np.reshape(x, ...)</code></td>
+<td>改变形状</td>
+</tr>
+<tr>
+<td><code>x.squeeze(dim)</code></td>
+<td><code>np.squeeze(x, axis=...)</code></td>
+<td>移除长度为 1 的轴</td>
+</tr>
+<tr>
+<td><code>x.unsqueeze(dim)</code></td>
+<td><code>np.expand_dims(x, axis=...)</code></td>
+<td>新增轴</td>
+</tr>
+<tr>
+<td><code>x.transpose(d0, d1)</code></td>
+<td><code>np.swapaxes(x, d0, d1)</code></td>
+<td>只交换两轴时更对应</td>
+</tr>
+<tr>
+<td><code>x.permute(order)</code></td>
+<td><code>np.transpose(x, axes=order)</code></td>
+<td>任意轴重排</td>
+</tr>
+<tr>
+<td><code>torch.cat(xs, dim=d)</code></td>
+<td><code>np.concatenate(xs, axis=d)</code></td>
+<td>沿已有轴连接</td>
+</tr>
+<tr>
+<td><code>torch.stack(xs, dim=d)</code></td>
+<td><code>np.stack(xs, axis=d)</code></td>
+<td>新增轴后堆叠</td>
+</tr>
+</tbody>
+</table></div>
+<p>NumPy 的 <code>.T</code> 和 <code>np.transpose</code> 接口习惯与 PyTorch 不完全相同，迁移代码时应检查轴顺序，不要只按函数名机械替换。</p>
+<hr />
+<h2 id="sec-31">八、拼接、堆叠、翻转与分块</h2>
+<h3 id="sec-32">1. <code>cat</code> 与 <code>stack</code></h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="n">cat_rows</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>    <span class="c1"># (4, 3)</span>
+<span class="n">cat_cols</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># (2, 6)，concat 是 cat 的别名</span>
+
+<span class="n">stack_front</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>  <span class="c1"># (2, 2, 3)</span>
+<span class="n">stack_last</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>   <span class="c1"># (2, 3, 2)</span>
+</pre></div>
+</div>
+<ul>
+<li><code>cat</code> 不增加维数；除连接轴外，其余维度必须相等。</li>
+<li><code>stack</code> 先增加一条新轴；所有输入张量形状必须完全相同。</li>
+<li>两者都会生成新的输出存储，不与输入直接共享底层数据。</li>
+</ul>
+<h3 id="sec-33">2. 特征相加与特征拼接</h3>
+<p><img loading="lazy" decoding="async" alt="神经网络中特征相加与拼接的差别" src="../assets/img/lesson31/add-vs-concat.png" /></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>融合方式</th>
+<th>输出形状</th>
+<th>优点</th>
+<th>代价</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>a + b</code></td>
+<td>与输入相同</td>
+<td>维度和计算量较小，适合残差连接</td>
+<td>两路信息在同一坐标上混合，来源不再显式分开</td>
+</tr>
+<tr>
+<td><code>cat([a, b], dim=...)</code></td>
+<td>连接轴变长</td>
+<td>保留两路特征的独立通道，表达容量更大</td>
+<td>后续层参数量、显存和计算量通常增加</td>
+</tr>
+</tbody>
+</table></div>
+<p>两种方式没有绝对优劣，必须结合网络结构和张量形状选择。</p>
+<h3 id="sec-34">3. 翻转、旋转与分块</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+
+<span class="n">flip_rows</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">flip_cols</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">rotated</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rot90</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dims</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+<span class="n">parts</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">chunk</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">11</span><span class="p">),</span> <span class="n">chunks</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">([</span><span class="n">part</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">parts</span><span class="p">])</span>
+</pre></div>
+</div>
+<p><code>rot90</code> 的 <code>k</code> 表示旋转 90° 的次数，<code>dims</code> 指定旋转平面。<code>chunk</code> 尽量把指定轴切成若干近似大小的块，但<strong>可能返回少于请求数量的块</strong>；如果业务要求恰好得到固定数量，使用 <code>torch.tensor_split</code> 更明确。</p>
+<hr />
+<h2 id="sec-35">九、自动微分：从前向计算到参数梯度</h2>
+<p>训练的核心更新式是：</p>
+<p>[
+W_{\text{new}} = W_{\text{old}} - \eta\,\nabla_W L
+]</p>
+<p>其中 (L) 是损失，(\nabla_W L) 是损失对参数的梯度，(\eta) 是学习率。PyTorch 的 <code>torch.autograd</code> 会记录前向运算并沿计算图反向应用链式法则。</p>
+<p><img loading="lazy" decoding="async" alt="线性模型与均方误差的自动微分计算图" src="../assets/img/lesson31/autograd-graph.png" /></p>
+<p>图中前向关系是 <code>z = x @ w + b</code>、<code>loss = MSE(z, y)</code>；反向传播从 <code>loss</code> 出发，依次把梯度传给 <code>z</code>、<code>w</code> 和 <code>b</code>。</p>
+<h3 id="sec-36">1. 叶子张量、非叶子张量与 <code>grad_fn</code></h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># 需要优化的叶子张量</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">w</span><span class="o">**</span><span class="mi">2</span>                                <span class="c1"># 运算结果是非叶子张量</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">is_leaf</span><span class="p">,</span> <span class="n">w</span><span class="o">.</span><span class="n">grad_fn</span><span class="p">)</span>  <span class="c1"># True, None</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">is_leaf</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">grad_fn</span><span class="p">)</span>  <span class="c1"># False, 有对应的反向函数</span>
+
+<span class="n">y</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span>                <span class="c1"># 40</span>
+</pre></div>
+</div>
+<p>只有浮点或复数张量可以设置 <code>requires_grad=True</code>。叶子参数的梯度会保存在 <code>.grad</code>；非叶子中间结果默认不保留 <code>.grad</code>，若确实需要观察，可在反传前调用 <code>retain_grad()</code>。</p>
+<h3 id="sec-37">2. 标量输出与向量—雅可比积</h3>
+<p><code>backward()</code> 最自然的入口是标量损失：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">],</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span>  <span class="c1"># tensor([40., 80.])</span>
+</pre></div>
+</div>
+<p>如果输出是向量，PyTorch 并非“不能求导”，而是需要知道如何组合各输出分量。下面传入全 1 向量，计算的是一个向量—雅可比积，结果与 <code>y.sum().backward()</code> 相同：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">20.0</span><span class="p">],</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">y</span><span class="o">.</span><span class="n">backward</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>神经网络通常先用 <code>sum</code>、<code>mean</code> 或损失函数把一批预测规约成一个标量，再调用 <code>backward()</code>。</p>
+<h3 id="sec-38">3. 梯度会累积</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="p">(</span><span class="n">w</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span>  <span class="c1"># 4</span>
+
+<span class="p">(</span><span class="n">w</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span>  <span class="c1"># 8，而不是 4</span>
+
+<span class="n">w</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>梯度累积是设计行为，可用于梯度累积训练；普通训练每个 batch 前都要清梯度，通常调用 <code>optimizer.zero_grad()</code>。</p>
+<p>同一张计算图完成一次反传后，中间缓存通常会释放。若必须对同一图再次反传才使用 <code>retain_graph=True</code>，不要把它当作常规写法。</p>
+<h3 id="sec-39">4. 安全更新参数</h3>
+<p>手动梯度下降时，不希望“更新参数”本身被记入下一张计算图：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">w</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">0.01</span>
+
+<span class="n">loss</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">w</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+
+<span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+    <span class="n">w</span> <span class="o">-=</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">w</span><span class="o">.</span><span class="n">grad</span>
+
+<span class="n">w</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>不要用 <code>w.data</code> 绕过自动微分；它可能悄悄破坏计算图一致性。实际模型训练优先交给优化器执行 <code>optimizer.step()</code>。</p>
+<h3 id="sec-40">5. <code>detach</code> 的正确理解</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">3</span>
+
+<span class="n">stopped</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>         <span class="c1"># 不再追踪梯度，通常共享存储</span>
+<span class="n">independent</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>  <span class="c1"># 同时断图并复制数据</span>
+</pre></div>
+</div>
+<p><code>detach</code> 只解决“是否继续求导”，不自动解决设备迁移和数据复制。把模型输出交给 NumPy 时常用 <code>y.detach().cpu().numpy()</code>。</p>
+<h3 id="sec-41">6. 完整的矩阵自动微分例子</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="n">w</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">z</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">w</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span>
+<span class="n">loss_fn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+
+<span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;loss:&quot;</span><span class="p">,</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;w.grad shape:&quot;</span><span class="p">,</span> <span class="n">w</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c1"># (5, 3)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;b.grad shape:&quot;</span><span class="p">,</span> <span class="n">b</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>  <span class="c1"># (3,)</span>
+</pre></div>
+</div>
+<p>偏置 <code>b</code> 能与 <code>(2, 3)</code> 的 <code>z</code> 相加，是因为广播把 <code>(3,)</code> 视为每个样本共享的一组偏置；反向时，各样本对偏置的贡献会正确汇总。</p>
+<hr />
+<h2 id="sec-42">十、Dataset、DataLoader 与三种梯度下降</h2>
+<h3 id="sec-43">1. 全批量、随机与小批量</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>方式</th>
+<th>每次更新使用的数据</th>
+<th>特点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全批量梯度下降</td>
+<td>全部训练集</td>
+<td>梯度稳定，但单次更新慢、占用内存大</td>
+</tr>
+<tr>
+<td>随机梯度下降</td>
+<td>1 个样本</td>
+<td>更新频繁、噪声大，硬件利用率通常不高</td>
+</tr>
+<tr>
+<td>Mini-batch 梯度下降</td>
+<td>一小批样本</td>
+<td>在稳定性、速度和并行效率间折中，是最常用方式</td>
+</tr>
+</tbody>
+</table></div>
+<p><img loading="lazy" decoding="async" alt="训练集被打乱并分成多个 mini-batch" src="../assets/img/lesson31/minibatch-flow.png" /></p>
+<ul>
+<li><strong>batch</strong>：一次前向和反向使用的一批数据。</li>
+<li><strong>batch size</strong>：每批样本数。</li>
+<li><strong>epoch</strong>：整个训练集被完整遍历一次。</li>
+<li>一轮中的 batch 数约为 <code>ceil(样本数 / batch_size)</code>；若 <code>drop_last=True</code>，最后不足一批的数据会丢弃。</li>
+</ul>
+<h3 id="sec-44">2. <code>Dataset</code> 定义样本，<code>DataLoader</code> 组织批次</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.utils.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">DataLoader</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PairDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">PairDataset</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span>
+    <span class="n">dataset</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+    <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">num_workers</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+    <span class="n">drop_last</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">batch_x</span><span class="p">,</span> <span class="n">batch_y</span> <span class="ow">in</span> <span class="n">loader</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">batch_x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">batch_y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code>Dataset</code> 负责“第 <code>i</code> 个样本是什么”，也可以放预处理和数据增强逻辑；训练集、验证集、测试集通常分别创建。<code>DataLoader</code> 负责打乱、分批和多进程读取：</p>
+<ul>
+<li>训练集通常 <code>shuffle=True</code>，验证和测试通常不打乱。</li>
+<li><code>batch_size</code> 受显存、数据尺寸和优化效果共同影响。</li>
+<li><code>num_workers=0</code> 最容易调试；数据读取成为瓶颈后再逐步增加。</li>
+<li><code>drop_last=True</code> 可保证每批形状一致，但会丢掉最后不足一批的样本。</li>
+<li>已经在内存中的成对张量可直接使用 <code>TensorDataset(x, y)</code>。</li>
+</ul>
+<h3 id="sec-45">3. “2244”训练骨架</h3>
+<p>可以用下面的结构记忆最小训练程序：</p>
+<ul>
+<li>2 个对象：<code>Dataset</code>、<code>DataLoader</code>。</li>
+<li>2 层循环：外层 <code>epoch</code>，内层 <code>batch</code>。</li>
+<li>4 个定义：模型、损失函数、优化器、学习率。</li>
+<li>4 个动作：清梯度、前向与计算损失、反向传播、参数更新。</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">batch_x</span><span class="p">,</span> <span class="n">batch_y</span> <span class="ow">in</span> <span class="n">train_loader</span><span class="p">:</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">prediction</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">batch_x</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">prediction</span><span class="p">,</span> <span class="n">batch_y</span><span class="p">)</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>如果使用学习率调度器，通常在合适的时机额外调用 <code>scheduler.step()</code>；它不是替代 <code>optimizer.step()</code>。</p>
+<hr />
+<h2 id="sec-46">十一、完整案例：用 PyTorch 拟合一元线性回归</h2>
+<p>任务设定为：</p>
+<p>[
+y = x \cdot \text{coef} + \text{bias} + \text{noise}
+]</p>
+<p>训练过程严格分四步：准备数据 → 定义模型 → 定义损失与优化器 → 迭代训练。</p>
+<h3 id="sec-47">1. 一段可直接运行的完整代码</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.datasets</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_regression</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.utils.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataLoader</span><span class="p">,</span> <span class="n">TensorDataset</span>
+
+<span class="c1"># 1. 生成并整理数据</span>
+<span class="n">x_np</span><span class="p">,</span> <span class="n">y_np</span><span class="p">,</span> <span class="n">true_coef</span> <span class="o">=</span> <span class="n">make_regression</span><span class="p">(</span>
+    <span class="n">n_samples</span><span class="o">=</span><span class="mi">120</span><span class="p">,</span>
+    <span class="n">n_features</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">noise</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span>
+    <span class="n">bias</span><span class="o">=</span><span class="mf">14.5</span><span class="p">,</span>
+    <span class="n">coef</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># sklearn / NumPy 常得到 float64；模型默认 float32，因此显式统一类型</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">x_np</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y_np</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">dataset</span> <span class="o">=</span> <span class="n">TensorDataset</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="n">generator</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Generator</span><span class="p">()</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">train_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span>
+    <span class="n">dataset</span><span class="p">,</span>
+    <span class="n">batch_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+    <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">drop_last</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">generator</span><span class="o">=</span><span class="n">generator</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># 2. 定义设备与线性模型 y_hat = xw + b</span>
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">in_features</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">out_features</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+<span class="c1"># 3. 定义均方误差、学习率和 SGD 优化器</span>
+<span class="n">loss_fn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MSELoss</span><span class="p">()</span>
+<span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">0.05</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">learning_rate</span><span class="p">)</span>
+
+<span class="c1"># 4. Mini-batch 训练</span>
+<span class="n">num_epochs</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">history</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="n">total_loss</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">sample_count</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">batch_x</span><span class="p">,</span> <span class="n">batch_y</span> <span class="ow">in</span> <span class="n">train_loader</span><span class="p">:</span>
+        <span class="n">batch_x</span> <span class="o">=</span> <span class="n">batch_x</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">batch_y</span> <span class="o">=</span> <span class="n">batch_y</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">prediction</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">batch_x</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">prediction</span><span class="p">,</span> <span class="n">batch_y</span><span class="p">)</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">*</span> <span class="n">batch_size</span>
+        <span class="n">sample_count</span> <span class="o">+=</span> <span class="n">batch_size</span>
+
+    <span class="n">epoch_loss</span> <span class="o">=</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="n">sample_count</span>
+    <span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">epoch_loss</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">50</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;epoch=</span><span class="si">{</span><span class="n">epoch</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">:</span><span class="s2">03d</span><span class="si">}</span><span class="s2">, loss=</span><span class="si">{</span><span class="n">epoch_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 5. 查看参数并做推理</span>
+<span class="n">learned_weight</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<span class="n">learned_bias</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">bias</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;真实系数：&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">true_coef</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;学习系数：&quot;</span><span class="p">,</span> <span class="n">learned_weight</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;学习偏置：&quot;</span><span class="p">,</span> <span class="n">learned_bias</span><span class="p">)</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+    <span class="n">fitted</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">))</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+
+<span class="c1"># 6. 可视化损失和拟合结果</span>
+<span class="n">order</span> <span class="o">=</span> <span class="n">x_np</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">argsort</span><span class="p">()</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">history</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Training loss&quot;</span><span class="p">,</span> <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Epoch&quot;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;MSE&quot;</span><span class="p">)</span>
+
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x_np</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">y_np</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x_np</span><span class="p">[</span><span class="n">order</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">fitted</span><span class="p">[</span><span class="n">order</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;fitted&quot;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<h3 id="sec-48">2. 为什么这样统计 epoch loss</h3>
+<p>每个 batch 的 <code>MSELoss</code> 默认已经对本批样本取平均。最后一批可能比其他批小，因此简单平均各批 loss 会让小批次权重过大。代码先用 <code>loss.item() * batch_size</code> 恢复该批总贡献，最后除以实际样本数，才是更准确的整轮平均。</p>
+<p><code>total_loss</code> 和 <code>sample_count</code> 必须在每个 epoch 开始时清零，否则记录的是从训练开始累计到当前的混合值，不再代表本轮损失。</p>
+<h3 id="sec-49">3. 模型模式、验证与保存</h3>
+<ul>
+<li><code>model.train()</code>：进入训练模式；会影响 Dropout、BatchNorm 等层。</li>
+<li><code>model.eval()</code>：进入评估模式，但它<strong>不会自动关闭梯度</strong>。</li>
+<li>推理通常同时使用 <code>model.eval()</code> 与 <code>torch.no_grad()</code>。</li>
+<li>验证集只做前向和指标统计，不能调用 <code>optimizer.step()</code>。</li>
+</ul>
+<p>推荐只保存参数状态：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="s2">&quot;linear_regression.pt&quot;</span><span class="p">)</span>
+
+<span class="n">restored</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<span class="n">state</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+    <span class="s2">&quot;linear_regression.pt&quot;</span><span class="p">,</span>
+    <span class="n">map_location</span><span class="o">=</span><span class="n">device</span><span class="p">,</span>
+    <span class="n">weights_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">restored</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+<span class="n">restored</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>学习率调度器示例：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">scheduler</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">lr_scheduler</span><span class="o">.</span><span class="n">StepLR</span><span class="p">(</span>
+    <span class="n">optimizer</span><span class="p">,</span>
+    <span class="n">step_size</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
+    <span class="n">gamma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># 通常在每个 epoch 完成后调用一次</span>
+<span class="n">scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>调度器的调用频率必须符合其定义；有些按 epoch，有些按 batch，有些根据验证指标更新。</p>
+<hr />
+<h2 id="sec-50">十二、最容易踩的坑</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>现象</th>
+<th>根因</th>
+<th>正确处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mat1 and mat2 must have the same dtype</code></td>
+<td>数据是 <code>float64</code>，模型是 <code>float32</code></td>
+<td>数据转成 <code>.float()</code>，或统一模型与数据类型</td>
+</tr>
+<tr>
+<td><code>Expected all tensors to be on the same device</code></td>
+<td>输入、标签、模型不在同一设备</td>
+<td>统一 <code>.to(device)</code></td>
+</tr>
+<tr>
+<td>直接对需梯度张量调用 <code>.numpy()</code> 报错</td>
+<td>NumPy 不理解计算图</td>
+<td><code>.detach().cpu().numpy()</code></td>
+</tr>
+<tr>
+<td>第二轮梯度变大</td>
+<td><code>.grad</code> 默认累积</td>
+<td>每批先 <code>optimizer.zero_grad()</code></td>
+</tr>
+<tr>
+<td>转置后 <code>view</code> 报错</td>
+<td>stride 与目标视图不兼容</td>
+<td><code>reshape(...)</code>，或先 <code>.contiguous().view(...)</code></td>
+</tr>
+<tr>
+<td>图像 <code>reshape(H, W, C)</code> 后颜色错乱</td>
+<td>把轴重排误写成形状重解释</td>
+<td>使用 <code>permute(1, 2, 0)</code></td>
+</tr>
+<tr>
+<td><code>a[::-1]</code> 报负步长错误</td>
+<td>PyTorch 切片不支持负步长</td>
+<td><code>torch.flip(a, dims=[0])</code></td>
+</tr>
+<tr>
+<td><code>mean()</code> 处理整数张量报错</td>
+<td>均值输出需要浮点或复数</td>
+<td><code>x.float().mean()</code></td>
+</tr>
+<tr>
+<td>原地更新参数触发 autograd 错误</td>
+<td>叶子参数被计算图追踪</td>
+<td>用优化器，或放进 <code>torch.no_grad()</code></td>
+</tr>
+<tr>
+<td>验证时结果不稳定</td>
+<td>只关梯度，未切换评估模式</td>
+<td><code>model.eval()</code> + <code>torch.no_grad()</code></td>
+</tr>
+<tr>
+<td><code>chunk</code> 数量少于请求值</td>
+<td><code>chunk</code> 不保证精确块数</td>
+<td>必须精确时用 <code>tensor_split</code></td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="sec-51">十三、本讲 API 速查</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>任务</th>
+<th>常用 API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>从数据创建</td>
+<td><code>torch.tensor</code>、<code>torch.from_numpy</code></td>
+</tr>
+<tr>
+<td>按形状创建</td>
+<td><code>empty</code>、<code>zeros</code>、<code>ones</code>、<code>full</code> 及其 <code>_like</code> 版本</td>
+</tr>
+<tr>
+<td>序列与随机数</td>
+<td><code>arange</code>、<code>linspace</code>、<code>rand</code>、<code>randn</code>、<code>randint</code></td>
+</tr>
+<tr>
+<td>类型与设备</td>
+<td><code>.to(dtype=..., device=...)</code>、<code>.float()</code>、<code>.long()</code></td>
+</tr>
+<tr>
+<td>基础运算</td>
+<td><code>add</code>、<code>sub</code>、<code>mul</code>、<code>div</code>、<code>matmul</code> / <code>@</code></td>
+</tr>
+<tr>
+<td>统计</td>
+<td><code>sum</code>、<code>mean</code>、<code>max</code>、<code>min</code>、<code>var</code>、<code>std</code></td>
+</tr>
+<tr>
+<td>数学函数</td>
+<td><code>sqrt</code>、<code>pow</code>、<code>exp</code>、<code>log</code>、<code>round</code></td>
+</tr>
+<tr>
+<td>索引</td>
+<td>切片、整数数组索引、布尔掩码</td>
+</tr>
+<tr>
+<td>形状</td>
+<td><code>reshape</code>、<code>flatten</code>、<code>squeeze</code>、<code>unsqueeze</code></td>
+</tr>
+<tr>
+<td>轴与布局</td>
+<td><code>transpose</code>、<code>permute</code>、<code>contiguous</code>、<code>is_contiguous</code></td>
+</tr>
+<tr>
+<td>组合与变换</td>
+<td><code>cat</code>、<code>stack</code>、<code>flip</code>、<code>rot90</code>、<code>chunk</code></td>
+</tr>
+<tr>
+<td>自动微分</td>
+<td><code>requires_grad</code>、<code>backward</code>、<code>.grad</code>、<code>no_grad</code>、<code>detach</code></td>
+</tr>
+<tr>
+<td>模型训练</td>
+<td><code>nn.Linear</code>、<code>nn.MSELoss</code>、<code>optim.SGD</code></td>
+</tr>
+<tr>
+<td>数据管线</td>
+<td><code>Dataset</code>、<code>TensorDataset</code>、<code>DataLoader</code></td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="sec-52">十四、课件知识覆盖索引</h2>
+<p>为了复习时便于回查，原课件的内容已按学习逻辑重新编排如下；纯封底页不作为知识点重复插入：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>原页范围</th>
+<th>本讲对应内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1～6</td>
+<td>PyTorch 定位、安装、特性、动态图、发展与编译优化</td>
+</tr>
+<tr>
+<td>7～30</td>
+<td>张量定义、维数、创建、数据类型、随机数、常量与类型转换</td>
+</tr>
+<tr>
+<td>31～39</td>
+<td>CPU/GPU、NumPy 共享与复制、<code>item</code>、<code>detach</code>、结果回传</td>
+</tr>
+<tr>
+<td>40～58</td>
+<td>算术、矩阵乘法、统计函数、方差校正、行优先与连续性</td>
+</tr>
+<tr>
+<td>59～68</td>
+<td>基础索引、高级索引、切片、布尔索引与三维索引</td>
+</tr>
+<tr>
+<td>69～78</td>
+<td><code>reshape</code>、<code>flatten</code>、升降维、转置、轴重排与 <code>view</code></td>
+</tr>
+<tr>
+<td>79～87</td>
+<td><code>cat</code>、<code>stack</code>、add/concat、翻转、旋转、分块和 NumPy 对照</td>
+</tr>
+<tr>
+<td>88～100</td>
+<td>计算图、反向传播、梯度访问、梯度累积、参数更新与断图</td>
+</tr>
+<tr>
+<td>101～118</td>
+<td>线性回归、三种梯度下降、Dataset/DataLoader 与完整训练循环</td>
+</tr>
+<tr>
+<td>119～121</td>
+<td>封底、索引与整数类型复习、矩阵自动微分综合例</td>
+</tr>
+</tbody>
+</table></div>
+<hr />
+<h2 id="sec-53">十五、本讲过关标准</h2>
+<p>不看资料完成下面这些动作，就算真正掌握了第一讲：</p>
+<ol>
+<li>创建形状为 <code>(32, 3, 224, 224)</code> 的随机张量，并说清每条轴的含义。</li>
+<li>解释 <code>torch.tensor(np_array)</code> 与 <code>torch.from_numpy(np_array)</code> 的内存关系。</li>
+<li>用高级索引同时取出两个坐标，再取出两行两列形成的子矩阵。</li>
+<li>把 <code>C × H × W</code> 图像正确变成 <code>H × W × C</code>，并解释为什么不能用 <code>reshape</code>。</li>
+<li>解释 <code>*</code>、<code>@</code>、<code>cat</code>、<code>stack</code> 在形状和语义上的差异。</li>
+<li>手算 <code>y = 2w², w = 10</code> 的梯度，并用 autograd 验证结果为 40。</li>
+<li>写出 <code>zero_grad → forward → loss → backward → step</code> 的 mini-batch 训练循环。</li>
+<li>在推理阶段正确组合 <code>model.eval()</code>、<code>torch.no_grad()</code>、<code>.detach().cpu().numpy()</code>。</li>
+</ol><div class="done-bar"><button class="mark-done-btn" data-key="lesson31" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson30.html"><div class="dir">← 上一篇</div><div class="name">🪐 K-Means 聚类与聚类评估</div></a><a class="disabled next"></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、PyTorch 在深度学习中的位置</a><a class="lv3" href="#sec-2">1. 核心能力</a><a class="lv3" href="#sec-3">2. 安装与环境确认</a><a class="lv2" href="#sec-4">二、Tensor：深度学习的数据语言</a><a class="lv3" href="#sec-5">1. 每个张量的四个关键属性</a><a class="lv3" href="#sec-6">2. 从 Python、NumPy 和形状创建张量</a><a class="lv3" href="#sec-7">3. 常见数据类型与范围</a><a class="lv3" href="#sec-8">4. 等差数列、随机张量与常量张量</a><a class="lv3" href="#sec-9">5. 随机种子与可复现性</a><a class="lv3" href="#sec-10">6. 类型转换</a><a class="lv2" href="#sec-11">三、CPU、GPU 与 NumPy 之间的数据流</a><a class="lv3" href="#sec-12">1. 统一管理设备</a><a class="lv3" href="#sec-13">2. NumPy 与 Tensor 的三种关系</a><a class="lv2" href="#sec-14">四、张量运算：逐元素、矩阵与统计</a><a class="lv3" href="#sec-15">1. 基本算术与原地操作</a><a class="lv3" href="#sec-16">2. Hadamard 乘法与矩阵乘法</a><a class="lv3" href="#sec-17">3. 数学函数与规约</a><a class="lv3" href="#sec-18">4. 方差与标准差的校正参数</a><a class="lv3" href="#sec-19">5. round 的边界行为</a><a class="lv2" href="#sec-20">五、逻辑形状、物理存储与连续性</a><a class="lv2" href="#sec-21">六、索引与切片</a><a class="lv3" href="#sec-22">1. 基础索引与切片</a><a class="lv3" href="#sec-23">2. 高级索引：配对选择与笛卡尔选择</a><a class="lv3" href="#sec-24">3. 布尔索引</a><a class="lv3" href="#sec-25">4. 三维张量按轴索引</a><a class="lv2" href="#sec-26">七、形状变换与轴变换</a><a class="lv3" href="#sec-27">1. reshape、flatten 与 -1</a><a class="lv3" href="#sec-28">2. squeeze 与 unsqueeze</a><a class="lv3" href="#sec-29">3. transpose 与 permute</a><a class="lv3" href="#sec-30">4. 与 NumPy 的常见对应关系</a><a class="lv2" href="#sec-31">八、拼接、堆叠、翻转与分块</a><a class="lv3" href="#sec-32">1. cat 与 stack</a><a class="lv3" href="#sec-33">2. 特征相加与特征拼接</a><a class="lv3" href="#sec-34">3. 翻转、旋转与分块</a><a class="lv2" href="#sec-35">九、自动微分：从前向计算到参数梯度</a><a class="lv3" href="#sec-36">1. 叶子张量、非叶子张量与 grad_fn</a><a class="lv3" href="#sec-37">2. 标量输出与向量—雅可比积</a><a class="lv3" href="#sec-38">3. 梯度会累积</a><a class="lv3" href="#sec-39">4. 安全更新参数</a><a class="lv3" href="#sec-40">5. detach 的正确理解</a><a class="lv3" href="#sec-41">6. 完整的矩阵自动微分例子</a><a class="lv2" href="#sec-42">十、Dataset、DataLoader 与三种梯度下降</a><a class="lv3" href="#sec-43">1. 全批量、随机与小批量</a><a class="lv3" href="#sec-44">2. Dataset 定义样本，DataLoader 组织批次</a><a class="lv3" href="#sec-45">3. “2244”训练骨架</a><a class="lv2" href="#sec-46">十一、完整案例：用 PyTorch 拟合一元线性回归</a><a class="lv3" href="#sec-47">1. 一段可直接运行的完整代码</a><a class="lv3" href="#sec-48">2. 为什么这样统计 epoch loss</a><a class="lv3" href="#sec-49">3. 模型模式、验证与保存</a><a class="lv2" href="#sec-50">十二、最容易踩的坑</a><a class="lv2" href="#sec-51">十三、本讲 API 速查</a><a class="lv2" href="#sec-52">十四、课件知识覆盖索引</a><a class="lv2" href="#sec-53">十五、本讲过关标准</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
