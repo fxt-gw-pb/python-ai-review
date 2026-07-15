@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BERT、GPT 与主流预训练架构 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">32</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">33</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">34</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">35</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">39</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">40</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">42</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">21</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">22</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">23</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">24</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">25</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">26</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">27</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">28</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">29</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">30</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 44 讲</div>
+<h1>🧠 BERT、GPT 与主流预训练架构</h1>
+<div class="chips"><span class="chip">🏷️ BERT</span><span class="chip">🏷️ GPT / Qwen</span><span class="chip">🏷️ 预训练目标</span></div>
+</div>
+<h2 id="sec-1">1 NLP主流架构对比</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>架构/模型</th>
+<th>结构类型</th>
+<th>Attention Mask</th>
+<th>是否可看未来</th>
+<th>主要用途</th>
+<th>代表模型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Transformer（基础）</strong></td>
+<td>Encoder + Decoder</td>
+<td>Encoder: padding<br>Decoder: causal + padding</td>
+<td>Encoder: ✅<br>Decoder: ❌</td>
+<td>翻译、生成、通用预训练底座</td>
+<td>原始 Transformer</td>
+</tr>
+<tr>
+<td><strong>BERT</strong></td>
+<td>Encoder-only</td>
+<td>仅 padding mask</td>
+<td>✅</td>
+<td>文本分类、NER、语义匹配、搜索</td>
+<td>RoBERTa, DeBERTa, ERNIE</td>
+</tr>
+<tr>
+<td><strong>GPT</strong></td>
+<td>Decoder-only</td>
+<td>causal mask（上三角）</td>
+<td>❌</td>
+<td>对话、写作、代码生成</td>
+<td>GPT-4, LLaMA, Qwen</td>
+</tr>
+<tr>
+<td><strong>T5 / BART</strong></td>
+<td>Encoder–Decoder</td>
+<td>Encoder: padding<br>Decoder: causal + padding</td>
+<td>混合</td>
+<td>翻译、摘要、生成QA</td>
+<td>T5, BART, mT5</td>
+</tr>
+</tbody>
+</table></div>
+<p><img loading="lazy" decoding="async" alt="image.png" src="../assets/img/lesson44/figure-2b138e863c88.png" /></p>
+<h2 id="sec-2">2 BERT 模型介绍</h2>
+<h3 id="sec-3">2.1 学习目标</h3>
+<ul>
+<li>了解 BERT 的核心思想与适用场景</li>
+<li>掌握 BERT 架构与三类嵌入</li>
+<li>理解 BERT 的两大预训练任务（MLM、NSP）</li>
+</ul>
+<h3 id="sec-4">2.2 BERT 简介</h3>
+<p>BERT（Bidirectional Encoder Representation from Transformers）由 Google 于 2018 提出，是基于 Transformer Encoder 的双向预训练语言模型，通过微调适配各类 NLP 任务。在 SQuAD、GLUE、MultiNLI 等基准上取得显著提升。</p>
+<blockquote>
+<p>《BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding》
+<a href="https://arxiv.org/pdf/1810.04805.pdf">https://arxiv.org/pdf/1810.04805.pdf</a></p>
+</blockquote>
+<p>典型应用：
+- 文本分类：情感分析、垃圾识别、舆情
+- 语义匹配：搜索排序、问句匹配、推荐
+- 命名实体识别：金融、医疗、信息抽取
+- 阅读理解（QA）：智能客服、知识问答
+- 句子关系判断：相似度、同义/相关性判定</p>
+<h3 id="sec-5">2.3 BERT 架构</h3>
+<p>整体为多层 Transformer Encoder 堆叠，如下：</p>
+<p><img loading="lazy" decoding="async" alt="image.png" src="../assets/img/lesson44/figure-ddd277afa129.png" />
+1. <strong>Embedding 层</strong>：Token Embedding（含首位 [CLS]）、Segment Embedding（区分句子对）、Position Embedding（可学习位置编码），三者相加作为输入。</p>
+<p><img loading="lazy" decoding="async" alt="image-2.png" src="../assets/img/lesson44/figure-25ee4efb5115.png" /></p>
+<ol start="2">
+<li>
+<p><strong>Transformer 编码层</strong>：多层自注意力实现真正的双向建模。
+双向是指：在Transformer Encoder 中的自注意力机制中，没有因果掩码（causal mask），每个token可以同时看到左右两侧的token。</p>
+</li>
+<li>
+<p><strong>任务头/预微调层</strong>：根据下游任务定制，常见做法：</p>
+<ul>
+<li>分类：取 [CLS] 最终隐藏状态 + 全连接 + Softmax。</li>
+<li>NER/序列标注：逐 Token 隐藏状态 + 分类头。</li>
+<li>QA：预测答案起止位置。</li>
+</ul>
+</li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>预测粒度</th>
+<th>任务类型（示例）</th>
+<th>用于预测的特征表示</th>
+<th>Linear 输出维度</th>
+<th>激活函数 + 损失函数</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>句子级</strong></td>
+<td>单标签多分类（情感分类、意图识别、新闻主题分类）</td>
+<td><code>[CLS]</code> 最终隐藏状态 或 <code>pooler_output</code></td>
+<td>类别数 C</td>
+<td>Softmax + CrossEntropy</td>
+<td>标准单标签分类</td>
+</tr>
+<tr>
+<td><strong>句子级</strong></td>
+<td>多标签多分类（多标签主题分类、标签打标）</td>
+<td><code>[CLS]</code> 最终隐藏状态 或 <code>pooler_output</code></td>
+<td>标签数 C</td>
+<td>Sigmoid + BCEWithLogits</td>
+<td>每个标签独立预测</td>
+</tr>
+<tr>
+<td><strong>句子级</strong></td>
+<td>单标签二分类（语义匹配、句对相似度、同义判断）</td>
+<td>两句 <code>[CLS]</code> 表示（拼接/差值/点乘/余弦）</td>
+<td>1</td>
+<td>Sigmoid + BCEWithLogits</td>
+<td>也可 2个logits+Softmax+CE</td>
+</tr>
+<tr>
+<td><strong>token级</strong></td>
+<td>单标签多分类（NER、词性标注）</td>
+<td>每个 token 的最终隐藏状态</td>
+<td>标签数 C</td>
+<td>Softmax + CrossEntropy</td>
+<td>对每个 token 单标签预测</td>
+</tr>
+<tr>
+<td><strong>token级</strong></td>
+<td>二标签多分类（抽取式 QA、阅读理解）</td>
+<td>每个 token 的最终隐藏状态</td>
+<td>2（start/end）</td>
+<td>Softmax + CE(start)+CE(end)</td>
+<td>对 start/end token 分别计算 CE</td>
+</tr>
+<tr>
+<td><strong>token级</strong></td>
+<td>N标签多分类（完形填空、MLM）</td>
+<td>被 mask 的 token 隐藏状态</td>
+<td>词表大小 V</td>
+<td>Softmax + CrossEntropy</td>
+<td>未 mask token 通常 ignore_index=-100</td>
+</tr>
+</tbody>
+</table></div>
+<p>工程调参建议：</p>
+<ul>
+<li>Batch size：16/32</li>
+<li>学习率：2e-5~5e-5</li>
+<li>Epochs：3/4, 可以增加到5</li>
+<li>优化器：AdamW，通常 weight_decay=0.01</li>
+</ul>
+<h3 id="sec-6">2.4 预训练任务</h3>
+<ol>
+<li><strong>Masked Language Model (MLM)</strong>  <ul>
+<li>随机选 15% token：80% 替换为 [MASK]，10% 换随机词，10% 保持不变。  </li>
+<li>迫使模型利用上下文恢复被遮蔽词，实现深度双向表示。<ul>
+<li>80% 用 [MASK]：强制模型学习上下文填空</li>
+<li>10% 用随机词：防止记忆当前位置，强化上下文建模</li>
+<li>10% 保留原词：减少分布偏移，让模型看到真实 token 形态</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Next Sentence Prediction (NSP)</strong>  <ul>
+<li>输入句子对 (A, B)，预测 B 是否为 A 的下一句。  </li>
+<li>50% 正样本（真实下一句），50% 负样本（随机句）。</li>
+</ul>
+</li>
+</ol>
+<h3 id="sec-7">2.5 小结</h3>
+<ul>
+<li>BERT = 三类 Embedding + Transformer Encoder 堆叠 + 任务头。</li>
+<li>预训练任务：MLM 解决双向表征，NSP 建模句间关系。</li>
+<li>微调时仅调整任务头，即可适配分类、匹配、QA、NER 等多任务。</li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>面试题</th>
+<th>回答要点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BERT 的输入是什么？</td>
+<td><code>[CLS] token1 token2 ... tokenN [SEP]</code>；包括 input_ids、attention_mask、token_type_ids（句对任务）。</td>
+</tr>
+<tr>
+<td><code>[CLS]</code> 与 <code>[SEP]</code> 的作用？</td>
+<td><code>[CLS]</code>：标记句子开始。<br><code>[SEP]</code>：分隔句子或文本，标记结束。</td>
+</tr>
+<tr>
+<td>BERT 输出有哪些？</td>
+<td>1. <code>last_hidden_state</code>：每个 token 的隐藏状态（batch_size, seq_len, d_model）,用于token级任务 <br>2. <code>pooler_output</code>：<code>[CLS]</code> 线性 + tanh，用于句子级分类。</td>
+</tr>
+<tr>
+<td>BERT 下游微调常用任务有哪些？</td>
+<td>单标签分类、多标签分类、句对二分类、NER、抽取式 QA、MLM 微调。</td>
+</tr>
+<tr>
+<td>微调 BERT 的常用参数？</td>
+<td>Batch size 16/32；学习率 2e-5~5e-5；Epoch 3~4；AdamW，weight_decay 0.01。</td>
+</tr>
+<tr>
+<td>BERT 如何表示句子级任务？</td>
+<td><code>[CLS]</code> 输出或 <code>pooler_output</code> 输入 线性层 + Softmax 进行分类</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="sec-8">3 BERT模型变体</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>模型</th>
+<th>核心架构与特点</th>
+<th>关键优化 / 改进</th>
+<th>参数量与适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>RoBERTa</strong></td>
+<td>与 BERT 架构一致</td>
+<td>1. 更大数据（16GB→160GB）<br>2. 更大 batch（256→8000）<br>3. 更长训练<br>4. 去 NSP<br>5. 动态 Mask<br>6. Byte-BPE编码</td>
+<td>主流工业 baseline，效果全面优于 BERT</td>
+</tr>
+<tr>
+<td><strong>MacBERT</strong></td>
+<td>中文优化版 BERT</td>
+<td>1. MLM 改进：近义词替换 + 全词 + n-gram Mask<br>2. 去 NSP → SOP</td>
+<td>中文分类/NER/QA 强，通用中文 baseline</td>
+</tr>
+<tr>
+<td><strong>ALBERT</strong></td>
+<td>Transformer Encoder</td>
+<td>1. 词嵌入因式分解（低维Embedding + Linear投影）<br>2. 层间参数共享<br>3. 去 NSP → SOP(句子顺序预测)<br>4. 去掉 Dropout<br>5. MLM 任务优化（长句 + N-gram Masking）</td>
+<td>albert-tiny: 1.8M；超轻量、推理快，精度略降，适合资源受限</td>
+</tr>
+<tr>
+<td><strong>DeBERTa</strong></td>
+<td>解耦注意力（content &amp; position 分离）</td>
+<td>1. Disentangled Attention<br>2. 相对位置编码<br>3. Mask 解耦</td>
+<td><strong>BERT 系最强性能</strong>，GLUE/SuperGLUE/SQuAD SOTA</td>
+</tr>
+<tr>
+<td><strong>ELECTRA</strong></td>
+<td>判别式预训练</td>
+<td>1. Generator + Discriminator<br>2. 预测 token 是否被替换</td>
+<td>小模型性能接近大模型，<strong>效率最强</strong></td>
+</tr>
+<tr>
+<td><strong>SpanBERT</strong></td>
+<td>强化 span 表示</td>
+<td>1. Span Masking<br>2. SBO（Span Boundary Objective）<br>3. 去 NSP</td>
+<td>抽取式 QA、实体识别更强</td>
+</tr>
+<tr>
+<td><strong>DistilBERT</strong></td>
+<td>BERT 蒸馏版</td>
+<td>1. 知识蒸馏<br>2. 层数减半</td>
+<td>40% 参数、60% 速度，精度保留 ~97%</td>
+</tr>
+<tr>
+<td><strong>ERNIE (百度)</strong></td>
+<td>中文知识增强</td>
+<td>1. 实体/词级 Mask<br>2. 知识图谱注入</td>
+<td>中文信息抽取、搜索、对话强</td>
+</tr>
+<tr>
+<td><strong>SciBERT / BioBERT</strong></td>
+<td>领域专用预训练</td>
+<td>学术/生物医学语料</td>
+<td>科研、医疗 NLP 明显优于通用模型</td>
+</tr>
+</tbody>
+</table></div>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>校招项目落地顺序（推荐）</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Step1: 先跑 baseline</strong></td>
+<td>中文用 MacBERT，英文/通用用 RoBERTa。</td>
+</tr>
+<tr>
+<td><strong>Step2: 再冲效果</strong></td>
+<td>指标瓶颈时换 DeBERTa。</td>
+</tr>
+<tr>
+<td><strong>Step3: 按任务换专精模型</strong></td>
+<td>抽取类任务优先 SpanBERT。</td>
+</tr>
+<tr>
+<td><strong>Step4: 资源受限再压缩</strong></td>
+<td>蒸馏/量化/剪枝，先保线上时延与成本。</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="sec-9">4 GPT模型介绍</h2>
+<h4>学习目标</h4>
+<ul>
+<li>了解什么是GPT.</li>
+<li>掌握GPT的架构.</li>
+<li>掌握GPT的预训练任务.</li>
+</ul>
+<h3 id="sec-10">4.1 GPT介绍</h3>
+<ul>
+<li>GPT是OpenAI公司提出的一种预训练语言模型.</li>
+<li>
+<p>核心论文</p>
+<ul>
+<li>GPT: <a href="https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf">Improving Language Understanding by Generative Pre-Training</a></li>
+<li>GPT-2: <a href="https://cdn.openai.com/better-language-models/language_models_are_unsupervised_multitask_learners.pdf">Language Models are Unsupervised Multitask Learners</a>.</li>
+</ul>
+</li>
+<li>
+<p>GPT与BERT的区别：</p>
+<ul>
+<li>GPT: 单向语言模型，只利用前文预测下一个词 → 擅长文本生成（NLG）</li>
+<li>BERT: 双向语言模型，同时利用上下文 → 擅长文本理解（NLU）</li>
+</ul>
+</li>
+</ul>
+<h3 id="sec-11">4.2 GPT的架构</h3>
+<p><img loading="lazy" decoding="async" alt="image.png" src="../assets/img/lesson44/figure-5397958e539c.png" /></p>
+<p>GPT 基于 Transformer Decoder 架构，但去掉了 Encoder-Decoder Attention。
+每个 Decoder Block 包含：</p>
+<pre><code>- Masked Multi-Head Attention
+- Feed Forward 层
+</code></pre>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson44/figure-5c60a9ceccec.png" /></p>
+<p>Masked Multi-Head Attention 保证模型在预测下一个词时只能看到前文信息。
+例如给定一个句子包含4个单词[A, B, C, D], GPT需要用[A]预测B, 用[A, B]预测C, 用[A, B, C]预测D. 当要预测B时, 需要将[B, C, D]遮掩起来.</p>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson44/figure-ba87264fa43d.png" /></p>
+<p>典型 GPT-Decoder 数量：12 层（GPT-2 / base 规模），大模型可达到 24 层或更多。
+<img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson44/figure-ea5d5c782292.png" /></p>
+<h3 id="sec-12">4.3 GPT训练过程</h3>
+<p>GPT的训练也是典型的两阶段过程:</p>
+<ul>
+<li>第一阶段: 无监督的预训练语言模型.</li>
+<li>第二阶段: 有监督的下游任务fine-tunning.</li>
+</ul>
+<h4>无监督的预训练语言模型-Next token prediction</h4>
+<p><img loading="lazy" decoding="async" alt="image.png" src="../assets/img/lesson44/figure-d6f5fed277c7.png" /></p>
+<p><strong>无监督学习，通过“由前文预测下一个词”学习语言规律，无需人工标注标签。输入为tgt_input（前文文本序列），输出为tgt_output（前文对应的下一个词组成的序列），本质就是用tgt_input预测对应的tgt_output。</strong></p>
+<ul>
+<li>给定句子U = [u1, u2, ..., un], GPT的训练目标是最大化由前文预测当前词的概率:</li>
+</ul>
+<p>$$
+L_1(U)=\sum_i\log P(u_i|u_{i-k},\cdots,u_{i-1};\Theta)
+$$</p>
+<p>输入表示h0为:</p>
+<p>$$
+h_0 = UW_e + W_p
+$$</p>
+<p>其中We是词嵌入矩阵，Wp是位置编码矩阵.</p>
+<ul>
+<li>将h0传入GPT的Decoder Block中, 依次得到ht:</li>
+</ul>
+<p>$$
+h_t = transformer_block(h_{l-1})\;\;\;\;l\in[1,t]
+$$</p>
+<ul>
+<li>最后通过ht来预测下一个词:</li>
+</ul>
+<p>$$
+P(u)=softmax(h_tW_e^T)
+$$</p>
+<h4>有监督的下游任务微调fine-tunning</h4>
+<blockquote>
+<p>在微调下游任务时，GPT 会根据具体任务调整输出。微调通常采用有监督学习，训练数据包括输入序列 ([x_1, x_2, ..., x_n]) 和标签 (y)。模型目标是根据输入序列预测对应的标签。</p>
+<p>在分类任务中，通常只取 <strong>序列的最后一个隐藏状态</strong> (h_n) 作为句子表示，然后通过输出线性层（通常是 softmax）预测标签概率。</p>
+</blockquote>
+<p>$$</p>
+<p>P(y|x_1,\cdots,x_n)=softmax(h_nW_y + b_y)
+$$</p>
+<ul>
+<li>微调任务的目标是最大化下面的函数:</li>
+</ul>
+<p>$$
+L_2=\sum_{(x,y)}\log P(y|x_1,\cdots,x_n)
+$$</p>
+<ul>
+<li>综合两个阶段的目标任务函数, 可知GPT的最终优化函数为:</li>
+</ul>
+<p>$$
+L_3 = L_2 + \lambda L_1
+$$</p>
+<p>GPT下游任务微调类型</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>任务类型</th>
+<th>GPT 输出使用方式</th>
+<th>是否需要自定义下游网络</th>
+<th>备注 / 建议</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>文本生成 (NLG)</strong></td>
+<td>直接使用 LM head logits</td>
+<td>否</td>
+<td>可直接生成文本，少量微调可提升生成质量</td>
+</tr>
+<tr>
+<td>文本分类 / 回归</td>
+<td>使用 <code>last_hidden_state</code> 或 自定义pooling 后向量</td>
+<td>是</td>
+<td>定义线性层或 MLP，利用 GPT 输出作为特征表示</td>
+</tr>
+<tr>
+<td>其他任务（问答 / 信息抽取）</td>
+<td>同文本分类</td>
+<td>是</td>
+<td>可根据任务设计自定义 head，支持 token-level 或 span-level 输出</td>
+</tr>
+</tbody>
+</table></div>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoModelForCausalLM</span><span class="p">,</span> <span class="n">AutoTokenizer</span>
+
+<span class="c1"># 设置设备</span>
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+
+<span class="c1"># 选择模型</span>
+<span class="n">model_name</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;./model/gpt2&quot;</span>  <span class="c1"># GPT-2 base，适合 CPU 演示</span>
+
+<span class="c1"># 加载 tokenizer 和模型</span>
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="n">local_files_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">AutoModelForCausalLM</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_name</span><span class="p">,</span> <span class="n">local_files_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># 输入文本</span>
+<span class="n">prompt</span> <span class="o">=</span> <span class="s2">&quot;what do you like?&quot;</span>
+<span class="n">input_ids</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">input_ids</span>
+
+<span class="c1"># 推理</span>
+<span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+<span class="c1"># @torch.no_grad()</span>
+<span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+    <span class="c1"># 生成文本</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">input_ids</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">),</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># 解码输出</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">skip_special_tokens</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+</pre></div>
+</div>
+<pre><code>&lt;本地用户目录&gt;\.conda\envs\nlp_project\lib\site-packages\tqdm\auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+The attention mask and the pad token id were not set. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+Setting `pad_token_id` to `eos_token_id`:50256 for open-end generation.
+The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+
+
+what do you like?
+
+I'm not sure. I'm not sure if I like it or not. I'm not sure if I like it or not. I'm not sure if I like it or not. I'm not sure if I like it or not. I'm not sure if I like it or not. I'm not sure if I like it or not. I'm not sure if I like it or not. I'm not sure if I like it or not.
+</code></pre>
+<h3 id="sec-13">4.4 小结</h3>
+<ul>
+<li>
+<p><strong>GPT 是什么</strong></p>
+<ul>
+<li>OpenAI 提出的单向预训练语言模型</li>
+<li>仅利用前文信息预测下一个词</li>
+</ul>
+</li>
+<li>
+<p><strong>GPT 架构</strong></p>
+<ul>
+<li>基于 Transformer Decoder（移除 Encoder-Decoder Attention）</li>
+<li>保留 Masked Multi-Head Attention + Feed Forward</li>
+<li>由 12 个改造后的 Decoder Block 堆叠而成</li>
+</ul>
+</li>
+<li>
+<p><strong>GPT 训练</strong></p>
+<ul>
+<li>第一阶段：无监督语言模型预训练</li>
+<li>第二阶段：有监督下游任务微调</li>
+</ul>
+</li>
+</ul>
+<h2 id="sec-14">5 扩展-BERT GPT ELMo模型的对比</h2>
+<p><img loading="lazy" decoding="async" alt="image.png" src="../assets/img/lesson44/figure-381a0f03d5be.png" /></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>模型</th>
+<th>特征提取器</th>
+<th>语言模型方向</th>
+<th>优点</th>
+<th>缺点</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>ELMo</strong></td>
+<td>双层双向 LSTM</td>
+<td>双向（左右单向 LSTM 拼接）</td>
+<td>上下文动态词向量，解决多义词问题</td>
+<td>LSTM提特征能力弱，特征融合有限</td>
+<td>目前很少使用</td>
+</tr>
+<tr>
+<td><strong>GPT</strong></td>
+<td>Transformer Decoder</td>
+<td>单向（只看上文）</td>
+<td>特征提取能力强，自然语言生成能力好</td>
+<td>单向限制，无法利用未来信息</td>
+<td>文本生成、对话生成</td>
+</tr>
+<tr>
+<td><strong>BERT</strong></td>
+<td>Transformer Encoder</td>
+<td>双向（同时看上下文）</td>
+<td>双向上下文理解能力强，多任务预训练（MLM+NSP）</td>
+<td>模型庞大，训练成本高，不适合生成任务</td>
+<td>文本分类、问答、命名实体识别等理解任务</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="sec-15">6 常见面试题</h2>
+<h4>BERT 与 GPT 的核心架构差异是什么？</h4>
+<ul>
+<li><strong>BERT</strong>：双向编码器，使用transformer encoder 架构，适合理解类任务。</li>
+<li><strong>GPT</strong>：单向解码器，使用transformer decoder 架构，适合生成类任务。</li>
+</ul>
+<hr />
+<h4>BERT 的预训练任务有哪些？</h4>
+<ul>
+<li><strong>MLM</strong>（Masked Language Model）和 <strong>NSP</strong>（Next Sentence Prediction）。</li>
+</ul>
+<hr />
+<h4>GPT 的训练目标是什么？</h4>
+<ul>
+<li>训练任务是因果语言建模（next token prediction），即由前文预测后文</li>
+<li>训练目标是最大化前文预测当前词的概率</li>
+</ul>
+<hr />
+<h4>BERT 输入中 <code>[CLS]</code> 与 <code>[SEP]</code> 的作用是什么？</h4>
+<ul>
+<li><strong>[CLS]</strong>：句级表示用于分类,作为起始符。</li>
+<li><strong>[SEP]</strong>：分隔句子或段落。</li>
+</ul>
+<hr />
+<h4>为什么 BERT 不适合直接做自回归生成？</h4>
+<ul>
+<li>双向注意力会看到未来信息，破坏自回归因果性。</li>
+</ul>
+<h3 id="sec-16">6.1 代码作业</h3>
+<ul>
+<li>
+<ol>
+<li><strong>BERT 提取句向量</strong>：使用 <code>AutoModel.from_pretrained("bert-base-chinese")</code> 和 <code>AutoTokenizer.from_pretrained("bert-base-chinese")</code> 加载模型和分词器，对句子 <code>"深度学习是人工智能的重要分支"</code> 进行编码，取 <code>last_hidden_state</code> 中 <code>[CLS]</code> 位置（第0位）的向量作为句向量，打印该向量的形状（应为 <code>[1, 768]</code>）及前 5 个维度的数值。</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li><strong>句子对编码与 token_type_ids 分析</strong>：使用 <code>AutoTokenizer.from_pretrained("bert-base-chinese")</code> 对句子对进行编码（句子A：<code>"今天天气真好"</code>，句子B：<code>"适合出去运动"</code>），打印 <code>input_ids</code>、<code>token_type_ids</code>、对应的 token 列表，并说明：<code>token_type_ids</code> 中 <code>0</code> 和 <code>1</code> 分别代表哪个句子，<code>[CLS]</code> 和两个 <code>[SEP]</code> 各在哪个位置。</li>
+</ol>
+</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="c1"># ==============================</span>
+<span class="c1"># 作业1：BERT 提取 [CLS] 句向量</span>
+<span class="c1"># ==============================</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">homework1_bert_cls_vector</span><span class="p">():</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoTokenizer</span><span class="p">,</span> <span class="n">AutoModel</span>
+
+    <span class="n">model_name</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;./model/bert-base-chinese&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;加载模型: </span><span class="si">{</span><span class="n">model_name</span><span class="si">}</span><span class="s2">（首次运行会自动下载，请确保网络正常）&quot;</span><span class="p">)</span>
+    <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span>
+    <span class="n">model</span>     <span class="o">=</span> <span class="n">AutoModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+    <span class="n">sentence</span> <span class="o">=</span> <span class="s2">&quot;深度学习是人工智能的重要分支&quot;</span>
+    <span class="n">inputs</span>   <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">sentence</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="o">**</span><span class="n">inputs</span><span class="p">)</span>
+
+    <span class="c1"># last_hidden_state shape: [batch, seq_len, hidden_size]</span>
+    <span class="n">last_hidden</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">last_hidden_state</span>
+    <span class="n">cls_vector</span>  <span class="o">=</span> <span class="n">last_hidden</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>   <span class="c1"># 取 [CLS] 位置</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">句子: </span><span class="si">{</span><span class="n">sentence</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;last_hidden_state shape: </span><span class="si">{</span><span class="n">last_hidden</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">  (batch, seq_len, hidden_size)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[CLS] 向量 shape:        </span><span class="si">{</span><span class="n">cls_vector</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">   (期望: [1, 768])&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;[CLS] 向量前5个维度:     </span><span class="si">{</span><span class="n">cls_vector</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="p">:</span><span class="mi">5</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">说明：[CLS] 位置的隐藏状态通常作为整句的语义表示，&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;  在下游分类任务中接一个线性分类头即可完成微调&quot;</span><span class="p">)</span>
+
+<span class="c1"># ==============================</span>
+<span class="c1"># 作业2：句子对编码与 token_type_ids 分析</span>
+<span class="c1"># ==============================</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">homework2_sentence_pair</span><span class="p">():</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoTokenizer</span>
+
+    <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;bert-base-chinese&quot;</span><span class="p">)</span>
+    <span class="n">sent_a</span> <span class="o">=</span> <span class="s2">&quot;今天天气真好&quot;</span>
+    <span class="n">sent_b</span> <span class="o">=</span> <span class="s2">&quot;适合出去运动&quot;</span>
+
+    <span class="c1"># 句子对编码</span>
+    <span class="n">encoding</span>  <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">sent_a</span><span class="p">,</span> <span class="n">sent_b</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">&quot;pt&quot;</span><span class="p">)</span>
+    <span class="n">input_ids</span>       <span class="o">=</span> <span class="n">encoding</span><span class="p">[</span><span class="s2">&quot;input_ids&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">token_type_ids</span>  <span class="o">=</span> <span class="n">encoding</span><span class="p">[</span><span class="s2">&quot;token_type_ids&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">attention_mask</span>  <span class="o">=</span> <span class="n">encoding</span><span class="p">[</span><span class="s2">&quot;attention_mask&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">tokens</span>          <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">input_ids</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;句子A: </span><span class="si">{</span><span class="n">sent_a</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;句子B: </span><span class="si">{</span><span class="n">sent_b</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;input_ids      (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">input_ids</span><span class="p">)</span><span class="si">}</span><span class="s2"> 个): </span><span class="si">{</span><span class="n">input_ids</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;token_type_ids (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">token_type_ids</span><span class="p">)</span><span class="si">}</span><span class="s2"> 个): </span><span class="si">{</span><span class="n">token_type_ids</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;token 列表     (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span><span class="si">}</span><span class="s2"> 个): </span><span class="si">{</span><span class="n">tokens</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 分析特殊 token 位置</span>
+    <span class="n">sep_positions</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="s2">&quot;[SEP]&quot;</span><span class="p">]</span>
+    <span class="n">cls_positions</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="s2">&quot;[CLS]&quot;</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;特殊 token 位置分析:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [CLS] 在位置: </span><span class="si">{</span><span class="n">cls_positions</span><span class="si">}</span><span class="s2">  → 句子开头，代表整体语义&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  [SEP] 在位置: </span><span class="si">{</span><span class="n">sep_positions</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    第1个[SEP]（位置</span><span class="si">{</span><span class="n">sep_positions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">）: 句子A结束&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    第2个[SEP]（位置</span><span class="si">{</span><span class="n">sep_positions</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">）: 句子B结束&quot;</span><span class="p">)</span>
+
+    <span class="c1"># token_type_ids 含义</span>
+    <span class="n">a_tokens</span> <span class="o">=</span> <span class="p">[</span><span class="n">tokens</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">token_type_ids</span><span class="p">)</span> <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">b_tokens</span> <span class="o">=</span> <span class="p">[</span><span class="n">tokens</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">token_type_ids</span><span class="p">)</span> <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">token_type_ids 含义:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  值为 0 → 属于句子A（含[CLS]和第1个[SEP]）: </span><span class="si">{</span><span class="n">a_tokens</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  值为 1 → 属于句子B（含第2个[SEP]）:         </span><span class="si">{</span><span class="n">b_tokens</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">BERT 通过 token_type_ids 区分句子对，用于 NSP（下一句预测）等预训练任务&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;作业1：BERT 提取 [CLS] 句向量&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="n">homework1_bert_cls_vector</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;作业2：句子对编码与 token_type_ids 分析&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="n">homework2_sentence_pair</span><span class="p">()</span>
+</pre></div>
+</div>
+<pre><code>============================================================
+作业1：BERT 提取 [CLS] 句向量
+============================================================
+
+
+&lt;本地用户目录&gt;\.conda\envs\nlp_project\lib\site-packages\tqdm\auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+
+
+加载模型: ./model/bert-base-chinese（首次运行会自动下载，请确保网络正常）
+
+句子: 深度学习是人工智能的重要分支
+last_hidden_state shape: torch.Size([1, 16, 768])  (batch, seq_len, hidden_size)
+[CLS] 向量 shape:        torch.Size([1, 768])   (期望: [1, 768])
+[CLS] 向量前5个维度:     [0.16685250401496887, -0.4325307607650757, -0.10297569632530212, 0.7755419611930847, 1.0006687641143799]
+
+说明：[CLS] 位置的隐藏状态通常作为整句的语义表示，
+  在下游分类任务中接一个线性分类头即可完成微调
+
+============================================================
+作业2：句子对编码与 token_type_ids 分析
+============================================================
+句子A: 今天天气真好
+句子B: 适合出去运动
+
+input_ids      (15 个): [101, 791, 1921, 1921, 3698, 4696, 1962, 102, 6844, 1394, 1139, 1343, 6817, 1220, 102]
+token_type_ids (15 个): [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1]
+token 列表     (15 个): ['[CLS]', '今', '天', '天', '气', '真', '好', '[SEP]', '适', '合', '出', '去', '运', '动', '[SEP]']
+
+特殊 token 位置分析:
+  [CLS] 在位置: [0]  → 句子开头，代表整体语义
+  [SEP] 在位置: [7, 14]
+    第1个[SEP]（位置7）: 句子A结束
+    第2个[SEP]（位置14）: 句子B结束
+
+token_type_ids 含义:
+  值为 0 → 属于句子A（含[CLS]和第1个[SEP]）: ['[CLS]', '今', '天', '天', '气', '真', '好', '[SEP]']
+  值为 1 → 属于句子B（含第2个[SEP]）:         ['适', '合', '出', '去', '运', '动', '[SEP]']
+
+BERT 通过 token_type_ids 区分句子对，用于 NSP（下一句预测）等预训练任务
+</code></pre><div class="done-bar"><button class="mark-done-btn" data-key="lesson44" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson43.html"><div class="dir">← 上一篇</div><div class="name">🤗 Transformers 迁移学习与中文任务</div></a><a class="disabled next"></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">1 NLP主流架构对比</a><a class="lv2" href="#sec-2">2 BERT 模型介绍</a><a class="lv3" href="#sec-3">2.1 学习目标</a><a class="lv3" href="#sec-4">2.2 BERT 简介</a><a class="lv3" href="#sec-5">2.3 BERT 架构</a><a class="lv3" href="#sec-6">2.4 预训练任务</a><a class="lv3" href="#sec-7">2.5 小结</a><a class="lv2" href="#sec-8">3 BERT模型变体</a><a class="lv2" href="#sec-9">4 GPT模型介绍</a><a class="lv3" href="#sec-10">4.1 GPT介绍</a><a class="lv3" href="#sec-11">4.2 GPT的架构</a><a class="lv3" href="#sec-12">4.3 GPT训练过程</a><a class="lv3" href="#sec-13">4.4 小结</a><a class="lv2" href="#sec-14">5 扩展-BERT GPT ELMo模型的对比</a><a class="lv2" href="#sec-15">6 常见面试题</a><a class="lv3" href="#sec-16">6.1 代码作业</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,2006 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RNN 进阶：LSTM、GRU 与双向网络 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">32</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">33</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">34</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">35</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">39</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">40</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">42</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">21</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">22</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">23</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">24</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">25</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">26</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">27</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">28</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">29</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">30</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 37 讲</div>
+<h1>🧬 RNN 进阶：LSTM、GRU 与双向网络</h1>
+<div class="chips"><span class="chip">🏷️ RNN</span><span class="chip">🏷️ LSTM / GRU</span><span class="chip">🏷️ 双向网络</span></div>
+</div>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="c1"># 设置中文字体</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.sans-serif&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SimHei&#39;</span><span class="p">]</span>  <span class="c1"># 微软雅黑</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.unicode_minus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>    <span class="c1"># 解决负号显示问题</span>
+<span class="c1"># 设置设备，优先使用顺序：GPU &gt; MPS &gt; CPU</span>
+<span class="n">DEVICE</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span>
+    <span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+    <span class="k">else</span> <span class="s2">&quot;mps&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">mps</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+    <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;当前设备：</span><span class="si">{</span><span class="n">DEVICE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>当前设备：cuda
+</code></pre>
+<h2 id="sec-1">1 认识RNN模型</h2>
+<h4>学习目标</h4>
+<ul>
+<li>了解什么是RNN模型.</li>
+<li>了解RNN模型的应用.</li>
+<li>了解RNN模型的分类.</li>
+</ul>
+<h3 id="sec-2">1.1 什么是RNN模型</h3>
+<ul>
+<li>
+<p>RNN(Recurrent Neural Network), 循环神经网络, 输入一般是序列数据, 捕捉序列之间的关系特征, 输出一般也是序列.</p>
+</li>
+<li>
+<p>完整的RNN神经网络的结构如下:</p>
+</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-4df5cba21b82.png" /></p>
+<ul>
+<li>单层RNN的计算模型如下:</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-cf8c7b90561b.png" /></p>
+<ul>
+<li>RNN单层网络结构:</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-6dc526ed9fbc.gif" /></p>
+<ul>
+<li>沿时间步展开的单层RNN网络结构:</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-2b8a164bc39a.gif" /></p>
+<p><strong>RNN沿着时间步/序列长度循环计算隐藏状态</strong></p>
+<ul>
+<li>
+<p>RNN层当前时间步的输入有两个：</p>
+<ul>
+<li>1.整个RNN神经网络的上一时间步的输出结果的词向量；</li>
+<li>2.同一个RNN层的上一时间步的隐藏状态。</li>
+</ul>
+</li>
+<li>
+<p>RNN层当前时间步的输出结果：</p>
+<ul>
+<li>1.当前时间步的隐藏状态；</li>
+<li>2.所有时间步的隐藏状态。</li>
+</ul>
+</li>
+</ul>
+<h3 id="sec-3">1.2 RNN模型的应用</h3>
+<ul>
+<li>RNN可以处理连续序列, 如人类的语言, 语音等, 广泛应用于NLP领域, 如文本分类, 情感分析, 意图识别, 机器翻译等.</li>
+</ul>
+<h3 id="sec-4">1.3 RNN模型的分类</h3>
+<p>一个<strong>完整的 RNN 神经网络</strong>通常由三部分组成：</p>
+<ul>
+<li><strong>词嵌入层（Embedding Layer）</strong>：将离散的 词索引 映射为连续向量/词向量</li>
+<li><strong>RNN 层</strong>：按时间步处理序列，生成隐藏状态</li>
+<li><strong>输出层（Output Layer）</strong>：根据任务类型输出预测结果</li>
+</ul>
+<h4>按输入–输出结构分类（RNN 模型）</h4>
+<blockquote>
+<p>N → N RNN（等长序列）</p>
+</blockquote>
+<ul>
+<li>输入：长度为 N 的序列</li>
+<li>输出：长度为 N 的序列</li>
+<li>特点：输入与输出一一对应、长度相同</li>
+</ul>
+<p>应用示例：</p>
+<ul>
+<li>序列标注任务（token 级标注，如词性标注、命名实体识别）</li>
+<li>等长度文本生成（如合辙诗句）</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-62d1096a894b.png" /></p>
+<blockquote>
+<p>N → 1 RNN（序列到单值）</p>
+</blockquote>
+<ul>
+<li>输入：一个序列</li>
+<li>输出：一个单独的值</li>
+<li>
+<p>实现方式：</p>
+</li>
+<li>
+<p>使用 <strong>最后一个时间步的隐藏状态</strong></p>
+</li>
+<li>接 <strong>输出层（全连接层 + Sigmoid / Softmax）</strong></li>
+</ul>
+<p>应用示例：</p>
+<ul>
+<li>文本分类</li>
+<li>情感分析</li>
+<li>用户意图识别</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-7679ef64a1d5.png" /></p>
+<blockquote>
+<p>1 → N RNN（单输入到序列）</p>
+</blockquote>
+<ul>
+<li>输入：一个固定向量</li>
+<li>输出：一个序列</li>
+<li>
+<p>常见做法：</p>
+</li>
+<li>
+<p>将输入向量作为每个时间步生成输出的条件信息</p>
+</li>
+</ul>
+<p>应用示例：</p>
+<ul>
+<li>图像生成文字（Image Caption）</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-2f62a177ff0d.png" /></p>
+<blockquote>
+<p>N → M RNN（不等长序列）,使用最多</p>
+</blockquote>
+<ul>
+<li>输入与输出序列长度均不固定</li>
+<li>
+<p>由两部分组成：</p>
+</li>
+<li>
+<p><strong>编码器（Encoder）</strong></p>
+</li>
+<li><strong>解码器（Decoder）</strong></li>
+<li>该结构也称为 <strong>Seq2Seq 架构</strong></li>
+</ul>
+<p>基本思想：</p>
+<ul>
+<li>编码器将输入序列压缩为上下文表示 ( c )</li>
+<li>解码器在每个时间步利用 ( c ) 生成输出序列</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-b9e51575dee1.png" /></p>
+<p>应用示例：</p>
+<ul>
+<li>机器翻译</li>
+<li>文本摘要</li>
+<li>阅读理解</li>
+</ul>
+<h3 id="sec-5">1.4 小结</h3>
+<ul>
+<li>
+<p><strong>什么是RNN模型</strong>: RNN 是一种循环计算隐藏状态来处理序列数据的神经网络模型</p>
+</li>
+<li>
+<p><strong>一个完整的 RNN 网络的组成</strong>：词嵌入层、RNN 层、输出层</p>
+</li>
+<li>
+<p><strong>RNN模型的应用</strong>: 处理连续序列（语言、语音等），广泛应用于NLP领域（文本分类、情感分析、意图识别、机器翻译等）</p>
+</li>
+<li>
+<p><strong>RNN模型的分类</strong>:</p>
+</li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>分类依据</th>
+<th>类别</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>按输入–输出结构</strong></td>
+<td>N → N</td>
+<td>等长序列，输入输出一一对应（序列标注）</td>
+</tr>
+<tr>
+<td></td>
+<td>N → 1</td>
+<td>序列到单值（文本分类、情感分析）</td>
+</tr>
+<tr>
+<td></td>
+<td>1 → N</td>
+<td>单输入到序列（图像生成文字）</td>
+</tr>
+<tr>
+<td></td>
+<td>N → M</td>
+<td>不等长序列，Seq2Seq 架构（机器翻译、文本摘要）</td>
+</tr>
+<tr>
+<td><strong>按 RNN 层内部结构</strong></td>
+<td>传统 RNN</td>
+<td>结构简单，易梯度消失</td>
+</tr>
+<tr>
+<td></td>
+<td>LSTM / Bi-LSTM</td>
+<td>门控机制，缓解梯度消失，可双向建模</td>
+</tr>
+<tr>
+<td></td>
+<td>GRU / Bi-GRU</td>
+<td>简化版 LSTM，参数更少，训练更快</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="sec-6">2 传统RNN模型</h2>
+<h4>学习目标</h4>
+<ul>
+<li>了解传统RNN的内部结构及计算公式.</li>
+<li>掌握Pytorch中传统RNN工具的使用.</li>
+<li>了解传统RNN的优势与缺点.</li>
+</ul>
+<h3 id="sec-7">2.1 传统RNN的内部结构图</h3>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-e6f8f43e8457.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-9154b6c27cce.png" /></p>
+<ul>
+<li>
+<p>中间的方块, 输入有两部分, 分别是h(t-1)以及x(t), 代表上一时间步的隐藏状态, 以及当前时间步的输入表示（通常为词向量）, 进入RNN结构后, 会拼接形成新的张量[x(t), h(t-1)], 新张量通过一个全连接层 + tanh激活函数, 最终得到该时间步的隐藏状态h(t)，在下个时间步再输入RNN层. 以此类推.</p>
+</li>
+<li>
+<p>内部结构过程演示:</p>
+</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-a674a6eab2d6.gif" /></p>
+<ul>
+<li>根据结构分析得出内部计算公式:
+  $$
+  h_t = tanh(W_t[X_t, h_{t-1}] + b_t)
+  $$</li>
+<li>激活函数tanh的作用: 调节流经网络的值, 将值压缩在-1和1之间.</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-ae102ac96124.gif" /></p>
+<h3 id="sec-8">2.2 演示传统的RNN</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">演示</span>
+<span class="sd">    传统RNN层</span>
+<span class="sd">注意：</span>
+<span class="sd">    一个完整的RNN网络包括三部分：词嵌入层+RNN层+全连接层，</span>
+<span class="sd">    这里只是演示RNN层</span>
+<span class="sd">RNN(Recurrent Neural Network),循环神经网络</span>
+<span class="sd">    通过沿着时间步维度/序列方向来循环计算隐藏状态来处理序列数据的神经网络</span>
+
+<span class="sd">按照输入输出长度分类：</span>
+<span class="sd">    N-N</span>
+<span class="sd">    N-1</span>
+<span class="sd">    1-N</span>
+<span class="sd">    N-M(seq2seq,最常用)</span>
+
+<span class="sd">按照模型结构分类：</span>
+<span class="sd">    传统RNN</span>
+<span class="sd">    LSTM/Bi-LSTM</span>
+<span class="sd">    GRU/Bi-LSTM</span>
+<span class="sd">传统RNN的优缺点：</span>
+<span class="sd">    优点：结构简单，参数量少，计算开销低</span>
+<span class="sd">    缺点：在长序列训练中，反向传播时梯度反复相乘，容易出现梯度消失 或 梯度爆炸，难以建模长期依赖</span>
+
+<span class="sd">涉及到的API:</span>
+<span class="sd">    nn.RNN(input_size,hidden_size,num_layers=1,batch_first=True,bidirectional=False):</span>
+<span class="sd">        input_size: 输入维度，也就是词向量维度embed_dim</span>
+<span class="sd">        hidden_size: 隐藏层维度</span>
+<span class="sd">        num_layers: RNN层的层数，默认1</span>
+<span class="sd">        batch_first: 输入/输出张量的0轴是否为batch轴，默认为False, 设为True时，输入和输出张量的0轴为batch轴</span>
+<span class="sd">        bidirectional: 是否使用双向RNN,默认为False,num_directions=1,设为True时，使用双向RNN,num_directions=2</span>
+<span class="sd">    输入(batch_first=True):</span>
+<span class="sd">        input:输入的当前时间步的词向量, (batch_size,seq_len,embed_dim)</span>
+<span class="sd">        h0:初始隐藏状态,(num_layers*num_directions,batch_size,hidden_size)</span>
+<span class="sd">    输出(batch_first=True):</span>
+<span class="sd">        output:所有时间步的隐藏状态, (batch_size,seq_len,hidden_size*num_directions)</span>
+<span class="sd">        hn:最后一个时间步的隐藏状态, (num_layers*num_directions,batch_size,hidden_size)</span>
+
+<span class="sd">需要掌握的:</span>
+<span class="sd">    无</span>
+<span class="sd">    建议重点了解nn.RNN</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+
+<span class="c1"># 1.定义函数，演示 传统RNN层(batch_first=True)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo01</span><span class="p">():</span>
+    <span class="c1"># 0.设置随机种子</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+    <span class="c1"># 1.构造RNN层的输入张量</span>
+    <span class="c1"># 1.1 模拟当前时间步的词向量，(batch_size,seq_len,embed_dim)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+    <span class="c1"># 1.2 上一个时间步的隐藏状态，这里是初始隐藏状态，(num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="n">h0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+    <span class="c1"># 2.创建传统RNN层</span>
+    <span class="n">rnn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">RNN</span><span class="p">(</span>
+        <span class="n">input_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>  <span class="c1"># 输入维度，也就是词向量维度embed_dim</span>
+        <span class="n">hidden_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>  <span class="c1"># 隐藏层维度</span>
+        <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># RNN层的层数，默认1</span>
+        <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>   <span class="c1"># 输入/输出张量的0轴是否为batch轴，默认为False, 设为True时，输入和输出张量的0轴为batch轴</span>
+        <span class="n">bidirectional</span><span class="o">=</span><span class="kc">False</span> <span class="c1"># 是否开启双向RNN, 默认False</span>
+    <span class="p">)</span>
+    <span class="c1"># 3.RNN层的前向传播，也就是输入数据到RNN层</span>
+    <span class="c1"># 输入(batch_first=True):</span>
+    <span class="c1">#     x:输入的当前时间步的词向量, (batch_size,seq_len,embed_dim)</span>
+    <span class="c1">#     h0:初始隐藏状态,(num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="c1"># 输出(batch_first=True):</span>
+    <span class="c1">#     output:所有时间步的隐藏状态, (batch_size,seq_len,hidden_size*num_directions)</span>
+    <span class="c1">#     hn:最后一个时间步的隐藏状态, (num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="n">output</span><span class="p">,</span> <span class="n">hn</span> <span class="o">=</span> <span class="n">rnn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h0</span><span class="p">)</span>
+    <span class="c1"># output, hn = rnn(x,)</span>
+    <span class="c1"># 详解RNN层内部前向传播逻辑:</span>
+    <span class="c1"># x: [x1,x2,x3]</span>
+    <span class="c1"># output: [h1,h2,h3]</span>
+    <span class="c1"># t=1: 输入x1,h0 -&gt; 输出h1</span>
+    <span class="c1"># t=2: 输入x2,h1 -&gt; 输出h2</span>
+    <span class="c1"># t=3: 输入x3,h2 -&gt; 输出h3</span>
+    <span class="c1"># output: [h1,h2,h3], (batch_size,seq_len,hidden_size)</span>
+    <span class="c1"># hn: h3, (num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="c1"># 4.打印RNN层输出结果</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;output.shape:</span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   <span class="c1"># (1,3,8)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hn.shape:</span><span class="si">{</span><span class="n">hn</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   <span class="c1"># (1,1,8)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="o">*</span><span class="mi">50</span><span class="p">)</span>
+
+<span class="c1"># 2.定义函数，演示 传统RNN层(batch_first=True), batch_size=4, seq_len=6</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo02</span><span class="p">():</span>
+    <span class="c1"># 0.设置随机种子</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+    <span class="c1"># 1.构造RNN层的输入张量</span>
+    <span class="c1"># 1.1 模拟当前时间步的词向量，(batch_size,seq_len,embed_dim)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+    <span class="c1"># 1.2 上一个时间步的隐藏状态，这里是初始隐藏状态，(num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="n">h0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+    <span class="c1"># 2.创建传统RNN层</span>
+    <span class="n">rnn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">RNN</span><span class="p">(</span>
+        <span class="n">input_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>  <span class="c1"># 输入维度，也就是词向量维度embed_dim</span>
+        <span class="n">hidden_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>  <span class="c1"># 隐藏层维度</span>
+        <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># RNN层的层数，默认1</span>
+        <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>   <span class="c1"># 输入/输出张量的0轴是否为batch轴，默认为False, 设为True时，输入和输出张量的0轴为batch轴</span>
+        <span class="n">bidirectional</span><span class="o">=</span><span class="kc">False</span> <span class="c1"># 是否开启双向RNN, 默认False</span>
+    <span class="p">)</span>
+    <span class="c1"># 3.RNN层的前向传播，也就是输入数据到RNN层</span>
+    <span class="c1"># 输入(batch_first=True):</span>
+    <span class="c1">#     x:输入的当前时间步的词向量, (batch_size,seq_len,embed_dim)</span>
+    <span class="c1">#     h0:初始隐藏状态,(num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="c1"># 输出(batch_first=True):</span>
+    <span class="c1">#     output:所有时间步的隐藏状态, (batch_size,seq_len,hidden_size*num_directions)</span>
+    <span class="c1">#     hn:最后一个时间步的隐藏状态, (num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="n">output</span><span class="p">,</span> <span class="n">hn</span> <span class="o">=</span> <span class="n">rnn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h0</span><span class="p">)</span>
+    <span class="c1"># output, hn = rnn(x,)</span>
+    <span class="c1"># 详解RNN层内部前向传播逻辑:</span>
+    <span class="c1"># x: [x1,x2,x3,...],我 爱 你 ,</span>
+    <span class="c1"># output: [h1,h2,h3,...]</span>
+    <span class="c1"># t=1: 输入x1,h0 -&gt; 输出h1</span>
+    <span class="c1"># t=2: 输入x2,h1 -&gt; 输出h2</span>
+    <span class="c1"># t=3: 输入x3,h2 -&gt; 输出h3</span>
+    <span class="c1"># ...</span>
+    <span class="c1"># t=6: 输入x6,h5 -&gt; 输出h6</span>
+    <span class="c1"># output: [h1,h2,h3,...], (batch_size,seq_len,hidden_size)</span>
+    <span class="c1"># hn: h6, (num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="c1"># 4.打印RNN层输出结果</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;output.shape:</span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   <span class="c1"># (4,6,8)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hn.shape:</span><span class="si">{</span><span class="n">hn</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   <span class="c1"># (1,4,8)</span>
+    <span class="c1"># print(f&quot;output[:,-1,:]:{output[:,[-1],:].shape}&quot;) # (4,1,8)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hn:</span><span class="si">{</span><span class="n">hn</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;output[:,-1,:]:</span><span class="si">{</span><span class="n">output</span><span class="p">[:,</span><span class="o">-</span><span class="mi">1</span><span class="p">,:]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># (4,1,8)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;*&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+
+<span class="c1"># 3.定义函数，演示 传统RNN层(batch_first=True), batch_size=4, seq_len=6, num_layers=2</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo03</span><span class="p">():</span>
+    <span class="c1"># 0.设置随机种子</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+    <span class="c1"># 1.构造RNN层的输入张量</span>
+    <span class="c1"># 1.1 模拟当前时间步的词向量，(batch_size,seq_len,embed_dim)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+    <span class="c1"># 1.2 上一个时间步的隐藏状态，这里是初始隐藏状态，(num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="n">h0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+    <span class="c1"># 2.创建传统RNN层</span>
+    <span class="n">rnn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">RNN</span><span class="p">(</span>
+        <span class="n">input_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>  <span class="c1"># 输入维度，也就是词向量维度embed_dim</span>
+        <span class="n">hidden_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>  <span class="c1"># 隐藏层维度</span>
+        <span class="n">num_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>  <span class="c1"># RNN层的层数，默认1</span>
+        <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>   <span class="c1"># 输入/输出张量的0轴是否为batch轴，默认为False, 设为True时，输入和输出张量的0轴为batch轴</span>
+        <span class="n">bidirectional</span><span class="o">=</span><span class="kc">False</span> <span class="c1"># 是否开启双向RNN, 默认False</span>
+    <span class="p">)</span>
+    <span class="c1"># 3.RNN层的前向传播，也就是输入数据到RNN层</span>
+    <span class="c1"># 输入(batch_first=True):</span>
+    <span class="c1">#     x:输入的当前时间步的词向量, (batch_size,seq_len,embed_dim)</span>
+    <span class="c1">#     h0:初始隐藏状态,(num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="c1"># 输出(batch_first=True):</span>
+    <span class="c1">#     output:所有时间步的隐藏状态, (batch_size,seq_len,hidden_size*num_directions)</span>
+    <span class="c1">#     hn:最后一个时间步的隐藏状态, (num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="n">output</span><span class="p">,</span> <span class="n">hn</span> <span class="o">=</span> <span class="n">rnn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h0</span><span class="p">)</span>
+    <span class="c1"># output, hn = rnn(x,)</span>
+    <span class="c1"># 详解RNN层内部前向传播逻辑:</span>
+    <span class="c1"># x: [x1,x2,x3]</span>
+    <span class="c1"># output: [h1,h2,h3]</span>
+    <span class="c1"># t=1: 输入x1,h0 -&gt; 输出h1</span>
+    <span class="c1"># t=2: 输入x2,h1 -&gt; 输出h2</span>
+    <span class="c1"># t=3: 输入x3,h2 -&gt; 输出h3</span>
+    <span class="c1"># output: [h1,h2,h3], (batch_size,seq_len,hidden_size)</span>
+    <span class="c1"># hn: h3, (num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="c1"># 4.打印RNN层输出结果</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;output.shape:</span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   <span class="c1"># (4,6,8)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hn.shape:</span><span class="si">{</span><span class="n">hn</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   <span class="c1"># (2,4,8)</span>
+    <span class="c1"># print(f&quot;output[:,-1,:]:{output[:,[-1],:].shape}&quot;) # (4,1,8)</span>
+    <span class="c1"># print(f&quot;hn:{hn}&quot;)</span>
+    <span class="c1"># print(f&quot;output[:,-1,:]:{output[:,-1,:]}&quot;) # (4,1,8)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;*&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+
+<span class="c1"># 4.定义函数，演示 传统RNN层(batch_first=True), batch_size=4, seq_len=6, num_layers=2,bidirectional=True</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo04</span><span class="p">():</span>
+    <span class="c1"># 0.设置随机种子</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+    <span class="c1"># 1.构造RNN层的输入张量</span>
+    <span class="c1"># 1.1 模拟当前时间步的词向量，(batch_size,seq_len,embed_dim)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+    <span class="c1"># 1.2 上一个时间步的隐藏状态，这里是初始隐藏状态，(num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="n">h0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+    <span class="c1"># 2.创建传统RNN层</span>
+    <span class="n">rnn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">RNN</span><span class="p">(</span>
+        <span class="n">input_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>  <span class="c1"># 输入维度，也就是词向量维度embed_dim</span>
+        <span class="n">hidden_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>  <span class="c1"># 隐藏层维度</span>
+        <span class="n">num_layers</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>  <span class="c1"># RNN层的层数，默认1</span>
+        <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>   <span class="c1"># 输入/输出张量的0轴是否为batch轴，默认为False, 设为True时，输入和输出张量的0轴为batch轴</span>
+        <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span> <span class="c1"># 是否开启双向RNN, 默认False</span>
+    <span class="p">)</span>
+    <span class="c1"># 3.RNN层的前向传播，也就是输入数据到RNN层</span>
+    <span class="c1"># 输入(batch_first=True):</span>
+    <span class="c1">#     x:输入的当前时间步的词向量, (batch_size,seq_len,embed_dim)</span>
+    <span class="c1">#     h0:初始隐藏状态,(num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="c1"># 输出(batch_first=True):</span>
+    <span class="c1">#     output:所有时间步的隐藏状态, (batch_size,seq_len,hidden_size*num_directions)</span>
+    <span class="c1">#     hn:最后一个时间步的隐藏状态, (num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="n">output</span><span class="p">,</span> <span class="n">hn</span> <span class="o">=</span> <span class="n">rnn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h0</span><span class="p">)</span>
+    <span class="c1"># output, hn = rnn(x,)</span>
+    <span class="c1"># 详解RNN层内部前向传播逻辑:</span>
+    <span class="c1"># x: [x1,x2,x3]</span>
+    <span class="c1"># output: [h1,h2,h3]</span>
+    <span class="c1"># t=1: 输入x1,h0 -&gt; 输出h1</span>
+    <span class="c1"># t=2: 输入x2,h1 -&gt; 输出h2</span>
+    <span class="c1"># t=3: 输入x3,h2 -&gt; 输出h3</span>
+    <span class="c1"># output: [h1,h2,h3], (batch_size,seq_len,hidden_size*num_directions)</span>
+    <span class="c1"># hn: h3, (num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="c1"># 4.打印RNN层输出结果</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;output.shape:</span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   <span class="c1"># (4,6,16)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hn.shape:</span><span class="si">{</span><span class="n">hn</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   <span class="c1"># (4,4,8)</span>
+    <span class="c1"># print(f&quot;output[:,-1,:]:{output[:,[-1],:].shape}&quot;) # (4,1,8)</span>
+    <span class="c1"># print(f&quot;hn:{hn}&quot;)</span>
+    <span class="c1"># print(f&quot;output[:,-1,:]:{output[:,-1,:]}&quot;) # (4,1,8)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;*&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+
+<span class="c1"># 测试</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">demo01</span><span class="p">()</span>
+    <span class="n">demo02</span><span class="p">()</span>
+    <span class="n">demo03</span><span class="p">()</span>
+    <span class="n">demo04</span><span class="p">()</span>
+</pre></div>
+</div>
+<pre><code>output.shape:torch.Size([1, 3, 8])
+hn.shape:torch.Size([1, 1, 8])
+**************************************************
+output.shape:torch.Size([4, 6, 8])
+hn.shape:torch.Size([1, 4, 8])
+hn:tensor([[[-0.2340,  0.2915, -0.4611, -0.8591, -0.5781,  0.9131,  0.6180,
+          -0.1553],
+         [-0.1825,  0.9070, -0.0407, -0.3778,  0.1596,  0.1857, -0.7413,
+          -0.3421],
+         [ 0.0303,  0.4571,  0.0453, -0.8420,  0.0043,  0.9135,  0.3877,
+           0.6076],
+         [-0.5023,  0.7219, -0.7713, -0.2728, -0.0425,  0.7799,  0.3094,
+           0.4288]]], grad_fn=&lt;StackBackward0&gt;)
+output[:,-1,:]:tensor([[-0.2340,  0.2915, -0.4611, -0.8591, -0.5781,  0.9131,  0.6180, -0.1553],
+        [-0.1825,  0.9070, -0.0407, -0.3778,  0.1596,  0.1857, -0.7413, -0.3421],
+        [ 0.0303,  0.4571,  0.0453, -0.8420,  0.0043,  0.9135,  0.3877,  0.6076],
+        [-0.5023,  0.7219, -0.7713, -0.2728, -0.0425,  0.7799,  0.3094,  0.4288]],
+       grad_fn=&lt;SelectBackward0&gt;)
+**************************************************
+output.shape:torch.Size([4, 6, 8])
+hn.shape:torch.Size([2, 4, 8])
+**************************************************
+output.shape:torch.Size([4, 6, 16])
+hn.shape:torch.Size([4, 4, 8])
+**************************************************
+</code></pre>
+<h3 id="sec-9">2.3 传统 RNN 的优缺点</h3>
+<h4>传统 RNN 的优势</h4>
+<ul>
+<li><strong>结构简单、参数量少</strong>，计算和内存开销较低</li>
+<li>相比 LSTM / GRU，更易实现，在<strong>短序列任务</strong>中训练和推理效率较高</li>
+</ul>
+<h4>传统 RNN 的缺点</h4>
+<ul>
+<li>在<strong>长序列建模</strong>中效果较差</li>
+<li>由于时间维度上的反向传播涉及梯度的反复相乘，训练过程中容易出现
+  <strong>梯度消失或梯度爆炸</strong>，难以捕捉长期依赖关系</li>
+</ul>
+<h4>梯度消失与梯度爆炸</h4>
+<p>在 RNN 的时间反向传播（BPTT）中，梯度可表示为多个时间步雅可比矩阵的连乘，形式上可简化为：</p>
+<p>$$
+\frac{\partial L}{\partial h_0}
+\approx
+\prod_{t=1}^{T}
+\left(
+\sigma'(z_t), W
+\right)
+$$</p>
+<p>其中：</p>
+<ul>
+<li>$\sigma(\cdot)$ 通常为 <code>tanh</code> 或 <code>sigmoid</code>，其导数 <strong>小于 1</strong></li>
+<li>$W$ 为循环权重矩阵</li>
+</ul>
+<p>由此导致：</p>
+<ul>
+<li>若连乘结果范数逐步变小 → <strong>梯度消失</strong>,参数更新缓慢甚至停滞，模型无法学习长期依赖</li>
+<li>若连乘结果范数逐步变大 → <strong>梯度爆炸</strong>,参数更新过大，训练不稳定，可能出现数值溢出（NaN）</li>
+</ul>
+<h3 id="sec-10">2.4 小结</h3>
+<ul>
+<li><strong>传统 RNN 的内部结构</strong>：</li>
+<li>在每个时间步，RNN 根据当前输入 $ x_t $ 和上一时间步的隐藏状态 $ h_{t-1} $，
+    经过线性变换并使用 <code>tanh</code> 激活函数，得到新的隐藏状态 $ h_t $</li>
+<li>
+<p><code>tanh</code> 将隐藏状态的取值限制在 $(-1, 1)$ 区间内，有助于缓解数值不稳定问题</p>
+</li>
+<li>
+<p><strong>传统 RNN 的优缺点</strong>：</p>
+</li>
+<li><strong>优点</strong>：结构简单，参数量少，计算开销低</li>
+<li>
+<p><strong>缺点</strong>：在长序列任务中难以建模长期依赖，易出现梯度消失或爆炸问题</p>
+</li>
+<li>
+<p><strong>LSTM / GRU，部分解决了传统 RNN 在长期依赖建模上的不足</strong></p>
+</li>
+</ul>
+<h2 id="sec-11">3 LSTM模型</h2>
+<h4>学习目标</h4>
+<ul>
+<li>了解LSTM内部结构及计算公式.</li>
+<li>掌握Pytorch中LSTM工具的使用.</li>
+<li>了解LSTM的优势与缺点.</li>
+</ul>
+<h3 id="sec-12">3.1 LSTM介绍</h3>
+<p>LSTM（Long Short-Term Memory）也称长短时记忆结构, 它是传统RNN的变体, 与经典RNN相比能够有效捕捉长序列之间的语义关联, 缓解梯度消失或爆炸现象. 同时LSTM的结构更复杂, 核心结构分为四个部分:</p>
+<ul>
+<li>遗忘门</li>
+<li>输入门</li>
+<li>细胞状态</li>
+<li>输出门</li>
+</ul>
+<h3 id="sec-13">3.2 LSTM的内部结构图</h3>
+<h4>LSTM结构分析</h4>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-12ca7ac4b997.png" /></p>
+<ul>
+<li>结构解释图:</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-9154b6c27cce.png" /></p>
+<ul>
+<li>遗忘门部分结构图与计算公式:</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-e05243e07b79.png" /></p>
+<ul>
+<li>
+<p>遗忘门结构分析:</p>
+</li>
+<li>
+<p>与传统RNN的内部结构计算非常相似, 首先将当前时间步输入x(t)与上一个时间步隐含状态h(t-1)拼接, 得到[x(t), h(t-1)], 然后通过一个全连接层做变换, 最后通过sigmoid函数进行激活得到f(t), 我们可以将f(t)看作是门值, 好比一扇门开合的大小程度, 门值都将作用在通过该扇门的张量, 遗忘门门值将作用的上一层的细胞状态上, 代表遗忘过去的多少信息, 又因为遗忘门门值是由x(t), h(t-1)计算得来的, 因此整个公式意味着根据当前时间步输入和上一个时间步隐含状态h(t-1)来决定遗忘多少上一层的细胞状态所携带的过往信息.</p>
+</li>
+<li>遗忘门内部结构过程演示:</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-379f796cf86e.gif" /></p>
+<ul>
+<li>激活函数sigmiod的作用:- 用于帮助调节流经网络的值, sigmoid函数将值压缩在0和1之间.</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-afc53b595f32.gif" /></p>
+<ul>
+<li>输入门部分结构图与计算公式:</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-ba4cedfb7088.png" /></p>
+<ul>
+<li>
+<p>输入门结构分析:</p>
+</li>
+<li>
+<p>我们看到输入门的计算公式有两个, 第一个就是产生输入门门值的公式, 它和遗忘门公式几乎相同, 区别只是在于它们之后要作用的目标上. 这个公式意味着输入信息有多少需要进行过滤. 输入门的第二个公式是与传统RNN的内部结构计算相同. 对于LSTM来讲, 它得到的是当前的细胞状态, 而不是像经典RNN一样得到的是隐含状态.</p>
+</li>
+<li>输入门内部结构过程演示:</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-cf2fec28a743.gif" /></p>
+<ul>
+<li>细胞状态更新图与计算公式:</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-aa5032fb3ebf.png" /></p>
+<ul>
+<li>
+<p>细胞状态更新分析:</p>
+</li>
+<li>
+<p>细胞更新的结构与计算公式非常容易理解, 这里没有全连接层, 只是将刚刚得到的遗忘门门值与上一个时间步得到的C(t-1)相乘, 再加上输入门门值与当前时间步得到的未更新C(t)相乘的结果. 最终得到更新后的C(t)作为下一个时间步输入的一部分. 整个细胞状态更新过程就是对遗忘门和输入门的应用.</p>
+</li>
+<li>细胞状态更新过程演示:</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-a2588018ecaa.gif" /></p>
+<ul>
+<li>输出门部分结构图与计算公式:</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-dcfa0c157037.png" /></p>
+<ul>
+<li>
+<p>输出门结构分析:</p>
+</li>
+<li>
+<p>输出门部分的公式也是两个, 第一个即是计算输出门的门值, 它和遗忘门，输入门计算方式相同. 第二个即是使用这个门值产生隐含状态h(t), 他将作用在更新后的细胞状态C(t)上, 并做tanh激活, 最终得到h(t)作为下一时间步输入的一部分. 整个输出门的过程, 就是为了产生隐含状态h(t).</p>
+</li>
+<li>输出门内部结构过程演示:</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-6a27d7af24dd.gif" /></p>
+<h4>Bi-LSTM介绍</h4>
+<p>Bi-LSTM即双向LSTM, 它没有改变LSTM本身任何的内部结构, 只是将LSTM应用两次且方向不同, 再将两次得到的LSTM结果进行拼接作为最终输出.</p>
+<p><img loading="lazy" decoding="async" alt="avatar" src="../assets/img/lesson37/figure-15a37435ea3e.png" /></p>
+<ul>
+<li>Bi-LSTM结构分析:- 我们看到图中对"我爱中国"这句话或者叫这个输入序列, 进行了从左到右和从右到左两次LSTM处理, 将得到的结果张量进行了拼接作为最终输出. 这种结构能够捕捉语言语法中一些特定的前置或后置特征, 增强语义关联,但是模型参数和计算复杂度也随之增加了一倍, 一般需要对语料和计算资源进行评估后决定是否使用该结构.</li>
+</ul>
+<h4>使用Pytorch构建LSTM模型</h4>
+<h3 id="sec-14">3.3 演示LSTM</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">演示</span>
+<span class="sd">    LSTM层的pytorch API</span>
+<span class="sd">LSTM简介：</span>
+<span class="sd">    Long Short Term Memory, 长短时记忆网络，通过门控机制(遗忘门、输入门、输出门)与细胞状态设计来控制信息的保留与遗忘，</span>
+<span class="sd">    缓解 传统LSTM 在长序列中难以建模长期依赖的问题。主要缓解梯度消失，无法完全解决</span>
+<span class="sd">LSTM的组成：</span>
+<span class="sd">    遗忘门：决定保留或遗忘哪些旧记忆</span>
+<span class="sd">    输入门：决定写入多少新记忆</span>
+<span class="sd">    细胞状态: 累积更新长期记忆</span>
+<span class="sd">    输出门：决定最终输出哪些信息</span>
+<span class="sd">优点：</span>
+<span class="sd">    1.长序列建模效果好于传统LSTM</span>
+<span class="sd">    2.缓解了 梯度消失</span>
+<span class="sd">    3.能够捕捉复杂的时序特征，适用范围广</span>
+<span class="sd">缺点：</span>
+<span class="sd">    1.参数多，计算慢</span>
+<span class="sd">    2.参数多，调参数难</span>
+<span class="sd">关键的形状参数：</span>
+<span class="sd">    nn.LSTM(input_size,hidden_size,num_layers,bidirectional,batch_first=True):</span>
+<span class="sd">        input_size: 输入维度，也就是词向量的维度embed_dim</span>
+<span class="sd">        hidden_size: 隐藏层维度</span>
+<span class="sd">        num_layers: LSTM层的层数</span>
+<span class="sd">        bidirectional: 是否是双向LSTM, 默认为False,num_directions=1;如果为True,则num_directions=2</span>
+<span class="sd">        batch_first: 输入和输出张量的0轴是否为batch轴, 默认为False, 设为True时，输入和输出张量的0轴为batch轴</span>
+<span class="sd">    输入(batch_first=True)：</span>
+<span class="sd">        input: (batch_size,seq_len,embed_dim),词向量组成的文本张量</span>
+<span class="sd">        h0: (num_layers*num_directions,batch_size,hidden_size),初始隐藏状态(t=0)</span>
+<span class="sd">        c0: (num_layers*num_directions,batch_size,hidden_size),初始细胞状态(t=0)</span>
+<span class="sd">    输出(batch_first=True)：</span>
+<span class="sd">        output: (batch_size,seq_len,hidden_size*num_directions),所有时间步的隐藏状态</span>
+<span class="sd">        hn: (num_layers*num_directions,batch_size,hidden_size),最后时间步的隐藏状态</span>
+<span class="sd">        cn: (num_layers*num_directions,batch_size,hidden_size),最后时间步的细胞状态</span>
+
+<span class="sd">需要掌握的：</span>
+<span class="sd">    无</span>
+<span class="sd">    重点了解nn.LSTM</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+
+<span class="c1"># 1.定义函数，演示 LSTM层(batch_first=True)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo01</span><span class="p">():</span>
+    <span class="c1"># 0.设置随机种子</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+    <span class="c1"># 1.构造LSTM层的输入张量</span>
+    <span class="c1"># 1.1 模拟当前时间步的词向量，(batch_size,seq_len,embed_dim)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+    <span class="c1"># 1.2 上一个时间步的隐藏状态，这里是初始隐藏状态，(num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="n">h0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+    <span class="c1"># 1.3 上一个时间步的细胞状态，这里是初始细胞状态，(num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="n">c0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+    <span class="c1"># 2.创建传统LSTM层</span>
+    <span class="n">lstm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span>
+        <span class="n">input_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>  <span class="c1"># 输入维度，也就是词向量维度embed_dim</span>
+        <span class="n">hidden_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>  <span class="c1"># 隐藏层维度</span>
+        <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># LSTM层的层数，默认1</span>
+        <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>   <span class="c1"># 输入/输出张量的0轴是否为batch轴，默认为False, 设为True时，输入和输出张量的0轴为batch轴</span>
+        <span class="n">bidirectional</span><span class="o">=</span><span class="kc">False</span> <span class="c1"># 是否开启双向LSTM, 默认False, num_directions=1</span>
+    <span class="p">)</span>
+    <span class="c1"># 3.LSTM层的前向传播，也就是输入数据到LSTM层</span>
+    <span class="c1"># 输入(batch_first=True)：</span>
+    <span class="c1">#         input: (batch_size,seq_len,embed_dim),词向量组成的文本张量</span>
+    <span class="c1">#         h0: (num_layers*num_directions,batch_size,hidden_size),初始隐藏状态(t=0)</span>
+    <span class="c1">#         c0: (num_layers*num_directions,batch_size,hidden_size),初始细胞状态(t=0)</span>
+    <span class="c1"># 输出(batch_first=True)：</span>
+    <span class="c1">#     output: (batch_size,seq_len,hidden_size*num_directions),所有时间步的隐藏状态</span>
+    <span class="c1">#     hn: (num_layers*num_directions,batch_size,hidden_size),最后时间步的隐藏状态</span>
+    <span class="c1">#     cn: (num_layers*num_directions,batch_size,hidden_size),最后时间步的细胞状态</span>
+    <span class="n">output</span><span class="p">,</span> <span class="p">(</span><span class="n">hn</span><span class="p">,</span><span class="n">cn</span><span class="p">)</span> <span class="o">=</span> <span class="n">lstm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">h0</span><span class="p">,</span><span class="n">c0</span><span class="p">))</span>
+    <span class="c1"># output, (hn,cn) = lstm(x,)</span>
+    <span class="c1"># 详解LSTM层内部前向传播逻辑:</span>
+    <span class="c1"># x: [x1,x2,x3]</span>
+    <span class="c1"># output: [h1,h2,h3]</span>
+    <span class="c1"># t=1: 输入x1,(h0,c0) -&gt; 输出(h1,c1)</span>
+    <span class="c1"># t=2: 输入x2,(h1,c1) -&gt; 输出(h2,c2)</span>
+    <span class="c1"># t=3: 输入x3,(h2,c2) -&gt; 输出(h3,c3)</span>
+    <span class="c1"># output: [h1,h2,h3], (batch_size,seq_len,hidden_size*num_directions)</span>
+    <span class="c1"># hn: h3, (num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="c1"># cn: c3, (num_layers * num_directions, batch_size, hidden_size), 最后时间步的细胞状态</span>
+    <span class="c1"># 4.打印LSTM层输出结果</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;output.shape:</span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   <span class="c1"># (1,3,8)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hn.shape:</span><span class="si">{</span><span class="n">hn</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   <span class="c1"># (1,1,8)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cn.shape:</span><span class="si">{</span><span class="n">cn</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   <span class="c1"># (1,1,8)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="o">*</span><span class="mi">50</span><span class="p">)</span>
+
+<span class="c1"># 2.定义函数，演示 LSTM层(batch_first=True), bidirectional=True, num_directions=2</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo02</span><span class="p">():</span>
+    <span class="c1"># 0.设置随机种子</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+    <span class="c1"># 1.构造LSTM层的输入张量</span>
+    <span class="c1"># 1.1 模拟当前时间步的词向量，(batch_size,seq_len,embed_dim)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+    <span class="c1"># 1.2 上一个时间步的隐藏状态，这里是初始隐藏状态，(num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="n">h0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+    <span class="c1"># 1.3 上一个时间步的细胞状态，这里是初始细胞状态，(num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="n">c0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+    <span class="c1"># 2.创建传统LSTM层</span>
+    <span class="n">lstm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span>
+        <span class="n">input_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>  <span class="c1"># 输入维度，也就是词向量维度embed_dim</span>
+        <span class="n">hidden_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>  <span class="c1"># 隐藏层维度</span>
+        <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># LSTM层的层数，默认1</span>
+        <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>   <span class="c1"># 输入/输出张量的0轴是否为batch轴，默认为False, 设为True时，输入和输出张量的0轴为batch轴</span>
+        <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span> <span class="c1"># 是否开启双向LSTM, 默认False, num_directions=1</span>
+    <span class="p">)</span>
+    <span class="c1"># 3.LSTM层的前向传播，也就是输入数据到LSTM层</span>
+    <span class="c1"># 输入(batch_first=True)：</span>
+    <span class="c1">#         input: (batch_size,seq_len,embed_dim),词向量组成的文本张量</span>
+    <span class="c1">#         h0: (num_layers*num_directions,batch_size,hidden_size),初始隐藏状态(t=0)</span>
+    <span class="c1">#         c0: (num_layers*num_directions,batch_size,hidden_size),初始细胞状态(t=0)</span>
+    <span class="c1"># 输出(batch_first=True)：</span>
+    <span class="c1">#     output: (batch_size,seq_len,hidden_size*num_directions),所有时间步的隐藏状态</span>
+    <span class="c1">#     hn: (num_layers*num_directions,batch_size,hidden_size),最后时间步的隐藏状态</span>
+    <span class="c1">#     cn: (num_layers*num_directions,batch_size,hidden_size),最后时间步的细胞状态</span>
+    <span class="n">output</span><span class="p">,</span> <span class="p">(</span><span class="n">hn</span><span class="p">,</span><span class="n">cn</span><span class="p">)</span> <span class="o">=</span> <span class="n">lstm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">h0</span><span class="p">,</span><span class="n">c0</span><span class="p">))</span>
+    <span class="c1"># output, (hn,cn) = lstm(x,)</span>
+    <span class="c1"># 详解LSTM层内部前向传播逻辑:</span>
+    <span class="c1"># x: [x1,x2,x3]</span>
+    <span class="c1"># output: [h1,h2,h3]</span>
+    <span class="c1"># t=1: 输入x1,(h0,c0) -&gt; 输出(h1,c1)</span>
+    <span class="c1"># t=2: 输入x2,(h1,c1) -&gt; 输出(h2,c2)</span>
+    <span class="c1"># t=3: 输入x3,(h2,c2) -&gt; 输出(h3,c3)</span>
+    <span class="c1"># output: [h1,h2,h3], (batch_size,seq_len,hidden_size*num_directions)</span>
+    <span class="c1"># hn: h3, (num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="c1"># cn: c3, (num_layers * num_directions, batch_size, hidden_size), 最后时间步的细胞状态</span>
+    <span class="c1"># 4.打印LSTM层输出结果</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;output.shape:</span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   <span class="c1"># (1,3,16)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hn.shape:</span><span class="si">{</span><span class="n">hn</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   <span class="c1"># (2,1,8)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cn.shape:</span><span class="si">{</span><span class="n">cn</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   <span class="c1"># (2,1,8)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="o">*</span><span class="mi">50</span><span class="p">)</span>
+
+<span class="c1"># 测试</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">demo01</span><span class="p">()</span>
+    <span class="n">demo02</span><span class="p">()</span>
+</pre></div>
+</div>
+<pre><code>output.shape:torch.Size([1, 3, 8])
+hn.shape:torch.Size([1, 1, 8])
+cn.shape:torch.Size([1, 1, 8])
+**************************************************
+output.shape:torch.Size([1, 3, 16])
+hn.shape:torch.Size([2, 1, 8])
+cn.shape:torch.Size([2, 1, 8])
+**************************************************
+</code></pre>
+<h3 id="sec-15">3.4 小结</h3>
+<ul>
+<li>LSTM简介：<ul>
+<li>Long Short Term Memory, 长短时记忆网络，通过门控机制与细胞状态设计来控制信息的保留与遗忘，
+有效缓解传统 RNN 在长序列中的梯度消失问题，从而建模长期依赖。</li>
+</ul>
+</li>
+<li>LSTM组成：<ul>
+<li>遗忘门：决定保留或忘记多少旧记忆</li>
+<li>输入门：决定写入多少新记忆</li>
+<li>细胞状态：累积更新长期记忆</li>
+<li>输出门：决定输出哪些信息</li>
+</ul>
+</li>
+<li>Bi-LSTM:<ul>
+<li>即双向LSTM, 在正向和反向序列上分别运行 LSTM，不改变内部结构，将两方向的隐藏状态拼接作为输出，增强上下文建模能力。</li>
+</ul>
+</li>
+<li>LSTM优点：<ul>
+<li>1.能建模长期依赖</li>
+<li>2.显著缓解梯度消失问题</li>
+<li>3.适用任务广（NLP、时间序列等）</li>
+<li>4.表达能力强，能学习复杂时序特征</li>
+</ul>
+</li>
+<li>LSTM缺点：<ul>
+<li>1.计算开销大，训练慢</li>
+<li>2.超参数多，调参难</li>
+<li>3.可解释性差</li>
+</ul>
+</li>
+</ul>
+<h2 id="sec-16">4 GRU模型</h2>
+<h4>学习目标</h4>
+<ul>
+<li>了解GRU内部结构及计算公式.</li>
+<li>掌握Pytorch中GRU层的使用.</li>
+<li>了解GRU的优缺点.</li>
+</ul>
+<h3 id="sec-17">4.1 GRU介绍</h3>
+<p>GRU（Gated Recurrent Unit）也称门控循环单元, 是传统RNN的变体, 同LSTM一样能够有效捕捉长序列之间的语义关联, 缓解梯度消失现象. 它的结构要比LSTM更简单, 核心结构分为3个部分:</p>
+<ul>
+<li>重置门：决定保留多少旧信息</li>
+<li>更新门：决定旧信息在生成新状态时的参与程度</li>
+<li>隐藏状态：存储关键信息</li>
+</ul>
+<h3 id="sec-18">4.2 GRU的内部结构图</h3>
+<h4>GRU结构分析</h4>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-e9ffc22ff24f.png" /></p>
+<ul>
+<li>结构解释图:</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-9154b6c27cce.png" /></p>
+<ul>
+<li>GRU的更新门和重置门结构图:</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson37/figure-84ca5a34d8b8.png" /></p>
+<h4>GRU 的计算步骤</h4>
+<ol>
+<li><strong>计算更新门与重置门</strong></li>
+</ol>
+<p>将当前输入 $x_t$ 与上一时间步隐藏状态 $h_{t-1}$ 拼接，
+  通过线性变换和 Sigmoid 激活函数：</p>
+<p>$
+  z_t = \sigma(W_z [x_t, h_{t-1}] + b_z)
+  $</p>
+<p>$
+  r_t = \sigma(W_r [x_t, h_{t-1}] + b_r)
+  $</p>
+<p>其中：
+  - $z_t$：更新门，控制新旧信息的比例<br />
+  - $r_t$：重置门，控制旧信息的使用程度<br />
+2. <strong>重置旧信息</strong></p>
+<p>使用重置门作用在上一时间步隐藏状态上：</p>
+<p>$
+  r_t \odot h_{t-1}
+  $</p>
+<p>该操作决定旧状态中哪些信息可以参与当前计算。</p>
+<ol start="3">
+<li><strong>计算候选隐藏状态</strong></li>
+</ol>
+<p>将当前输入 $x_t$ 与重置后的隐藏状态拼接，
+  经过线性变换和 Tanh 激活，得到候选隐藏状态：</p>
+<p>$
+  \tilde{h}<em>t = \tanh(W_h [x_t, r_t \odot h</em>{t-1}] + b_h)
+  $</p>
+<ol start="4">
+<li><strong>更新当前隐藏状态</strong></li>
+</ol>
+<p>使用更新门对新旧状态进行加权融合：</p>
+<p>$
+  h_t = z_t \odot \tilde{h}<em>t + (1 - z_t) \odot h</em>{t-1}
+  $</p>
+<p>当：
+  - $z_t \to 1$：更多采用新状态<br />
+  - $z_t \to 0$：更多保留旧状态  </p>
+<p>得到最终的隐藏状态输出 $h_t$。</p>
+<h4>Bi-GRU介绍</h4>
+<p>Bi-GRU与Bi-LSTM的逻辑相同, 都是不改变其内部结构, 将模型沿着序列的正方向和反方向各应用一次, 再将两次得到的结果进行拼接作为最终输出. 具体参见上小节中的Bi-LSTM.</p>
+<h4>使用Pytorch构建GRU模型</h4>
+<ul>
+<li>位置: 在torch.nn工具包之中, 通过torch.nn.GRU可调用.</li>
+<li>
+<p>nn.GRU类初始化主要参数解释:</p>
+</li>
+<li>
+<p>input_size: 输入张量x中特征维度的大小.</p>
+</li>
+<li>hidden_size: 隐层张量h中特征维度的大小.</li>
+<li>num_layers: 隐含层的数量.- bidirectional: 是否选择使用双向LSTM, 如果为True, 则使用; 默认不使用.</li>
+<li>
+<p>nn.GRU类实例化对象主要参数解释:</p>
+</li>
+<li>
+<p>input: 输入张量x.- h0: 初始化的隐层张量h.</p>
+</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">演示</span>
+<span class="sd">    GRU层的API</span>
+<span class="sd">GRU介绍：</span>
+<span class="sd">    Gated Recurrent unit,门控循环单元，简化版的LSTM，计算更简单，也能处理长序列</span>
+<span class="sd">核心设计思路:</span>
+<span class="sd">    重置门, 更新门. 在LSTM的基础上, 对部分门做合并.</span>
+<span class="sd">    - 重置门：决定保留多少旧信息</span>
+<span class="sd">    - 更新门：决定旧信息在生成新状态时的参与程度</span>
+<span class="sd">    - 隐藏状态：存储关键信息</span>
+
+<span class="sd">优点:</span>
+<span class="sd">    和LSTM一样, 可以处理长序列语义关联, 能有效缓解梯度消失的问题.</span>
+<span class="sd">    关于长序列的处理效果: 优于传统RNN,接近LSTM</span>
+<span class="sd">    关于计算复杂度: LSTM &gt; GRU &gt; RNN</span>
+<span class="sd">弊端:</span>
+<span class="sd">    1.不能完全解决梯度消失/爆炸问题</span>
+<span class="sd">    2.不能并行计算.在大规模数据量的实际场景中, 是RNN结构的关键瓶颈.</span>
+<span class="sd">涉及到的API:</span>
+<span class="sd">    nn.GRU(input_size,hidden_size,num_layers=1,batch_first=True,bidirectional=False):</span>
+<span class="sd">        input_size: 输入维度，也就是词向量维度embed_dim</span>
+<span class="sd">        hidden_size: 隐藏层维度</span>
+<span class="sd">        num_layers: GRU层的层数，默认1</span>
+<span class="sd">        batch_first: 输入/输出张量的0轴是否为batch轴，默认为False, 设为True时，输入和输出张量的0轴为batch轴</span>
+<span class="sd">        bidirectional: 是否使用双向GRU,默认为False,num_directions=1,设为True时，使用双向RNN,num_directions=2</span>
+<span class="sd">    输入(batch_first=True):</span>
+<span class="sd">        input:输入的当前时间步的词向量, (batch_size,seq_len,embed_dim)</span>
+<span class="sd">        h0:初始隐藏状态,(num_layers*num_directions,batch_size,hidden_size)</span>
+<span class="sd">    输出(batch_first=True):</span>
+<span class="sd">        output:所有时间步的隐藏状态, (batch_size,seq_len,hidden_size*num_directions)</span>
+<span class="sd">        hn:最后一个时间步的隐藏状态, (num_layers*num_directions,batch_size,hidden_size)</span>
+
+<span class="sd">需要掌握的:</span>
+<span class="sd">    无</span>
+<span class="sd">    建议重点了解nn.RNN</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+
+<span class="c1"># 1.定义函数，演示 传统GRU层(batch_first=True)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo01</span><span class="p">():</span>
+    <span class="c1"># 0.设置随机种子</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+    <span class="c1"># 1.构造RNN层的输入张量</span>
+    <span class="c1"># 1.1 模拟当前时间步的词向量，(batch_size,seq_len,embed_dim)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">10</span><span class="p">)</span>
+    <span class="c1"># 1.2 上一个时间步的隐藏状态，这里是初始隐藏状态，(num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="n">h0</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">8</span><span class="p">)</span>
+    <span class="c1"># 2.创建GRU层</span>
+    <span class="n">rnn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GRU</span><span class="p">(</span>
+        <span class="n">input_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>  <span class="c1"># 输入维度，也就是词向量维度embed_dim</span>
+        <span class="n">hidden_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>  <span class="c1"># 隐藏层维度</span>
+        <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>  <span class="c1"># RNN层的层数，默认1</span>
+        <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>   <span class="c1"># 输入/输出张量的0轴是否为batch轴，默认为False, 设为True时，输入和输出张量的0轴为batch轴</span>
+        <span class="n">bidirectional</span><span class="o">=</span><span class="kc">False</span> <span class="c1"># 是否开启双向RNN, 默认False</span>
+    <span class="p">)</span>
+    <span class="c1"># 3.RNN层的前向传播，也就是输入数据到RNN层</span>
+    <span class="c1"># 输入(batch_first=True):</span>
+    <span class="c1">#     x:输入的当前时间步的词向量, (batch_size,seq_len,embed_dim)</span>
+    <span class="c1">#     h0:初始隐藏状态,(num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="c1"># 输出(batch_first=True):</span>
+    <span class="c1">#     output:所有时间步的隐藏状态, (batch_size,seq_len,hidden_size)</span>
+    <span class="c1">#     hn:最后一个时间步的隐藏状态, (num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="n">output</span><span class="p">,</span> <span class="n">hn</span> <span class="o">=</span> <span class="n">rnn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">h0</span><span class="p">)</span>
+    <span class="c1"># output, hn = rnn(x,)</span>
+    <span class="c1"># 详解RNN层内部前向传播逻辑:</span>
+    <span class="c1"># x: [x1,x2,x3]</span>
+    <span class="c1"># output: [h1,h2,h3]</span>
+    <span class="c1"># t=1: 输入x1,h0 -&gt; 输出h1</span>
+    <span class="c1"># t=2: 输入x2,h1 -&gt; 输出h2</span>
+    <span class="c1"># t=3: 输入x3,h2 -&gt; 输出h3</span>
+    <span class="c1"># output: [h1,h2,h3], (batch_size,seq_len,hidden_size*num_directions)</span>
+    <span class="c1"># hn: h3, (num_layers*num_directions,batch_size,hidden_size)</span>
+    <span class="c1"># 4.打印RNN层输出结果</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;output.shape:</span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   <span class="c1"># (1,3,8)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;hn.shape:</span><span class="si">{</span><span class="n">hn</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   <span class="c1"># (1,1,8)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="o">*</span><span class="mi">50</span><span class="p">)</span>
+
+<span class="c1"># 测试</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">demo01</span><span class="p">()</span>
+</pre></div>
+</div>
+<pre><code>output.shape:torch.Size([1, 3, 8])
+hn.shape:torch.Size([1, 1, 8])
+**************************************************
+</code></pre>
+<h4>GRU优缺点</h4>
+<ul>
+<li>
+<p>GRU的优势:</p>
+</li>
+<li>
+<p>GRU和LSTM作用相同, 在捕捉长序列语义关联时, 能有效抑制梯度消失, 效果都优于传统RNN且计算复杂度相比LSTM要小.</p>
+</li>
+<li>
+<p>GRU的缺点:</p>
+</li>
+<li>
+<p>GRU仍然不能完全解决梯度消失问题, 同时其作用RNN的变体, 有着RNN结构本身的一大弊端, 即不可并行计算, 这在数据量和模型体量逐步增大的未来, 是RNN发展的关键瓶颈.</p>
+</li>
+</ul>
+<h3 id="sec-19">4.3 小结</h3>
+<ul>
+<li>
+<p>GRU（Gated Recurrent Unit）也称门控循环单元结构, 也是传统RNN的变体, 同LSTM一样能够有效捕捉长序列之间的语义关联, 缓解梯度消失. 同时它的结构和计算要比LSTM更简单, 核心结构可以分为两个部分:</p>
+</li>
+<li>
+<p>更新门</p>
+</li>
+<li>重置门</li>
+<li>内部结构:</li>
+<li>和之前分析过的LSTM中的门控一样, 首先计算更新门和重置门的门值. 接着使用这个重置后的h(t-1)进行基本的RNN计算, 得到新的h(t). 最后得到最终的隐含状态输出h(t).</li>
+<li>
+<p>Bi-GRU与Bi-LSTM的逻辑相同, 都是不改变其内部结构, 而是将模型应用两次且方向不同, 再将两次得到的LSTM结果进行拼接作为最终输出. 具体参见上小节中的Bi-LSTM.</p>
+</li>
+<li>
+<p>Pytorch中GRU工具: torch.nn.GRU</p>
+</li>
+<li>
+<p>GRU的优势:</p>
+</li>
+<li>GRU和LSTM作用相同, 在捕捉长序列语义关联时, 能有效抑制梯度消失, 效果都优于传统RNN且计算复杂度相比LSTM要小.</li>
+<li>GRU的缺点:</li>
+<li>GRU仍然不能完全解决梯度消失问题, 有着RNN结构本身的一大弊端, 即不可并行计算，是RNN结构的关键瓶颈.</li>
+</ul>
+<p>总结 RNN/LSTM/GRU</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>传统 RNN</th>
+<th>LSTM</th>
+<th>GRU</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>核心原理</strong></td>
+<td>沿着序列方向循环计算隐藏状态来处理序列信息</td>
+<td>通过遗忘门、输入门、输出门和细胞状态控制信息流。三门一状态核心：<code>遗忘门：决定保留或忘记多少旧记忆；输入门：决定写入多少新记忆；细胞状态：累积更新长期记忆；输出门：决定输出哪些信息</code></td>
+<td>通过更新门和重置门控制信息流（简化版 LSTM）,两门一状态核心：<code>重置门：决定保留多少旧信息；更新门：决定旧信息在生成隐藏状态时的参与程度；隐藏状态: 保存关键信息</code></td>
+</tr>
+<tr>
+<td><strong>内部状态</strong></td>
+<td>隐藏状态 $h_t$</td>
+<td>隐藏状态 $h_t$ + 细胞状态 $c_t$</td>
+<td>隐藏状态 $h_t$</td>
+</tr>
+<tr>
+<td><strong>PyTorch API</strong></td>
+<td><code>nn.RNN(input_size, hidden_size, num_layers, batch_first, bidirectional)</code></td>
+<td><code>nn.LSTM(input_size, hidden_size, num_layers, batch_first, bidirectional)</code></td>
+<td><code>nn.GRU(input_size, hidden_size, num_layers, batch_first, bidirectional)</code></td>
+</tr>
+<tr>
+<td><strong>输入</strong></td>
+<td><code>input</code>: (B, L, input_size)</td>
+<td><code>input</code>: (B, L, input_size)</td>
+<td><code>input</code>: (B, L, input_size)</td>
+</tr>
+<tr>
+<td></td>
+<td><code>h0</code>: (num_layers*D, B, H)</td>
+<td><code>h0</code>: (num_layers*D, B, H)</td>
+<td><code>h0</code>: (num_layers*D, B, H)</td>
+</tr>
+<tr>
+<td></td>
+<td>—</td>
+<td><code>c0</code>: (num_layers*D, B, H)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>输出</strong></td>
+<td><code>output</code>: (B, L, H*D)</td>
+<td><code>output</code>: (B, L, H*D)</td>
+<td><code>output</code>: (B, L, H*D)</td>
+</tr>
+<tr>
+<td></td>
+<td><code>hn</code>: (num_layers*D, B, H)</td>
+<td><code>hn</code>: (num_layers*D, B, H)</td>
+<td><code>hn</code>: (num_layers*D, B, H)</td>
+</tr>
+<tr>
+<td></td>
+<td>—</td>
+<td><code>cn</code>: (num_layers*D, B, H)</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>优点</strong></td>
+<td>结构简单，参数少，计算快</td>
+<td>能建模长期依赖，缓解梯度消失</td>
+<td>效果接近 LSTM，参数更少，训练更快</td>
+</tr>
+<tr>
+<td><strong>缺点</strong></td>
+<td>1.梯度消失/爆炸，难以建模长期依赖;2.不可并行计算</td>
+<td>1.参数多，计算慢，调参难;2.不可并行计算</td>
+<td>1.不能完全解决梯度消失，2.不可并行计算</td>
+</tr>
+</tbody>
+</table></div>
+<blockquote>
+<p><strong>符号说明</strong>：B = batch_size，L = seq_len，H = hidden_size，D = num_directions（单向=1，双向=2），batch_first=True</p>
+<p><strong>如何选择</strong>：GRU/LSTM &gt; RNN</p>
+</blockquote>
+<h2 id="sec-20">5 扩展-RNN人名分类器</h2>
+<h3 id="sec-21">5.1 学习目标</h3>
+<ul>
+<li>了解有关人名分类问题和文本数据.</li>
+<li>掌握使用RNN构建人名分类器实现过程.</li>
+</ul>
+<h3 id="sec-22">5.2 案例介绍</h3>
+<ul>
+<li>关于人名分类问题:</li>
+</ul>
+<p>输入一个人名, 使用模型判断它最有可能来自哪一个国家, 这在某些国际化业务中具有重要意义, 比如在用户注册时, 会根据用户填写的名字直接给他分配可能的国家或地区选项, 以及对应的手机号码位数等.
+- 人名分类数据预览
+- 数据存放路径：$(home)/data/name_classfication.txt
+- 数据格式说明 每一行第一个单词为人名，第二个单词为国家名。中间用制表符tab分割</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>Huffmann    German
+Hummel  German
+Hummel  German
+Hutmacher   German
+Ingersleben German
+Jaeger  German
+Jager   German
+Deng    Chinese
+Ding    Chinese
+Dong    Chinese
+Dou Chinese
+Duan    Chinese
+Eng Chinese
+Fan Chinese
+Fei Chinese
+Abaimov Russian
+Abakeliya   Russian
+Abakovsky   Russian
+Abakshin    Russian
+Abakumoff   Russian
+Abakumov    Russian
+Abakumtsev  Russian
+Abakushin   Russian
+Abalakin    Russian
+</pre></div>
+</div>
+<h3 id="sec-23">5.3 案例步骤</h3>
+<ul>
+<li>1.准备数据集/数据预处理
+    读取文本 -&gt; 张量 -&gt; 自定义的数据集对象 -&gt; 数据加载器</li>
+<li>2.搭建神经网络
+    RNN, LSTM, GRU
+    RNN层
+    全连接层</li>
+<li>3.模型训练
+    RNN, LSTM, GRU</li>
+<li>
+<p>4.模型预测
+    RNN, LSTM, GRU</p>
+</li>
+<li>
+<p>注释：</p>
+<ul>
+<li>1.NLP课程中，唯一一个使用one-hot编码的案例，工程中使用nn.Embedding</li>
+<li>2.因为使用了one-hot来编码人名，按照一个英文字符对应一个词，无需jieba分词，无需构建词表</li>
+<li>3.优先掌握RNN, LSTM, 注意GRU和RNN几乎一样</li>
+<li>4.一般工程项目中，需要把数据集划分为训练集，验证集，测试集。这里只有训练集，做了简化处理</li>
+</ul>
+</li>
+<li>代码优化点:<ul>
+<li>1.设置了device,支持GPU加速训练，更符合工程实际</li>
+<li>2.使用CrossEntropyLoss替换原有的NLLLoss, 更符合pytorch推荐</li>
+<li>3.添加了截断填充到固定长度，支持batch_size&gt;1，更符合工程实际</li>
+<li>4.统一输入数据的形状为(batch_size, seq_len, input_size)</li>
+<li>5.统一模型训练代码，避免重复写训练函数</li>
+</ul>
+</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">案例：</span>
+<span class="sd">    演示 RNN人名分类案例，根据人名，预测国家</span>
+<span class="sd">NLP项目的工作流：</span>
+<span class="sd">    1.准备数据集/数据预处理</span>
+<span class="sd">        读取文本 -&gt; 数值化 -&gt; Dataset -&gt; DataLoader</span>
+<span class="sd">    2.搭建神经网络</span>
+<span class="sd">        one-hot编码</span>
+<span class="sd">        RNN层(RNN, LSTM, GRU)</span>
+<span class="sd">        全连接层</span>
+<span class="sd">    3.模型训练</span>
+<span class="sd">        RNN, LSTM, GRU</span>
+<span class="sd">        1.前向传播</span>
+<span class="sd">        2.计算损失</span>
+<span class="sd">        3.梯度清零</span>
+<span class="sd">        4.反向传播</span>
+<span class="sd">        5.更新参数</span>
+<span class="sd">    4.模型预测</span>
+<span class="sd">        RNN, LSTM, GRU</span>
+
+<span class="sd">注意：</span>
+<span class="sd">    1.这个案例是NLP课程中，唯一一个使用one-hot编码的案例，工程中使用nn.Embedding/预训练语言模型来处理文本分类任务</span>
+<span class="sd">    2.这里把每个字符作为一个token，一共有26个英文字母*2+5个特殊符号( .,;&#39;), 不重复的token总数为57.采用one-hot编码，不需要构造词表了</span>
+<span class="sd">    3.使用RNN/LSTM/GRU来实现文本分类，目前主流工程采用Transformer/BERT/GPT架构来处理NLP任务，这里的文本分类主要用BERT架构</span>
+<span class="sd">    4.一般项目中，需要把数据集拆分为训练集、验证集、测试集。这里简化为只有训练集。</span>
+<span class="sd">代码优化点：</span>
+<span class="sd">    1.设置了device,支持GPU加速训练</span>
+<span class="sd">    2.使用CrossEntropyLoss(自带了softmax,避免了数值溢出的问题)替换原有的NLLLoss, 更符合pytorch推荐</span>
+<span class="sd">    3.添加了截断填充到固定长度，支持batch_size&gt;1</span>
+<span class="sd">    4.统一输入数据的形状为(batch_size, seq_len, *), RNN(batch_first=True)</span>
+<span class="sd">    5.统一模型训练代码，避免重复代码</span>
+<span class="sd">需要掌握的：</span>
+<span class="sd">    NLP分类任务的流程</span>
+<span class="sd">    具体代码细节无需掌握</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="c1"># 导入nn准备构建模型</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span> <span class="c1"># 函数模块</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.optim</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">optim</span>
+
+<span class="c1"># 导入torch的数据源 数据迭代器工具包</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.utils.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dataset</span><span class="p">,</span> <span class="n">DataLoader</span>
+<span class="c1"># 用于获得常见字母及字符规范化</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">string</span>
+<span class="c1"># 导入时间工具包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="c1"># 引入制图工具包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="c1"># 可视化训练过程</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+<span class="c1"># 设置中文字体</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.sans-serif&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SimHei&#39;</span><span class="p">]</span>  <span class="c1"># 微软雅黑</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.unicode_minus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>    <span class="c1"># 解决负号显示问题</span>
+
+<span class="c1"># 定义批次大小</span>
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">64</span>
+<span class="c1"># 定义设备</span>
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;设备: </span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 定义最大长度</span>
+<span class="n">max_length</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="c1"># 1.准备数据集/数据预处理</span>
+<span class="c1"># 1.1 定义变量,获取常用的字符，类似构建词表</span>
+<span class="n">all_letters</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span> <span class="o">+</span> <span class="s2">&quot; .,;&#39;&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;常用字符: </span><span class="si">{</span><span class="n">all_letters</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">num_letters</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_letters</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;常用字符个数/词表大小: </span><span class="si">{</span><span class="n">num_letters</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># 1.2 定义变量，获取标签列表，也就是国家列表</span>
+<span class="n">countries</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Italian&#39;</span><span class="p">,</span> <span class="s1">&#39;English&#39;</span><span class="p">,</span> <span class="s1">&#39;Arabic&#39;</span><span class="p">,</span> <span class="s1">&#39;Spanish&#39;</span><span class="p">,</span> <span class="s1">&#39;Scottish&#39;</span><span class="p">,</span> <span class="s1">&#39;Irish&#39;</span><span class="p">,</span> <span class="s1">&#39;Chinese&#39;</span><span class="p">,</span> <span class="s1">&#39;Vietnamese&#39;</span><span class="p">,</span> <span class="s1">&#39;Japanese&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;French&#39;</span><span class="p">,</span> <span class="s1">&#39;Greek&#39;</span><span class="p">,</span> <span class="s1">&#39;Dutch&#39;</span><span class="p">,</span> <span class="s1">&#39;Korean&#39;</span><span class="p">,</span> <span class="s1">&#39;Polish&#39;</span><span class="p">,</span> <span class="s1">&#39;Portuguese&#39;</span><span class="p">,</span> <span class="s1">&#39;Russian&#39;</span><span class="p">,</span> <span class="s1">&#39;Czech&#39;</span><span class="p">,</span> <span class="s1">&#39;German&#39;</span><span class="p">]</span>
+<span class="c1"># print(f&quot;标签列表: {countries}&quot;)</span>
+<span class="n">num_countries</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">countries</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;标签列表个数: </span><span class="si">{</span><span class="n">num_countries</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 1.3 读取源文件，返回 样本列表 和 标签列表</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+    <span class="c1"># 1.初始化 样本列表 和 标签列表</span>
+    <span class="n">list_x</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">list_y</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># 2.通过 with open() 打开文件</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+    <span class="c1"># 3.遍历所有行</span>
+    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="c1"># 4.数据清洗，过滤掉长度小于=5的样本</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="k">continue</span>    <span class="c1"># 结束当前训练，进入下一个训练</span>
+        <span class="c1"># 5.划分出 输入特征/人名 和 标签/国家</span>
+        <span class="c1"># strip() 去除字符串两端的空白字符</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># 6.添加到列表中</span>
+        <span class="n">list_x</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">list_y</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+    <span class="c1"># 7.返回结果</span>
+    <span class="k">return</span> <span class="n">list_x</span><span class="p">,</span> <span class="n">list_y</span>
+
+<span class="c1"># 1.4 定义数据集对象</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyDataset</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="c1"># 1.定义init方法，初始化 样本，标签，最大长度，样本数量</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list_x</span><span class="p">,</span> <span class="n">list_y</span><span class="p">,</span> <span class="n">max_length</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_x</span> <span class="o">=</span> <span class="n">list_x</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">list_y</span> <span class="o">=</span> <span class="n">list_y</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_length</span> <span class="o">=</span> <span class="n">max_length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_x</span><span class="p">)</span>
+    <span class="c1"># 2.定义len方法，返回样本数量</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span>
+    <span class="c1"># 3.定义getitem方法，返回指定索引的样本和标签</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="c1"># 1.进行索引边界校验</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">index</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_samples</span>
+        <span class="c1"># 2.获取样本和标签</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_x</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_y</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="c1"># 3.截断过长的样本</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">max_length</span><span class="p">]</span> <span class="c1"># 获取前self.max_length个字符</span>
+        <span class="c1"># 4.对样本进行one-hot编码,形状(seq_len, num_letters)</span>
+        <span class="n">onehot_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_length</span><span class="p">,</span> <span class="n">num_letters</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">letter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="n">onehot_x</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">all_letters</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">letter</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># print(f&quot;onehot_x: {onehot_x}&quot;)</span>
+        <span class="c1"># 5.对标签进行标签编码</span>
+        <span class="n">label_y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">countries</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
+        <span class="c1"># 6.返回结果</span>
+        <span class="k">return</span> <span class="n">onehot_x</span><span class="p">,</span> <span class="n">label_y</span>
+
+<span class="c1"># 2.搭建神经网络</span>
+<span class="c1"># RNN神经网络，RNN层+全连接层</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyRNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="c1"># 1.定义init方法，定义输入维度/词向量维度/num_letters，输出维度，隐藏层维度，rnn层数，rnn层，全连接层</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="c1"># 初始化父类成员</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># 定义网络层</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_size</span> <span class="o">=</span> <span class="n">input_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span> <span class="o">=</span> <span class="n">hidden_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_size</span> <span class="o">=</span> <span class="n">output_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span> <span class="o">=</span> <span class="n">num_layers</span>
+        <span class="c1"># 参数1：input_size，输入维度/词向量维度/num_letters</span>
+        <span class="c1"># 参数2：hidden_size，隐藏层维度</span>
+        <span class="c1"># 参数3：num_layers，rnn层数</span>
+        <span class="c1"># 参数4：batch_first，batch是否放到0轴，设为True,使得输入和输出张量的0轴为batch轴</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">RNN</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_size</span><span class="p">)</span>
+    <span class="c1"># 2.定义forward方法，实现前向传播</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        前向传播</span>
+
+<span class="sd">        参数：</span>
+<span class="sd">            x: (batch_size, seq_len, input_size)</span>
+<span class="sd">            hidden: (num_layers, batch_size, hidden_size)</span>
+
+<span class="sd">        返回：</span>
+<span class="sd">            y: (batch_size, output_size)</span>
+<span class="sd">            hidden: 最后一时刻隐藏状态</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 输入x:形状(batch_size, seq_len, input_size)</span>
+        <span class="c1"># 1.输入RNN层</span>
+        <span class="c1"># 所有时间步的隐藏状态output: 形状(batch_size, seq_len, hidden_size)</span>
+        <span class="c1"># 最后一个时间步的所有层隐藏状态hidden: 形状(num_layers, batch_size, hidden_size)</span>
+        <span class="n">output</span><span class="p">,</span> <span class="n">hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">hidden</span><span class="p">)</span>
+        <span class="c1"># 3.输入全连接层</span>
+        <span class="n">last_output</span> <span class="o">=</span> <span class="n">output</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># (batch_size, hidden_size)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">last_output</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">hidden</span>
+
+<span class="c1"># LSTM</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyLSTM</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="c1"># 1.定义init方法，定义输入维度/词向量维度/num_letters，输出维度，隐藏层维度，rnn层数，rnn层，全连接层</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="c1"># 初始化父类成员</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># 定义网络层</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_size</span> <span class="o">=</span> <span class="n">input_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span> <span class="o">=</span> <span class="n">hidden_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_size</span> <span class="o">=</span> <span class="n">output_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span> <span class="o">=</span> <span class="n">num_layers</span>
+        <span class="c1"># 参数1：input_size，输入维度/词向量维度/num_letters</span>
+        <span class="c1"># 参数2：hidden_size，隐藏层维度</span>
+        <span class="c1"># 参数3：num_layers，rnn层数</span>
+        <span class="c1"># 参数4：batch_first，batch是否放到0轴，设为True,使得输入和输出张量的0轴为batch轴</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_size</span><span class="p">)</span>
+    <span class="c1"># 2.定义forward方法，实现前向传播</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        参数：</span>
+<span class="sd">            x: (batch_size, seq_len, input_size)</span>
+<span class="sd">            hidden: (h0, c0)</span>
+
+<span class="sd">        返回：</span>
+<span class="sd">            y: (batch_size, output_size)</span>
+<span class="sd">            hidden: (hn, cn)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 1.输入RNN层</span>
+        <span class="c1"># 所有时间步的隐藏状态output: 形状(batch_size,seq_len,hidden_size)</span>
+        <span class="c1"># 最后一个时间步的所有层隐藏状态hidden: 形状(num_layers,batch_size,hidden_size)</span>
+        <span class="n">output</span><span class="p">,</span> <span class="p">(</span><span class="n">hn</span><span class="p">,</span> <span class="n">cn</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">hidden</span><span class="p">)</span>
+        <span class="c1"># 3.输入全连接层</span>
+        <span class="n">last_output</span> <span class="o">=</span> <span class="n">output</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># (batch_size, hidden_size)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">last_output</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="p">(</span><span class="n">hn</span><span class="p">,</span> <span class="n">cn</span><span class="p">)</span>
+<span class="c1"># GRU</span>
+<span class="c1"># GRU神经网络，GRU层+全连接层</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyGRU</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="c1"># 1.定义init方法，定义输入维度/词向量维度/num_letters，输出维度，隐藏层维度，GRU层数，GRU层，全连接层</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="c1"># 初始化父类成员</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># 定义网络层</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_size</span> <span class="o">=</span> <span class="n">input_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span> <span class="o">=</span> <span class="n">hidden_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_size</span> <span class="o">=</span> <span class="n">output_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span> <span class="o">=</span> <span class="n">num_layers</span>
+        <span class="c1"># 参数1：input_size，输入维度/词向量维度/num_letters</span>
+        <span class="c1"># 参数2：hidden_size，隐藏层维度</span>
+        <span class="c1"># 参数3：num_layers，rnn层数</span>
+        <span class="c1"># 参数4：batch_first，batch是否放到0轴，设为True,使得输入和输出张量的0轴为batch轴</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GRU</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_size</span><span class="p">)</span>
+    <span class="c1"># 2.定义forward方法，实现前向传播</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        前向传播</span>
+
+<span class="sd">        参数：</span>
+<span class="sd">            x: (batch_size, seq_len, input_size)</span>
+<span class="sd">            hidden: (num_layers, batch_size, hidden_size)</span>
+
+<span class="sd">        返回：</span>
+<span class="sd">            y: (batch_size, output_size)</span>
+<span class="sd">            hidden: 最后一时刻隐藏状态</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 输入x:形状(batch_size, seq_len, input_size)</span>
+        <span class="c1"># 1.输入RNN层</span>
+        <span class="c1"># 所有时间步的隐藏状态output: 形状(batch_size, seq_len, hidden_size)</span>
+        <span class="c1"># 最后一个时间步的所有层隐藏状态hidden: 形状(num_layers, batch_size, hidden_size)</span>
+        <span class="n">output</span><span class="p">,</span> <span class="n">hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rnn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">hidden</span><span class="p">)</span>
+        <span class="c1"># 3.输入全连接层</span>
+        <span class="n">last_output</span> <span class="o">=</span> <span class="n">output</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>  <span class="c1"># (batch_size, hidden_size)</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">last_output</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">y</span><span class="p">,</span> <span class="n">hidden</span>
+
+<span class="c1"># 3.模型训练</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="s2">&quot;./model/model.pth&quot;</span><span class="p">):</span>
+    <span class="c1"># 1.创建数据加载器对象</span>
+    <span class="c1"># 参数1：数据集对象；参数2：批次大小；参数3：是否打乱数据，训练时打乱，测试时不打乱</span>
+    <span class="n">dataloader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># 2.迁移模型 到设备</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="c1"># 3.定义损失函数和优化器</span>
+    <span class="n">loss_fn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">)</span>
+    <span class="c1"># 4.模型训练</span>
+    <span class="c1"># 定义列表，记录训练损失，训练准确率，训练时间</span>
+    <span class="n">train_losses</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">train_accs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">train_times</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># 遍历epochs</span>
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+        <span class="c1"># 0.设置为训练模式</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+        <span class="c1"># 初始化预测正确的样本数，总样本数</span>
+        <span class="n">total_correct</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">total_samples</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># 初始化 总训练损失</span>
+        <span class="n">total_loss</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="c1"># 获取当前时间步</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="c1"># 遍历数据加载器</span>
+        <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="p">:</span>
+            <span class="c1"># 0.迁移 数据 到 device</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+            <span class="c1"># 1.前向传播</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">MyLSTM</span><span class="p">):</span>
+                <span class="n">y_pred</span><span class="p">,</span> <span class="p">(</span><span class="n">hidden</span><span class="p">,</span> <span class="n">cn</span><span class="p">)</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">y_pred</span><span class="p">,</span> <span class="n">hidden</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="c1"># 2.计算损失</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="c1"># 3.梯度清零</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+            <span class="c1"># 4.反向传播</span>
+            <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+            <span class="c1"># 5.更新参数</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+            <span class="c1"># 6.更新当前轮次内的批次的统计数据</span>
+            <span class="n">total_loss</span> <span class="o">+=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">total_samples</span> <span class="o">+=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">total_correct</span> <span class="o">+=</span> <span class="p">(</span><span class="n">y_pred</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">y</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+        <span class="c1"># 7.计算当前轮次的平均损失，准确率，训练时间</span>
+        <span class="n">train_loss</span> <span class="o">=</span> <span class="n">total_loss</span> <span class="o">/</span> <span class="n">total_samples</span>
+        <span class="n">train_acc</span> <span class="o">=</span> <span class="n">total_correct</span> <span class="o">/</span> <span class="n">total_samples</span>
+        <span class="n">train_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+        <span class="n">train_losses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">train_loss</span><span class="p">)</span>
+        <span class="n">train_accs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">train_acc</span><span class="p">)</span>
+        <span class="n">train_times</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">train_time</span><span class="p">)</span>
+        <span class="c1"># 8.打印训练结果</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Epoch: </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">epochs</span><span class="si">}</span><span class="s2"> | &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Train Loss: </span><span class="si">{</span><span class="n">train_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Train Acc: </span><span class="si">{</span><span class="n">train_acc</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> | &quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;Train Time: </span><span class="si">{</span><span class="n">train_time</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+    <span class="c1"># 9.保存模型</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">&quot;./model&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="n">model_path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">train_losses</span><span class="p">,</span> <span class="n">train_accs</span><span class="p">,</span> <span class="n">train_times</span>
+
+<span class="c1"># 3.5.可视化，定义函数，绘制RNN,LSTM,GRU的训练曲线对比图</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_curves</span><span class="p">(</span><span class="n">all_train_stats</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># 如果训练结果字典为空，则读取本地文件</span>
+    <span class="k">if</span> <span class="n">all_train_stats</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">all_train_stats</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;./model/all_train_results.pth&quot;</span><span class="p">)</span>
+        <span class="c1"># print(all_train_stats)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+    <span class="c1"># 绘制训练损失对比图，绘制到一张图上</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">all_train_stats</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;losses&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Epoch&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Loss&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;训练损失对比&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="c1"># 绘制准确率曲线</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">all_train_stats</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;accs&#39;</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">k</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Epoch&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Accuracy&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;训练准确率对比&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="c1"># 绘制训练时间曲线</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">avg_times</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;times&#39;</span><span class="p">])</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;times&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">all_train_stats</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="n">avg_times</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">avg_times</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="c1"># plt.legend(avg_times.keys())</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;模型&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;平均时间 (s)&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">avg_times</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="o">-</span><span class="mf">0.1</span><span class="p">,</span><span class="nb">max</span><span class="p">(</span><span class="n">avg_times</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="o">+</span><span class="mf">0.1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;平均训练时间对比&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># 模型预测</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">name_to_tensor</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    将单个名字转为模型输入one-hot张量</span>
+<span class="sd">    返回形状：(1, max_length, num_letters)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 截断名字长度，确保不超过最大长度</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="p">[:</span><span class="n">max_length</span><span class="p">]</span>
+    <span class="c1"># 创建一个全零张量，形状为(max_length, num_letters)，用于存储名字的one-hot编码</span>
+    <span class="n">tensor_x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">max_length</span><span class="p">,</span> <span class="n">num_letters</span><span class="p">)</span>
+    <span class="c1"># 遍历名字中的每个字符</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">letter</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+        <span class="c1"># 检查字符是否在字符集中</span>
+        <span class="k">if</span> <span class="n">letter</span> <span class="ow">in</span> <span class="n">all_letters</span><span class="p">:</span>
+            <span class="c1"># 找到字符在all_letters中的索引，并将对应位置设为1.0（one-hot编码）</span>
+            <span class="n">tensor_x</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">all_letters</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">letter</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="c1"># 增加一个batch维度，返回形状为(1, max_length, num_letters)的张量</span>
+    <span class="k">return</span> <span class="n">tensor_x</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>   <span class="c1"># 增加 batch 维度</span>
+
+<span class="c1"># 定义函数，实现模型预测，使用训练好的模型对单个名字进行预测，返回topk预测结果</span>
+<span class="nd">@torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">()</span>    <span class="c1"># 关闭梯度计算</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">(</span><span class="n">model_class</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="s2">&quot;./model/my_rnn.pth&quot;</span><span class="p">,</span> <span class="n">topk</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="c1"># 1.加载模型</span>
+    <span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">output_size</span> <span class="o">=</span> <span class="n">num_letters</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="n">num_countries</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">model_class</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">model_path</span><span class="p">))</span>
+    <span class="c1"># 2.迁移 模型 到设备</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="c1"># 设置为评估模式</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="c1"># 3.将输入name转为one-hot张量</span>
+    <span class="n">tensor_x</span> <span class="o">=</span> <span class="n">name_to_tensor</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="n">tensor_x</span> <span class="o">=</span> <span class="n">tensor_x</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
+    <span class="c1"># 4.模型预测，得到logits</span>
+    <span class="n">y_logits</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">tensor_x</span><span class="p">)</span>
+    <span class="c1"># 5.使用softmax函数，将logits转为概率</span>
+    <span class="n">y_prob</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">y_logits</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>    <span class="c1"># (1,output_size)</span>
+    <span class="c1"># print(f&quot;y_prob: {y_prob}&quot;)</span>
+    <span class="c1"># print(f&quot;y_prob.shape: {y_prob.shape}&quot;)</span>
+    <span class="c1"># 6.获取概率最大的topk个预测结果</span>
+    <span class="n">topk_prob</span><span class="p">,</span> <span class="n">topk_idx</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="n">y_prob</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">topk</span><span class="p">)</span>
+    <span class="c1"># print(f&quot;topk_prob.shape: {topk_prob.shape}&quot;)</span>
+    <span class="c1"># print(f&quot;topk_idx.shape: {topk_idx.shape}&quot;)</span>
+    <span class="c1"># 存储预测结果列表(countries[topk_idx], topk_prob)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[(</span><span class="n">countries</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">prob</span><span class="o">.</span><span class="n">item</span><span class="p">())</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">prob</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">topk_idx</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">topk_prob</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+    <span class="c1"># 7.返回结果</span>
+    <span class="k">return</span> <span class="n">results</span>
+
+<span class="c1"># 测试</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># 1.准备数据集</span>
+    <span class="c1"># 1.1 获取样本列表 和 标签列表</span>
+    <span class="n">list_x</span><span class="p">,</span> <span class="n">list_y</span> <span class="o">=</span> <span class="n">read_file</span><span class="p">(</span><span class="s2">&quot;./data/name_classfication.txt&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;样本列表长度: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">list_x</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;标签列表长度: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">list_y</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># 1.2 创建数据集对象</span>
+    <span class="n">dataset</span> <span class="o">=</span> <span class="n">MyDataset</span><span class="p">(</span><span class="n">list_x</span><span class="p">,</span> <span class="n">list_y</span><span class="p">,</span> <span class="n">max_length</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;数据集长度：</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataset</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># for x, y in dataset:</span>
+    <span class="c1">#     print(f&quot;x: {x.shape}&quot;)</span>
+    <span class="c1">#     print(f&quot;y: {y.shape}&quot;)</span>
+    <span class="c1">#     break</span>
+    <span class="c1"># 1.3 创建数据加载器对象</span>
+    <span class="c1"># 参数1：数据集对象；参数2：批次大小；参数3：是否打乱数据，训练时打乱，测试时不打乱</span>
+    <span class="n">dataloader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;数据加载器长度：</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">dataloader</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="c1"># 数据加载器长度 = 数据集长度 / 批次大小 = 20074/32 = 628</span>
+    <span class="c1"># for x, y in dataloader:</span>
+    <span class="c1">#     print(f&quot;x: {x.shape}&quot;)</span>
+    <span class="c1">#     print(f&quot;y: {y.shape}&quot;)</span>
+    <span class="c1">#     break</span>
+    <span class="c1"># 2.创建模型对象</span>
+    <span class="c1"># 训练RNN神经网络</span>
+    <span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">output_size</span> <span class="o">=</span> <span class="n">num_letters</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="n">num_countries</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">MyRNN</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span>
+    <span class="c1"># print(model)</span>
+    <span class="c1"># 3.模型训练</span>
+    <span class="c1"># 定义字典，统一保存训练损失，准确率，时间</span>
+    <span class="n">all_train_results</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">model_path</span> <span class="o">=</span> <span class="s2">&quot;./model/my_rnn.pth&quot;</span>
+    <span class="n">train_losses</span><span class="p">,</span> <span class="n">train_accs</span><span class="p">,</span> <span class="n">train_times</span> <span class="o">=</span> <span class="n">train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="n">model_path</span><span class="p">)</span>
+    <span class="n">all_train_results</span><span class="p">[</span><span class="s1">&#39;RNN&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;losses&quot;</span><span class="p">:</span> <span class="n">train_losses</span><span class="p">,</span>
+        <span class="s2">&quot;accs&quot;</span><span class="p">:</span> <span class="n">train_accs</span><span class="p">,</span>
+        <span class="s2">&quot;times&quot;</span><span class="p">:</span> <span class="n">train_times</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="c1"># 训练LSTM神经网络</span>
+    <span class="n">model_path</span> <span class="o">=</span> <span class="s2">&quot;./model/my_lstm.pth&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">MyLSTM</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span>
+    <span class="n">train_losses</span><span class="p">,</span> <span class="n">train_accs</span><span class="p">,</span> <span class="n">train_times</span> <span class="o">=</span> <span class="n">train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="n">model_path</span><span class="p">)</span>
+    <span class="n">all_train_results</span><span class="p">[</span><span class="s1">&#39;LSTM&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;losses&quot;</span><span class="p">:</span> <span class="n">train_losses</span><span class="p">,</span>
+        <span class="s2">&quot;accs&quot;</span><span class="p">:</span> <span class="n">train_accs</span><span class="p">,</span>
+        <span class="s2">&quot;times&quot;</span><span class="p">:</span> <span class="n">train_times</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="c1"># 训练GRU神经网络</span>
+    <span class="n">model_path</span> <span class="o">=</span> <span class="s2">&quot;./model/my_gru.pth&quot;</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">MyGRU</span><span class="p">(</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span>
+    <span class="n">train_losses</span><span class="p">,</span> <span class="n">train_accs</span><span class="p">,</span> <span class="n">train_times</span> <span class="o">=</span> <span class="n">train</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dataset</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="n">model_path</span><span class="p">)</span>
+    <span class="n">all_train_results</span><span class="p">[</span><span class="s1">&#39;GRU&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;losses&quot;</span><span class="p">:</span> <span class="n">train_losses</span><span class="p">,</span>
+        <span class="s2">&quot;accs&quot;</span><span class="p">:</span> <span class="n">train_accs</span><span class="p">,</span>
+        <span class="s2">&quot;times&quot;</span><span class="p">:</span> <span class="n">train_times</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="c1"># 3.5可视化</span>
+    <span class="n">plot_curves</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+    <span class="c1"># 4.模型预测</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s2">&quot;./model&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">model_path</span> <span class="o">=</span> <span class="s2">&quot;./model/my_rnn.pth&quot;</span>
+    <span class="n">results</span><span class="o">=</span><span class="n">predict</span><span class="p">(</span><span class="n">model_class</span><span class="o">=</span><span class="n">MyRNN</span><span class="p">,</span> <span class="n">model_path</span><span class="o">=</span><span class="n">model_path</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;rose&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>设备: cuda
+常用字符: abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,;'
+常用字符个数/词表大小: 57
+标签列表个数: 18
+样本列表长度: 20074
+标签列表长度: 20074
+数据集长度：20074
+数据加载器长度：314
+Epoch: 1/50 | Train Loss: 1.7985 | Train Acc: 0.4859 | Train Time: 1.63s
+Epoch: 2/50 | Train Loss: 1.4994 | Train Acc: 0.5591 | Train Time: 1.32s
+Epoch: 3/50 | Train Loss: 1.3762 | Train Acc: 0.6055 | Train Time: 1.32s
+Epoch: 4/50 | Train Loss: 1.2402 | Train Acc: 0.6397 | Train Time: 1.33s
+Epoch: 5/50 | Train Loss: 1.1344 | Train Acc: 0.6655 | Train Time: 1.36s
+Epoch: 6/50 | Train Loss: 1.0650 | Train Acc: 0.6807 | Train Time: 1.36s
+Epoch: 7/50 | Train Loss: 1.0078 | Train Acc: 0.6993 | Train Time: 1.37s
+Epoch: 8/50 | Train Loss: 0.9597 | Train Acc: 0.7118 | Train Time: 1.36s
+Epoch: 9/50 | Train Loss: 0.9103 | Train Acc: 0.7303 | Train Time: 1.36s
+Epoch: 10/50 | Train Loss: 0.8681 | Train Acc: 0.7392 | Train Time: 1.33s
+Epoch: 11/50 | Train Loss: 0.8332 | Train Acc: 0.7481 | Train Time: 1.55s
+Epoch: 12/50 | Train Loss: 0.7886 | Train Acc: 0.7623 | Train Time: 1.71s
+Epoch: 13/50 | Train Loss: 0.7670 | Train Acc: 0.7680 | Train Time: 1.71s
+Epoch: 14/50 | Train Loss: 0.7411 | Train Acc: 0.7731 | Train Time: 1.59s
+Epoch: 15/50 | Train Loss: 0.7086 | Train Acc: 0.7851 | Train Time: 1.68s
+Epoch: 16/50 | Train Loss: 0.6872 | Train Acc: 0.7873 | Train Time: 1.62s
+Epoch: 17/50 | Train Loss: 0.6635 | Train Acc: 0.7957 | Train Time: 1.61s
+Epoch: 18/50 | Train Loss: 0.6445 | Train Acc: 0.7980 | Train Time: 1.57s
+Epoch: 19/50 | Train Loss: 0.6255 | Train Acc: 0.8048 | Train Time: 1.46s
+Epoch: 20/50 | Train Loss: 0.6055 | Train Acc: 0.8102 | Train Time: 1.46s
+Epoch: 21/50 | Train Loss: 0.5773 | Train Acc: 0.8210 | Train Time: 1.45s
+Epoch: 22/50 | Train Loss: 0.5648 | Train Acc: 0.8203 | Train Time: 1.46s
+Epoch: 23/50 | Train Loss: 0.5495 | Train Acc: 0.8284 | Train Time: 1.46s
+Epoch: 24/50 | Train Loss: 0.5267 | Train Acc: 0.8329 | Train Time: 1.48s
+Epoch: 25/50 | Train Loss: 0.5126 | Train Acc: 0.8375 | Train Time: 1.46s
+Epoch: 26/50 | Train Loss: 0.4980 | Train Acc: 0.8436 | Train Time: 1.44s
+Epoch: 27/50 | Train Loss: 0.4863 | Train Acc: 0.8445 | Train Time: 1.45s
+Epoch: 28/50 | Train Loss: 0.4665 | Train Acc: 0.8507 | Train Time: 1.44s
+Epoch: 29/50 | Train Loss: 0.4553 | Train Acc: 0.8556 | Train Time: 1.50s
+Epoch: 30/50 | Train Loss: 0.4366 | Train Acc: 0.8605 | Train Time: 1.42s
+Epoch: 31/50 | Train Loss: 0.4293 | Train Acc: 0.8626 | Train Time: 1.34s
+Epoch: 32/50 | Train Loss: 0.4190 | Train Acc: 0.8668 | Train Time: 1.35s
+Epoch: 33/50 | Train Loss: 0.4057 | Train Acc: 0.8688 | Train Time: 1.39s
+Epoch: 34/50 | Train Loss: 0.3936 | Train Acc: 0.8736 | Train Time: 1.61s
+Epoch: 35/50 | Train Loss: 0.3847 | Train Acc: 0.8737 | Train Time: 1.74s
+Epoch: 36/50 | Train Loss: 0.3687 | Train Acc: 0.8788 | Train Time: 1.66s
+Epoch: 37/50 | Train Loss: 0.3590 | Train Acc: 0.8829 | Train Time: 1.37s
+Epoch: 38/50 | Train Loss: 0.3527 | Train Acc: 0.8845 | Train Time: 1.34s
+Epoch: 39/50 | Train Loss: 0.3401 | Train Acc: 0.8879 | Train Time: 1.37s
+Epoch: 40/50 | Train Loss: 0.3287 | Train Acc: 0.8904 | Train Time: 1.37s
+Epoch: 41/50 | Train Loss: 0.3207 | Train Acc: 0.8951 | Train Time: 1.35s
+Epoch: 42/50 | Train Loss: 0.3075 | Train Acc: 0.8996 | Train Time: 1.37s
+Epoch: 43/50 | Train Loss: 0.3060 | Train Acc: 0.8996 | Train Time: 1.37s
+Epoch: 44/50 | Train Loss: 0.2938 | Train Acc: 0.9028 | Train Time: 1.36s
+Epoch: 45/50 | Train Loss: 0.2795 | Train Acc: 0.9065 | Train Time: 1.33s
+Epoch: 46/50 | Train Loss: 0.2751 | Train Acc: 0.9091 | Train Time: 1.32s
+Epoch: 47/50 | Train Loss: 0.2664 | Train Acc: 0.9122 | Train Time: 1.33s
+Epoch: 48/50 | Train Loss: 0.2639 | Train Acc: 0.9125 | Train Time: 1.32s
+Epoch: 49/50 | Train Loss: 0.2578 | Train Acc: 0.9136 | Train Time: 1.31s
+Epoch: 50/50 | Train Loss: 0.2534 | Train Acc: 0.9134 | Train Time: 1.32s
+Epoch: 1/50 | Train Loss: 1.7381 | Train Acc: 0.4980 | Train Time: 1.38s
+Epoch: 2/50 | Train Loss: 1.3128 | Train Acc: 0.6210 | Train Time: 1.35s
+Epoch: 3/50 | Train Loss: 1.1980 | Train Acc: 0.6504 | Train Time: 1.35s
+Epoch: 4/50 | Train Loss: 1.1043 | Train Acc: 0.6700 | Train Time: 1.35s
+Epoch: 5/50 | Train Loss: 1.0099 | Train Acc: 0.6930 | Train Time: 1.34s
+Epoch: 6/50 | Train Loss: 0.9385 | Train Acc: 0.7117 | Train Time: 1.37s
+Epoch: 7/50 | Train Loss: 0.8721 | Train Acc: 0.7316 | Train Time: 1.36s
+Epoch: 8/50 | Train Loss: 0.8112 | Train Acc: 0.7478 | Train Time: 1.35s
+Epoch: 9/50 | Train Loss: 0.7639 | Train Acc: 0.7602 | Train Time: 1.34s
+Epoch: 10/50 | Train Loss: 0.7215 | Train Acc: 0.7755 | Train Time: 1.34s
+Epoch: 11/50 | Train Loss: 0.6830 | Train Acc: 0.7890 | Train Time: 1.36s
+Epoch: 12/50 | Train Loss: 0.6497 | Train Acc: 0.7953 | Train Time: 1.36s
+Epoch: 13/50 | Train Loss: 0.6239 | Train Acc: 0.8023 | Train Time: 1.36s
+Epoch: 14/50 | Train Loss: 0.5976 | Train Acc: 0.8112 | Train Time: 1.35s
+Epoch: 15/50 | Train Loss: 0.5763 | Train Acc: 0.8188 | Train Time: 1.35s
+Epoch: 16/50 | Train Loss: 0.5548 | Train Acc: 0.8241 | Train Time: 1.36s
+Epoch: 17/50 | Train Loss: 0.5312 | Train Acc: 0.8317 | Train Time: 1.34s
+Epoch: 18/50 | Train Loss: 0.5173 | Train Acc: 0.8373 | Train Time: 1.35s
+Epoch: 19/50 | Train Loss: 0.5019 | Train Acc: 0.8399 | Train Time: 1.36s
+Epoch: 20/50 | Train Loss: 0.4824 | Train Acc: 0.8460 | Train Time: 1.35s
+Epoch: 21/50 | Train Loss: 0.4673 | Train Acc: 0.8495 | Train Time: 1.35s
+Epoch: 22/50 | Train Loss: 0.4495 | Train Acc: 0.8528 | Train Time: 1.35s
+Epoch: 23/50 | Train Loss: 0.4353 | Train Acc: 0.8592 | Train Time: 1.37s
+Epoch: 24/50 | Train Loss: 0.4179 | Train Acc: 0.8631 | Train Time: 1.37s
+Epoch: 25/50 | Train Loss: 0.4013 | Train Acc: 0.8667 | Train Time: 1.36s
+Epoch: 26/50 | Train Loss: 0.3849 | Train Acc: 0.8725 | Train Time: 1.36s
+Epoch: 27/50 | Train Loss: 0.3719 | Train Acc: 0.8774 | Train Time: 1.36s
+Epoch: 28/50 | Train Loss: 0.3598 | Train Acc: 0.8804 | Train Time: 1.36s
+Epoch: 29/50 | Train Loss: 0.3447 | Train Acc: 0.8854 | Train Time: 1.35s
+Epoch: 30/50 | Train Loss: 0.3261 | Train Acc: 0.8927 | Train Time: 1.36s
+Epoch: 31/50 | Train Loss: 0.3137 | Train Acc: 0.8956 | Train Time: 1.35s
+Epoch: 32/50 | Train Loss: 0.3027 | Train Acc: 0.8996 | Train Time: 1.35s
+Epoch: 33/50 | Train Loss: 0.2896 | Train Acc: 0.9036 | Train Time: 1.35s
+Epoch: 34/50 | Train Loss: 0.2796 | Train Acc: 0.9047 | Train Time: 1.35s
+Epoch: 35/50 | Train Loss: 0.2644 | Train Acc: 0.9112 | Train Time: 1.34s
+Epoch: 36/50 | Train Loss: 0.2522 | Train Acc: 0.9152 | Train Time: 1.34s
+Epoch: 37/50 | Train Loss: 0.2367 | Train Acc: 0.9189 | Train Time: 1.35s
+Epoch: 38/50 | Train Loss: 0.2298 | Train Acc: 0.9218 | Train Time: 1.35s
+Epoch: 39/50 | Train Loss: 0.2238 | Train Acc: 0.9250 | Train Time: 1.36s
+Epoch: 40/50 | Train Loss: 0.2109 | Train Acc: 0.9268 | Train Time: 1.36s
+Epoch: 41/50 | Train Loss: 0.1995 | Train Acc: 0.9314 | Train Time: 1.35s
+Epoch: 42/50 | Train Loss: 0.1924 | Train Acc: 0.9345 | Train Time: 1.35s
+Epoch: 43/50 | Train Loss: 0.1831 | Train Acc: 0.9358 | Train Time: 1.34s
+Epoch: 44/50 | Train Loss: 0.1775 | Train Acc: 0.9373 | Train Time: 1.36s
+Epoch: 45/50 | Train Loss: 0.1725 | Train Acc: 0.9399 | Train Time: 1.35s
+Epoch: 46/50 | Train Loss: 0.1590 | Train Acc: 0.9437 | Train Time: 1.36s
+Epoch: 47/50 | Train Loss: 0.1558 | Train Acc: 0.9426 | Train Time: 1.35s
+Epoch: 48/50 | Train Loss: 0.1524 | Train Acc: 0.9461 | Train Time: 1.35s
+Epoch: 49/50 | Train Loss: 0.1437 | Train Acc: 0.9467 | Train Time: 1.34s
+Epoch: 50/50 | Train Loss: 0.1419 | Train Acc: 0.9483 | Train Time: 1.35s
+Epoch: 1/50 | Train Loss: 1.6835 | Train Acc: 0.5124 | Train Time: 1.35s
+Epoch: 2/50 | Train Loss: 1.2890 | Train Acc: 0.6300 | Train Time: 1.33s
+Epoch: 3/50 | Train Loss: 1.1992 | Train Acc: 0.6532 | Train Time: 1.35s
+Epoch: 4/50 | Train Loss: 1.1370 | Train Acc: 0.6676 | Train Time: 1.34s
+Epoch: 5/50 | Train Loss: 1.0686 | Train Acc: 0.6855 | Train Time: 1.34s
+Epoch: 6/50 | Train Loss: 0.9853 | Train Acc: 0.7080 | Train Time: 1.34s
+Epoch: 7/50 | Train Loss: 0.8925 | Train Acc: 0.7357 | Train Time: 1.34s
+Epoch: 8/50 | Train Loss: 0.8117 | Train Acc: 0.7577 | Train Time: 1.34s
+Epoch: 9/50 | Train Loss: 0.7425 | Train Acc: 0.7763 | Train Time: 1.33s
+Epoch: 10/50 | Train Loss: 0.6888 | Train Acc: 0.7904 | Train Time: 1.35s
+Epoch: 11/50 | Train Loss: 0.6483 | Train Acc: 0.8016 | Train Time: 1.35s
+Epoch: 12/50 | Train Loss: 0.6134 | Train Acc: 0.8118 | Train Time: 1.36s
+Epoch: 13/50 | Train Loss: 0.5863 | Train Acc: 0.8166 | Train Time: 1.35s
+Epoch: 14/50 | Train Loss: 0.5618 | Train Acc: 0.8255 | Train Time: 1.35s
+Epoch: 15/50 | Train Loss: 0.5373 | Train Acc: 0.8321 | Train Time: 1.34s
+Epoch: 16/50 | Train Loss: 0.5165 | Train Acc: 0.8363 | Train Time: 1.35s
+Epoch: 17/50 | Train Loss: 0.4940 | Train Acc: 0.8425 | Train Time: 1.34s
+Epoch: 18/50 | Train Loss: 0.4743 | Train Acc: 0.8491 | Train Time: 1.34s
+Epoch: 19/50 | Train Loss: 0.4543 | Train Acc: 0.8524 | Train Time: 1.34s
+Epoch: 20/50 | Train Loss: 0.4387 | Train Acc: 0.8594 | Train Time: 1.34s
+Epoch: 21/50 | Train Loss: 0.4201 | Train Acc: 0.8653 | Train Time: 1.34s
+Epoch: 22/50 | Train Loss: 0.4023 | Train Acc: 0.8705 | Train Time: 1.34s
+Epoch: 23/50 | Train Loss: 0.3825 | Train Acc: 0.8761 | Train Time: 1.34s
+Epoch: 24/50 | Train Loss: 0.3675 | Train Acc: 0.8792 | Train Time: 1.35s
+Epoch: 25/50 | Train Loss: 0.3502 | Train Acc: 0.8858 | Train Time: 1.34s
+Epoch: 26/50 | Train Loss: 0.3362 | Train Acc: 0.8911 | Train Time: 1.34s
+Epoch: 27/50 | Train Loss: 0.3180 | Train Acc: 0.8963 | Train Time: 1.33s
+Epoch: 28/50 | Train Loss: 0.3017 | Train Acc: 0.9008 | Train Time: 1.35s
+Epoch: 29/50 | Train Loss: 0.2873 | Train Acc: 0.9052 | Train Time: 1.35s
+Epoch: 30/50 | Train Loss: 0.2719 | Train Acc: 0.9102 | Train Time: 1.34s
+Epoch: 31/50 | Train Loss: 0.2573 | Train Acc: 0.9144 | Train Time: 1.35s
+Epoch: 32/50 | Train Loss: 0.2451 | Train Acc: 0.9186 | Train Time: 1.35s
+Epoch: 33/50 | Train Loss: 0.2316 | Train Acc: 0.9225 | Train Time: 1.34s
+Epoch: 34/50 | Train Loss: 0.2165 | Train Acc: 0.9280 | Train Time: 1.34s
+Epoch: 35/50 | Train Loss: 0.2059 | Train Acc: 0.9332 | Train Time: 1.33s
+Epoch: 36/50 | Train Loss: 0.1942 | Train Acc: 0.9359 | Train Time: 1.34s
+Epoch: 37/50 | Train Loss: 0.1869 | Train Acc: 0.9376 | Train Time: 1.34s
+Epoch: 38/50 | Train Loss: 0.1764 | Train Acc: 0.9398 | Train Time: 1.34s
+Epoch: 39/50 | Train Loss: 0.1677 | Train Acc: 0.9437 | Train Time: 1.37s
+Epoch: 40/50 | Train Loss: 0.1587 | Train Acc: 0.9463 | Train Time: 1.36s
+Epoch: 41/50 | Train Loss: 0.1532 | Train Acc: 0.9467 | Train Time: 1.37s
+Epoch: 42/50 | Train Loss: 0.1469 | Train Acc: 0.9488 | Train Time: 1.39s
+Epoch: 43/50 | Train Loss: 0.1425 | Train Acc: 0.9508 | Train Time: 1.37s
+Epoch: 44/50 | Train Loss: 0.1371 | Train Acc: 0.9527 | Train Time: 1.36s
+Epoch: 45/50 | Train Loss: 0.1299 | Train Acc: 0.9540 | Train Time: 1.44s
+Epoch: 46/50 | Train Loss: 0.1258 | Train Acc: 0.9550 | Train Time: 1.47s
+Epoch: 47/50 | Train Loss: 0.1222 | Train Acc: 0.9545 | Train Time: 1.41s
+Epoch: 48/50 | Train Loss: 0.1282 | Train Acc: 0.9536 | Train Time: 1.42s
+Epoch: 49/50 | Train Loss: 0.1180 | Train Acc: 0.9566 | Train Time: 1.37s
+Epoch: 50/50 | Train Loss: 0.1108 | Train Acc: 0.9581 | Train Time: 1.36s
+
+
+&lt;本地用户目录&gt;\AppData\Local\Temp\ipykernel_12652\4114039485.py:348: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.
+  plt.legend()
+</code></pre>
+<p><img loading="lazy" decoding="async" alt="png" src="../assets/img/lesson37/figure-67ebace9ae3a.png" /></p>
+<pre><code>[('German', 0.9149948954582214), ('Vietnamese', 0.03444814682006836), ('Dutch', 0.029514135792851448)]
+</code></pre>
+<h2 id="sec-24">6 扩展-logsoftmax函数介绍</h2>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">案例:</span>
+<span class="sd">    演示 LogSoftmax()层(激活层) 函数的功能.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+
+<span class="c1"># 1. 定义模型输出的原始分数(logits), 表示 3个分类的预测值 -&gt; 全连接层处理后的结果.</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">3.2</span><span class="p">,</span> <span class="mf">5.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.7</span><span class="p">])</span>
+
+<span class="c1"># -------------------- 思路1: 使用LogSoftMax()计算 --------------------</span>
+<span class="c1"># 2. 实例化LogSoftMax层, 指定在第0维度进行计算.</span>
+<span class="n">log_softmax</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LogSoftmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="c1"># 3. 具体的计算, 先softmax(), 后log(), 然后打印结果.</span>
+<span class="n">log_probs</span>  <span class="o">=</span> <span class="n">log_softmax</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;LogSoftMax计算结果(类别概率分布): </span><span class="si">{</span><span class="n">log_probs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>   <span class="c1"># tensor([-2.0404, -0.1404, -6.9404])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">30</span><span class="p">)</span>
+
+
+<span class="c1"># -------------------- 思路2: 手动验证, 先softmax(), 再log() --------------------</span>
+<span class="c1"># 4. 先使用softmax()计算概率分布</span>
+<span class="n">softmax</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;softmax计算结果(类别概率分布): </span><span class="si">{</span><span class="n">softmax</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># 5. 对softmax()结果 取自然对数, 得到: 对数概率.</span>
+<span class="n">log_softmax_probs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">softmax</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;对数概率: </span><span class="si">{</span><span class="n">log_softmax_probs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>      <span class="c1"># tensor([-2.0404, -0.1404, -6.9404])</span>
+</pre></div>
+</div>
+<pre><code>LogSoftMax计算结果(类别概率分布): tensor([-2.0404, -0.1404, -6.9404])
+------------------------------
+softmax计算结果(类别概率分布): tensor([0.1300, 0.8690, 0.0010])
+对数概率: tensor([-2.0404, -0.1404, -6.9404])
+</code></pre>
+<h2 id="sec-25">7 常见面试题</h2>
+<h4>RNN 的基本状态更新公式是什么？</h4>
+<ul>
+<li>$h_t = f(W_{xh}x_t + W_{hh}h_{t-1} + b)$，输出通常为 $y_t = g(W_{hy}h_t)$。</li>
+</ul>
+<hr />
+<h4>RNN 为什么容易出现梯度消失/爆炸？常见解决方法有哪些？</h4>
+<ul>
+<li>长序列反传导致梯度连乘；可用 <strong>LSTM/GRU</strong>、<strong>梯度裁剪</strong>、合理初始化。</li>
+</ul>
+<hr />
+<h4>LSTM 三个门的作用是什么？</h4>
+<ul>
+<li><strong>遗忘门</strong>：决定保留或忘记多少旧记忆</li>
+<li><strong>输入门</strong>：决定写入多少新记忆</li>
+<li><strong>输出门</strong>：决定输出哪些信息</li>
+</ul>
+<hr />
+<h4>GRU 与 LSTM 的主要差异是什么？</h4>
+<ul>
+<li>GRU 门更少、参数更少、训练更快；LSTM 表达能力更强但训练更慢。</li>
+</ul>
+<hr />
+<h4>双向 RNN 适合哪些任务？为什么不适合自回归生成？</h4>
+<ul>
+<li>适合理解类任务（分类、标注）；生成任务会使用未来信息而不满足因果性。目前自回归生成的主流方法是 Transformer架构。</li>
+</ul>
+<h3 id="sec-26">7.1 代码作业</h3>
+<ul>
+<li>
+<ol>
+<li>使用 <code>nn.LSTM</code> 构建一个 LSTM 层（input_size=16, hidden_size=32, num_layers=2, batch_first=True），输入形状为 <code>(batch_size=4, seq_len=10, input_size=16)</code> 的随机张量，打印输出 <code>output</code>、<code>h_n</code>、<code>c_n</code> 的形状。</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>使用 <code>nn.GRU(bidirectional=True, batch_first=True)</code> 构建双向 GRU 层（hidden_size=64），输入一批随机序列，打印输出形状。</li>
+</ol>
+</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+
+<span class="c1"># ==============================</span>
+<span class="c1"># 作业1：nn.LSTM 输入输出形状验证</span>
+<span class="c1"># ==============================</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">homework1</span><span class="p">():</span>
+    <span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">input_size</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">16</span>
+    <span class="n">hidden_size</span><span class="p">,</span> <span class="n">num_layers</span> <span class="o">=</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">2</span>
+
+    <span class="n">lstm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="n">hidden_size</span><span class="p">,</span>
+                   <span class="n">num_layers</span><span class="o">=</span><span class="n">num_layers</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">input_size</span><span class="p">)</span>
+    <span class="n">output</span><span class="p">,</span> <span class="p">(</span><span class="n">h_n</span><span class="p">,</span> <span class="n">c_n</span><span class="p">)</span> <span class="o">=</span> <span class="n">lstm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;作业1：nn.LSTM 输入输出形状&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;输入 x.shape           : </span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">  # (batch_size, seq_len, input_size)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;输出 output.shape      : </span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">  # (batch_size, seq_len, hidden_size)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;隐藏状态 h_n.shape     : </span><span class="si">{</span><span class="n">h_n</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">  # (num_layers, batch_size, hidden_size)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;细胞状态 c_n.shape     : </span><span class="si">{</span><span class="n">c_n</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">  # (num_layers, batch_size, hidden_size)&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># ==============================</span>
+<span class="c1"># 作业2：双向 GRU 输出形状说明</span>
+<span class="c1"># ==============================</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">homework2</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;作业2：双向 GRU 输出形状验证&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">40</span><span class="p">)</span>
+
+    <span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">64</span>
+    <span class="n">bi_gru</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GRU</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="n">input_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="n">hidden_size</span><span class="p">,</span>
+                    <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">input_size</span><span class="p">)</span>
+    <span class="n">output</span><span class="p">,</span> <span class="n">h_n</span> <span class="o">=</span> <span class="n">bi_gru</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;输入 x.shape       : </span><span class="si">{</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;输出 output.shape  : </span><span class="si">{</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">  # (batch, seq, hidden_size*2=</span><span class="si">{</span><span class="n">hidden_size</span><span class="o">*</span><span class="mi">2</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;h_n.shape          : </span><span class="si">{</span><span class="n">h_n</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">  # (num_layers*2, batch, hidden_size)&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">说明: bidirectional=True 时，前向+后向两个方向的隐藏状态在最后一维拼接，&quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;所以输出的最后一维为 hidden_size×2 = </span><span class="si">{</span><span class="n">hidden_size</span><span class="o">*</span><span class="mi">2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">homework1</span><span class="p">()</span>
+    <span class="n">homework2</span><span class="p">()</span>
+</pre></div>
+</div>
+<pre><code>========================================
+作业1：nn.LSTM 输入输出形状
+========================================
+输入 x.shape           : torch.Size([4, 10, 16])  # (batch_size, seq_len, input_size)
+输出 output.shape      : torch.Size([4, 10, 32])  # (batch_size, seq_len, hidden_size)
+隐藏状态 h_n.shape     : torch.Size([2, 4, 32])  # (num_layers, batch_size, hidden_size)
+细胞状态 c_n.shape     : torch.Size([2, 4, 32])  # (num_layers, batch_size, hidden_size)
+
+========================================
+作业2：双向 GRU 输出形状验证
+========================================
+输入 x.shape       : torch.Size([4, 8, 32])
+输出 output.shape  : torch.Size([4, 8, 128])  # (batch, seq, hidden_size*2=128)
+h_n.shape          : torch.Size([2, 4, 64])  # (num_layers*2, batch, hidden_size)
+
+说明: bidirectional=True 时，前向+后向两个方向的隐藏状态在最后一维拼接，所以输出的最后一维为 hidden_size×2 = 128
+</code></pre><div class="done-bar"><button class="mark-done-btn" data-key="lesson37" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson36.html"><div class="dir">← 上一篇</div><div class="name">🧹 文本预处理、特征分析与数据增强</div></a><a class="next" href="lesson38.html"><div class="dir">下一篇 →</div><div class="name">🎯 注意力机制：Q、K、V 与缩放点积</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">1 认识RNN模型</a><a class="lv3" href="#sec-2">1.1 什么是RNN模型</a><a class="lv3" href="#sec-3">1.2 RNN模型的应用</a><a class="lv3" href="#sec-4">1.3 RNN模型的分类</a><a class="lv3" href="#sec-5">1.4 小结</a><a class="lv2" href="#sec-6">2 传统RNN模型</a><a class="lv3" href="#sec-7">2.1 传统RNN的内部结构图</a><a class="lv3" href="#sec-8">2.2 演示传统的RNN</a><a class="lv3" href="#sec-9">2.3 传统 RNN 的优缺点</a><a class="lv3" href="#sec-10">2.4 小结</a><a class="lv2" href="#sec-11">3 LSTM模型</a><a class="lv3" href="#sec-12">3.1 LSTM介绍</a><a class="lv3" href="#sec-13">3.2 LSTM的内部结构图</a><a class="lv3" href="#sec-14">3.3 演示LSTM</a><a class="lv3" href="#sec-15">3.4 小结</a><a class="lv2" href="#sec-16">4 GRU模型</a><a class="lv3" href="#sec-17">4.1 GRU介绍</a><a class="lv3" href="#sec-18">4.2 GRU的内部结构图</a><a class="lv3" href="#sec-19">4.3 小结</a><a class="lv2" href="#sec-20">5 扩展-RNN人名分类器</a><a class="lv3" href="#sec-21">5.1 学习目标</a><a class="lv3" href="#sec-22">5.2 案例介绍</a><a class="lv3" href="#sec-23">5.3 案例步骤</a><a class="lv2" href="#sec-24">6 扩展-logsoftmax函数介绍</a><a class="lv2" href="#sec-25">7 常见面试题</a><a class="lv3" href="#sec-26">7.1 代码作业</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

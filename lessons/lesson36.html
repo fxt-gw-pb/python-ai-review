@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>文本预处理、特征分析与数据增强 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">32</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">33</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">34</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">35</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">39</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">40</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">42</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">21</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">22</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">23</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">24</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">25</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">26</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">27</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">28</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">29</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">30</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 36 讲</div>
+<h1>🧹 文本预处理、特征分析与数据增强</h1>
+<div class="chips"><span class="chip">🏷️ n-gram</span><span class="chip">🏷️ 长度规范</span><span class="chip">🏷️ 回译 / SBERT</span></div>
+</div>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="c1"># 设置中文字体</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.sans-serif&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SimHei&#39;</span><span class="p">]</span>  <span class="c1"># 微软雅黑</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.unicode_minus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>    <span class="c1"># 解决负号显示问题</span>
+<span class="c1"># 设置设备，优先使用顺序：GPU &gt; MPS &gt; CPU</span>
+<span class="n">DEVICE</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span>
+    <span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+    <span class="k">else</span> <span class="s2">&quot;mps&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">mps</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+    <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;当前设备：</span><span class="si">{</span><span class="n">DEVICE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>当前设备：cuda
+</code></pre>
+<h2 id="sec-1">1 文本数据分析</h2>
+<h4>学习目标</h4>
+<ul>
+<li>了解文本数据分析的作用.</li>
+<li>掌握常用的几种文本数据分析方法.</li>
+</ul>
+<h3 id="sec-2">1.1 文件数据分析介绍</h3>
+<ul>
+<li>
+<p>文本数据分析的作用:</p>
+<ul>
+<li>帮助理解语料, 快速检查出语料可能存在的问题, 指导模型训练过程中超参数的选择.</li>
+<li>
+<p>常用的几种文本数据分析方法: </p>
+</li>
+<li>
+<p>标签数量分布</p>
+</li>
+<li>句子长度分布</li>
+<li>词频统计与关键词词云</li>
+</ul>
+</li>
+</ul>
+<h3 id="sec-3">1.2 数据集说明</h3>
+<ul>
+<li>基于真实的中文酒店评论语料来讲解常用的几种文本数据分析方法.</li>
+<li>中文酒店评论语料，属于二分类的中文情感分析语料, 该语料存放在"./cn_data"目录下.</li>
+<li>其中train.tsv代表训练集, dev.tsv代表验证集, 二者数据样式相同.</li>
+<li>train.tsv数据样式:</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>sentence    label
+早餐不好,服务不到位,晚餐无西餐,早餐晚餐相同,房间条件不好,餐厅不分吸烟区.房间不分有无烟房.    0
+去的时候 ,酒店大厅和餐厅在装修,感觉大厅有点挤.由于餐厅装修本来该享受的早饭,也没有享受(他们是8点开始每个房间送,但是我时间来不及了)不过前台服务员态度好!    1
+有很长时间没有在西藏大厦住了，以前去北京在这里住的较多。这次住进来发现换了液晶电视，但网络不是很好，他们自己说是收费的原因造成的。其它还好。  1
+非常好的地理位置，住的是豪华海景房，打开窗户就可以看见栈桥和海景。记得很早以前也住过，现在重新装修了。总的来说比较满意，以后还会住   1
+交通很方便，房间小了一点，但是干净整洁，很有香港的特色，性价比较高，推荐一下哦 1
+酒店的装修比较陈旧，房间的隔音，主要是卫生间的隔音非常差，只能算是一般的    0
+酒店有点旧，房间比较小，但酒店的位子不错，就在海边，可以直接去游泳。8楼的海景打开窗户就是海。如果想住在热闹的地带，这里不是一个很好的选择，不过威海城市真的比较小，打车还是相当便宜的。晚上酒店门口出租车比较少。   1
+位置很好，走路到文庙、清凉寺5分钟都用不了，周边公交车很多很方便，就是出租车不太爱去（老城区路窄爱堵车），因为是老宾馆所以设施要陈旧些，    1
+酒店设备一般，套房里卧室的不能上网，要到客厅去。    0
+</pre></div>
+</div>
+<ul>
+<li>
+<p>train.tsv数据样式说明:</p>
+<ul>
+<li>train.tsv中的数据内容共分为2列, 第一列数据代表具有感情色彩的评论文本; </li>
+<li>第二列数据, 0或1, 代表每条文本数据是积极或者消极的评论, 0代表消极, 1代表积极.</li>
+</ul>
+</li>
+<li>
+<p>获取标签数量分布</p>
+</li>
+<li>获取句子长度分布</li>
+<li>获取正负样本长度散点分布</li>
+<li>获取不同词总数统计</li>
+<li>获取高频形容词词云</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">演示</span>
+<span class="sd">    文本数据分析的常见操作</span>
+<span class="sd">文本数据分析的作用：</span>
+<span class="sd">    帮助我们理解语料，并检查语料中可能存在的问题。</span>
+<span class="sd">    例如：</span>
+<span class="sd">        标签不均衡：有的标签数量很多，有的标签数量很少，想办法让标签数量更均衡</span>
+<span class="sd">        数据质量：错别字，语法错误，重复内容，噪声</span>
+<span class="sd">        句子长度分布范围：根据数据中的句子长度分布范围来选择合理的最大长度max_length，用来进行后续的文本长度规范</span>
+<span class="sd">文本数据分析的常见操作：</span>
+<span class="sd">    标签数量分布：查看标签有没有不均衡情况</span>
+<span class="sd">    句子长度分布：查看数据中句子长度分布情况，由此来设置合理的最大长度max_length</span>
+<span class="sd">    词频统计和关键字词云：审查语料库中有没有不合理的内容，比如好评中出现了大量的“不方便”，“不是很好”</span>
+
+<span class="sd">需要掌握的：</span>
+<span class="sd">    sns.countplot:绘制离散值的频次直方图，标签数量分布</span>
+<span class="sd">    sns.histplot: 绘制连续值的区间分布直方图，句子长度分布</span>
+<span class="sd">    train_data[&quot;sentence&quot;].apply(lambda x: len(x))</span>
+
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jieba</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>   <span class="c1"># 用来画图，类似matplotlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>     <span class="c1"># 推荐 pip install matplotlib==3.9</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">itertools</span><span class="w"> </span><span class="kn">import</span> <span class="n">chain</span>         <span class="c1"># 迭代器工具</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jieba.posseg</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pseg</span>         <span class="c1"># 词性标注POS(名词, 动词, 形容词..._</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">wordcloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordCloud</span>     <span class="c1"># 词云 pip install wordcloud</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>     <span class="c1"># 统计词频</span>
+
+<span class="c1"># 设置中文字体</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.sans-serif&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SimHei&#39;</span><span class="p">]</span>  <span class="c1"># 微软雅黑</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.unicode_minus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>    <span class="c1"># 解决负号显示问题</span>
+<span class="c1"># 苹果电脑</span>
+<span class="c1"># plt.rcParams[&#39;font.sans-serif&#39;] = [&#39;Arial Unicode MS&#39;]</span>
+
+<span class="c1"># 1.定义函数，演示 标签数量分布，绘制直方图</span>
+<span class="c1"># sns.countplot:绘制离散值的频次直方图</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo01</span><span class="p">():</span>
+    <span class="c1"># 1.读取数据集pd.read_csv()</span>
+    <span class="n">train_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./data/train.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="c1"># 也可以选择pd.read_table()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="n">test_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./data/dev.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="c1"># 2.使用sns.countplot来绘制标签的频次直方图-标签数量分布</span>
+    <span class="c1"># 训练集</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;训练集标签数量分布&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="c1"># 测试集</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">test_data</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;测试集标签数量分布&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
+<span class="c1"># 2.定义函数，演示 句子长度分布</span>
+<span class="c1"># sns.histplot: 绘制连续值的区间分布直方图</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo02</span><span class="p">():</span>
+    <span class="c1"># 1.读取数据集</span>
+    <span class="n">train_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./data/train.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="n">test_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./data/dev.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="c1"># 2.计算句子长度</span>
+    <span class="c1"># apply(): 对DataFrame的series对象的每一个元素进行操作</span>
+    <span class="n">train_data</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">train_data</span><span class="p">[</span><span class="s2">&quot;sentence&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="c1"># train_data[&#39;sentence_length&#39;] = list(map(lambda x: len(x), train_data[&#39;sentence&#39;]))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="n">test_data</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_data</span><span class="p">[</span><span class="s2">&quot;sentence&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="c1"># 3.绘制句子长度分布直方图</span>
+    <span class="c1"># 参数1：传入的数据列表；参数2：直方图的分段数，有多少个柱子；参数3：是否显示核密度曲线</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">train_data</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;训练集句子长度分布&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">test_data</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;测试集句子长度分布&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># 3.定义函数，演示 正负样本的句子长度散点分布</span>
+<span class="c1"># sns.stripplot: 绘制离散标签的连续值散点分布</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo03</span><span class="p">():</span>
+    <span class="c1"># 1.读取数据集</span>
+    <span class="n">train_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./data/train.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">test_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./data/dev.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="c1"># 2.计算句子长度</span>
+    <span class="c1"># apply(): 对DataFrame的series对象的每一个元素进行操作</span>
+    <span class="n">train_data</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">train_data</span><span class="p">[</span><span class="s2">&quot;sentence&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="c1"># train_data[&#39;sentence_length&#39;] = list(map(lambda x: len(x), train_data[&#39;sentence&#39;]))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="n">test_data</span><span class="p">[</span><span class="s2">&quot;length&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">test_data</span><span class="p">[</span><span class="s2">&quot;sentence&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="c1"># 3.绘制正负样本的句子长度散点分布图</span>
+    <span class="c1"># 参数1：x轴标签；参数2：y轴标签；参数3：数据集；参数4：是否显示颜色, 参数5：是否显示图例</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">stripplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">train_data</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;训练集正负样本的句子长度散点分布&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">stripplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;length&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">test_data</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;测试集正负样本的句子长度散点分布&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># 4.定义函数，演示 统计词频</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo04</span><span class="p">():</span>
+    <span class="c1"># 1.读取数据集</span>
+    <span class="n">train_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./data/train.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">test_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./data/dev.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="c1"># 2.统计所有的词，分词-连成串串</span>
+    <span class="c1"># 训练集</span>
+    <span class="c1"># apply(): 对DataFrame的series对象的每一个元素进行操作</span>
+    <span class="c1"># lambda函数：匿名函数，等价于一个函数</span>
+    <span class="n">train_words</span> <span class="o">=</span> <span class="n">train_data</span><span class="p">[</span><span class="s2">&quot;sentence&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">jieba</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">train_all_words</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">train_words</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
+    <span class="n">test_words</span> <span class="o">=</span> <span class="n">test_data</span><span class="p">[</span><span class="s2">&quot;sentence&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">jieba</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="n">test_all_words</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">test_words</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;训练集所有词的数量：</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_all_words</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;测试集所有词的数量：</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">test_all_words</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># 3.统计词频</span>
+    <span class="n">train_words_count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">train_all_words</span><span class="p">)</span>
+    <span class="n">test_words_count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">test_all_words</span><span class="p">)</span>
+    <span class="c1"># 4.打印结果</span>
+    <span class="c1"># print(f&quot;训练集词频统计结果：{train_words_count}&quot;)</span>
+    <span class="c1"># print(f&quot;测试集词频统计结果：{test_words_count}&quot;)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;训练集词表大小：</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">train_words_count</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;测试集词表大小：</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">test_words_count</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 5.定义函数，演示 高频形容词词云</span>
+<span class="c1"># 定义函数，获取 形容词</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_adj</span><span class="p">(</span><span class="n">words_list</span><span class="p">):</span>
+    <span class="c1"># 1.定义一个列表，来存储 形容词</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># 2.使用pseg.lcut来进行分词和词性标注，获取形容词</span>
+    <span class="k">for</span> <span class="n">word</span><span class="p">,</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">pseg</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">words_list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">flag</span> <span class="o">==</span> <span class="s2">&quot;a&quot;</span><span class="p">:</span>
+            <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+    <span class="c1"># 3.返回形容词列表</span>
+    <span class="k">return</span> <span class="n">results</span>
+
+<span class="c1"># 定义函数，生成词云</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo05</span><span class="p">(</span><span class="n">words_list</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;训练集正样本的高频形容词词云&quot;</span><span class="p">):</span>
+    <span class="c1"># 1.创建WordCloud对象</span>
+    <span class="n">word_cloud</span> <span class="o">=</span> <span class="n">WordCloud</span><span class="p">(</span>
+        <span class="n">font_path</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;./data/SimHei.ttf&quot;</span><span class="p">,</span> <span class="c1"># 设置字体</span>
+        <span class="n">max_words</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>  <span class="c1"># 设置最大显示的词数</span>
+        <span class="n">background_color</span><span class="o">=</span><span class="s2">&quot;white&quot;</span><span class="p">,</span>   <span class="c1"># 背景颜色</span>
+    <span class="p">)</span>
+    <span class="c1"># 2.转换词序列为空格分割的字符串，来符合WordCloud对象要求的输入格式</span>
+    <span class="n">keyword_list</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">words_list</span><span class="p">)</span>
+    <span class="c1"># 3.使用WordCloud.generate方法来生成词云</span>
+    <span class="n">word_cloud</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">keyword_list</span><span class="p">)</span>
+    <span class="c1"># 4.绘制词云图像</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">word_cloud</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">&quot;off&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># 定义函数，来使用数据集生成词云</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo06</span><span class="p">():</span>
+    <span class="c1"># 0.读取数据集</span>
+    <span class="n">train_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./data/train.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">train_data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">test_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./data/dev.tsv&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">test_data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="c1"># 1.指定数据集</span>
+    <span class="c1"># 训练集正样本</span>
+    <span class="n">train_a_list_1</span> <span class="o">=</span> <span class="n">train_data</span><span class="p">[</span><span class="n">train_data</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span><span class="o">==</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;sentence&quot;</span><span class="p">]</span>
+    <span class="n">train_a_list_1</span> <span class="o">=</span> <span class="n">train_a_list_1</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">get_adj</span><span class="p">)</span>
+    <span class="n">train_a_list_1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">train_a_list_1</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
+    <span class="c1"># print(train_a_list_1)</span>
+    <span class="c1"># 训练集负样本</span>
+    <span class="n">train_a_list_0</span> <span class="o">=</span> <span class="n">train_data</span><span class="p">[</span><span class="n">train_data</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">][</span><span class="s2">&quot;sentence&quot;</span><span class="p">]</span>
+    <span class="n">train_a_list_0</span> <span class="o">=</span> <span class="n">train_a_list_0</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">get_adj</span><span class="p">)</span>
+    <span class="n">train_a_list_0</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">train_a_list_0</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
+    <span class="c1"># print(train_a_list_0)</span>
+    <span class="c1"># 测试集正样本</span>
+    <span class="c1"># 测试集负样本</span>
+    <span class="c1"># 2.生成词云图</span>
+    <span class="n">demo05</span><span class="p">(</span><span class="n">train_a_list_1</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;训练集正样本的高频形容词词云&quot;</span><span class="p">)</span>
+    <span class="n">demo05</span><span class="p">(</span><span class="n">train_a_list_0</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;训练集负样本的高频形容词词云&quot;</span><span class="p">)</span>
+
+<span class="c1"># 测试</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># 1.演示 标签数量分布</span>
+    <span class="n">demo01</span><span class="p">()</span>
+    <span class="c1"># 2.演示 句子长度分布</span>
+    <span class="n">demo02</span><span class="p">()</span>
+    <span class="c1"># 3.绘制正负样本的句子长度散点分布</span>
+    <span class="n">demo03</span><span class="p">()</span>
+    <span class="c1"># 4.统计词频</span>
+    <span class="n">demo04</span><span class="p">()</span>
+    <span class="c1"># 5.高频形容词词云</span>
+    <span class="n">demo06</span><span class="p">()</span>
+</pre></div>
+</div>
+<pre><code>&lt;本地用户目录&gt;\.conda\envs\nlp_project\lib\site-packages\jieba\_compat.py:18: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools&lt;81.
+  import pkg_resources
+
+
+                                            sentence  label
+0   早餐不好,服务不到位,晚餐无西餐,早餐晚餐相同,房间条件不好,餐厅不分吸烟区.房间不分有无烟房.      0
+1  去的时候 ,酒店大厅和餐厅在装修,感觉大厅有点挤.由于餐厅装修本来该享受的早饭,也没有享受(...      1
+2  有很长时间没有在西藏大厦住了，以前去北京在这里住的较多。这次住进来发现换了液晶电视，但网络不...      1
+3  非常好的地理位置，住的是豪华海景房，打开窗户就可以看见栈桥和海景。记得很早以前也住过，现在重...      1
+4            交通很方便，房间小了一点，但是干净整洁，很有香港的特色，性价比较高，推荐一下哦      1
+                                            sentence  label
+0  房间里有电脑，虽然房间的条件略显简陋，但环境、服务还有饭菜都还是很不错的。如果下次去无锡，我...      1
+1  我们是5月1日通过携程网入住的，条件是太差了，根本达不到四星级的标准，所有的东西都很陈旧，卫...      0
+2  离火车站很近很方便。住在东楼标间，相比较在九江住的另一家酒店，房间比较大。卫生间设施略旧。服...      1
+3  坐落在香港的老城区，可以体验香港居民生活，门口交通很方便，如果时间不紧，坐叮当车很好呀！周围...      1
+4  酒店前台服务差，对待客人不热情。号称携程没有预定。感觉是客人在求他们，我们一定得住。这样的宾...      0
+</code></pre>
+<p><img loading="lazy" decoding="async" alt="png" src="../assets/img/lesson36/figure-d48f5dc0a637.png" /></p>
+<p><img loading="lazy" decoding="async" alt="png" src="../assets/img/lesson36/figure-2ce71481bdd4.png" /></p>
+<pre><code>                                            sentence  label
+0   早餐不好,服务不到位,晚餐无西餐,早餐晚餐相同,房间条件不好,餐厅不分吸烟区.房间不分有无烟房.      0
+1  去的时候 ,酒店大厅和餐厅在装修,感觉大厅有点挤.由于餐厅装修本来该享受的早饭,也没有享受(...      1
+2  有很长时间没有在西藏大厦住了，以前去北京在这里住的较多。这次住进来发现换了液晶电视，但网络不...      1
+3  非常好的地理位置，住的是豪华海景房，打开窗户就可以看见栈桥和海景。记得很早以前也住过，现在重...      1
+4            交通很方便，房间小了一点，但是干净整洁，很有香港的特色，性价比较高，推荐一下哦      1
+                                            sentence  label
+0  房间里有电脑，虽然房间的条件略显简陋，但环境、服务还有饭菜都还是很不错的。如果下次去无锡，我...      1
+1  我们是5月1日通过携程网入住的，条件是太差了，根本达不到四星级的标准，所有的东西都很陈旧，卫...      0
+2  离火车站很近很方便。住在东楼标间，相比较在九江住的另一家酒店，房间比较大。卫生间设施略旧。服...      1
+3  坐落在香港的老城区，可以体验香港居民生活，门口交通很方便，如果时间不紧，坐叮当车很好呀！周围...      1
+4  酒店前台服务差，对待客人不热情。号称携程没有预定。感觉是客人在求他们，我们一定得住。这样的宾...      0
+                                            sentence  label  length
+0   早餐不好,服务不到位,晚餐无西餐,早餐晚餐相同,房间条件不好,餐厅不分吸烟区.房间不分有无烟房.      0      48
+1  去的时候 ,酒店大厅和餐厅在装修,感觉大厅有点挤.由于餐厅装修本来该享受的早饭,也没有享受(...      1      80
+2  有很长时间没有在西藏大厦住了，以前去北京在这里住的较多。这次住进来发现换了液晶电视，但网络不...      1      70
+3  非常好的地理位置，住的是豪华海景房，打开窗户就可以看见栈桥和海景。记得很早以前也住过，现在重...      1      65
+4            交通很方便，房间小了一点，但是干净整洁，很有香港的特色，性价比较高，推荐一下哦      1      39
+                                            sentence  label  length
+0  房间里有电脑，虽然房间的条件略显简陋，但环境、服务还有饭菜都还是很不错的。如果下次去无锡，我...      1      55
+1  我们是5月1日通过携程网入住的，条件是太差了，根本达不到四星级的标准，所有的东西都很陈旧，卫...      0      90
+2  离火车站很近很方便。住在东楼标间，相比较在九江住的另一家酒店，房间比较大。卫生间设施略旧。服...      1      75
+3  坐落在香港的老城区，可以体验香港居民生活，门口交通很方便，如果时间不紧，坐叮当车很好呀！周围...      1     103
+4  酒店前台服务差，对待客人不热情。号称携程没有预定。感觉是客人在求他们，我们一定得住。这样的宾...      0      54
+</code></pre>
+<p><img loading="lazy" decoding="async" alt="png" src="../assets/img/lesson36/figure-ddd2f5c0d58a.png" /></p>
+<p><img loading="lazy" decoding="async" alt="png" src="../assets/img/lesson36/figure-2ca58a54fb0f.png" /></p>
+<pre><code>                                            sentence  label
+0   早餐不好,服务不到位,晚餐无西餐,早餐晚餐相同,房间条件不好,餐厅不分吸烟区.房间不分有无烟房.      0
+1  去的时候 ,酒店大厅和餐厅在装修,感觉大厅有点挤.由于餐厅装修本来该享受的早饭,也没有享受(...      1
+2  有很长时间没有在西藏大厦住了，以前去北京在这里住的较多。这次住进来发现换了液晶电视，但网络不...      1
+3  非常好的地理位置，住的是豪华海景房，打开窗户就可以看见栈桥和海景。记得很早以前也住过，现在重...      1
+4            交通很方便，房间小了一点，但是干净整洁，很有香港的特色，性价比较高，推荐一下哦      1
+(2960, 2)
+                                            sentence  label
+0  房间里有电脑，虽然房间的条件略显简陋，但环境、服务还有饭菜都还是很不错的。如果下次去无锡，我...      1
+1  我们是5月1日通过携程网入住的，条件是太差了，根本达不到四星级的标准，所有的东西都很陈旧，卫...      0
+2  离火车站很近很方便。住在东楼标间，相比较在九江住的另一家酒店，房间比较大。卫生间设施略旧。服...      1
+3  坐落在香港的老城区，可以体验香港居民生活，门口交通很方便，如果时间不紧，坐叮当车很好呀！周围...      1
+4  酒店前台服务差，对待客人不热情。号称携程没有预定。感觉是客人在求他们，我们一定得住。这样的宾...      0
+(1000, 2)
+                                            sentence  label  length
+0   早餐不好,服务不到位,晚餐无西餐,早餐晚餐相同,房间条件不好,餐厅不分吸烟区.房间不分有无烟房.      0      48
+1  去的时候 ,酒店大厅和餐厅在装修,感觉大厅有点挤.由于餐厅装修本来该享受的早饭,也没有享受(...      1      80
+2  有很长时间没有在西藏大厦住了，以前去北京在这里住的较多。这次住进来发现换了液晶电视，但网络不...      1      70
+3  非常好的地理位置，住的是豪华海景房，打开窗户就可以看见栈桥和海景。记得很早以前也住过，现在重...      1      65
+4            交通很方便，房间小了一点，但是干净整洁，很有香港的特色，性价比较高，推荐一下哦      1      39
+                                            sentence  label  length
+0  房间里有电脑，虽然房间的条件略显简陋，但环境、服务还有饭菜都还是很不错的。如果下次去无锡，我...      1      55
+1  我们是5月1日通过携程网入住的，条件是太差了，根本达不到四星级的标准，所有的东西都很陈旧，卫...      0      90
+2  离火车站很近很方便。住在东楼标间，相比较在九江住的另一家酒店，房间比较大。卫生间设施略旧。服...      1      75
+3  坐落在香港的老城区，可以体验香港居民生活，门口交通很方便，如果时间不紧，坐叮当车很好呀！周围...      1     103
+4  酒店前台服务差，对待客人不热情。号称携程没有预定。感觉是客人在求他们，我们一定得住。这样的宾...      0      54
+</code></pre>
+<p><img loading="lazy" decoding="async" alt="png" src="../assets/img/lesson36/figure-006d36fcf226.png" /></p>
+<p><img loading="lazy" decoding="async" alt="png" src="../assets/img/lesson36/figure-435d4f81f193.png" /></p>
+<pre><code>Building prefix dict from the default dictionary ...
+Loading model from cache &lt;本地用户目录&gt;\AppData\Local\Temp\jieba.cache
+
+
+                                            sentence  label
+0   早餐不好,服务不到位,晚餐无西餐,早餐晚餐相同,房间条件不好,餐厅不分吸烟区.房间不分有无烟房.      0
+1  去的时候 ,酒店大厅和餐厅在装修,感觉大厅有点挤.由于餐厅装修本来该享受的早饭,也没有享受(...      1
+2  有很长时间没有在西藏大厦住了，以前去北京在这里住的较多。这次住进来发现换了液晶电视，但网络不...      1
+3  非常好的地理位置，住的是豪华海景房，打开窗户就可以看见栈桥和海景。记得很早以前也住过，现在重...      1
+4            交通很方便，房间小了一点，但是干净整洁，很有香港的特色，性价比较高，推荐一下哦      1
+(2960, 2)
+                                            sentence  label
+0  房间里有电脑，虽然房间的条件略显简陋，但环境、服务还有饭菜都还是很不错的。如果下次去无锡，我...      1
+1  我们是5月1日通过携程网入住的，条件是太差了，根本达不到四星级的标准，所有的东西都很陈旧，卫...      0
+2  离火车站很近很方便。住在东楼标间，相比较在九江住的另一家酒店，房间比较大。卫生间设施略旧。服...      1
+3  坐落在香港的老城区，可以体验香港居民生活，门口交通很方便，如果时间不紧，坐叮当车很好呀！周围...      1
+4  酒店前台服务差，对待客人不热情。号称携程没有预定。感觉是客人在求他们，我们一定得住。这样的宾...      0
+(1000, 2)
+
+
+Loading model cost 0.353 seconds.
+Prefix dict has been built successfully.
+
+
+训练集所有词的数量：156952
+测试集所有词的数量：52422
+训练集词表大小：12162
+测试集词表大小：6857
+                                            sentence  label
+0   早餐不好,服务不到位,晚餐无西餐,早餐晚餐相同,房间条件不好,餐厅不分吸烟区.房间不分有无烟房.      0
+1  去的时候 ,酒店大厅和餐厅在装修,感觉大厅有点挤.由于餐厅装修本来该享受的早饭,也没有享受(...      1
+2  有很长时间没有在西藏大厦住了，以前去北京在这里住的较多。这次住进来发现换了液晶电视，但网络不...      1
+3  非常好的地理位置，住的是豪华海景房，打开窗户就可以看见栈桥和海景。记得很早以前也住过，现在重...      1
+4            交通很方便，房间小了一点，但是干净整洁，很有香港的特色，性价比较高，推荐一下哦      1
+(2960, 2)
+                                            sentence  label
+0  房间里有电脑，虽然房间的条件略显简陋，但环境、服务还有饭菜都还是很不错的。如果下次去无锡，我...      1
+1  我们是5月1日通过携程网入住的，条件是太差了，根本达不到四星级的标准，所有的东西都很陈旧，卫...      0
+2  离火车站很近很方便。住在东楼标间，相比较在九江住的另一家酒店，房间比较大。卫生间设施略旧。服...      1
+3  坐落在香港的老城区，可以体验香港居民生活，门口交通很方便，如果时间不紧，坐叮当车很好呀！周围...      1
+4  酒店前台服务差，对待客人不热情。号称携程没有预定。感觉是客人在求他们，我们一定得住。这样的宾...      0
+(1000, 2)
+</code></pre>
+<p><img loading="lazy" decoding="async" alt="png" src="../assets/img/lesson36/figure-aa1cc3e9f278.png" /></p>
+<p><img loading="lazy" decoding="async" alt="png" src="../assets/img/lesson36/figure-96fc5282ab22.png" /></p>
+<ul>
+<li>在深度学习模型评估中, 一般使用ACC作为评估指标, 通常将二分类任务的ACC的基线设在50%左右, 需要正负样本比例在1:1左右.</li>
+<li>通过绘制句子长度分布图, 可知语料中句子长度的分布情况, 模型要求输入为固定长度的张量，句子长度分布可以指导之后的句子截断补齐为合理长度.</li>
+<li>通过查看正负样本长度散点图, 可以有效定位异常点, 进行人工审查. </li>
+<li>根据高频形容词词云图, 可以简单评估当前语料质量, 对违反语料标签含义的词进行人工审查. 上图中的正样本多数是褒义词, 而负样本多数是贬义词, 基本符合要求, 但是负样本词云中也存在"方便", 可以进一步审查.</li>
+</ul>
+<h3 id="sec-4">1.3 小结</h3>
+<ul>
+<li>文本数据分析的作用:<ul>
+<li>帮助理解数据语料, 快速检查出语料可能存在的问题, 并指导之后模型训练中的超参数选择.</li>
+</ul>
+</li>
+<li>
+<p>文本数据分析方法:</p>
+<ul>
+<li>标签数量分布</li>
+<li>句子长度分布</li>
+<li>词频统计与关键词词云</li>
+</ul>
+</li>
+<li>
+<p>基于真实的中文酒店评论语料进行几种文本数据分析方法.</p>
+<ul>
+<li>获得数据集的标签数量分布</li>
+<li>获取数据集的句子长度分布</li>
+<li>获取数据集的正负样本长度散点分布</li>
+<li>获得数据集的不同词总数统计</li>
+<li>获得数据集的正负样本的高频形容词词云</li>
+</ul>
+</li>
+</ul>
+<h2 id="sec-5">2 文本特征处理</h2>
+<h4>学习目标</h4>
+<ul>
+<li>了解文本特征处理的作用.</li>
+<li>
+<p>掌握常见的文本特征处理方法.</p>
+</li>
+<li>
+<p>是什么：</p>
+<ul>
+<li>通过为文本引入通用、可学习的结构信息（如 n-gram），并对数据进行规范化处理（如长度统一），把“原始文本”转化为更适合模型学习的数值特征。</li>
+</ul>
+</li>
+<li>
+<p>作用:</p>
+<ul>
+<li>增强语义表达；减少信息歧义；提升模型泛化能力；稳定模型训练</li>
+</ul>
+</li>
+<li>
+<p>常见的文本特征处理方法:</p>
+<ul>
+<li>添加n-gram特征：捕捉局部上下文语义，提高表达能力</li>
+<li>文本长度规范：统一输入序列长度，保证模型结构与训练稳定</li>
+</ul>
+</li>
+</ul>
+<h3 id="sec-6">2.1 n-gram特征</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>定义</strong></td>
+<td>连续 <strong>n 个 token（词或字）</strong> 组成的新特征，用于捕捉文本的局部上下文信息。n 通常取 2 或 3。</td>
+</tr>
+<tr>
+<td><strong>常见类型</strong></td>
+<td>- <strong>1-gram（unigram）</strong>：单个 token<br>- <strong>2-gram（bigram）</strong>：连续两个 token<br>- <strong>3-gram（trigram）</strong>：连续三个 token</td>
+</tr>
+<tr>
+<td><strong>应用场景</strong></td>
+<td>- 文本分类（情感分析、垃圾邮件识别等）<br>- 搜索与推荐<br>- 传统机器学习的 NLP 模型的特征工程<br>- <strong>现代NLP流程几乎不用ngram特征</strong></td>
+</tr>
+<tr>
+<td><strong>实际工程中的使用方式</strong></td>
+<td>- <strong>2-gram</strong>：通常在原始 <strong>1-gram 分词特征基础上，额外加入 2-gram 特征</strong><br>- <strong>3-gram</strong>：通常在原始 <strong>1-gram 基础上，同时加入 2-gram 和 3-gram 特征</strong></td>
+</tr>
+<tr>
+<td><strong>示例</strong></td>
+<td>句子：<code>我 喜欢 自然 语言 处理</code><br>- <strong>1-gram</strong>：<code>我, 喜欢, 自然, 语言, 处理</code><br>- <strong>2-gram</strong>：<code>我喜欢, 喜欢自然, 自然语言, 语言处理</code><br>- <strong>3-gram</strong>：<code>我喜欢自然, 喜欢自然语言, 自然语言处理</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>n-gram特征主要在传统机器学习NLP流程中使用，现在深度学习NLP流程中几乎不用。
+| 流程阶段 | 传统机器学习 NLP | 现代深度学习 NLP |
+|---------|----------------|-----------------|
+| <strong>第一步</strong> | 文本 | 文本 |
+| <strong>第二步</strong> | 分词 | Tokenizer（分词器） |
+| <strong>第三步</strong> | <strong>特征工程（TF-IDF + n-gram）</strong> | 预训练语言模型（BERT / GPT / Transformer） |
+| <strong>第四步</strong> | 机器学习模型（LR / SVM / Naive Bayes） | 下游任务微调 |
+| <strong>第五步</strong> | 分类 / 预测 | 分类 / 预测 |</p>
+<ul>
+<li>举个例子:</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>给定分词列表: [&quot;是谁&quot;, &quot;敲动&quot;, &quot;我心&quot;]
+
+对应的索引列表为: [1, 34, 21]
+
+可以认为索引列表中的每个数字是词特征.
+
+除此之外, 我们还可以把&quot;是谁&quot;和&quot;敲动&quot;两个相邻词也作为一种特征加入到序列列表中,
+
+假设1000就代表&quot;是谁&quot;和&quot;敲动&quot;两个相邻词的2-gram特征,
+
+此时索引列表就变成了包含2-gram特征的列表: [1, 34, 21, 1000]
+
+这里的&quot;是谁&quot;和&quot;敲动&quot;两个相邻词就是2-gram特征中的一个.
+
+&quot;敲动&quot;和&quot;我心&quot;也是两个相邻词, 因此它们也是2-gram特征.
+
+假设1001代表&quot;敲动&quot;和&quot;我心&quot;两个相邻词的2-gram特征,
+
+原始的索引列表 [1, 34, 21] 添加了2-gram特征之后就变成了 [1, 34, 21, 1000, 1001]
+</pre></div>
+</div>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">案例：</span>
+<span class="sd">    演示 n-gram特征</span>
+<span class="sd">n-gram介绍：</span>
+<span class="sd">    连续的n个词/token组成一个新的特征/词组，添加到此表中，用于分析文本信息</span>
+<span class="sd">    分类：</span>
+<span class="sd">        - unigram (1-gram): 每个词/token单独作为特征</span>
+<span class="sd">        - bigram (2-gram): 连续两个词/token组合</span>
+<span class="sd">        - trigram (3-gram): 连续三个词/token组合</span>
+<span class="sd">作用：</span>
+<span class="sd">    捕捉局部序列信息，提高文本理解能力</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 1.定义变量，记录 n-gram的n值，一般是 2 或 3</span>
+<span class="n">ngram_n</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="c1"># 2.定义函数，演示 获取 n-gram特征</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_ngram_features</span><span class="p">(</span><span class="n">input_list</span><span class="p">,</span> <span class="n">ngram_n</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="c1"># 1.通过滑动窗口来生成n-gram特征</span>
+    <span class="n">sliced_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">input_list</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ngram_n</span><span class="p">)]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">sliced_list</span><span class="p">)</span>
+    <span class="c1"># 2.使用zip来组合sliced_list内部元素</span>
+    <span class="n">tmp_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">sliced_list</span><span class="p">))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">tmp_set</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">input_list</span><span class="p">[</span><span class="n">i</span><span class="p">:]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ngram_n</span><span class="p">)]))</span>
+<span class="c1"># 3.测试</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">input_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">create_ngram_features</span><span class="p">(</span><span class="n">input_list</span><span class="p">,</span> <span class="n">ngram_n</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>[[1, 3, 2, 1, 5, 3], [3, 2, 1, 5, 3], [2, 1, 5, 3]]
+{(3, 2, 1), (1, 3, 2), (1, 5, 3), (2, 1, 5)}
+{(3, 2, 1), (1, 3, 2), (1, 5, 3), (2, 1, 5)}
+</code></pre>
+<h3 id="sec-7">2.2 文本长度规范</h3>
+<ul>
+<li>
+<p>是什么：一般模型的输入需要等序列长度的矩阵, 需要统一每条文本序列长度sequence_length, 根据句子长度分布得到多数文本的合理长度, 对长文本进行截断, 对短文本进行补齐(一般使用填充符号PAD).</p>
+</li>
+<li>
+<p>实现方式：</p>
+<ul>
+<li>1.使用tensorflow的sequence方法实现；pip install tensorflow</li>
+<li>2.使用python基础代码实现</li>
+</ul>
+</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">演示</span>
+<span class="sd">    文本长度规范，也就是把输入的句子截断填充到固定长度max_length</span>
+<span class="sd">解释：</span>
+<span class="sd">    一般模型需要输入的张量为相同尺寸，也就是张量的seq_len序列维度的长度要一致</span>
+<span class="sd">    所以需要把同一个批次的样本句子长度截断填充到相同的长度。</span>
+<span class="sd">    这个就叫文本长度规范</span>
+<span class="sd">实现方式：</span>
+<span class="sd">    1.使用python基础实现</span>
+<span class="sd">    2.使用tensorflow的sequence方法实现，pip install tensorflow</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># 导包</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tensorflow.keras.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">sequence</span>
+
+<span class="c1"># 定义最大长度</span>
+<span class="n">MAX_LENGTH</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="c1"># 1.定义函数，演示 截断补齐文本到固定长度，使用python基础实现</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo01</span><span class="p">(</span><span class="n">sentences</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="n">MAX_LENGTH</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    把输入的一个批次的样本进行文本长度规范,也就是截断填充到固定长度</span>
+<span class="sd">    :param sentences: 输入的一个批次的样本</span>
+<span class="sd">    :param max_length: 固定长度</span>
+<span class="sd">    :return: 截断填充到固定长度之后的这个批次的样本</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 1.定义一个空列表，保存截断填充之后的样本</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># 2.遍历输入的一个批次的样本，进行截断填充</span>
+    <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">sentences</span><span class="p">:</span>
+        <span class="c1"># 1.如果当前句子长度大于固定长度，则截断</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">max_length</span><span class="p">:</span>
+            <span class="n">sentence</span> <span class="o">=</span> <span class="n">sentence</span><span class="p">[:</span><span class="n">max_length</span><span class="p">]</span>
+        <span class="c1"># 2.否则，就填充到固定长度，这里使用0填充</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">padding_length</span> <span class="o">=</span> <span class="n">max_length</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
+            <span class="n">sentence</span> <span class="o">=</span> <span class="n">sentence</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">padding_length</span>
+        <span class="c1"># 3.添加句子到结果列表中</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sentence</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">results</span>
+
+<span class="c1"># 2.定义函数，演示tensorflow的sequence方法实现文本长度规范</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo02</span><span class="p">(</span><span class="n">sentences</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="n">MAX_LENGTH</span><span class="p">):</span>
+    <span class="c1"># 参数1：输入的文本索引序列；参数2：最大长度；参数3：填充方式，默认post，也就是在最后填充；参数4：截断方式，默认post,也就是截断后面的</span>
+    <span class="k">return</span> <span class="n">sequence</span><span class="o">.</span><span class="n">pad_sequences</span><span class="p">(</span><span class="n">sentences</span><span class="p">,</span> <span class="n">maxlen</span><span class="o">=</span><span class="n">max_length</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;post&quot;</span><span class="p">,</span> <span class="n">truncating</span><span class="o">=</span><span class="s2">&quot;post&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># 1.定义遍历，模拟一个批次的输入样本的索引序列</span>
+    <span class="n">sentences</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span>
+        <span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">10</span><span class="p">],</span>
+    <span class="p">]</span>
+    <span class="c1"># 2.调用函数demo01，进行文本长度规范</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">demo01</span><span class="p">(</span><span class="n">sentences</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+    <span class="c1"># 3.调用函数demo02，进行文本长度规范</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">demo02</span><span class="p">(</span><span class="n">sentences</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>[[0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [4, 5, 6, 7, 8, 9, 10, 0, 0, 0], [9, 10, 0, 0, 0, 0, 0, 0, 0, 0], [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]]
+[[ 0  1  2  3  4  5  6  7  8  9]
+ [ 4  5  6  7  8  9 10  0  0  0]
+ [ 9 10  0  0  0  0  0  0  0  0]
+ [ 0  1  2  3  4  5  6  7  8  9]]
+</code></pre>
+<h3 id="sec-8">2.3 小结</h3>
+<ul>
+<li>文本特征处理包括 n-gram特征 和 长度规范.</li>
+<li>n-gram特征:</li>
+<li>给定一段文本序列, 其中n个词或字的相邻共现特征即n-gram特征, 常用的n-gram特征是2-gram和3-gram特征, 分别对应n为2和3.</li>
+<li>文本长度规范:</li>
+<li>一般模型的输入需要等长度的矩阵, 需要固定每条文本数值的序列长度sequence_length, 根据句子长度分布分析出覆盖绝多数文本的合理长度, 对长文本进行截断, 对短文本进行补齐(一般使用数字0).</li>
+</ul>
+<h2 id="sec-9">3 文本数据增强</h2>
+<h4>学习目标</h4>
+<ul>
+<li>了解文本数据增强的作用.</li>
+<li>掌握常见的文本数据增强方法：<ul>
+<li>回译数据增强法</li>
+</ul>
+</li>
+</ul>
+<h3 id="sec-10">3.1 回译数据增强法</h3>
+<ul>
+<li>回译数据增强是效果较好的方法, 一般基于google、有道等翻译接口, 将文本数据翻译成另外一种语言(一般选择小语种),再翻译回原语言, 即可得到与原语料同标签的新语料, 新语料加入到原数据集进行数据增强.</li>
+<li>优势: <ul>
+<li>操作简便, 获得新语料质量高.</li>
+</ul>
+</li>
+<li>
+<p>存在的问题: </p>
+<ul>
+<li>在短文本回译过程中, 新语料与原语料可能存在很高的重复率, 并不能有效增大样本.</li>
+<li>高重复率解决办法: 进行连续多语言翻译, 如: 中文→韩文→日语→英文→中文, 根据经验, 最多只采用3次连续翻译, 更多的翻译次数将产生语义失真等问题.</li>
+<li>回译数据增强实现（基于google翻译接口）:</li>
+</ul>
+</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">案例：</span>
+<span class="sd">    演示 文本数据增强的 回译数据增强法</span>
+<span class="sd">步骤：</span>
+<span class="sd">    1.使用免费的google翻译接口deep_translator，需要安装 pip install deep_translator</span>
+<span class="sd">    2.使用免费的google翻译接口translate,需要安装 pip install translate</span>
+<span class="sd">    3.将文本翻译为其他语言，再翻译为中文</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># 导包</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deep_translator</span><span class="w"> </span><span class="kn">import</span> <span class="n">GoogleTranslator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">translate</span><span class="w"> </span><span class="kn">import</span> <span class="n">Translator</span>    <span class="c1"># 国内可用</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">translate_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">target_language</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">GoogleTranslator</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">target_language</span><span class="p">)</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">translate_text2</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">target_language</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Translator</span><span class="p">(</span><span class="n">to_lang</span><span class="o">=</span><span class="n">target_language</span><span class="p">)</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;曾经有一段真挚的爱情放在我的面前，可惜我当时在考英语四级&quot;</span>
+    <span class="c1"># 先翻译为英文</span>
+    <span class="n">result01</span> <span class="o">=</span> <span class="n">translate_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s1">&#39;ko&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;翻译结果：</span><span class="si">{</span><span class="n">result01</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># 再翻译为中文</span>
+    <span class="n">result02</span> <span class="o">=</span> <span class="n">translate_text</span><span class="p">(</span><span class="n">result01</span><span class="p">,</span> <span class="s1">&#39;zh-CN&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;翻译结果：</span><span class="si">{</span><span class="n">result02</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># 先翻译为英文</span>
+    <span class="n">result01</span> <span class="o">=</span> <span class="n">translate_text2</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="s1">&#39;ko&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;翻译结果：</span><span class="si">{</span><span class="n">result01</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># 再翻译为中文</span>
+    <span class="n">result02</span> <span class="o">=</span> <span class="n">translate_text2</span><span class="p">(</span><span class="n">result01</span><span class="p">,</span> <span class="s1">&#39;zh-CN&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;翻译结果：</span><span class="si">{</span><span class="n">result02</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>翻译结果：한때 내 앞에는 진정한 사랑이 있었지만 안타깝게도 그 당시 나는 CET-4 시험을 치르고 있었습니다.
+翻译结果：曾经有一份真爱在我的面前，但不幸的是，当时我正在参加大学英语四级考试。
+翻译结果：한때 제 앞에 진심어린 사랑이 있었지만, 안타깝게도 저는 영어 레벨 4 시험을 치르고 있었습니다.
+翻译结果：我曾经有一个真诚的爱在我面前，但不幸的是，我参加了英语四级考试。
+</code></pre>
+<h3 id="sec-11">3.2 小结</h3>
+<p>回译数据增强法:</p>
+<ul>
+<li>将文本数据翻译成另外一种语言,之后再翻译回原语言</li>
+</ul>
+<h2 id="sec-12">4 jieba词性对照表</h2>
+<ul>
+<li>jieba词性对照表:</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>- a 形容词
+    - ad 副形词
+    - ag 形容词性语素
+    - an 名形词
+- b 区别词
+- c 连词
+- d 副词
+    - df
+    - dg 副语素
+- e 叹词
+- f 方位词
+- g 语素
+- h 前接成分
+- i 成语
+- j 简称略称
+- k 后接成分
+- l 习用语
+- m 数词
+    - mg
+    - mq 数量词
+- n 名词
+    - ng 名词性语素
+    - nr 人名
+    - nrfg
+    - nrt
+    - ns 地名
+    - nt 机构团体名
+    - nz 其他专名
+- o 拟声词
+- p 介词
+- q 量词
+- r 代词
+    - rg 代词性语素
+    - rr 人称代词
+    - rz 指示代词
+- s 处所词
+- t 时间词
+    - tg 时语素
+- u 助词
+    - ud 结构助词 得
+    - ug 时态助词
+    - uj 结构助词 的
+    - ul 时态助词 了
+    - uv 结构助词 地
+    - uz 时态助词 着
+- v 动词
+    - vd 副动词
+    - vg 动词性语素
+    - vi 不及物动词
+    - vn 名动词
+    - vq
+- x 非语素词
+- y 语气词
+- z 状态词
+    - zg
+</pre></div>
+</div>
+<ul>
+<li>hanlp词性对照表:</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>【Proper Noun——NR，专有名词】
+
+【Temporal Noun——NT，时间名词】
+
+【Localizer——LC，定位词】如“内”，“左右”
+
+【Pronoun——PN，代词】
+
+【Determiner——DT，限定词】如“这”，“全体”
+
+【Cardinal Number——CD，量词】
+
+【Ordinal Number——OD，次序词】如“第三十一”
+
+【Measure word——M，单位词】如“杯”
+
+【Verb：VA，VC，VE，VV，动词】
+
+【Adverb：AD，副词】如“近”，“极大”
+
+【Preposition：P，介词】如“随着”
+
+【Subordinating conjunctions：CS，从属连词】
+
+【Conjuctions：CC，连词】如“和”
+
+【Particle：DEC,DEG,DEV,DER,AS,SP,ETC,MSP，小品词】如“的话”
+
+【Interjections：IJ，感叹词】如“哈”
+
+【onomatopoeia：ON，拟声词】如“哗啦啦”
+
+【Other Noun-modifier：JJ】如“发稿/JJ 时间/NN”
+
+【Punctuation：PU，标点符号】
+
+【Foreign word：FW，外国词语】如“OK
+</pre></div>
+</div>
+<h2 id="sec-13">5 扩展-TF方法计算句子相似度示例</h2>
+<p>这里演示如何使用 <strong>TF（词频）+ Cosine 相似度</strong> 计算句子相似度，并比较 <strong>是否添加 2-gram</strong> 的效果。</p>
+<h3 id="sec-14">5.1 示例句子</h3>
+<ol>
+<li>句子 A：我喜欢深度学习  </li>
+<li>句子 B：我讨厌深度学习  </li>
+</ol>
+<p>预期：<br />
+- 主题相同 → 一部分相似<br />
+- 情感相反 → 应降低相似度</p>
+<h3 id="sec-15">5.2 方法 1：Unigram TF（只统计单词）</h3>
+<ol>
+<li>构建词表：  </li>
+</ol>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>[&quot;我&quot;, &quot;喜欢&quot;, &quot;讨厌&quot;, &quot;深度&quot;, &quot;学习&quot;]
+</pre></div>
+</div>
+<ol start="2">
+<li>统计 TF 向量：</li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>句子</th>
+<th>我</th>
+<th>喜欢</th>
+<th>讨厌</th>
+<th>深度</th>
+<th>学习</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>B</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="3">
+<li>Cosine 相似度计算：</li>
+</ol>
+<p>$$
+\cos(A,B) = \frac{3}{\sqrt{4}*\sqrt{4}} = 0.75
+$$</p>
+<blockquote>
+<p>结果偏高，说明 Unigram 无法区分“喜欢”和“讨厌”。</p>
+</blockquote>
+<h3 id="sec-16">5.3 方法 2：Unigram + 2-gram TF（增强特征）</h3>
+<ol>
+<li>构建 2-gram：</li>
+</ol>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>A: [&quot;我 喜欢&quot;, &quot;喜欢 深度&quot;, &quot;深度 学习&quot;]
+B: [&quot;我 讨厌&quot;, &quot;讨厌 深度&quot;, &quot;深度 学习&quot;]
+</pre></div>
+</div>
+<ol start="2">
+<li>构建特征表（Unigram + 2-gram）：</li>
+</ol>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>[&quot;我&quot;, &quot;喜欢&quot;, &quot;讨厌&quot;, &quot;深度&quot;, &quot;学习&quot;, &quot;我 喜欢&quot;, &quot;喜欢 深度&quot;, &quot;深度 学习&quot;, &quot;我 讨厌&quot;, &quot;讨厌 深度&quot;]
+</pre></div>
+</div>
+<ol start="3">
+<li>TF 向量：</li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>句子</th>
+<th>我</th>
+<th>喜欢</th>
+<th>讨厌</th>
+<th>深度</th>
+<th>学习</th>
+<th>我 喜欢</th>
+<th>喜欢 深度</th>
+<th>深度 学习</th>
+<th>我 讨厌</th>
+<th>讨厌 深度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>B</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table></div>
+<ol start="4">
+<li>Cosine 相似度：</li>
+</ol>
+<p>$$
+\cos(A,B) = \frac{3}{\sqrt{7}*\sqrt{7}} \approx 0.57
+$$</p>
+<blockquote>
+<p>添加 2-gram 后，相似度降低，更能反映差异。</p>
+</blockquote>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jieba</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_extraction.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">CountVectorizer</span><span class="p">,</span> <span class="n">TfidfVectorizer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics.pairwise</span><span class="w"> </span><span class="kn">import</span> <span class="n">cosine_similarity</span>
+
+<span class="n">texts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;我喜欢深度学习&quot;</span><span class="p">,</span> <span class="s2">&quot;我不喜欢深度学习&quot;</span><span class="p">]</span>
+
+<span class="c1"># 自定义分词函数</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">chinese_tokenizer</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">jieba</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;******使用CountVectorizer向量化(词频统计向量)******&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ngram</span> <span class="ow">in</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">ngram_range=</span><span class="si">{</span><span class="n">ngram</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">vectorizer</span> <span class="o">=</span> <span class="n">CountVectorizer</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">=</span><span class="n">chinese_tokenizer</span><span class="p">,</span> <span class="n">ngram_range</span><span class="o">=</span><span class="n">ngram</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;特征:&quot;</span><span class="p">,</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;向量:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;相似度:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">cosine_similarity</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;******使用TfidfVectorizer向量化(TF-IDF向量)******&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">ngram</span> <span class="ow">in</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">)]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">ngram_range=</span><span class="si">{</span><span class="n">ngram</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">vectorizer</span> <span class="o">=</span> <span class="n">TfidfVectorizer</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">=</span><span class="n">chinese_tokenizer</span><span class="p">,</span> <span class="n">ngram_range</span><span class="o">=</span><span class="n">ngram</span><span class="p">)</span>
+    <span class="n">X</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">texts</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;特征:&quot;</span><span class="p">,</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;向量:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;相似度:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">cosine_similarity</span><span class="p">(</span><span class="n">X</span><span class="p">))</span>
+</pre></div>
+</div>
+<pre><code>******使用CountVectorizer向量化(词频统计向量)******
+
+ngram_range=(1, 1)
+特征: ['不' '喜欢' '学习' '我' '深度']
+向量:
+ [[0 1 1 1 1]
+ [1 1 1 1 1]]
+相似度:
+ [[1.         0.89442719]
+ [0.89442719 1.        ]]
+
+ngram_range=(1, 2)
+特征: ['不' '不 喜欢' '喜欢' '喜欢 深度' '学习' '我' '我 不' '我 喜欢' '深度' '深度 学习']
+向量:
+ [[0 0 1 1 1 1 0 1 1 1]
+ [1 1 1 1 1 1 1 0 1 1]]
+相似度:
+ [[1.         0.75592895]
+ [0.75592895 1.        ]]
+
+ngram_range=(1, 3)
+特征: ['不' '不 喜欢' '不 喜欢 深度' '喜欢' '喜欢 深度' '喜欢 深度 学习' '学习' '我' '我 不' '我 不 喜欢'
+ '我 喜欢' '我 喜欢 深度' '深度' '深度 学习']
+向量:
+ [[0 0 0 1 1 1 1 1 0 0 1 1 1 1]
+ [1 1 1 1 1 1 1 1 1 1 0 0 1 1]]
+相似度:
+ [[1.         0.67357531]
+ [0.67357531 1.        ]]
+******使用TfidfVectorizer向量化(TF-IDF向量)******
+
+ngram_range=(1, 1)
+特征: ['不' '喜欢' '学习' '我' '深度']
+向量:
+ [[0.         0.5        0.5        0.5        0.5       ]
+ [0.57496187 0.4090901  0.4090901  0.4090901  0.4090901 ]]
+相似度:
+ [[1.         0.81818021]
+ [0.81818021 1.        ]]
+
+ngram_range=(1, 2)
+特征: ['不' '不 喜欢' '喜欢' '喜欢 深度' '学习' '我' '我 不' '我 喜欢' '深度' '深度 学习']
+向量:
+ [[0.         0.         0.35409974 0.35409974 0.35409974 0.35409974
+  0.         0.49767483 0.35409974 0.35409974]
+ [0.40697968 0.40697968 0.2895694  0.2895694  0.2895694  0.2895694
+  0.40697968 0.         0.2895694  0.2895694 ]]
+相似度:
+ [[1.         0.61521869]
+ [0.61521869 1.        ]]
+
+ngram_range=(1, 3)
+特征: ['不' '不 喜欢' '不 喜欢 深度' '喜欢' '喜欢 深度' '喜欢 深度 学习' '学习' '我' '我 不' '我 不 喜欢'
+ '我 喜欢' '我 喜欢 深度' '深度' '深度 学习']
+向量:
+ [[0.         0.         0.         0.30218978 0.30218978 0.30218978
+  0.30218978 0.30218978 0.         0.         0.42471719 0.42471719
+  0.30218978 0.30218978]
+ [0.3421187  0.3421187  0.3421187  0.24342027 0.24342027 0.24342027
+  0.24342027 0.24342027 0.3421187  0.3421187  0.         0.
+  0.24342027 0.24342027]]
+相似度:
+ [[1.         0.51491382]
+ [0.51491382 1.        ]]
+
+
+&lt;本地用户目录&gt;\.conda\envs\nlp_project\lib\site-packages\sklearn\feature_extraction\text.py:517: UserWarning: The parameter 'token_pattern' will not be used since 'tokenizer' is not None'
+  warnings.warn(
+</code></pre>
+<h2 id="sec-17">6 扩展-使用 SBERT 句向量计算句子相似度</h2>
+<p>这里介绍<strong>工程中最常用的计算句子相似度方法：SBERT（Sentence-BERT）句向量 + 余弦相似度</strong>，演示 一个具体示例。</p>
+<h3 id="sec-18">6.1 问题描述</h3>
+<p>给定两个句子，判断它们在<strong>语义层面</strong>是否相似：</p>
+<ul>
+<li><strong>句子 1</strong>：我喜欢深度学习  </li>
+<li><strong>句子 2</strong>：我喜欢玩游戏</li>
+</ul>
+<p>直觉上：
+- 两个句子类似（喜欢），但不同。因此：<strong>相似度不应过高，也不应接近 0</strong></p>
+<h3 id="sec-19">6.2 SBERT 的核心思想</h3>
+<blockquote>
+<p><strong>SBERT 将“整句话”编码为一个固定维度的向量（句向量），再通过向量相似度衡量语义相似性。</strong></p>
+</blockquote>
+<h4>关键点</h4>
+<ul>
+<li>使用 <strong>BERT</strong> 建模上下文</li>
+<li>得到 <strong>上下文相关的 token 向量/词向量</strong></li>
+<li>通过 <strong>Pooling（通常是 Mean Pooling）</strong> 得到句向量</li>
+<li>工程中使用 <strong>余弦相似度（Cosine Similarity）</strong></li>
+</ul>
+<h3 id="sec-20">6.3 句向量的计算过程（概念示意）</h3>
+<h4>Token 级上下文向量</h4>
+<p>以「我喜欢深度学习」为例，SBERT 内部会得到类似：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Token</th>
+<th>上下文向量（示意）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>我</td>
+<td>h₁</td>
+</tr>
+<tr>
+<td>喜欢</td>
+<td>h₂</td>
+</tr>
+<tr>
+<td>深度</td>
+<td>h₃</td>
+</tr>
+<tr>
+<td>学习</td>
+<td>h₄</td>
+</tr>
+</tbody>
+</table></div>
+<p>这些向量 <strong>已融合上下文信息</strong>（“喜欢”在当前语境下的含义）。</p>
+<h4>Mean Pooling 得到句向量</h4>
+<p>设一句话有 <code>n</code> 个 token，对应向量为 <code>h₁, h₂, …, hₙ</code>：</p>
+<p>$$
+\mathbf{s} = \frac{1}{n} \sum_{i=1}^{n} \mathbf{h}_i
+$$</p>
+<p>得到：
+- 句子 1 的句向量：<code>s₁</code>
+- 句子 2 的句向量：<code>s₂</code></p>
+<h4>向量归一化（工程标准）</h4>
+<p>对句向量做 <strong>L2 归一化</strong>：</p>
+<p>$$
+\hat{\mathbf{s}} = \frac{\mathbf{s}}{|\mathbf{s}|}
+$$</p>
+<p>作用：
+- 消除向量模长差异
+- 只保留语义方向信息
+- 便于向量检索与点积计算</p>
+<h3 id="sec-21">6.4 相似度计算：余弦相似度</h3>
+<h4>公式</h4>
+<p>$$
+\cos(\theta) =
+\frac{\mathbf{s}_1 \cdot \mathbf{s}_2}
+{|\mathbf{s}_1||\mathbf{s}_2|}
+$$</p>
+<p>如果向量已归一化：</p>
+<p>$$
+\cos(\theta) = \hat{\mathbf{s}}_1 \cdot \hat{\mathbf{s}}_2
+$$</p>
+<h4>结果分析</h4>
+<ul>
+<li><strong>同义句</strong>（如“我喜欢深度学习” vs “我热爱深度学习”）：<br />
+  相似度 ≈ 0.8 ~ 0.95</li>
+<li><strong>低相关性</strong>：<br />
+  相似度 ≈ 0.3 ~ 0.5</li>
+<li><strong>无关句</strong>：<br />
+  相似度 &lt; 0.2</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sentence_transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">SentenceTransformer</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># 1. 加载 SBERT 模型</span>
+<span class="c1"># 这是一个句子转换模型：它将句子和段落映射到384维的密集向量空间，可以用于聚类或语义搜索等任务。</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">SentenceTransformer</span><span class="p">(</span><span class="s2">&quot;all-MiniLM-L6-v2&quot;</span><span class="p">)</span>
+
+<span class="c1"># 2. 输入句子</span>
+<span class="n">sentences</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;我喜欢深度学习&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;我喜欢玩游戏&quot;</span>
+<span class="p">]</span>
+
+<span class="c1"># 3. 编码成句向量（并做 L2 归一化）</span>
+<span class="n">embeddings</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span>
+    <span class="n">sentences</span><span class="p">,</span>
+    <span class="c1"># normalize_embeddings=True</span>
+<span class="p">)</span>
+
+<span class="n">v1</span><span class="p">,</span> <span class="n">v2</span> <span class="o">=</span> <span class="n">embeddings</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;句向量维度：</span><span class="si">{</span><span class="n">v1</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="c1"># 4. 计算余弦相似度（归一化后直接点积）</span>
+<span class="n">cos_sim</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">v2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;句子相似度：&quot;</span><span class="p">,</span> <span class="n">cos_sim</span><span class="p">)</span>
+<span class="n">similarities</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">similarity</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">embeddings</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;句子相似度：&quot;</span><span class="p">,</span> <span class="n">similarities</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>&lt;本地用户目录&gt;\.conda\envs\nlp_project\lib\site-packages\tqdm\auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+
+
+WARNING:tensorflow:From &lt;本地用户目录&gt;\.conda\envs\nlp_project\lib\site-packages\tf_keras\src\losses.py:2976: The name tf.losses.sparse_softmax_cross_entropy is deprecated. Please use tf.compat.v1.losses.sparse_softmax_cross_entropy instead.
+
+句向量维度：(384,)
+句子相似度： 0.81849515
+句子相似度： tensor([[1.0000, 0.8185],
+        [0.8185, 1.0000]])
+</code></pre>
+<h2 id="sec-22">7 扩展-FastText 的 Subword 建模</h2>
+<p>FastText 的核心改进是：<strong>词向量不只来自“整词”，还来自“字符 n-gram（子词）”</strong>。<br />
+这使它对<strong>未登录词（OOV）</strong>、<strong>低频词</strong>更鲁棒。</p>
+<hr />
+<h4>基本思想</h4>
+<p>对一个词 $w$，FastText 会拆成多个字符 n-gram（常用 $n=3\sim6$），并学习每个 n-gram 的向量。<br />
+词向量由这些子词向量（可加上整词向量）聚合得到：</p>
+<p>$$
+\mathbf{v}<em>w = \sum</em>{g \in G(w)} \mathbf{z}_g
+$$</p>
+<ul>
+<li>$G(w)$：词 $w$ 的子词集合  </li>
+<li>$\mathbf{z}_g$：子词 $g$ 的向量</li>
+</ul>
+<hr />
+<h4>简单示例</h4>
+<p>以英文词 <code>where</code> 为例（边界符号常写作 <code>&lt;where&gt;</code>）：</p>
+<ul>
+<li>3-gram 子词可包含：<code>&lt;wh</code>, <code>whe</code>, <code>her</code>, <code>ere</code>, <code>re&gt;</code></li>
+<li>FastText 为每个子词学习向量</li>
+<li><code>where</code> 的词向量由这些子词向量相加后取平均得到</li>
+</ul>
+<p>即使测试时出现未见过的新词 <code>wheres</code>，模型也能从其子词（如 <code>whe</code>, <code>her</code>, <code>res</code>）组合出可用向量。</p>
+<hr />
+<h4>为什么有效</h4>
+<ul>
+<li><strong>缓解 OOV</strong>：新词可由已见子词组合表示  </li>
+<li><strong>提升低频词质量</strong>：低频整词也能借助共享子词学习  </li>
+<li><strong>适合形态变化丰富语言</strong>：如前后缀变化、拼写变体</li>
+</ul>
+<hr />
+<h4>一句话总结</h4>
+<p><strong>Word2Vec 学“整词”，FastText 学“整词 + 子词”</strong>，所以在真实场景中通常更稳健。</p>
+<h2 id="sec-23">8 常见面试题</h2>
+<h4>文本张量表示有哪些主流方法？</h4>
+<ul>
+<li><strong>One-hot</strong>：高维稀疏，简单但不表达语义相似性。  </li>
+<li><strong>Word2Vec/FastText</strong>：预训练静态词向量；FastText支持子词建模。  </li>
+<li><strong>Embedding层</strong>：在下游任务中端到端动态学习词向量。</li>
+</ul>
+<hr />
+<h4>Word2Vec 的 CBOW 和 Skip-gram 区别？</h4>
+<ul>
+<li><strong>CBOW</strong>：上下文预测中心词，训练更快。  </li>
+<li><strong>Skip-gram</strong>：中心词预测上下文，对低频词通常更友好，训练效果更好。</li>
+</ul>
+<hr />
+<h4>FastText 相比传统 Word2Vec 的优势？</h4>
+<ul>
+<li>使用 <strong>subword（字符 n-gram）</strong> 建模。  </li>
+<li>对未登录词（OOV）和低频词更鲁棒。  </li>
+<li>支持高效文本分类与词向量训练。</li>
+</ul>
+<hr />
+<h4>什么是动态词向量？</h4>
+<ul>
+<li>指 <code>nn.Embedding</code> 参数在整个任务训练中一起更新。  </li>
+<li>与静态词向量（预训练后固定）相对。</li>
+</ul>
+<hr />
+<h4>常见文本数据分析指标有哪些？</h4>
+<ul>
+<li>标签数量分布。  </li>
+<li>句子长度分布。  </li>
+<li>词频统计。  </li>
+<li>关键词/形容词词云（辅助人工审查）。</li>
+</ul>
+<hr />
+<h4>为什么要做长度规范（padding/truncation）？</h4>
+<ul>
+<li>神经网络批训练通常要求固定长度的输入张量。  </li>
+<li>长文本截断、短文本补齐，保证张量形状一致。</li>
+</ul>
+<hr />
+<h4>padding 会引入噪声吗？如何处理？</h4>
+<ul>
+<li>会。  </li>
+<li>用 <code>attention_mask</code> 或有效长度屏蔽 PAD 位，避免其参与有效计算。</li>
+</ul>
+<hr />
+<h4>n-gram 特征的作用是什么？</h4>
+<ul>
+<li>捕捉局部词序与搭配关系。  </li>
+<li>相比 unigram，更能提升语义区分能力（如 Bigram 区分“喜欢/讨厌+对象”）。</li>
+</ul>
+<hr />
+<h4>TF + Cosine 与 SBERT 相似度方法差异？</h4>
+<ul>
+<li><strong>TF+Cosine</strong>：基于词频，轻量但语义能力弱。  </li>
+<li><strong>SBERT+Cosine</strong>：基于上下文句向量，语义表达更强，工程中更常用。</li>
+</ul>
+<hr />
+<h4>回译数据增强的核心思路与风险？</h4>
+<ul>
+<li>思路：原句 → 中间语言 → 回原语言，生成同标签新样本。  </li>
+<li>风险：短文本重复率高、连续多次翻译可能语义漂移。</li>
+</ul>
+<hr />
+<h4>如何避免训练/验证数据泄漏？</h4>
+<ul>
+<li>先划分数据集，再构建词表与统计特征。  </li>
+<li>任何归一化/统计仅在训练集拟合，再应用到验证/测试集。</li>
+</ul>
+<h3 id="sec-24">8.1 代码作业</h3>
+<ul>
+<li>
+<ol>
+<li>使用 fasttext 加载本课程预训练词向量模型，查询"deeplearning"的词向量（打印前5维），并找出与"deeplearning"最相似的 5 个词。</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>手动构建词表，使用 <code>nn.Embedding</code> 创建词嵌入层（embedding_dim=100），对以下句子进行向量化，打印每句话的所有词向量的平均向量（句向量）及其形状。
+  句子：<code>["我爱自然语言处理", "机器学习很有趣"]</code></li>
+</ol>
+</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jieba</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+
+<span class="c1"># ==============================</span>
+<span class="c1"># 作业1：fasttext 预训练词向量</span>
+<span class="c1"># ==============================</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">homework1</span><span class="p">():</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">fasttext</span>
+
+    <span class="c1"># 加载预训练词向量</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">fasttext</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;./model/fil9.bin&#39;</span><span class="p">)</span>
+
+    <span class="n">word</span> <span class="o">=</span> <span class="s2">&quot;深度学习&quot;</span>
+    <span class="n">vec</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_word_vector</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;</span><span class="si">{</span><span class="n">word</span><span class="si">}</span><span class="s2">&#39; 的词向量前10维: </span><span class="si">{</span><span class="n">vec</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;词向量维度: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">vec</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 最相似的5个词</span>
+    <span class="n">neighbors</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_nearest_neighbors</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">与&#39;</span><span class="si">{</span><span class="n">word</span><span class="si">}</span><span class="s2">&#39;最相似的5个词:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">score</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">neighbors</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">w</span><span class="si">:</span><span class="s2">12s</span><span class="si">}</span><span class="s2">  相似度: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># ==============================</span>
+<span class="c1"># 作业2：nn.Embedding 句向量</span>
+<span class="c1"># ==============================</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">homework2</span><span class="p">():</span>
+    <span class="n">sentences</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;我爱自然语言处理&quot;</span><span class="p">,</span> <span class="s2">&quot;机器学习很有趣&quot;</span><span class="p">]</span>
+
+    <span class="c1"># 构建词表</span>
+    <span class="n">all_tokens</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sentences</span><span class="p">:</span>
+        <span class="n">all_tokens</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">jieba</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">s</span><span class="p">))</span>
+    <span class="n">vocab</span> <span class="o">=</span> <span class="p">{</span><span class="n">word</span><span class="p">:</span> <span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">all_tokens</span><span class="p">))}</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;词表: </span><span class="si">{</span><span class="n">vocab</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">embed</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_embeddings</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">),</span> <span class="n">embedding_dim</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">每个句子的平均句向量（句向量）形状:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">sentences</span><span class="p">:</span>
+        <span class="n">tokens</span> <span class="o">=</span> <span class="n">jieba</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="c1"># 将 token 转为 idx</span>
+        <span class="n">ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">vocab</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">tokens</span> <span class="k">if</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">vocab</span><span class="p">])</span>
+        <span class="n">vecs</span> <span class="o">=</span> <span class="n">embed</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>       <span class="c1"># (L, 100)</span>
+        <span class="n">sent_vec</span> <span class="o">=</span> <span class="n">vecs</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>   <span class="c1"># (100,)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  &#39;</span><span class="si">{</span><span class="n">s</span><span class="si">}</span><span class="s2">&#39; =&gt; 句向量形状: </span><span class="si">{</span><span class="n">sent_vec</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, 前5维: </span><span class="si">{</span><span class="n">sent_vec</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()[:</span><span class="mi">5</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">homework1</span><span class="p">()</span>
+    <span class="n">homework2</span><span class="p">()</span>
+</pre></div>
+</div>
+<pre><code>'深度学习' 的词向量前10维: [ 0.08280622 -0.05908029  0.08776744 -0.0103537   0.07350751  0.08200764
+ -0.20279677  0.01425046 -0.04053061  0.01356317]
+词向量维度: 100
+
+与'深度学习'最相似的5个词:
+  mcgreevey     相似度: 0.6581
+  triggs        相似度: 0.6460
+  gilford       相似度: 0.6443
+  cushing       相似度: 0.6353
+  mcvey         相似度: 0.6301
+词表: {'机器': 0, '有趣': 1, '自然语言': 2, '很': 3, '爱': 4, '我': 5, '处理': 6, '学习': 7}
+
+每个句子的平均句向量（句向量）形状:
+  '我爱自然语言处理' =&gt; 句向量形状: torch.Size([100]), 前5维: [-0.19384469 -0.00741749  0.18834098 -0.83164656 -0.8629215 ]
+  '机器学习很有趣' =&gt; 句向量形状: torch.Size([100]), 前5维: [ 0.02701259  0.21395168  0.36196834 -0.58982086 -0.9544213 ]
+</code></pre><div class="done-bar"><button class="mark-done-btn" data-key="lesson36" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson35.html"><div class="dir">← 上一篇</div><div class="name">🗣️ 自然语言处理入门与词向量</div></a><a class="next" href="lesson37.html"><div class="dir">下一篇 →</div><div class="name">🧬 RNN 进阶：LSTM、GRU 与双向网络</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">1 文本数据分析</a><a class="lv3" href="#sec-2">1.1 文件数据分析介绍</a><a class="lv3" href="#sec-3">1.2 数据集说明</a><a class="lv3" href="#sec-4">1.3 小结</a><a class="lv2" href="#sec-5">2 文本特征处理</a><a class="lv3" href="#sec-6">2.1 n-gram特征</a><a class="lv3" href="#sec-7">2.2 文本长度规范</a><a class="lv3" href="#sec-8">2.3 小结</a><a class="lv2" href="#sec-9">3 文本数据增强</a><a class="lv3" href="#sec-10">3.1 回译数据增强法</a><a class="lv3" href="#sec-11">3.2 小结</a><a class="lv2" href="#sec-12">4 jieba词性对照表</a><a class="lv2" href="#sec-13">5 扩展-TF方法计算句子相似度示例</a><a class="lv3" href="#sec-14">5.1 示例句子</a><a class="lv3" href="#sec-15">5.2 方法 1：Unigram TF（只统计单词）</a><a class="lv3" href="#sec-16">5.3 方法 2：Unigram + 2-gram TF（增强特征）</a><a class="lv2" href="#sec-17">6 扩展-使用 SBERT 句向量计算句子相似度</a><a class="lv3" href="#sec-18">6.1 问题描述</a><a class="lv3" href="#sec-19">6.2 SBERT 的核心思想</a><a class="lv3" href="#sec-20">6.3 句向量的计算过程（概念示意）</a><a class="lv3" href="#sec-21">6.4 相似度计算：余弦相似度</a><a class="lv2" href="#sec-22">7 扩展-FastText 的 Subword 建模</a><a class="lv2" href="#sec-23">8 常见面试题</a><a class="lv3" href="#sec-24">8.1 代码作业</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

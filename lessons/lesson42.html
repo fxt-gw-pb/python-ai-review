@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FastText：文本分类与词向量 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">32</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">33</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">34</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">35</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">39</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">40</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">42</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">21</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">22</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">23</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">24</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">25</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">26</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">27</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">28</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">29</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">30</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 42 讲</div>
+<h1>⚡ FastText：文本分类与词向量</h1>
+<div class="chips"><span class="chip">🏷️ Subword / n-gram</span><span class="chip">🏷️ 层次 Softmax</span><span class="chip">🏷️ 负采样</span></div>
+</div>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="c1"># 设置中文字体</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.sans-serif&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SimHei&#39;</span><span class="p">]</span>  <span class="c1"># 微软雅黑</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.unicode_minus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>    <span class="c1"># 解决负号显示问题</span>
+<span class="c1"># 设置设备，优先使用顺序：GPU &gt; MPS &gt; CPU</span>
+<span class="n">DEVICE</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span>
+    <span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+    <span class="k">else</span> <span class="s2">&quot;mps&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">mps</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+    <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;当前设备：</span><span class="si">{</span><span class="n">DEVICE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>当前设备：cuda
+</code></pre>
+<h2 id="sec-1">1 fasttext工具介绍</h2>
+<h4>学习目标</h4>
+<ul>
+<li>了解fasttext工具的作用.</li>
+<li>了解fasttext工具的优势及其原因.</li>
+<li>掌握fasttext的安装方法.</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson42/figure-22e099028f7c.png" /></p>
+<h3 id="sec-2">1.1 FastText 介绍</h3>
+<h4>核心用途</h4>
+<ul>
+<li><strong>有监督学习</strong>：文本分类</li>
+<li><strong>无监督学习</strong>：训练词向量</li>
+</ul>
+<h4>核心优势</h4>
+<ul>
+<li><strong>速度快</strong>：模型结构简单，使用层次Softmax或负采样加速计算</li>
+<li><strong>效果好</strong>：引入词级n-gram特征(监督学习)，能捕捉局部关系</li>
+<li><strong>处理OOV</strong>：进行subword(子词)建模(无监督学习)，能处理OOV(未登录词)</li>
+</ul>
+<h4>安装</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Shell</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>fasttext-wheel
+</pre></div>
+</div>
+<p>验证安装：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">fasttext</span>
+</pre></div>
+</div>
+<h2 id="sec-3">2 fasttext 模型架构</h2>
+<h3 id="sec-4">2.1 学习目标</h3>
+<ul>
+<li>理解 fasttext 的整体模型结构</li>
+<li>了解大规模分类的两种高效输出层方案</li>
+<li>层次化 Softmax</li>
+<li>负采样</li>
+</ul>
+<h3 id="sec-5">2.2 fasttext 模型架构</h3>
+<h4>fasttext 是什么</h4>
+<p>fasttext 是一个<strong>高效的文本分类模型</strong>，采用<strong>三层网络结构</strong></p>
+<ul>
+<li><strong>词嵌入层</strong>：词和 n-gram特征 的 embedding</li>
+<li><strong>平均池化层/隐藏层</strong>：embedding 的平均池化</li>
+<li><strong>线性层</strong>：输出预测类别</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image-2.png" src="../assets/img/lesson42/figure-e1494a74a96e.png" /></p>
+<h3 id="sec-6">2.3 为什么需要高效输出层</h3>
+<p>当类别数 / 词表规模 V 很大时（10⁴～10⁶）：</p>
+<ul>
+<li>普通 Softmax：</li>
+<li>计算复杂度：O(V)</li>
+<li>参数更新：O(V)</li>
+<li>训练和推理成本极高</li>
+</ul>
+<p><strong>解决思路分两条路线</strong>：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>大规模分类
+├─ 有监督学习(文本分类)：层次化 Softmax，O(log₂V)
+└─ 无监督学习(训练词向量)：负采样，O(K)，K ≪ V
+</pre></div>
+</div>
+<h3 id="sec-7">2.4 层次化 Softmax（精确高效）</h3>
+<h4>核心思想</h4>
+<blockquote>
+<p>将 V 类多分类<br />
+转化为 <strong>哈夫曼树二分类</strong></p>
+</blockquote>
+<ul>
+<li>V 类多分类 → log₂(V) 次二分类</li>
+<li>使用哈夫曼树构建类别</li>
+<li>每个类别是树中的一个叶子节点</li>
+</ul>
+<h4>哈夫曼树</h4>
+<p><strong>定义</strong>: 带权路径长度最小的二叉树</p>
+<p><strong>特点</strong>: 权值(频次)越大的节点离根节点越近</p>
+<p><strong>构建步骤</strong>:
+1. 将所有类别看作独立节点，并统计频次
+2. 选择权值(频次)最小的两个节点合并为新节点
+3. 新节点权值(频次) = 两子节点权值(频次)之和
+4. 重复步骤2-3，直到只剩一棵树
+5. 哈夫曼编码，左0右1，从根节点到叶节点的路径，即为该节点的哈夫曼编码</p>
+<p><strong>示例</strong>: 假设有4个类别A~D及其频次</p>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson42/figure-5b08290337ce.png" /></p>
+<p>构建过程：</p>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson42/figure-165290301861.png" />
+<img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson42/figure-44fe286a404c.png" />
+<img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson42/figure-3279751c3ae2.png" /></p>
+<p><strong>哈夫曼编码</strong></p>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson42/figure-1e062e776e58.png" /></p>
+<h4>概率计算方式</h4>
+<ul>
+<li>每个内部节点是一个二分类器：</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>Linear(hidden_dim, 1) + Sigmoid
+</pre></div>
+</div>
+<ul>
+<li>
+<p>Linear(hidden_dim, 1)数量 = 内部节点数量/非叶子节点数量</p>
+</li>
+<li>
+<p>类别条件概率为路径上概率的乘积：</p>
+</li>
+</ul>
+<p>$$
+P(y|x) = \prod_{i \in path(y)} P(d_i | x)
+$$</p>
+<h4>计算优势</h4>
+<ul>
+<li>单样本计算量：<strong>O(log₂ V)</strong></li>
+<li>参数更新：仅更新路径上的节点，对应的线性层 <code>Linear(n, 1)</code></li>
+<li>仍然是<strong>精确概率模型</strong></li>
+</ul>
+<h3 id="sec-8">2.5 负采样（近似高效）</h3>
+<h4>核心思想</h4>
+<p><strong>负采样是一种通过构造正负样本对进行对比学习的数据采样方法</strong>。<strong>以牺牲分类精度为代价，来提升大规模分类下的训练效率</strong>。</p>
+<blockquote>
+<p>将多分类转化为多个独立的二分类</p>
+<p>负采样本身不定义模型结构，只定义<strong>如何构造训练样本</strong></p>
+</blockquote>
+<h4>训练方式：对比学习</h4>
+<ul>
+<li>对每个正样本 (x, y⁺)，采样 K 个负样本 ${y₁⁻, …, y_K⁻}$</li>
+<li>对每个 (x, y) 进行一次 <strong>独立的二分类判断</strong> <code>Linear(n,1)+Sigmoid</code></li>
+</ul>
+<p>训练损失函数为：</p>
+<p>$$
+\text{Loss} = - \Big[ \log \sigma(x \cdot y^+) + \sum_{k=1}^K \log \sigma(-x \cdot y_k^-) \Big]
+$$
+σ 为 Sigmoid 函数，x·y 表示向量相似度（点积或内积）</p>
+<h4>特点</h4>
+<ul>
+<li>通常训练采用正负样本对训练的对比学习方法</li>
+<li>提高计算效率，计算复杂度为
+  $
+  O(K),\quad K \ll 类别总数V
+  $</li>
+</ul>
+<h4>适用场景</h4>
+<ul>
+<li>常用于词向量与表示学习任务</li>
+<li>类别数量极大、对精确概率要求不高的场景</li>
+</ul>
+<h3 id="sec-9">2.6 总结 - 对比原始 Softmax / 层次化 Softmax / 负采样</h3>
+<blockquote>
+<p>假设：<br />
+- 隐藏层维度 n = 300<br />
+- 类别数 / 词表大小 V = 100,000  </p>
+</blockquote>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>原始 Softmax</th>
+<th>层次化 Softmax</th>
+<th>负采样+对比学习</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>核心思想</strong></td>
+<td>一次性对所有类别归一化</td>
+<td>沿树路径做多次二分类</td>
+<td>用少量负样本近似训练</td>
+</tr>
+<tr>
+<td><strong>是否精确</strong></td>
+<td>✅ 是</td>
+<td>✅ 是</td>
+<td>❌ 否</td>
+</tr>
+<tr>
+<td><strong>输出层结构</strong></td>
+<td><code>Linear(n, V) + Softmax</code></td>
+<td><code>Linear(n,1)+Sigmoid</code> × (log₂V)</td>
+<td><code>Linear(n,1)+Sigmoid</code></td>
+</tr>
+<tr>
+<td><strong>单样本对应原始样本</strong></td>
+<td>1个原始样本</td>
+<td>1个原始样本</td>
+<td>1个正样本+ K个负样本 = K+1 个原始样本</td>
+</tr>
+<tr>
+<td><strong>单样本计算量</strong></td>
+<td>O(V)</td>
+<td>O(log₂ V)</td>
+<td>O(K)</td>
+</tr>
+<tr>
+<td><strong>参数更新范围</strong></td>
+<td>所有类别参数</td>
+<td>仅路径节点参数</td>
+<td>正样本 + K 个负样本</td>
+</tr>
+<tr>
+<td><strong>输出含义</strong></td>
+<td>概率分布</td>
+<td>类别概率</td>
+<td>相似度分数</td>
+</tr>
+<tr>
+<td><strong>典型用途</strong></td>
+<td>小规模分类</td>
+<td>大规模分类，有监督学习的文本分类</td>
+<td>表示学习,无监督学习的词向量训练</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="sec-10">3 fasttext文本分类</h2>
+<h4>学习目标</h4>
+<ul>
+<li>了解什么是文本分类及其种类.</li>
+<li>掌握fasttext工具进行文本分类的过程.</li>
+</ul>
+<h3 id="sec-11">3.1 文本分类介绍</h3>
+<h4>文本分类概念</h4>
+<ul>
+<li>文本分类的是将文本分配给一个或多个类别. 通常属于监督学习范畴.</li>
+</ul>
+<h4>文本分类种类</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>特点</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>二分类</strong></td>
+<td>两个对立类别</td>
+<td>好评/差评、垃圾邮件/正常邮件</td>
+</tr>
+<tr>
+<td><strong>单标签多分类</strong></td>
+<td>多个互斥类别，每条文本仅属一类</td>
+<td>文本分类为体育/科技/财经</td>
+</tr>
+<tr>
+<td><strong>多标签多分类</strong></td>
+<td>多个非互斥类别，一条文本可属多类</td>
+<td>一部电影同时标记：剧情/喜剧/爱情</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="sec-12">3.2 文本分类的过程</h3>
+<ul>
+<li>
+<ol>
+<li>获取数据</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>划分训练集与验证集</li>
+</ol>
+</li>
+<li>
+<ol start="3">
+<li>训练模型</li>
+</ol>
+</li>
+<li>
+<ol start="4">
+<li>模型评估</li>
+</ol>
+</li>
+<li>
+<ol start="5">
+<li>模型调优</li>
+</ol>
+</li>
+<li>
+<ol start="6">
+<li>模型保存与加载</li>
+</ol>
+</li>
+</ul>
+<h4>获取数据</h4>
+<p>这是烹饪相关的数据集, 由facebook AI实验室提供</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span># 4 数据集在虚拟机/root/data/cooking下
+
+# 5 查看数据的前10条
+$ head cooking.stackexchange.txt
+</pre></div>
+</div>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>__label__sauce __label__cheese How much does potato starch affect a cheese sauce recipe?
+__label__food-safety __label__acidity Dangerous pathogens capable of growing in acidic environments
+__label__cast-iron __label__stove How do I cover up the white spots on my cast iron stove?
+__label__restaurant Michelin Three Star Restaurant; but if the chef is not there
+__label__knife-skills __label__dicing Without knife skills, how can I quickly and accurately dice vegetables?
+__label__storage-method __label__equipment __label__bread What&#39;s the purpose of a bread box?
+__label__baking __label__food-safety __label__substitutions __label__peanuts how to seperate peanut oil from roasted peanuts at home?
+__label__chocolate American equivalent for British chocolate terms
+__label__baking __label__oven __label__convection Fan bake vs bake
+__label__sauce __label__storage-lifetime __label__acidity __label__mayonnaise Regulation and balancing of readymade packed mayonnaise and other sauces
+</pre></div>
+</div>
+<ul>
+<li>数据说明:</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>    __label__类别1 文本内容
+    __label__类别2 文本内容
+    __label__类别1 __label__类别2 文本内容
+    __label__类别1 __label__类别2 __label__类别3 文本内容
+</pre></div>
+</div>
+<p>每一行格式为:一个标签列表 + 空格 + 文本内容, 标签列表类似"__label__sauce __label__cheese", 代表有两个标签sauce和cheese</p>
+<h4>划分训练集与验证集</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span># 6 查看数据总数
+$ wc cooking.stackexchange.txt
+
+15404  169582 1401900 cooking.stackexchange.txt
+# 7 多少行 多少单词 占用字节数(多大)
+</pre></div>
+</div>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span># 8 条数据作为训练数据
+$ head -n 12404 cooking.stackexchange.txt &gt; cooking.train
+# 9 条数据作为验证数据
+$ tail -n 3000 cooking.stackexchange.txt &gt; cooking.valid
+</pre></div>
+</div>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">演示</span>
+<span class="sd">    fasttext 文本分类案例，多标签多分类任务，在烹饪数据集上训练</span>
+<span class="sd">注意事项：</span>
+<span class="sd">    如果遇到 ValueError: Unable to avoid copy while creating an array as requested.</span>
+<span class="sd">    If using `np.array(obj, copy=False)` replace it with `np.asarray(obj)` to allow a copy when needed (no behavior change in NumPy 1.x).</span>
+<span class="sd">    解决方案：尝试固定 numpy 版本到 1.26.x</span>
+<span class="sd">    pip install --upgrade &quot;numpy&lt;2&quot;  # 推荐使用 1.26.4</span>
+<span class="sd">    如需，可重新安装 fasttext-wheel（预编译版本，避免编译器依赖）</span>
+<span class="sd">    pip install --force-reinstall fasttext-wheel</span>
+<span class="sd">超参数:</span>
+<span class="sd">    &#39;model&#39;: 只有train_unsurpervised,才选择 cbow,skip-gram(默认)</span>
+<span class="sd">    &#39;epoch&#39;: 5, 训练轮数</span>
+<span class="sd">    &#39;lr&#39;: 0.1, 学习率</span>
+<span class="sd">    &#39;wordNgrams&#39;: 1, ngram特征的N, 1,2,3</span>
+<span class="sd">    &#39;dim&#39;: 100, 词向量维度</span>
+<span class="sd">    &#39;loss&#39;:</span>
+<span class="sd">        &quot;softmax&quot;,标注多分类，单标签</span>
+<span class="sd">        &quot;hs&quot;, 层次softmax，单标签</span>
+<span class="sd">        &quot;ova&quot;, 多标签多分类</span>
+<span class="sd">        &quot;ns&quot;, 负采样+对比学习训练，一般用于训练词向量-无监督学习</span>
+<span class="sd">    &#39;minCount&#39;: 1, 最小词频，词频小于该值的自动忽略</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">fasttext</span>
+
+<span class="c1"># 1.定义函数，实现fasttext监督学习-手动调参</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">train_fasttext</span><span class="p">(</span>
+    <span class="n">input_path</span><span class="p">,</span>
+    <span class="n">test_path</span><span class="p">,</span>
+    <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">epochs</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+    <span class="n">wordNgrams</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">dim</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="n">loss</span><span class="o">=</span><span class="s2">&quot;softmax&quot;</span><span class="p">,</span>
+    <span class="n">save_model</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    训练fasttext文本分类模型，使用fasttext.train_supervised</span>
+<span class="sd">    :param input_path: 训练集路径</span>
+<span class="sd">    :param test_path: 测试集路径</span>
+<span class="sd">    :param lr:  学习率</span>
+<span class="sd">    :param epochs:  训练轮数</span>
+<span class="sd">    :param wordNgrams:  ngrams的N</span>
+<span class="sd">    :param dim: 词向量维度</span>
+<span class="sd">    :param loss:    损失函数</span>
+<span class="sd">    :param save_model:  是否保存模型</span>
+<span class="sd">    :return: 返回模型测试结果</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 1.进行fasttext文本分类训练，fasttext.train_supervised</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">fasttext</span><span class="o">.</span><span class="n">train_supervised</span><span class="p">(</span>
+        <span class="nb">input</span><span class="o">=</span><span class="n">input_path</span><span class="p">,</span>
+        <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">,</span>
+        <span class="n">epoch</span><span class="o">=</span><span class="n">epochs</span><span class="p">,</span>
+        <span class="n">wordNgrams</span><span class="o">=</span><span class="n">wordNgrams</span><span class="p">,</span>
+        <span class="n">dim</span><span class="o">=</span><span class="n">dim</span><span class="p">,</span>
+        <span class="n">loss</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># 2.保存模型</span>
+    <span class="k">if</span> <span class="n">save_model</span><span class="p">:</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./model&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># 保存模型</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./model/fasttext_model202603.bin&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;模型保存成功&quot;</span><span class="p">)</span>
+        <span class="c1"># 加载模型</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">fasttext</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./model/fasttext_model202603.bin&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;模型加载成功&quot;</span><span class="p">)</span>
+    <span class="c1"># 3.模型预测，查看预测效果</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="s2">&quot;What is a mild detergent?&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="s2">&quot;Why would you pinch egg whites when making sunny side up eggs?&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="c1"># 4.模型测试</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">test_path</span><span class="p">)</span>
+    <span class="c1"># (样本数量，准确率，f1分数)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="c1"># 2.定义函数，实现fasttext监督学习-自动调参</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">train_fasttext02</span><span class="p">(</span>
+    <span class="n">input_path</span><span class="p">,</span>
+    <span class="n">test_path</span><span class="p">,</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    训练fasttext文本分类模型，使用fasttext.train_supervised</span>
+<span class="sd">    :param input_path: 训练集路径</span>
+<span class="sd">    :param test_path: 测试集路径</span>
+<span class="sd">    :return: 返回模型测试结果</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 1.进行fasttext文本分类训练，fasttext.train_supervised</span>
+    <span class="c1"># 自动HPO: 自动调参，来获取最优参数</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">fasttext</span><span class="o">.</span><span class="n">train_supervised</span><span class="p">(</span>
+        <span class="nb">input</span><span class="o">=</span><span class="n">input_path</span><span class="p">,</span>
+        <span class="n">autotuneValidationFile</span><span class="o">=</span><span class="n">test_path</span><span class="p">,</span>   <span class="c1"># 自动调参的参考的验证集文件路径，由它来判断模型好坏，最终只保存最优模型</span>
+        <span class="n">autotuneDuration</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>   <span class="c1"># 自动调参的时长，默认60秒</span>
+    <span class="p">)</span>
+
+    <span class="c1"># 3.模型预测，查看预测效果</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="s2">&quot;What is a mild detergent?&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="s2">&quot;Why would you pinch egg whites when making sunny side up eggs?&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="c1"># 4.模型测试</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">test_path</span><span class="p">)</span>
+    <span class="c1"># (样本数量，准确率，f1分数)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="c1"># 测试</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="c1"># 1.基础版训练</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;基础版训练&quot;</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">train_fasttext</span><span class="p">(</span>
+        <span class="n">input_path</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;fasttext_data/cooking_train.txt&quot;</span><span class="p">,</span>
+        <span class="n">test_path</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;fasttext_data/cooking_valid.txt&quot;</span>
+    <span class="p">)</span>
+    <span class="c1"># 2.调整参数，调整epochs,lr</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;调整参数，调整epochs,lr&quot;</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">train_fasttext</span><span class="p">(</span>
+        <span class="n">input_path</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;fasttext_data/cooking_train.txt&quot;</span><span class="p">,</span>
+        <span class="n">test_path</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;fasttext_data/cooking_valid.txt&quot;</span><span class="p">,</span>
+        <span class="n">lr</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+        <span class="n">epochs</span><span class="o">=</span><span class="mi">20</span>
+    <span class="p">)</span>
+    <span class="c1"># 3.使用清洗后数据进行训练</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;使用清洗后数据进行训练&quot;</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">train_fasttext</span><span class="p">(</span>
+        <span class="n">input_path</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;fasttext_data/cooking.pre.train&quot;</span><span class="p">,</span>
+        <span class="n">test_path</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;fasttext_data/cooking.pre.valid&quot;</span><span class="p">,</span>
+        <span class="n">lr</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+        <span class="n">epochs</span><span class="o">=</span><span class="mi">20</span>
+    <span class="p">)</span>
+    <span class="c1"># 4.调整词向量维度</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;调整词向量维度&quot;</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">train_fasttext</span><span class="p">(</span>
+        <span class="n">input_path</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;fasttext_data/cooking.pre.train&quot;</span><span class="p">,</span>
+        <span class="n">test_path</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;fasttext_data/cooking.pre.valid&quot;</span><span class="p">,</span>
+        <span class="n">lr</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+        <span class="n">epochs</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">dim</span><span class="o">=</span><span class="mi">512</span>
+    <span class="p">)</span>
+    <span class="c1"># 5.调整wordNgrams</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;调整wordNgrams&quot;</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">train_fasttext</span><span class="p">(</span>
+        <span class="n">input_path</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;fasttext_data/cooking.pre.train&quot;</span><span class="p">,</span>
+        <span class="n">test_path</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;fasttext_data/cooking.pre.valid&quot;</span><span class="p">,</span>
+        <span class="n">lr</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+        <span class="n">epochs</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">dim</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span>
+        <span class="n">wordNgrams</span><span class="o">=</span><span class="mi">2</span>
+    <span class="p">)</span>
+    <span class="c1"># 6.更换loss=ns</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;更换loss=ns&quot;</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">train_fasttext</span><span class="p">(</span>
+        <span class="n">input_path</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;fasttext_data/cooking.pre.train&quot;</span><span class="p">,</span>
+        <span class="n">test_path</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;fasttext_data/cooking.pre.valid&quot;</span><span class="p">,</span>
+        <span class="n">lr</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+        <span class="n">epochs</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">dim</span><span class="o">=</span><span class="mi">512</span><span class="p">,</span>
+        <span class="n">wordNgrams</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">loss</span><span class="o">=</span><span class="s2">&quot;hs&quot;</span>
+    <span class="p">)</span>
+    <span class="c1"># 7.更换loss=ova</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;更换loss=ova&quot;</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">train_fasttext</span><span class="p">(</span>
+        <span class="n">input_path</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;fasttext_data/cooking.pre.train&quot;</span><span class="p">,</span>
+        <span class="n">test_path</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;fasttext_data/cooking.pre.valid&quot;</span><span class="p">,</span>
+        <span class="n">lr</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+        <span class="n">epochs</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">dim</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span>
+        <span class="n">wordNgrams</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">loss</span><span class="o">=</span><span class="s2">&quot;ova&quot;</span><span class="p">,</span>
+        <span class="n">save_model</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+    <span class="c1"># 8.自动调参</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;自动调参&quot;</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">train_fasttext02</span><span class="p">(</span>
+        <span class="n">input_path</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;fasttext_data/cooking.pre.train&quot;</span><span class="p">,</span>
+        <span class="n">test_path</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;fasttext_data/cooking.pre.valid&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>更换loss=ova
+模型保存成功
+模型加载成功
+(('__label__measurements',), array([0.0008659]))
+(('__label__eggs',), array([0.99059743]))
+(3000, 0.6066666666666667, 0.2623612512613522)
+自动调参
+</code></pre>
+<h3 id="sec-13">3.3 小结</h3>
+<ul>
+<li>什么是文本分类: 文本分类的是将文本分配给一个或多个类别. 通常属于监督学习范畴.</li>
+<li>文本分类的种类: 二分类、单标签多分类、多标签多分类</li>
+<li>fasttext文本分类过程:</li>
+<li>
+<ol>
+<li>获取数据</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>划分训练集与验证集</li>
+</ol>
+</li>
+<li>
+<ol start="3">
+<li>训练模型</li>
+</ol>
+</li>
+<li>
+<ol start="4">
+<li>模型评估</li>
+</ol>
+</li>
+<li>
+<ol start="5">
+<li>模型调优</li>
+</ol>
+</li>
+<li>
+<ol start="6">
+<li>模型保存与加载</li>
+</ol>
+</li>
+</ul>
+<h2 id="sec-14">4 fasttext训练词向量</h2>
+<h4>学习目标</h4>
+<ul>
+<li>了解词向量的相关知识.</li>
+<li>掌握fasttext工具训练词向量的过程.</li>
+</ul>
+<h3 id="sec-15">4.1 word2vec-静态词向量</h3>
+<ul>
+<li>核心思想：先在大规模无标注语料上预训练词向量，再将其作为固定特征输入到下游任务模型中。</li>
+<li>训练方法：<code>fasttext.train_unsupervised()</code>, 无监督训练方法。</li>
+<li>训练模式：CBOW(上下文预测中间词)，Skip-gram(中间词预测上下文)。</li>
+</ul>
+<h3 id="sec-16">4.2 fastText 训练词向量的过程</h3>
+<ul>
+<li>1.获取训练数据</li>
+<li>2.训练词向量</li>
+<li>3.模型效果检验</li>
+<li>4.模型的保存与加载</li>
+</ul>
+<h2 id="sec-17">5 词向量迁移</h2>
+<ul>
+<li>基础的迁移学习方法</li>
+</ul>
+<h3 id="sec-18">5.1 学习目标</h3>
+<ul>
+<li>了解什么是词向量迁移  </li>
+<li>了解 FastText 提供的预训练词向量  </li>
+<li>掌握 FastText 加载和使用预训练词向量的方法  </li>
+</ul>
+<h3 id="sec-19">5.2 词向量迁移简介</h3>
+<p><strong>词向量迁移</strong>是: 直接使用在大规模语料上预训练好的词向量，将其作为下游任务的基础语义表示，而不重新从零开始训练。</p>
+<p>FastText 提供了多个预训练词向量模型，主要包括：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>数据源</th>
+<th>语言覆盖</th>
+<th>训练方式</th>
+<th>向量维度</th>
+<th>链接</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>CommonCrawl + Wikipedia</strong></td>
+<td>157 种语言</td>
+<td>CBOW</td>
+<td>300</td>
+<td>https://fasttext.cc/docs/en/crawl-vectors.html</td>
+</tr>
+<tr>
+<td><strong>Wikipedia</strong></td>
+<td>294 种语言</td>
+<td>Skip-gram</td>
+<td>300</td>
+<td>https://fasttext.cc/docs/en/pretrained-vectors.html</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="sec-20">5.3 使用 FastText 进行词向量迁移</h3>
+<h4>操作流程</h4>
+<ol>
+<li>下载预训练词向量文件（<code>.bin.gz</code>）  </li>
+<li>解压得到 <code>.bin</code> 文件  </li>
+<li>加载模型并获取词向量  </li>
+<li>使用近邻词验证词向量质量  </li>
+</ol>
+<h4>下载并解压模型</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># Linux/macOS 系统</span>
+<span class="c1"># 使用 wget 下载中文词向量（CommonCrawl + Wikipedia）</span>
+<span class="c1"># !wget https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.zh.300.bin.gz</span>
+</pre></div>
+</div>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># windows系统</span>
+<span class="c1"># !curl -L -o cc.zh.300.bin.gz &quot;https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.zh.300.bin.gz&quot;</span>
+</pre></div>
+</div>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 解压 .gz 文件</span>
+<span class="c1"># Windows 系统不自带 gunzip 命令，</span>
+<span class="c1"># 请使用 7-Zip / WinRAR 解压 .gz 文件</span>
+<span class="c1"># !gunzip cc.zh.300.bin.gz</span>
+</pre></div>
+</div>
+<h4>加载模型并获取词向量</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">fasttext</span>
+
+<span class="c1"># 加载预训练词向量模型</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">fasttext</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="s2">&quot;cc.zh.300.bin&quot;</span><span class="p">)</span>
+
+<span class="c1"># 查看词表（前若干个词）</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">words</span><span class="p">[:</span><span class="mi">20</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">words</span><span class="p">))</span>
+<span class="c1"># 获取“音乐”的词向量</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">get_word_vector</span><span class="p">(</span><span class="s2">&quot;音乐&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>['，', '的', '。', '&lt;/s&gt;', '、', '是', '一', '在', '：', '了', '（', '）', "'", '和', '不', '有', '我', ',', ')', '(']
+2000000
+(300,)
+</code></pre>
+<h4>使用近邻词进行效果验证</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">get_nearest_neighbors</span><span class="p">(</span><span class="s2">&quot;音乐&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">get_nearest_neighbors</span><span class="p">(</span><span class="s2">&quot;美术&quot;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">get_nearest_neighbors</span><span class="p">(</span><span class="s2">&quot;周杰伦&quot;</span><span class="p">))</span>
+</pre></div>
+</div>
+<pre><code>[(0.6703276634216309, '乐曲'), (0.6569967269897461, '音乐人'), (0.6565821170806885, '声乐'), (0.6557438373565674, '轻音乐'), (0.6536258459091187, '音乐家'), (0.6502416133880615, '配乐'), (0.6501686573028564, '艺术'), (0.6437276005744934, '音乐会'), (0.639589250087738, '原声'), (0.6368917226791382, '音响')]
+[(0.724744975566864, '艺术'), (0.7165924310684204, '绘画'), (0.6741853356361389, '霍廷霄'), (0.6470299363136292, '纯艺'), (0.6335071921348572, '美术家'), (0.6304370164871216, '美院'), (0.624431312084198, '艺术类'), (0.6244068741798401, '陈浩忠'), (0.62302166223526, '美术史'), (0.621710479259491, '环艺系')]
+[(0.6995140910148621, '杰伦'), (0.6967097520828247, '周杰倫'), (0.6859776377677917, '周董'), (0.6381043195724487, '陈奕迅'), (0.6367626190185547, '张靓颖'), (0.6313326358795166, '张韶涵'), (0.6271176338195801, '谢霆锋'), (0.6188404560089111, '周华健'), (0.6184280514717102, '林俊杰'), (0.6143589019775391, '王力宏')]
+</code></pre>
+<h3 id="sec-21">5.4 小结</h3>
+<ul>
+<li>FastText 提供了多语言、高质量的预训练词向量模型</li>
+<li>预训练词向量模型可以直接加载并用于下游任务</li>
+</ul>
+<h2 id="sec-22">6 扩展-fasttext的 n-gram特征 和 subword建模</h2>
+<h4>为什么需要它们？</h4>
+<p>传统词向量把“一个词”当作最小单位，问题是：</p>
+<ul>
+<li>新词（OOV）没有向量</li>
+<li>拼写错误很难处理</li>
+<li>词形变化（如 <code>play/playing/played</code>）共享信息少</li>
+</ul>
+<p>fastText 通过 <strong>n-gram</strong> 和 <strong>subword（子词）</strong> 缓解了这些问题。</p>
+<h4>n-gram 特征（词级）- 用于文本分类</h4>
+<p>在文本分类里，fastText 常用 <code>wordNgrams</code> 提取词序列特征。</p>
+<p>以 <code>I eat apple</code> 为例：</p>
+<ul>
+<li>unigram（1-gram）：<code>I</code>, <code>eat</code>, <code>apple</code></li>
+<li>bigram（2-gram）：<code>I eat</code>, <code>eat apple</code></li>
+</ul>
+<p>作用：不仅看单词，还看局部短语，能更好捕捉语义组合（如“not good”）。</p>
+<h4>subword 建模（字符级）- 用于训练词向量</h4>
+<p>fastText 不只学习“整词向量”，还学习“字符 n-gram 向量”，再组合成词向量。</p>
+<p>例如词 <code>apple</code>（加边界符后可写作 <code>&lt;apple&gt;</code>）：
+- 取若干字符片段，如 <code>&lt;ap</code>, <code>app</code>, <code>ppl</code>, <code>ple</code>, <code>le&gt;</code> 等
+- 词向量 ≈ 这些子词向量的平均</p>
+<p>作用：</p>
+<ul>
+<li>未登录词也能表示（只要字符片段见过）</li>
+<li>低频词更稳</li>
+<li>对拼写变化、词形变化更友好</li>
+</ul>
+<h4>总结</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>介绍</th>
+<th>应用</th>
+<th>示例</th>
+<th>API参数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>n-gram</td>
+<td>词级 n-gram，提取局部短语特征</td>
+<td>文本分类</td>
+<td><code>I eat apple</code>： unigram（1-gram）：<code>I</code>, <code>eat</code>, <code>apple</code>， bigram（2-gram）：<code>I eat</code>, <code>eat apple</code></td>
+<td><code>wordNgrams</code></td>
+</tr>
+<tr>
+<td>subword</td>
+<td>字符级 n-gram，提取词内部结构，能处理OOV</td>
+<td>训练词向量</td>
+<td><code>&lt;apple&gt;</code>： 取若干字符片段，如 <code>&lt;ap</code>, <code>app</code>, <code>ppl</code>, <code>ple</code>, <code>le&gt;</code> 等，词向量 ≈ 这些子词向量的和/平均</td>
+<td><code>minn</code>, <code>maxn</code></td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="sec-23">7 扩展-层次softmax 的哈夫曼树梯度计算</h2>
+<p>类别D的哈夫曼编码为110, 如何定义条件概率$P(D|X)$?</p>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson42/figure-dd400e20dbc5.png" /></p>
+<p>梯度计算过程：</p>
+<ul>
+<li>
+<ol>
+<li>D的哈夫曼编码为110, 对应3次二分类, 通常0设为负类, 1设为正类.</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>使用sigmoid进行二分类: 正类概率是: $\sigma(X^T\theta) = 1/(1+e^{-X^T\theta})$, 负类概率是: $1-\sigma(X^T\theta)$, 其中$\theta$ 就是图中非叶子节点对应的参数.</li>
+</ol>
+</li>
+<li>
+<ol start="3">
+<li>D的概率是: $P(D|X) = P(1|X, \theta_1)P(1|X, \theta_2)P(0|X, \theta_3)$:</li>
+</ol>
+</li>
+<li>
+<p>$P(1|X, \theta_1) = \sigma(X^T\theta_1)$, 24-&gt;15</p>
+</li>
+<li>$P(1|X, \theta_2) = \sigma(X^T\theta_2)$, 15-&gt;8</li>
+<li>$P(0|X, \theta_3) = 1-\sigma(X^T\theta_3)$, 8-&gt;D</li>
+<li>
+<ol start="4">
+<li>$P(D|X) = \sigma(X^T\theta_1)\sigma(X^T\theta_2)(1-\sigma(X^T\theta_3))$</li>
+</ol>
+</li>
+<li>
+<ol start="5">
+<li>对数似然损失:</li>
+</ol>
+</li>
+<li>
+<p>$L(\theta) = -log(P(D|X)) = -log(\sigma(X^T\theta_1)\sigma(X^T\theta_2)(1-\sigma(X^T\theta_3)))$</p>
+</li>
+<li>
+<p>$L(\theta) = -log(\sigma(X^T\theta_1))-log(\sigma(X^T\theta_2))-log(1-\sigma(X^T\theta_3))$</p>
+</li>
+<li>
+<ol start="6">
+<li>梯度计算:
+  $$\frac{\partial L}{\partial \theta_i} = (\sigma(X^T\theta_i) - d_i) \cdot X$$
+  其中 $d_1, d_2, ...$ 为路径编码 (0或1)</li>
+</ol>
+</li>
+</ul>
+<p><strong>实践含义</strong>：仅对路径上的节点计算和更新梯度，大幅降低计算成本。</p>
+<h2 id="sec-24">8 常见面试题</h2>
+<h4>FastText 为什么能更好处理 OOV？</h4>
+<ul>
+<li>使用 <strong>字符 n-gram 子词</strong> 表示，未登录词也可由子词组合得到向量。</li>
+</ul>
+<hr />
+<h4>FastText 与 Word2vec 的核心区别是什么？</h4>
+<ul>
+<li>FastText 引入子词 n-gram，Word2vec 只使用词级向量。</li>
+<li>FastText 可以处理OOV，Word2vec 无法处理。</li>
+</ul>
+<hr />
+<h4>FastText 的 CBOW 与 Skip-gram 适用场景？</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>维度</th>
+<th>FastText CBOW</th>
+<th>FastText Skip-gram</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>基本思路</td>
+<td>上下文预测中心词</td>
+<td>中心词预测上下文</td>
+</tr>
+<tr>
+<td>适用场景</td>
+<td>中小规模数据、对训练速度要求高</td>
+<td>大规模语料、对效果要求高</td>
+</tr>
+<tr>
+<td>低频词表现</td>
+<td>一般</td>
+<td>很好</td>
+</tr>
+<tr>
+<td>词向量质量</td>
+<td>较粗</td>
+<td>更精细</td>
+</tr>
+<tr>
+<td>特点</td>
+<td>训练快、效率高、资源消耗低</td>
+<td>表达能力强、泛化能力好</td>
+</tr>
+<tr>
+<td>---</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<h4>FastText 做文本分类的主要步骤有哪些？</h4>
+<ul>
+<li>文本清洗 → n-gram 特征 → 训练监督模型 → 评估/推理。</li>
+</ul>
+<hr />
+<h4>FastText 的训练速度快的原因是什么？</h4>
+<ul>
+<li>模型浅、使用层级 softmax/负采样，计算开销低。</li>
+</ul>
+<h3 id="sec-25">8.1 代码作业</h3>
+<ul>
+<li>
+<ol>
+<li><strong>FastText 文本分类训练</strong>：自己构造一份小型训练数据（至少 20 条，涵盖 2 个类别，格式为 <code>__label__类别 文本内容</code>），保存到本地文件，使用 <code>fasttext.train_supervised()</code> 训练分类模型，并用 <code>model.test()</code> 打印验证集的准确率（Precision）和召回率（Recall）。</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li><strong>词向量相似度计算</strong>：加载预训练中文词向量 <code>./cc.zh.300.bin</code>，获取"自然语言处理"、"机器学习"、"深度学习"三个词的词向量，用 <strong>余弦相似度</strong> 公式计算三两之间的相似度，打印结果并分析哪两个词语义最接近。</li>
+</ol>
+</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="c1"># ==============================</span>
+<span class="c1"># 作业1：FastText 文本分类训练</span>
+<span class="c1"># ==============================</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">homework1_fasttext_classification</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    使用 fasttext 进行文本分类</span>
+<span class="sd">    自行构造训练数据，体验 FastText 分类流程</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">fasttext</span>  <span class="c1"># 运行前请确保已安装: pip install fasttext-wheel</span>
+
+    <span class="c1"># 1. 构造训练数据（20条示例，2个类别）</span>
+    <span class="n">train_data</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="c1"># 科技类</span>
+        <span class="s2">&quot;__label__科技 人工智能正在改变我们的生活方式&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__label__科技 深度学习在图像识别领域取得突破性进展&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__label__科技 5G技术加速物联网的发展&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__label__科技 自动驾驶汽车依靠传感器和算法实现导航&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__label__科技 量子计算机的算力远超传统计算机&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__label__科技 芯片技术是现代电子产品的核心&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__label__科技 云计算为企业提供弹性的计算资源&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__label__科技 大数据分析帮助企业做出更好的决策&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__label__科技 区块链技术保证数据的安全和透明&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__label__科技 机器学习模型需要大量数据进行训练&quot;</span><span class="p">,</span>
+        <span class="c1"># 体育类</span>
+        <span class="s2">&quot;__label__体育 中国女排赢得了世界冠军&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__label__体育 足球运动员在训练中刻苦练习&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__label__体育 篮球比赛吸引了数万名观众&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__label__体育 游泳运动员打破了世界纪录&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__label__体育 马拉松比赛考验运动员的耐力&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__label__体育 乒乓球是中国的国球&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__label__体育 羽毛球双打需要团队配合&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__label__体育 田径运动是奥运会的核心项目&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__label__体育 体操运动员展现了惊人的柔韧性&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;__label__体育 网球大满贯吸引顶级球员参赛&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+
+    <span class="c1"># 2. 写入文件</span>
+    <span class="n">train_file</span> <span class="o">=</span> <span class="s2">&quot;fasttext_train.txt&quot;</span>
+    <span class="n">test_file</span>  <span class="o">=</span> <span class="s2">&quot;fasttext_test.txt&quot;</span>
+    <span class="c1"># 用前16条训练，后4条测试</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">train_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">train_data</span><span class="p">[:</span><span class="mi">16</span><span class="p">]))</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">test_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">train_data</span><span class="p">[</span><span class="mi">16</span><span class="p">:]))</span>
+
+    <span class="c1"># 3. 训练分类模型</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">fasttext</span><span class="o">.</span><span class="n">train_supervised</span><span class="p">(</span>
+        <span class="nb">input</span><span class="o">=</span><span class="n">train_file</span><span class="p">,</span>
+        <span class="n">epoch</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">lr</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+        <span class="n">wordNgrams</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="mi">0</span>
+    <span class="p">)</span>
+
+    <span class="c1"># 4. 评估</span>
+    <span class="n">n</span><span class="p">,</span> <span class="n">precision</span><span class="p">,</span> <span class="n">recall</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">test_file</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;FastText 文本分类结果:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  测试样本数: </span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Precision@1: </span><span class="si">{</span><span class="n">precision</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  Recall@1:    </span><span class="si">{</span><span class="n">recall</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 5. 预测示例</span>
+    <span class="n">test_sentences</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;神经网络模型在自然语言处理中广泛应用&quot;</span><span class="p">,</span> <span class="s2">&quot;运动员在赛场上奋力拼搏&quot;</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">预测示例:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">test_sentences</span><span class="p">:</span>
+        <span class="n">label</span><span class="p">,</span> <span class="n">prob</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  文本: </span><span class="si">{</span><span class="n">sent</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;    预测类别: </span><span class="si">{</span><span class="n">label</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">  置信度: </span><span class="si">{</span><span class="n">prob</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 清理临时文件</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">train_file</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">test_file</span><span class="p">)</span>
+
+<span class="c1"># ==============================</span>
+<span class="c1"># 作业2：词向量余弦相似度</span>
+<span class="c1"># ==============================</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cosine_similarity</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;计算两个向量的余弦相似度&quot;&quot;&quot;</span>
+    <span class="n">dot</span>   <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">)</span>
+    <span class="n">norm1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec1</span><span class="p">)</span>
+    <span class="n">norm2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">vec2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">norm1</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">norm2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+    <span class="k">return</span> <span class="n">dot</span> <span class="o">/</span> <span class="p">(</span><span class="n">norm1</span> <span class="o">*</span> <span class="n">norm2</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">homework2_word_similarity</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    加载 cc.zh.300.bin，计算三个词的两两余弦相似度</span>
+<span class="sd">    注意：加载大模型文件需要一定时间，请耐心等待</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">fasttext</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;正在加载预训练词向量 cc.zh.300.bin（请稍候...）&quot;</span><span class="p">)</span>
+    <span class="c1"># 按需运行：模型文件较大，加载约需数十秒</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">fasttext</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="s2">&quot;./cc.zh.300.bin&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;加载完成！</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;自然语言处理&quot;</span><span class="p">,</span> <span class="s2">&quot;机器学习&quot;</span><span class="p">,</span> <span class="s2">&quot;深度学习&quot;</span><span class="p">]</span>
+    <span class="n">vectors</span> <span class="o">=</span> <span class="p">{</span><span class="n">w</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">get_word_vector</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">words</span><span class="p">}</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;词向量余弦相似度计算:&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">50</span><span class="p">)</span>
+    <span class="n">pairs</span> <span class="o">=</span> <span class="p">[(</span><span class="n">words</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">words</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">))</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">))]</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">w1</span><span class="p">,</span> <span class="n">w2</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">:</span>
+        <span class="n">sim</span> <span class="o">=</span> <span class="n">cosine_similarity</span><span class="p">(</span><span class="n">vectors</span><span class="p">[</span><span class="n">w1</span><span class="p">],</span> <span class="n">vectors</span><span class="p">[</span><span class="n">w2</span><span class="p">])</span>
+        <span class="n">scores</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">w1</span><span class="p">,</span> <span class="n">w2</span><span class="p">,</span> <span class="n">sim</span><span class="p">))</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  sim(&#39;</span><span class="si">{</span><span class="n">w1</span><span class="si">}</span><span class="s2">&#39;, &#39;</span><span class="si">{</span><span class="n">w2</span><span class="si">}</span><span class="s2">&#39;) = </span><span class="si">{</span><span class="n">sim</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">best_pair</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">结论：&#39;</span><span class="si">{</span><span class="n">best_pair</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39; 与 &#39;</span><span class="si">{</span><span class="n">best_pair</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&#39; 语义最接近（相似度=</span><span class="si">{</span><span class="n">best_pair</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">）&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;作业1：FastText 文本分类&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="n">homework1_fasttext_classification</span><span class="p">()</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;作业2：词向量相似度（需要 cc.zh.300.bin，按需运行）&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;=&quot;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="c1"># homework2_word_similarity()  # 取消注释以运行（需要大文件）</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;请取消上方注释以运行作业2（需要 cc.zh.300.bin 模型文件）&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>============================================================
+作业1：FastText 文本分类
+============================================================
+FastText 文本分类结果:
+  测试样本数: 3
+  Precision@1: 0.0000
+  Recall@1:    0.0000
+
+预测示例:
+  文本: 神经网络模型在自然语言处理中广泛应用
+    预测类别: __label__科技  置信度: 0.9050
+  文本: 运动员在赛场上奋力拼搏
+    预测类别: __label__科技  置信度: 0.9036
+
+============================================================
+作业2：词向量相似度（需要 cc.zh.300.bin，按需运行）
+============================================================
+请取消上方注释以运行作业2（需要 cc.zh.300.bin 模型文件）
+</code></pre><div class="done-bar"><button class="mark-done-btn" data-key="lesson42" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson41.html"><div class="dir">← 上一篇</div><div class="name">🔁 RNN Seq2Seq 机器翻译实战</div></a><a class="next" href="lesson43.html"><div class="dir">下一篇 →</div><div class="name">🤗 Transformers 迁移学习与中文任务</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">1 fasttext工具介绍</a><a class="lv3" href="#sec-2">1.1 FastText 介绍</a><a class="lv2" href="#sec-3">2 fasttext 模型架构</a><a class="lv3" href="#sec-4">2.1 学习目标</a><a class="lv3" href="#sec-5">2.2 fasttext 模型架构</a><a class="lv3" href="#sec-6">2.3 为什么需要高效输出层</a><a class="lv3" href="#sec-7">2.4 层次化 Softmax（精确高效）</a><a class="lv3" href="#sec-8">2.5 负采样（近似高效）</a><a class="lv3" href="#sec-9">2.6 总结 - 对比原始 Softmax / 层次化 Softmax / 负采样</a><a class="lv2" href="#sec-10">3 fasttext文本分类</a><a class="lv3" href="#sec-11">3.1 文本分类介绍</a><a class="lv3" href="#sec-12">3.2 文本分类的过程</a><a class="lv3" href="#sec-13">3.3 小结</a><a class="lv2" href="#sec-14">4 fasttext训练词向量</a><a class="lv3" href="#sec-15">4.1 word2vec-静态词向量</a><a class="lv3" href="#sec-16">4.2 fastText 训练词向量的过程</a><a class="lv2" href="#sec-17">5 词向量迁移</a><a class="lv3" href="#sec-18">5.1 学习目标</a><a class="lv3" href="#sec-19">5.2 词向量迁移简介</a><a class="lv3" href="#sec-20">5.3 使用 FastText 进行词向量迁移</a><a class="lv3" href="#sec-21">5.4 小结</a><a class="lv2" href="#sec-22">6 扩展-fasttext的 n-gram特征 和 subword建模</a><a class="lv2" href="#sec-23">7 扩展-层次softmax 的哈夫曼树梯度计算</a><a class="lv2" href="#sec-24">8 常见面试题</a><a class="lv3" href="#sec-25">8.1 代码作业</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

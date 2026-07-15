@@ -1,0 +1,1460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>自然语言处理入门与词向量 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">32</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">33</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">34</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item active" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">35</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">39</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">40</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">42</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">21</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">22</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">23</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">24</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">25</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">26</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">27</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">28</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">29</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">30</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 35 讲</div>
+<h1>🗣️ 自然语言处理入门与词向量</h1>
+<div class="chips"><span class="chip">🏷️ 分词 / POS / NER</span><span class="chip">🏷️ Word2Vec</span><span class="chip">🏷️ Embedding</span></div>
+</div>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="c1"># 设置中文字体</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.sans-serif&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SimHei&#39;</span><span class="p">]</span>  <span class="c1"># 微软雅黑</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;axes.unicode_minus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>    <span class="c1"># 解决负号显示问题</span>
+<span class="c1"># 设置设备，优先使用顺序：GPU &gt; MPS &gt; CPU</span>
+<span class="n">DEVICE</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span>
+    <span class="s2">&quot;cuda&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+    <span class="k">else</span> <span class="s2">&quot;mps&quot;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">mps</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
+    <span class="k">else</span> <span class="s2">&quot;cpu&quot;</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;当前设备：</span><span class="si">{</span><span class="n">DEVICE</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<pre><code>当前设备：cuda
+</code></pre>
+<h2 id="sec-1">1 自然语言处理入门</h2>
+<h4>学习目标</h4>
+<ul>
+<li>了解什么是自然语言处理.</li>
+<li>了解自然语言处理的发展简史.</li>
+<li>了解自然语言处理的应用场景.</li>
+<li>了解本教程中的自然语言处理.</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson35/figure-b238fd7bd01a.png" /></p>
+<h3 id="sec-2">1.1 什么是自然语言处理</h3>
+<ul>
+<li>
+<p><strong>自然语言处理（NLP）</strong>：让计算机理解、生成并与人类语言交互的技术。</p>
+</li>
+<li>
+<p><strong>什么叫"机器真的理解了语言"？</strong></p>
+<blockquote>
+<p>不是"说得像人"就算理解，而是能在语言变化下，<strong>稳定、可泛化、可解释</strong>地完成语义任务。</p>
+</blockquote>
+</li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">维度</th>
+<th style="text-align: left;">含义</th>
+<th style="text-align: left;">举例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>任务能力</strong></td>
+<td style="text-align: left;">完成问答、翻译、摘要等任务</td>
+<td style="text-align: left;">多类任务上稳定高分</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>语境与常识</strong></td>
+<td style="text-align: left;">理解隐含信息</td>
+<td style="text-align: left;">正确处理指代、否定、歧义</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>语义一致性</strong></td>
+<td style="text-align: left;">换种说法结论不变</td>
+<td style="text-align: left;">改写、反问后答案一致</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>组合与泛化</strong></td>
+<td style="text-align: left;">应对未见过的表达</td>
+<td style="text-align: left;">新组合也能正确理解</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>可解释性</strong></td>
+<td style="text-align: left;">能给出推理依据</td>
+<td style="text-align: left;">指出证据句段或推理路径</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>稳健性</strong></td>
+<td style="text-align: left;">抗噪声干扰</td>
+<td style="text-align: left;">有错别字仍能正确理解</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>对话能力</strong></td>
+<td style="text-align: left;">多轮上下文跟踪</td>
+<td style="text-align: left;">记住历史、能纠错澄清</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>事实与校准</strong></td>
+<td style="text-align: left;">减少"幻觉"</td>
+<td style="text-align: left;">不确定时能说"不知道"</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>跨模态执行</strong></td>
+<td style="text-align: left;">语言驱动行动</td>
+<td style="text-align: left;">结合图像/环境完成指令</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="sec-3">1.2 自然语言处理的发展简史</h3>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson35/figure-d08731d6fb9b.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson35/figure-f92a43fdeb81.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson35/figure-c2bdda5b0f1d.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson35/figure-0311ae695b16.png" /></p>
+<p><img loading="lazy" decoding="async" alt="image" src="../assets/img/lesson35/figure-acc0ef9a3304.png" /></p>
+<h3 id="sec-4">1.3 自然语言处理的应用场景</h3>
+<ul>
+<li>语音助手</li>
+<li>机器翻译</li>
+<li>搜索引擎</li>
+<li>智能问答</li>
+<li>...</li>
+</ul>
+<h3 id="sec-5">1.4 机器翻译</h3>
+<ul>
+<li>CCTV上的机器翻译系统, 让世界聊得来!</li>
+</ul>
+<blockquote>
+<p><strong>资源说明</strong>：原讲义演示视频未随资料提供，本页已保留对应流程与知识说明。</p>
+</blockquote>
+<h2 id="sec-6">2 认识文本预处理</h2>
+<h4>学习目标</h4>
+<ul>
+<li>了解文本预处理相关内容</li>
+</ul>
+<h4>文本预处理及其作用</h4>
+<ul>
+<li>文本语料在输送给模型前一般需要一系列的预处理工作, 才能符合模型输入的要求, 如: 将文本转化成模型需要的张量, 规范张量的尺寸等</li>
+<li>合理的文本预处理可以指导模型超参数的选择, 提升模型效果.</li>
+</ul>
+<h4>文本预处理的主要内容</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">类别</th>
+<th style="text-align: left;">包含内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>文本处理基本方法</strong></td>
+<td style="text-align: left;">分词、词性标注POS、命名实体识别NER</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>文本张量表示</strong></td>
+<td style="text-align: left;">one-hot编码、Word2vec、Embedding层</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>语料数据分析</strong></td>
+<td style="text-align: left;">标签分布、句子长度分布、词频统计与词云</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>文本特征处理</strong></td>
+<td style="text-align: left;">n-gram特征、文本长度规范</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>数据增强</strong></td>
+<td style="text-align: left;">回译数据增强法</td>
+</tr>
+</tbody>
+</table></div>
+<h4>说明</h4>
+<ul>
+<li>在实际生产应用中, 最常用的两种语言是中文和英文，文本预处理部分的内容都将针对这两种语言.</li>
+</ul>
+<h2 id="sec-7">3 文本处理的基本方法</h2>
+<h4>学习目标</h4>
+<ul>
+<li>了解什么是分词, 词性标注, 命名实体识别及作用.</li>
+<li>掌握分词, 词性标注, 命名实体识别的流行工具的使用方法.</li>
+</ul>
+<h3 id="sec-8">3.1 分词</h3>
+<h4>什么是分词</h4>
+<ul>
+<li>
+<p><strong>分词</strong>：将连续的字序列按规范切分为词序列的过程。</p>
+<ul>
+<li>英文：以空格作为天然分界符。</li>
+<li>中文：字、句、段有分界符，但<strong>词没有</strong>，分词就是找到词的边界。</li>
+</ul>
+</li>
+<li>
+<p><strong>示例：</strong></p>
+</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>启智教育是一家上市公司，旗下有编程学习者品牌。我是在这里学习人工智能
+
+[&#39;启智&#39;, &#39;教育&#39;, &#39;是&#39;, &#39;一家&#39;, &#39;上市公司&#39;, &#39;，&#39;, &#39;旗下&#39;, &#39;有&#39;, &#39;&#39;, &#39;程序员&#39;, &#39;品牌&#39;, &#39;。&#39;, &#39;我&#39;, &#39;是&#39;, &#39;在&#39;, &#39;&#39;, &#39;这里&#39;, &#39;学习&#39;, &#39;人工智能&#39;]
+</pre></div>
+</div>
+<ul>
+<li>
+<p>分词的作用:</p>
+</li>
+<li>
+<p>词作为语言语义理解的最小单元. 分词是NLP领域高阶任务的基础环节, 如自动问答, 机器翻译, 文本生成等.</p>
+</li>
+<li>
+<p>流行中文分词工具jieba:</p>
+</li>
+<li>支持多种分词模式- 精确模式/全模式/搜索引擎模式</li>
+<li>支持中文繁体分词</li>
+<li>
+<p>支持用户自定义词典</p>
+</li>
+<li>
+<p>jieba的安装:</p>
+</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>pip install jieba
+</pre></div>
+</div>
+<ul>
+<li>jieba的使用:</li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">分词模式</th>
+<th style="text-align: left;">说明</th>
+<th style="text-align: left;">适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>精确模式</strong></td>
+<td style="text-align: left;">将句子最精确地切开</td>
+<td style="text-align: left;">文本分析</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>全模式</strong></td>
+<td style="text-align: left;">扫描所有可成词的词语，速度快，不能消除歧义</td>
+<td style="text-align: left;">关键词提取</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>搜索引擎模式</strong></td>
+<td style="text-align: left;">在精确模式基础上对长词再次切分，提高召回率</td>
+<td style="text-align: left;">搜索引擎</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>中文繁体分词</strong></td>
+<td style="text-align: left;">支持繁体中文文本分词</td>
+<td style="text-align: left;">中国香港、台湾地区文本</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>自定义词典</strong></td>
+<td style="text-align: left;">加载用户词典，提升识别准确率；格式：<code>词语 词频 词性</code>（词频、词性可省略）</td>
+<td style="text-align: left;">生僻词/专业术语场景</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="sec-9">3.2 .演示jieba分词</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">演示</span>
+<span class="sd">    jieba分词</span>
+<span class="sd">介绍</span>
+<span class="sd">    分词：将连续的字序列按照语法规范切分成连续的词序列的过程</span>
+<span class="sd">    分词之后的最小单元：词/token</span>
+
+<span class="sd">常见的分词包：</span>
+<span class="sd">    jieba: 最流行的python中文分词库，支持精确模式、全模式、搜索引擎模式、中文繁体分词、自定义词典</span>
+<span class="sd">    IK: 基于JAVA的中文分词工具，ElasticSearch搜索引擎专用</span>
+<span class="sd">    SnowNLP: 基于概率算法的中文自然语言处理工具，支持情感分析、文本分类</span>
+<span class="sd">    pyltp: 哈工大推出的python中文分词工具</span>
+<span class="sd">    THULAC: 清华退出的中文词法分析工具，支持分词和词性标注</span>
+
+<span class="sd">jieba分词模式：</span>
+<span class="sd">    1.多种分词模式</span>
+<span class="sd">        **精确模式**	将句子最精确地切开	文本分析</span>
+<span class="sd">        **全模式**	扫描所有可成词的词语，速度快，不能消除歧义	关键词提取</span>
+<span class="sd">        **搜索引擎模式**	在精确模式基础上对长词再次切分，提高召回率	搜索引擎</span>
+<span class="sd">    2.**中文繁体分词**	支持繁体中文文本分词	中国香港、台湾地区文本</span>
+<span class="sd">    3.**自定义词典**	加载用户词典，提升识别准确率；格式：`词语 词频 词性`（词频、词性可省略）	生僻词/专业术语场景</span>
+<span class="sd">总结：</span>
+<span class="sd">    上述分词模式，其实就是分词粒度不同</span>
+
+<span class="sd">涉及到的API:</span>
+<span class="sd">    精确模式:       jieba.cut(text, cut_all=False) / jieba.lcut(text, cut_all=False)</span>
+<span class="sd">    全模式:         jieba.cut(text, cut_all=True) / jieba.lcut(text, cut_all=True)</span>
+<span class="sd">    搜索引擎模式:   jieba.cut_for_search(text)     / jieba.lcut_for_search(text)</span>
+<span class="sd">    自定义词典:     jieba.load_userdict(&#39;...&#39;)</span>
+
+<span class="sd">    注: cut() 返回生成器(generator), lcut() 返回列表(list)</span>
+<span class="sd">需要掌握：</span>
+<span class="sd">    精确模式，jieba.lcut(text, cut_all=False)</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jieba</span>    <span class="c1"># 中文分词库</span>
+
+<span class="c1"># 1.定义函数，演示 jieba的精确模式分词，适用于 通用文本分析，词性标注，信息提取等</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo01</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;演示 jieba的精确模式分词&quot;</span><span class="p">)</span>
+    <span class="c1"># 1.初始化输入文本，待分词的文本</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;启智教育是一家上市公司，旗下有编程学习者品牌。我是在这里学习人工智能&quot;</span>
+    <span class="c1"># text = &quot;床前明月光，疑是地上霜，举头望明月，低头思故乡&quot;</span>
+    <span class="c1"># 2.使用jieba进行分词</span>
+    <span class="c1"># 参数1：待分词的文本，参数2：是否使用全模式，默认False为精确模式，True为全模式</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">jieba</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">cut_all</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># 3.打印分词结果</span>
+    <span class="c1"># print(words)</span>
+    <span class="c1"># 思路1：list</span>
+    <span class="c1"># print(list(words))</span>
+    <span class="c1"># # 思路2：for</span>
+    <span class="c1"># for word in words:</span>
+    <span class="c1">#     print(word)</span>
+    <span class="c1"># 思路3: next来获取生成器中的下一个元素</span>
+    <span class="c1"># print(next(words))</span>
+    <span class="c1"># 4.使用jieb.lcut进行分词</span>
+    <span class="n">words_list</span> <span class="o">=</span> <span class="n">jieba</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">cut_all</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">words_list</span><span class="p">)</span>
+
+<span class="c1"># 2.定义函数，演示 jieba的全模式分词，适用于 关键词提取</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo02</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;演示 jieba的全模式分词&quot;</span><span class="p">)</span>
+    <span class="c1"># 1.初始化输入文本，待分词的文本</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;启智教育是一家上市公司，旗下有编程学习者品牌。我是在这里学习人工智能&quot;</span>
+    <span class="c1"># text = &quot;床前明月光，疑是地上霜，举头望明月，低头思故乡&quot;</span>
+    <span class="c1"># 2.使用jieba进行分词</span>
+    <span class="c1"># 参数1：待分词的文本，参数2：是否使用全模式，默认False为精确模式，True为全模式</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">jieba</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">cut_all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># 3.打印分词结果</span>
+    <span class="c1"># print(words)</span>
+    <span class="c1"># 4.使用jieb.lcut进行分词</span>
+    <span class="n">words_list</span> <span class="o">=</span> <span class="n">jieba</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">cut_all</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">words_list</span><span class="p">)</span>
+
+<span class="c1"># 3.定义函数，演示 jieba 搜索引擎模式分词，适用于：搜索引擎，文本匹配</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">解释: 搜索引擎模式, 在精确模式分词的基础上, 对长词进行再次切分, 提高召回率.</span>
+<span class="sd">例如：</span>
+<span class="sd">    场景1: 用户录入  &quot;程序员&quot;</span>
+<span class="sd">        精确模式:       分词结果(程序员)，只能匹配包含完整 &quot;程序员&quot; 的文档.</span>
+<span class="sd">        搜索引擎模式:    分词结果(程序员，程序，员)，不仅能匹配 &quot;程序员&quot; 的文档, 还能匹配 &quot;程序&quot;, &quot;员&quot;的文档. 提高召回率.</span>
+
+<span class="sd">    场景2: 实际应用场景(电商搜索),  商品标题为：小米手机保护壳，用户搜索：小米壳</span>
+<span class="sd">        精确模式：       小米手机保护壳 分词为(&quot;小米&quot;，&quot;手机&quot;，&quot;保护壳&quot;)，用户搜索切分为(小米，壳),无法匹配</span>
+<span class="sd">        搜索引擎模式:    小米手机保护壳 分词为(&quot;小米&quot;，&quot;手机&quot;，&quot;保护&quot;，&quot;壳&quot;)，用户搜索切分为(小米，壳)，能匹配</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">demo03</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;演示 jieba的搜索引擎模式分词&quot;</span><span class="p">)</span>
+    <span class="c1"># 1.初始化输入文本，待分词的文本</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;启智教育是一家上市公司，旗下有编程学习者品牌。我是在这里学习人工智能&quot;</span>
+    <span class="c1"># text = &quot;床前明月光，疑是地上霜，举头望明月，低头思故乡&quot;</span>
+    <span class="c1"># 2.使用jieba进行分词</span>
+    <span class="c1"># 参数1：待分词的文本</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">jieba</span><span class="o">.</span><span class="n">cut_for_search</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="c1"># 3.打印分词结果</span>
+    <span class="c1"># print(words)</span>
+    <span class="c1"># 4.使用jieb.lcut进行分词</span>
+    <span class="n">words_list</span> <span class="o">=</span> <span class="n">jieba</span><span class="o">.</span><span class="n">lcut_for_search</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">words_list</span><span class="p">)</span>
+
+<span class="c1"># 4.定义函数，演示 jieba的中文繁体分词，适用于 对繁体中文进行分词</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo04</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;演示 jieba的中文繁体分词&quot;</span><span class="p">)</span>
+    <span class="c1"># 1.初始化输入文本，待分词的文本</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;煩惱即是菩提，我暫且不提&quot;</span>
+    <span class="c1"># text = &quot;床前明月光，疑是地上霜，举头望明月，低头思故乡&quot;</span>
+    <span class="c1"># 2.使用jieba进行分词</span>
+    <span class="c1"># 参数1：待分词的文本，参数2：是否使用全模式，默认False为精确模式，True为全模式</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">jieba</span><span class="o">.</span><span class="n">cut</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">cut_all</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># 3.打印分词结果</span>
+    <span class="c1"># print(words)</span>
+    <span class="c1"># 思路1：list</span>
+    <span class="c1"># print(list(words))</span>
+    <span class="c1"># # 思路2：for</span>
+    <span class="c1"># for word in words:</span>
+    <span class="c1">#     print(word)</span>
+    <span class="c1"># 思路3: next来获取生成器中的下一个元素</span>
+    <span class="c1"># print(next(words))</span>
+    <span class="c1"># 4.使用jieb.lcut进行分词</span>
+    <span class="n">words_list</span> <span class="o">=</span> <span class="n">jieba</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">cut_all</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">words_list</span><span class="p">)</span>
+
+<span class="c1"># 5.定义函数，演示 jieba的自定义词典分词，适用于：稍微特殊的词 或 特殊要求的场景</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">添加自定义词典后，jieba可以准确识别词典中的token，提升整体的识别准确率。分词时只按照词典中token合并，不按照词典中token拆分</span>
+<span class="sd">词典格式：token 词频(可省略) 词性(可省略)</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo05</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;演示 jieba的自定义词典分词&quot;</span><span class="p">)</span>
+    <span class="c1"># 1.定义输入文本</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;启智教育是一家上市公司，旗下有编程学习者品牌。我是在这里学习人工智能&quot;</span>
+    <span class="c1"># 2.加载自定义词典</span>
+    <span class="n">jieba</span><span class="o">.</span><span class="n">load_userdict</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./data/userdict.txt&quot;</span><span class="p">)</span>
+    <span class="c1"># 3.执行分词</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">jieba</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+
+<span class="c1"># 测试</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">demo01</span><span class="p">()</span>
+    <span class="n">demo02</span><span class="p">()</span>
+    <span class="n">demo03</span><span class="p">()</span>
+    <span class="n">demo04</span><span class="p">()</span>
+    <span class="n">demo05</span><span class="p">()</span>
+</pre></div>
+</div>
+<pre><code>&lt;本地用户目录&gt;\.conda\envs\nlp_project\lib\site-packages\jieba\_compat.py:18: UserWarning: pkg_resources is deprecated as an API. See https://setuptools.pypa.io/en/latest/pkg_resources.html. The pkg_resources package is slated for removal as early as 2025-11-30. Refrain from using this package or pin to Setuptools&lt;81.
+  import pkg_resources
+Building prefix dict from the default dictionary ...
+Loading model from cache &lt;本地用户目录&gt;\AppData\Local\Temp\jieba.cache
+
+
+演示 jieba的精确模式分词
+
+
+Loading model cost 0.386 seconds.
+Prefix dict has been built successfully.
+
+
+['启智', '教育', '是', '一家', '上市公司', '，', '旗下', '有', '', '程序员', '品牌', '。', '我', '是', '在', '', '这里', '学习', '人工智能']
+演示 jieba的全模式分词
+['传', '智', '教育', '是', '一家', '上市', '上市公司', '公司', '，', '旗下', '下有', '', '程序', '程序员', '品牌', '。', '我', '是', '在', '', '这里', '学习', '人工', '人工智能', '智能']
+演示 jieba的搜索引擎模式分词
+['启智', '教育', '是', '一家', '上市', '公司', '上市公司', '，', '旗下', '有', '', '程序', '程序员', '品牌', '。', '我', '是', '在', '', '这里', '学习', '人工', '智能', '人工智能']
+演示 jieba的中文繁体分词
+['煩惱', '即', '是', '菩提', '，', '我', '暫且', '不', '提']
+演示 jieba的自定义词典分词
+['启智教育', '是', '一家', '上市公司', '，', '旗下', '有', '编程学习者', '品牌', '。', '我', '是', '在', '', '这里', '学习', '人工智能']
+</code></pre>
+<h3 id="sec-10">3.3 词性标注</h3>
+<ul>
+<li>词性标注(Part-Of-Speech tagging, 简称POS)就是标注出一段文本中每个词/token的词性.</li>
+<li>词性: 语言中对词的一种分类方法，以语法特征为主要依据, 常见的词性有14种, 如: 名词, 动词, 形容词等.</li>
+<li>举个例子:</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>我爱自然语言处理
+
+==&gt;
+
+我/rr, 爱/v, 自然语言/n, 处理/vn
+
+rr: 人称代词
+v: 动词
+n: 名词
+vn: 动名词
+</pre></div>
+</div>
+<ul>
+<li>
+<p>作用:</p>
+<ul>
+<li>词性标注以分词为基础, 提供句子的语法结构, 是句法分析、语义理解等NLP领域高阶任务的重要基础步骤.</li>
+</ul>
+</li>
+</ul>
+<h3 id="sec-11">3.4 命名实体识别</h3>
+<ul>
+<li>命名实体识别(Named Entity Recognition，简称NER)就是识别出一段文本中的命名实体.</li>
+<li>命名实体: 通常我们将人名, 地名, 机构名等专有名词统称命名实体. 如: 周杰伦, 长城, 孔子学院, 24辊方钢矫直机.</li>
+<li>举个例子:</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>鲁迅, 浙江绍兴人, 五四新文化运动的重要参与者, 代表作朝花夕拾.
+
+==&gt;
+
+鲁迅(人名) / 浙江绍兴(地名)人 / 五四新文化运动(专有名词) / 重要参与者 / 代表作 / 朝花夕拾(专有名词)
+</pre></div>
+</div>
+<ul>
+<li>
+<p>作用:</p>
+<ul>
+<li>从文本中提取关键语义信息，直接支撑信息检索、智能问答等实际应用。</li>
+</ul>
+</li>
+<li>
+<p>举个栗子：从文本中提取关键信息</p>
+</li>
+</ul>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: left;">场景</th>
+<th style="text-align: left;">输入文本</th>
+<th style="text-align: left;">NER提取结果</th>
+<th style="text-align: left;">应用价值</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>新闻人物与地点</strong></td>
+<td style="text-align: left;">“马斯克表示，特斯拉在上海的工厂进展顺利。”</td>
+<td style="text-align: left;"><code>马斯克(人物)</code> <code>特斯拉(组织)</code> <code>上海(地点)</code></td>
+<td style="text-align: left;">快速生成新闻摘要、知识图谱。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>医疗记录</strong></td>
+<td style="text-align: left;">“患者头痛，服用布洛芬后缓解。”</td>
+<td style="text-align: left;"><code>头痛(症状)</code> <code>布洛芬(药物)</code></td>
+<td style="text-align: left;">结构化病历，辅助诊断与用药分析。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>电商评论</strong></td>
+<td style="text-align: left;">“这款手机的电池续航太短，但摄像头很棒。”</td>
+<td style="text-align: left;"><code>手机(产品)</code> <code>电池(部件)</code> <code>摄像头(部件)</code></td>
+<td style="text-align: left;">精准定位产品优缺点，指导改进。</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>金融监控</strong></td>
+<td style="text-align: left;">“报道称腾讯股价因新政策下跌。”</td>
+<td style="text-align: left;"><code>腾讯(组织)</code></td>
+<td style="text-align: left;">自动关联风险名单，触发舆情监控警报。</td>
+</tr>
+</tbody>
+</table></div>
+<h3 id="sec-12">3.5 .NER和POS讲解</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">演示</span>
+<span class="sd">    POS词性标注 和 NER命名实体识别</span>
+<span class="sd">解释：</span>
+<span class="sd">    POS(词性标注 Part Of Speech Tagging), 标注文本中每个 词/token 的词性.</span>
+<span class="sd">        词性：以 语法 为主要依据，把词划分为不同的类别，比如：动词v，名称n，形容词a</span>
+<span class="sd">    NER(命名实体识别, Named Entity Recognition), 就是识别出一段文本中 的 命名实体/专有名词.</span>
+<span class="sd">        命名实体:</span>
+<span class="sd">            人名, 地名, 机构名等专有名词</span>
+<span class="sd">        作用：</span>
+<span class="sd">            提取关键语义信息。(了解概念即可)</span>
+<span class="sd">需要掌握的：</span>
+<span class="sd">    jieba.posseg.lcut进行POS词性标注</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jieba.posseg</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pseg</span>
+
+<span class="c1"># 演示POS</span>
+<span class="c1"># 1.定义输入文本</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;我爱深圳创维创新谷5层506教师的可爱的小伙伴,尤其是欢快的‘胡欢’同学&quot;</span>
+<span class="c1"># 2.使用pseg.lcut进行分词 和 词性标注</span>
+<span class="n">result1</span> <span class="o">=</span> <span class="n">pseg</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="c1"># print(result1)</span>
+<span class="c1"># 3.打印词性标注结果，token-flag</span>
+<span class="k">for</span> <span class="n">token</span><span class="p">,</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">result1</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">flag</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 4.进行NER命名实体识别</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_entities</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    思路：根据jieba.posseg的词性标注结果来提取专有名称，得到命名实体</span>
+<span class="sd">    注意，这是一个简化的NER思路</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># 1.使用pseg.lcut进行分词 和 词性标注</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">pseg</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="c1"># 2.定义命名实体的词性-实体类型的字典</span>
+    <span class="n">flag_to_entity</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;nr&quot;</span><span class="p">:</span> <span class="s2">&quot;PERSON&quot;</span><span class="p">,</span> <span class="c1"># 人名</span>
+        <span class="s2">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;LOCATION&quot;</span><span class="p">,</span> <span class="c1"># 地名</span>
+        <span class="s2">&quot;nt&quot;</span><span class="p">:</span> <span class="s2">&quot;ORGANIZATION&quot;</span><span class="p">,</span> <span class="c1"># 机构团体名</span>
+        <span class="s2">&quot;nz&quot;</span><span class="p">:</span> <span class="s2">&quot;OTHER&quot;</span><span class="p">,</span> <span class="c1"># 其他专名</span>
+        <span class="s2">&quot;t&quot;</span><span class="p">:</span> <span class="s2">&quot;TIME&quot;</span><span class="p">,</span>    <span class="c1"># 时间</span>
+        <span class="s2">&quot;m&quot;</span><span class="p">:</span> <span class="s2">&quot;NUMBER&quot;</span><span class="p">,</span>  <span class="c1"># 数字</span>
+    <span class="p">}</span>
+    <span class="c1"># 3.判断分词结果中有哪些命名实体</span>
+    <span class="n">result_entity</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">token</span><span class="p">,</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">result</span><span class="p">:</span>
+        <span class="c1"># 1.获取字典中flag对应的实体类型</span>
+        <span class="n">entity</span> <span class="o">=</span> <span class="n">flag_to_entity</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">flag</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">entity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result_entity</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">token</span><span class="p">,</span> <span class="n">entity</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">result_entity</span>
+
+<span class="c1"># 进行NER命名实体识别</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">extract_entities</span><span class="p">(</span><span class="n">text</span><span class="p">))</span>
+</pre></div>
+</div>
+<pre><code>我:r
+爱:v
+深圳:ns
+创维:n
+创新:v
+谷:nr
+5:m
+层:q
+506:m
+教师:n
+的:uj
+可爱:v
+的:uj
+小伙伴:n
+,:x
+尤其:d
+是:v
+欢快:a
+的:uj
+‘:x
+胡欢:nr
+’:x
+同学:n
+[('深圳', 'LOCATION'), ('谷', 'PERSON'), ('5', 'NUMBER'), ('506', 'NUMBER'), ('胡欢', 'PERSON')]
+</code></pre>
+<h3 id="sec-13">3.6 小结</h3>
+<ol>
+<li>
+<p>分词
+- 是什么: 将连续的字序列按规范切分为词序列的过程。</p>
+<ul>
+<li>英文：以空格作为天然分界符。</li>
+<li>中文：字、句、段有分界符，但<strong>词没有</strong>，分词就是找到词的边界。。</li>
+<li>作用:词作为语言语义理解的最小单元. 分词是NLP领域高阶任务的基础。</li>
+</ul>
+</li>
+<li>
+<p>jieba分词工具
+- 支持多种分词模式: 精确模式, 全模式, 搜索引擎模式
+- 支持中文繁体分词，用户自定义词典
+- jieba工具的安装和使用.</p>
+</li>
+<li>
+<p>命名实体识别NER
+- 是什么：识别文本中存在的各类命名实体。
+命名实体：特指人名、地名、机构名等专有名词（如：周杰伦、黑山县、孔子学院）。
+- 作用：从文本中提取关键语义信息，直接支撑信息检索、智能问答等实际应用。</p>
+</li>
+<li>
+<p>词性标注POS</p>
+</li>
+</ol>
+<ul>
+<li>是什么：标注文本中每个词的词性</li>
+<li>词性：按语法特征+词意义对词的分类，有名词、动词、形容词等</li>
+<li>作用：以分词为基础，从语法角度理解文本，是高阶NLP任务的基础。</li>
+<li>实操：掌握使用jieba进行词性标注的方法。</li>
+</ul>
+<h2 id="sec-14">4 文本张量表示方法</h2>
+<h4>学习目标</h4>
+<ul>
+<li>了解什么是文本张量表示及其作用.</li>
+<li>掌握文本张量表示的几种方法及其实现.</li>
+</ul>
+<h3 id="sec-15">4.1 文本张量表示</h3>
+<ul>
+<li>将一段文本表示为张量，一般将词表示成向量，称作词向量，再由各个词向量按顺序组成矩阵形成文本张量表示.</li>
+<li>举个例子:</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>[&quot;人生&quot;, &quot;该&quot;, &quot;如何&quot;, &quot;起头&quot;]
+
+==&gt;
+
+# 5 每个词对应矩阵中的一个向量
+[[1.32, 4,32, 0,32, 5.2],
+ [3.1, 5.43, 0.34, 3.2],
+ [3.21, 5.32, 2, 4.32],
+ [2.54, 7.32, 5.12, 9.54]]
+</pre></div>
+</div>
+<ul>
+<li>
+<p>文本张量表示的作用:</p>
+</li>
+<li>
+<p>将文本表示成张量（矩阵）形式，使语言文本可以作为计算机处理程序的输入，进行接下来一系列的解析工作。</p>
+</li>
+<li>文本张量表示的方法:</li>
+<li>one-hot编码</li>
+<li>Word2vec</li>
+<li>Embedding层</li>
+</ul>
+<h3 id="sec-16">4.2 one-hot词向量表示</h3>
+<ul>
+<li>又称独热编码，将每个词表示成具有n个元素的向量，只有一个元素是1，其他元素都是0，不同词元素为1的位置不同，其中n的大小是整个语料中不同词的总数.</li>
+<li>举个例子:</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>[&quot;改变&quot;, &quot;要&quot;, &quot;如何&quot;, &quot;起手&quot;]`
+==&gt;
+
+[[1, 0, 0, 0],
+ [0, 1, 0, 0],
+ [0, 0, 1, 0],
+ [0, 0, 0, 1]]
+</pre></div>
+</div>
+<h3 id="sec-17">4.3 演示one-hot编码</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">演示</span>
+<span class="sd">    one-hot编码，创建one-hot编码，使用one-hot编码</span>
+<span class="sd">文本张量介绍：</span>
+<span class="sd">    对文本进行分词, 把每个 词/token 转成对应的向量表示, 即: 用数值向量的形式来描述文本 -&gt; 文本张量.</span>
+<span class="sd">    作用：</span>
+<span class="sd">        神经网络无法直接处理 文本，所以需要把文本转为 文本张量/数值向量，输入到神经网络中进行处理</span>
+<span class="sd">    实现方式：</span>
+<span class="sd">        one-hot编码:</span>
+<span class="sd">            独热编码，01编码，当前词/token对应的词表索引位置设为1，其他位置都是0，非常稀疏，列表长度=词表大小=文本分词去重后的token总数</span>
+<span class="sd">        word2vec:</span>
+<span class="sd">            CBOW    连续词袋模式</span>
+<span class="sd">            skipgram 跳字模式</span>
+<span class="sd">        word embedding:</span>
+<span class="sd">            动态词向量,nn.Embedding词嵌入层</span>
+<span class="sd">one-hot编码的优缺点：</span>
+<span class="sd">    优点：操作简单，容易理解</span>
+<span class="sd">    缺点：稀疏向量，向量长度很大/维度很高，大语料库时，会占用巨大内存空间；无法表示语义信息</span>
+<span class="sd">    解决方法：使用稠密词向量方法，word2vec静态词向量，word embedding动态词向量</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+
+<span class="c1"># 1.定义函数，创建one-hot编码</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_one_hot</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;创建 one-hot 编码&quot;</span><span class="p">)</span>
+    <span class="c1"># 1.准备 文本数据集</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;周杰伦&quot;</span><span class="p">,</span> <span class="s2">&quot;陈奕迅&quot;</span><span class="p">,</span> <span class="s2">&quot;王力宏&quot;</span><span class="p">,</span> <span class="s2">&quot;李宗盛&quot;</span><span class="p">,</span> <span class="s2">&quot;张信哲&quot;</span><span class="p">,</span> <span class="s2">&quot;鹿晗&quot;</span><span class="p">,</span> <span class="s2">&quot;胡欢&quot;</span><span class="p">}</span>
+    <span class="c1"># 2.构建词表</span>
+    <span class="n">vocab</span> <span class="o">=</span> <span class="p">{</span><span class="n">word</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">text</span><span class="p">)}</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
+    <span class="c1"># 3.对每个词进行one-hot编码</span>
+    <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+        <span class="c1"># 1.初始化全0张量，长度为词表大小</span>
+        <span class="n">one_hot</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="c1"># 2.把word对应的词表vocab中的索引位置设置为1</span>
+        <span class="n">one_hot</span><span class="p">[</span><span class="n">vocab</span><span class="p">[</span><span class="n">word</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">word</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">one_hot</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># 4.保存词表</span>
+    <span class="c1"># 保存词表</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./model&quot;</span><span class="p">,</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./model/vocab.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">vocab</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;保存词表成功&quot;</span><span class="p">)</span>
+
+<span class="c1"># 2.定义函数，使用 one-hot编码</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">use_one_hot</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;使用 one-hot 编码&quot;</span><span class="p">)</span>
+    <span class="c1"># 1.加载词表，使用json.load</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./model/vocab.json&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">vocab</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;加载词表成功&quot;</span><span class="p">)</span>
+    <span class="c1"># 2.指定输入token</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="s2">&quot;张信哲&quot;</span>
+    <span class="c1"># 3.查询one-hot编码</span>
+    <span class="n">one_hot</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="n">one_hot</span><span class="p">[</span><span class="n">vocab</span><span class="p">[</span><span class="n">token</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">token</span><span class="si">}</span><span class="s2">的one-hot编码:</span><span class="si">{</span><span class="n">one_hot</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># 测试</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">create_one_hot</span><span class="p">()</span>
+    <span class="n">use_one_hot</span><span class="p">()</span>
+</pre></div>
+</div>
+<pre><code>创建 one-hot 编码
+{'张信哲': 0, '周杰伦': 1, '胡欢': 2, '王力宏': 3, '鹿晗': 4, '李宗盛': 5, '陈奕迅': 6}
+张信哲:tensor([1., 0., 0., 0., 0., 0., 0.])
+周杰伦:tensor([0., 1., 0., 0., 0., 0., 0.])
+胡欢:tensor([0., 0., 1., 0., 0., 0., 0.])
+王力宏:tensor([0., 0., 0., 1., 0., 0., 0.])
+鹿晗:tensor([0., 0., 0., 0., 1., 0., 0.])
+李宗盛:tensor([0., 0., 0., 0., 0., 1., 0.])
+陈奕迅:tensor([0., 0., 0., 0., 0., 0., 1.])
+保存词表成功
+使用 one-hot 编码
+加载词表成功
+张信哲的one-hot编码:tensor([1., 0., 0., 0., 0., 0., 0.])
+</code></pre>
+<h2 id="sec-18">5 文本张量表示方法</h2>
+<p>在NLP中，将离散的词（token）映射为数值向量，统称为 Word Embedding（词向量表示）。主要有两种方法：</p>
+<ul>
+<li>word2vec: 静态训练词向量</li>
+<li>Embedding层：动态训练词向量</li>
+</ul>
+<h4>学习目标</h4>
+<ul>
+<li>了解文本张量表示是什么</li>
+<li>掌握文本张量表示的几种方法</li>
+</ul>
+<h3 id="sec-19">5.1 word2vec模型-静态预训练词向量</h3>
+<ul>
+<li>核心思想：先在大规模无标注语料上预训练词向量，再将其作为固定特征输入到下游任务模型中。</li>
+<li>训练方法：无监督训练方法, 通过构建浅层神经网络学习词的向量表示, 其嵌入层参数矩阵E(vocab_size, embedding_size)即为词向量矩阵。</li>
+<li>训练模式：CBOW(上下文预测中间词)，Skip-gram(中间词预测上下文)。</li>
+</ul>
+<h4>CBOW vs Skip-gram</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>对比维度</th>
+<th>CBOW</th>
+<th>Skip-gram</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>训练目标</td>
+<td>上下文 → 中心词</td>
+<td>中心词 → 上下文</td>
+</tr>
+<tr>
+<td>输入形式</td>
+<td>多个上下文词向量聚合（常用均值）</td>
+<td>单个中心词向量</td>
+</tr>
+<tr>
+<td>损失形式</td>
+<td>单目标损失（中心词）</td>
+<td>多目标损失（多个上下文词）</td>
+</tr>
+<tr>
+<td>训练速度</td>
+<td>更快，计算开销小</td>
+<td>更慢，计算开销大</td>
+</tr>
+<tr>
+<td>低频词效果</td>
+<td>较弱</td>
+<td>较好（对稀有词更友好）</td>
+</tr>
+<tr>
+<td>高频词效果</td>
+<td>较好</td>
+<td>稳定</td>
+</tr>
+<tr>
+<td>数据规模适配</td>
+<td>小中等语料更易收敛</td>
+<td>大语料下优势更明显</td>
+</tr>
+</tbody>
+</table></div>
+<h4>如何选择-优先skip-gram</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>场景</th>
+<th>推荐</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>训练资源有限、希望快速得到可用词向量</td>
+<td>CBOW</td>
+</tr>
+<tr>
+<td>关注低频词/长尾词表示质量</td>
+<td>Skip-gram</td>
+</tr>
+<tr>
+<td>大规模语料、追求词向量质量上限</td>
+<td>优先 Skip-gram（可配负采样）</td>
+</tr>
+</tbody>
+</table></div>
+<h4>CBOW(Continuous bag of words)连续词袋模型</h4>
+<ul>
+<li>上下文词预测中间词：针对一段文本语料, 选定窗口大小, 使用上下文词预测中间词.</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="avatar" src="../assets/img/lesson35/figure-9dc30e5e8e8f.png" /></p>
+<ul>
+<li>
+<p>图中窗口大小为9, 使用前后4个词预测中间词.</p>
+</li>
+<li>
+<p>假设训练语料为: Hope can set you free，窗口大小为3，第一个样本为 Hope can set，输入为 Hope 和 set，输出为 can，在模型训练时，Hope，can，set等词都使用one-hot编码. </p>
+</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="avatar" src="../assets/img/lesson35/figure-b774419b0dc6.png" /></p>
+<ul>
+<li>
+<p>前向传播过程如图所示: </p>
+<ul>
+<li>上下文的每个token的one-hot编码进行embedding查表之后得到词向量(2,embed_size)，再求均值得到上下文表示(1,embed_size).</li>
+<li>将上下文表示(1,embed_size)输入线性层nn.Linear(embed_size,vocab_size), 得到的预测值(1,vocab_size).</li>
+<li>预测值与真实值(can的one-hot编码)比较，得到损失。然后反向传播，来训练模型.</li>
+<li>最后窗口按序向后移动，继续训练，直到遍历完所有语料，得到最终的embedding词向量矩阵(vocab_size,embed_size)。</li>
+<li>每个词输入embedding层，进行embedding查表，得到的矩阵(1,embed_size)就是该token的word2vec张量表示，也就是词向量。</li>
+</ul>
+</li>
+</ul>
+<h4>skip-gram跳词模型</h4>
+<ul>
+<li>中间词预测上下文：针对一段文本语料, 选定窗口大小, 使用中间词预测上下文词.</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="avatar" src="../assets/img/lesson35/figure-ad45475df93d.png" /></p>
+<ul>
+<li>
+<p>图中窗口大小为9, 使用中间词预测前后四个词.</p>
+</li>
+<li>
+<p>假设给定的训练语料为: Hope can set you free，窗口大小为3，第一个样本为Hope can set，输入为can，输出为 Hope 和 set，在模型训练时，Hope，can，set等词都使用one-hot编码. </p>
+</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="avatar" src="../assets/img/lesson35/figure-f6473b9f21ff.png" /></p>
+<ul>
+<li>
+<p>前向传播过程如图所示: </p>
+<ul>
+<li>中间token的one-hot编码进行embedding查表之后得到词向量(1,embed_size).</li>
+<li>将中间词向量(1,embed_size)输入线性层nn.Linear(embed_size,vocab_size), 得到预测值(1,vocab_size)。</li>
+<li>预测值与上下文多个真实值(Hope 和 set 的one-hot编码)比较，得到多个损失，求平均损失，然后反向传播，来训练模型.</li>
+<li>最后窗口按序向后移动，继续训练，直到遍历完所有语料，得到最终的embedding词向量矩阵(vocab_size,embed_size)。</li>
+<li>每个词输入embedding层，进行embedding查表，得到的矩阵(1,embed_size)就是该token的word2vec张量表示，也就是词向量。</li>
+</ul>
+</li>
+<li>
+<p>词向量的检索获取-embedding查表</p>
+</li>
+<li>
+<p>神经网络训练完后，神经网络的词嵌入层的参数w 就是词向量矩阵。如何检索某个token的词向量呢？</p>
+</li>
+<li>以CBOW方式举例。如下图所示：Hope的onehot编码[10000]，对应索引0，执行embedding查表获取词向量矩阵的对应行w[0]，就是Hope的词向量。</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="avatar" src="../assets/img/lesson35/figure-aaaeec8bf775.png" /></p>
+<h4>word2vec的训练和使用</h4>
+<ul>
+<li>1.获取训练数据</li>
+<li>2.训练词向量</li>
+<li>3.模型超参数设定</li>
+<li>4.模型效果检验</li>
+<li>5.模型的保存与加载</li>
+</ul>
+<h4>获取训练数据</h4>
+<p>数据来源：<a href="http://mattmahoney.net/dc/enwik9.zip">http://mattmahoney.net/dc/enwik9.zip</a></p>
+<p>这是英语维基百科的部分网页信息, 大小300M左右。可以通过Matt Mahoney的网站下载。</p>
+<p><strong>注意：原始数据集已经放在/root/data/enwik9.zip，解压后数据为/root/data/enwik9，预处理后的数据为/root/data/fil9</strong></p>
+<ul>
+<li>查看原始数据:</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>$ head -10 data/enwik9
+
+# 7 原始数据将输出很多包含XML/HTML格式的内容, 这些内容并不是我们需要的
+&lt;mediawiki xmlns=&quot;http://www.mediawiki.org/xml/export-0.3/&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot; xsi:schemaLocation=&quot;http://www.mediawiki.org/xml/export-0.3/ http://www.mediawiki.org/xml/export-0.3.xsd&quot; version=&quot;0.3&quot; xml:lang=&quot;en&quot;&gt;
+  &lt;siteinfo&gt;
+    &lt;sitename&gt;Wikipedia&lt;/sitename&gt;
+    &lt;base&gt;http://en.wikipedia.org/wiki/Main_Page&lt;/base&gt;
+    &lt;generator&gt;MediaWiki 1.6alpha&lt;/generator&gt;
+    &lt;case&gt;first-letter&lt;/case&gt;
+      &lt;namespaces&gt;
+      &lt;namespace key=&quot;-2&quot;&gt;Media&lt;/namespace&gt;
+      &lt;namespace key=&quot;-1&quot;&gt;Special&lt;/namespace&gt;
+      &lt;namespace key=&quot;0&quot; /&gt;
+</pre></div>
+</div>
+<ul>
+<li>原始数据处理:</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span># 8 使用wikifil.pl文件处理脚本来清除XML/HTML格式的内容
+# 9 perl wikifil.pl data/enwik9 &gt; data/fil9 #该命令已经执行
+</pre></div>
+</div>
+<ul>
+<li>查看预处理后的数据:</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span># 10 查看前80个字符
+head -c 80 data/fil9
+
+# 11 输出结果为由空格分割的单词
+ anarchism originated as a term of abuse first used against early working class
+</pre></div>
+</div>
+<h4>词向量的训练和保存</h4>
+<h4>查看单词对应的词向量</h4>
+<h4>模型效果检验</h4>
+<h4>模型超参数设定</h4>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">演示</span>
+<span class="sd">    word2vec静态词向量方法，主要是 CBOW 和 skip-gram</span>
+<span class="sd">word2vec:</span>
+<span class="sd">    属于文本张量表示方法之一，是静态词向量方法，也就是先在大语料库上使用无监督学习方法训练好词向量，再拿训练好的词向量去下游任务上训练</span>
+<span class="sd">CBOW:</span>
+<span class="sd">    连续词袋模型，由两边预测中间</span>
+<span class="sd">skip-gram:</span>
+<span class="sd">    跳元模型，由中间预测两边</span>
+
+<span class="sd">注意：</span>
+<span class="sd">    这里使用fasttext工具来实现静态词向量训练，包括 CBOW 和 skip-gram</span>
+<span class="sd">    fasttext工具训练快速，只支持CPU训练，不支持GPU加速</span>
+<span class="sd">    facebook开发的 fasttext包 就是一个开源的 词向量和文本分类工具</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">fasttext</span> <span class="c1"># 需要安装：pip install fasttext, 如果不行，尝试: pip install fasttext-wheel</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="c1"># 1.定义函数，演示使用fasttext训练静态词向量,并保存模型</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo01</span><span class="p">():</span>
+    <span class="c1"># 1.采用无监督模式训练</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">fasttext</span><span class="o">.</span><span class="n">train_unsupervised</span><span class="p">(</span><span class="nb">input</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;./data/sz04aa&quot;</span><span class="p">)</span>
+    <span class="c1"># 2.保存训练好的模型</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./model&quot;</span><span class="p">,</span><span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># 保存为二进制文件</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./model/sz04aa.bin&quot;</span><span class="p">)</span>
+
+<span class="c1"># 2.定义函数，演示使用fasttext加载模型，并使用模型查看词向量</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo02</span><span class="p">():</span>
+    <span class="c1"># 1.加载模型</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">fasttext</span><span class="o">.</span><span class="n">load_model</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./model/sz04aa.bin&quot;</span><span class="p">)</span>
+    <span class="c1"># 2.获取token对应的词向量</span>
+    <span class="n">word</span> <span class="o">=</span> <span class="s2">&quot;下雨&quot;</span>
+    <span class="n">word_vec</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_word_vector</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">word</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">word_vec</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;shape:</span><span class="si">{</span><span class="n">word_vec</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># 3.查看语义相近的词</span>
+    <span class="n">words_near</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">get_nearest_neighbors</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">words_near</span><span class="p">)</span>
+
+<span class="c1"># 3.定义函数，演示 手动设定无监督学习来训练词向量的超参数</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo03</span><span class="p">():</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="c1"># 1.采用无监督模式训练</span>
+    <span class="c1"># 参数1：训练数据，参数2：训练模式，默认skip-gram, 也可以选cbow，参数3：词向量维度,参数4:训练轮数</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">fasttext</span><span class="o">.</span><span class="n">train_unsupervised</span><span class="p">(</span>
+        <span class="nb">input</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;./data/sz04aa&quot;</span><span class="p">,</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;cbow&quot;</span><span class="p">,</span>
+        <span class="n">dim</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">epoch</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">lr</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># 2.保存训练好的模型</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./model&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># 保存为二进制文件</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./model/sz04aa02.bin&quot;</span><span class="p">)</span>
+    <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;cbow训练时间：</span><span class="si">{</span><span class="n">end_time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">demo04</span><span class="p">():</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="c1"># 1.采用无监督模式训练</span>
+    <span class="c1"># 参数1：训练数据，参数2：训练模式，默认skip-gram, 也可以选cbow，参数3：词向量维度,参数4:训练轮数</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">fasttext</span><span class="o">.</span><span class="n">train_unsupervised</span><span class="p">(</span>
+        <span class="nb">input</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;./data/sz04aa&quot;</span><span class="p">,</span>
+        <span class="n">model</span><span class="o">=</span><span class="s2">&quot;skipgram&quot;</span><span class="p">,</span>
+        <span class="n">dim</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+        <span class="n">epoch</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+        <span class="n">lr</span><span class="o">=</span><span class="mf">0.02</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="c1"># 2.保存训练好的模型</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./model&quot;</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># 保存为二进制文件</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">save_model</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;./model/sz04aa03.bin&quot;</span><span class="p">)</span>
+    <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;skipgram训练时间：</span><span class="si">{</span><span class="n">end_time</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start_time</span><span class="si">}</span><span class="s2">s&quot;</span><span class="p">)</span>
+
+<span class="c1"># 测试</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">demo01</span><span class="p">()</span>
+    <span class="n">demo02</span><span class="p">()</span>
+    <span class="n">demo03</span><span class="p">()</span>
+    <span class="n">demo04</span><span class="p">()</span>
+</pre></div>
+</div>
+<pre><code>下雨:[-8.6330771e-03  7.8582680e-03  1.1534821e-03 -1.4386143e-03
+ -1.1835585e-03 -1.5074518e-03 -3.2238211e-03 -1.4618828e-03
+ -1.9891455e-03  6.7324378e-05  6.4990734e-04  1.9653316e-03
+ -6.4782137e-03 -4.6458091e-03 -1.1440935e-03 -1.4657070e-03
+ -1.4534888e-03  6.1365194e-03  6.9523146e-03 -3.1668023e-05
+ -4.0032174e-03  2.8253905e-03 -6.2919699e-04  2.5819673e-03
+  1.4065335e-03 -3.3312076e-04 -1.4300118e-03  5.0860476e-03
+  2.7750880e-03  1.5667690e-03  7.2939312e-03 -2.1207999e-03
+ -7.4791955e-04 -2.7470040e-04 -8.7642157e-04 -3.4497152e-03
+  3.7236228e-03  5.0653787e-03 -4.0216995e-03 -4.1744085e-03
+ -1.2833186e-03  1.4074035e-03 -2.5988675e-03  4.1249222e-03
+ -1.8709166e-03 -1.4041355e-03  3.9769472e-03 -5.1552858e-03
+  2.0636758e-03  1.9167362e-03  1.4109439e-03  2.6723638e-03
+ -1.0469876e-03 -5.4241082e-04 -5.7703943e-04 -1.2664832e-03
+ -2.2056929e-03  8.1207743e-04  1.9088450e-04 -3.1543765e-03
+  1.9868899e-03  1.0252097e-03  2.5299145e-03  3.0889418e-03
+  3.9282972e-03  1.7609205e-03  3.3790478e-03 -1.9297265e-03
+  2.6169724e-03  2.8715818e-03 -2.1885815e-03  1.4644893e-03
+ -3.6157318e-03 -4.8985024e-04  1.6349962e-03 -5.6672432e-03
+  1.8834904e-03  3.4686318e-03  3.4940790e-03 -2.8837714e-03
+  1.3957102e-03  8.8448171e-05  5.3728716e-03  5.5099779e-04
+ -1.0839207e-03 -7.4604806e-04  1.0342970e-03 -8.0912840e-03
+ -4.2841169e-03 -4.3119835e-03  7.6316460e-04 -1.2158591e-03
+  1.6598734e-03 -1.7397437e-05  6.8280427e-03  6.0315020e-03
+  1.7678262e-03 -2.7016685e-03 -1.6325591e-03  6.4142994e-03]
+shape:(100,)
+[(0.3269275724887848, 'bimonthly'), (0.32038062810897827, 'monthly'), (0.3163082003593445, 'degrees'), (0.3133413791656494, 'mathematics'), (0.308165043592453, 'notation'), (0.30779385566711426, 'cgs'), (0.3073922097682953, 'axis'), (0.3068580627441406, 'scaleminor'), (0.3046092092990875, 'notations'), (0.30449169874191284, 'tabula')]
+cbow训练时间：113.23065376281738s
+skipgram训练时间：184.02844405174255s
+</code></pre>
+<h3 id="sec-20">5.2 Embedding层-一起训练的动态词向量</h3>
+<ul>
+<li>核心思想：不提前训练词向量，而是在具体下游任务训练过程中，与整个神经网络一起端到端学习词向量。</li>
+<li>
+<p>实现方式：nn.Embedding(vocab_size, embedding_size)，训练得到的Embedding层参数就是词向量矩阵</p>
+</li>
+<li>
+<p>词向量的可视化分析:</p>
+<ul>
+<li>
+<p>通过tensorboard可视化嵌入的词向量.</p>
+</li>
+<li>
+<p>浏览器展示并可以使用右侧近邻词功能检验效果:</p>
+</li>
+</ul>
+</li>
+</ul>
+<p><img loading="lazy" decoding="async" alt="avatar" src="../assets/img/lesson35/figure-84598f2b4afc.png" /></p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">演示</span>
+<span class="sd">    文本张量(文本的 词向量表示形式)实现方式之 word embedding动态词向量.</span>
+
+<span class="sd">word2vec 和 word embedding的区别:</span>
+<span class="sd">    word2vec:</span>
+<span class="sd">        先独立训练 词向量，然后输入到模型中做下游任务</span>
+
+<span class="sd">    word embedding：</span>
+<span class="sd">        不独立训练词向量，而是在具体任务中同时训练 词嵌入层nn.Embedding 和 神经网络，</span>
+<span class="sd">        也就是在训练整个神经网络的过程中，同时训练词嵌入层的参数 / 词向量矩阵</span>
+
+<span class="sd">扩展-可视化部分：</span>
+<span class="sd">    1.先安装pip install tensorboard</span>
+<span class="sd">    2.运行代码生成log_dir配置文件后，在终端进入虚拟环境nlp_project</span>
+<span class="sd">    3.进入当前代码路径，比如 D:\nlp_project\05-备课代码\, 注意windows中切换路径命令：D: -&gt; cd nlp_project\05-备课代码\</span>
+<span class="sd">    4.执行命令：tensorboard --logdir=runs --host 127.0.0.1 --port 6006</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># 导包</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jieba</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.utils.tensorboard</span><span class="w"> </span><span class="kn">import</span> <span class="n">SummaryWriter</span>  <span class="c1"># 先安装 pip install tensorboard</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span> <span class="c1"># 统计词频</span>
+
+<span class="c1"># 1.定义函数，演示 nn.Embedding词嵌入层 实现 word embedding动态词向量,将 token 转为 词向量，并可视化</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">demo01</span><span class="p">():</span>
+    <span class="c1"># 1.定义文本，两个句子</span>
+    <span class="n">sentence1</span> <span class="o">=</span> <span class="s2">&quot;从前有一段真挚的爱情放在我的面前，可惜我当时正在学习AI大模型&quot;</span>
+    <span class="n">sentence2</span> <span class="o">=</span> <span class="s2">&quot;不问你为何学不会，只问你心里还有谁，就让我给你安慰，不论结局是喜是悲&quot;</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="p">[</span><span class="n">sentence1</span><span class="p">,</span> <span class="n">sentence2</span><span class="p">]</span>
+    <span class="c1"># 2.构建词表，按照词频由大到小排序</span>
+    <span class="n">word_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+        <span class="n">word_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">jieba</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">sentence</span><span class="p">))</span>
+    <span class="c1"># print(word_list)</span>
+    <span class="c1"># 对分词结果进行去重，按照词频进行排序</span>
+    <span class="n">all_words</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">words</span> <span class="ow">in</span> <span class="n">word_list</span><span class="p">:</span>
+        <span class="n">all_words</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+    <span class="c1"># print(all_words)</span>
+    <span class="c1"># 统计词频</span>
+    <span class="n">word_count</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">all_words</span><span class="p">)</span>
+    <span class="c1"># print(word_count)</span>
+    <span class="c1"># 构建词表</span>
+    <span class="c1"># for idx, (word, count) in enumerate(word_count.most_common()):</span>
+    <span class="c1">#     print(idx, word, count)</span>
+    <span class="n">vocab</span> <span class="o">=</span> <span class="p">{</span><span class="n">word</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">count</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">word_count</span><span class="o">.</span><span class="n">most_common</span><span class="p">())}</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
+    <span class="c1"># 3.创建nn.Embedding词嵌入层</span>
+    <span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">),</span> <span class="mi">8</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;embedding: </span><span class="si">{</span><span class="n">embedding</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;embedding.weight: </span><span class="si">{</span><span class="n">embedding</span><span class="o">.</span><span class="n">weight</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;embedding.weight.shape: </span><span class="si">{</span><span class="n">embedding</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># 4.可视化词向量</span>
+    <span class="c1"># 创建SummaryWriter对象</span>
+    <span class="c1"># writer = SummaryWriter(log_dir=r&quot;./runs&quot;)</span>
+    <span class="c1"># writer.add_embedding(embedding.weight,  # 词嵌入层参数，也就是词向量矩阵</span>
+    <span class="c1">#                      metadata=list(vocab.keys()),   # 源数据，也就是每个词向量对应的token名称</span>
+    <span class="c1">#                      tag=&quot;word_embedding&quot;   # 可视化的标签名称</span>
+    <span class="c1">#                      )</span>
+    <span class="c1"># # 关闭SummaryWriter对象</span>
+    <span class="c1"># writer.close()</span>
+    <span class="c1"># 5.获取输入文本的词向量：token索引序列 -&gt; embedding查表 -&gt; 词向量</span>
+    <span class="n">index_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">vocab</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">all_words</span><span class="p">]</span>
+    <span class="c1"># print(index_list)</span>
+    <span class="n">embedding_list</span> <span class="o">=</span> <span class="n">embedding</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">index_list</span><span class="p">))</span>
+    <span class="c1"># 6.打印词向量</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;分词之后的词的总数量:</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_words</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># print(embedding_list)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">embedding_list</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+
+<span class="c1"># 测试</span>
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">demo01</span><span class="p">()</span>
+</pre></div>
+</div>
+<pre><code>{'，': 0, '我': 1, '你': 2, '的': 3, '是': 4, '从前': 5, '有': 6, '一段': 7, '真挚': 8, '爱情': 9, '放在': 10, '面前': 11, '可惜': 12, '当时': 13, '正在': 14, '': 15, '学习': 16, 'AI': 17, '大': 18, '模型': 19, '不问': 20, '为何': 21, '学': 22, '不会': 23, '只': 24, '问': 25, '心里': 26, '还有': 27, '谁': 28, '就让': 29, '给': 30, '安慰': 31, '不论': 32, '结局': 33, '喜': 34, '悲': 35}
+embedding: Embedding(36, 8)
+embedding.weight: Parameter containing:
+tensor([[ 0.4516, -1.1360, -0.9713,  0.7428, -1.2879,  0.2153,  0.1686,  0.6493],
+        [ 0.0642, -0.8083,  0.2288,  0.3750, -1.6303,  0.3354,  2.3030, -0.0107],
+        [-0.3729, -0.6587,  0.2451, -0.7316, -0.9424, -0.1401,  1.3579,  0.8539],
+        [-0.1728,  1.3390,  0.6606, -0.9651,  1.1229, -0.2676, -0.8191,  0.3444],
+        [-0.8016,  1.1558, -2.7765,  0.9507,  2.6411, -0.2388,  1.3416,  1.5194],
+        [ 1.2530,  0.0778, -1.1093, -0.5680, -0.1431, -0.8879, -0.0360, -1.3681],
+        [-2.2209,  0.0516,  1.0449,  0.2867, -0.2453,  0.0133, -0.9627, -1.6326],
+        [-0.9047, -0.1742,  0.8442,  0.0167, -0.2037,  1.7574,  0.3144, -0.4437],
+        [ 0.5578,  0.0147,  0.6530,  1.4568, -0.6441,  1.0977,  1.0048, -0.5238],
+        [-0.0859,  0.3727,  0.2781,  0.9369, -0.5866, -0.9055,  0.3683, -1.1876],
+        [ 1.6834, -0.8602,  0.0521,  1.9150, -0.6125,  0.2425,  0.3166,  1.2361],
+        [ 1.5606, -0.7434, -1.4778, -1.4766, -0.2148,  1.2102,  1.3283,  0.0240],
+        [ 1.2654, -0.2966, -1.4250, -1.0904,  1.2732,  2.1924, -0.8350,  0.5271],
+        [-0.6352, -0.2962,  1.0905, -0.7421,  0.5470,  3.0238, -0.0306, -1.1561],
+        [ 1.0420, -0.5470, -0.5244, -1.5484, -0.2380,  0.2716, -0.5283,  0.3566],
+        [-0.5519,  0.3107, -0.4065, -0.3625, -2.5274,  1.1866,  0.8496, -1.7506],
+        [-1.4868,  1.7649,  2.2001, -0.2560,  0.2647, -0.9809, -0.0706, -1.7991],
+        [ 1.3045, -0.5170,  1.4551,  1.7815, -0.5635,  1.6697, -1.1273, -0.0114],
+        [-0.4100, -0.3356,  1.6990, -0.8491,  0.7428,  1.0440,  1.4131, -0.3165],
+        [-1.4409,  0.2918, -0.2902, -0.6303, -0.5211,  0.1384,  0.7609, -0.9341],
+        [ 0.3328, -0.1421, -0.0031, -0.0641, -0.4538, -0.0364,  1.9914, -1.3633],
+        [-0.8402, -0.3970, -0.8196, -0.3136,  0.2544,  1.3172,  0.2651,  1.4235],
+        [-1.3319, -1.3568, -1.2500, -0.2529, -0.2535, -1.8197, -0.5318, -1.9229],
+        [ 0.0521,  0.8484,  0.8355,  0.9380, -1.0136,  0.0473, -0.1416, -0.1862],
+        [ 0.0972,  0.3128, -1.4991,  1.5097, -0.2274,  0.9577,  0.3134,  0.4686],
+        [ 0.4811, -0.6752,  0.3549, -0.3067, -0.8499,  0.1731, -0.7161,  1.5737],
+        [-1.0295, -0.5617, -1.3081, -0.7298,  1.2425,  1.4204, -2.1172, -1.8508],
+        [-0.0320,  0.5467,  0.5000,  0.5495, -0.7067,  0.1186, -0.1811, -0.2006],
+        [-0.0577,  0.2486, -1.7389, -1.1115,  0.6539, -0.8178,  0.7318, -0.5222],
+        [ 0.7442,  1.3266,  1.2726,  0.4506,  0.5034,  1.9305, -1.0986, -0.5458],
+        [-0.1042,  0.9088, -1.2943,  1.3152, -1.0028,  1.9132,  1.1797,  1.4855],
+        [ 0.2354, -0.5610, -1.2689, -1.2023, -1.3398, -2.2425,  0.1813,  0.6807],
+        [ 1.5497, -0.3896, -0.5601, -0.0247,  1.8895,  0.6981, -0.9707,  0.4495],
+        [-1.6224,  1.1241, -2.1541,  2.2890, -0.8744,  0.9464,  0.0842,  2.2479],
+        [ 0.2113, -0.7810,  1.3744, -0.1434, -0.0175, -0.2129, -0.4064, -0.4024],
+        [ 2.3623,  1.1718,  0.8943,  0.0925,  1.3341, -0.3885, -0.2780, -0.6903]],
+       requires_grad=True)
+embedding.weight.shape: torch.Size([36, 8])
+分词之后的词的总数量:45
+torch.Size([45, 8])
+</code></pre>
+<h3 id="sec-21">5.3 小结</h3>
+<ul>
+<li>
+<p><strong>文本张量表示</strong>：将文本表示为张量，每个词用词向量表示，多个词向量按顺序组成文本张量，作为神经网络的输入。</p>
+</li>
+<li>
+<p><strong>文本张量表示方法</strong>：</p>
+<ul>
+<li>One-hot编码：将词表示为n维向量，该词对应位置为1，其余为0（n为词表大小）</li>
+<li>Word2Vec：静态词向量，无监督训练方法，通过CBOW或Skip-gram模式学习词向量</li>
+<li>Embedding层：动态词向量，在神经网络训练中同步学习的动态词向量</li>
+</ul>
+</li>
+<li>
+<p><strong>One-hot编码</strong>：</p>
+<ul>
+<li>优势：操作简单，容易理解</li>
+<li>劣势：词与词无关联，大语料下向量过长，占用内存大</li>
+</ul>
+</li>
+<li>
+<p><strong>Word2Vec-CBOW模式</strong>：使用上下文预测中心词</p>
+</li>
+<li>
+<p><strong>Word2Vec-Skip-gram模式</strong>：使用中心词预测上下文词</p>
+</li>
+<li>
+<p><strong>Word2Vec应用-FastText工具</strong>：使用fasttext工具训练、保存、加载模型，获取词向量和相似词检索</p>
+</li>
+<li>
+<p><strong>Embedding层（词嵌入）</strong>：在下游任务中与神经网络端到端联合训练的词向量，通过nn.Embedding实现</p>
+</li>
+</ul>
+<h2 id="sec-22">6 扩展 - 新建虚拟环境</h2>
+<p>创建新的虚拟环境nlp_project</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># conda create -n nlp_project python==3.10</span>
+</pre></div>
+</div>
+<p>查看本机安装的所有虚拟环境</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">conda</span> <span class="n">env</span> <span class="nb">list</span>
+</pre></div>
+</div>
+<pre><code># conda environments:
+#
+# *  -&gt; active
+# + -&gt; frozen
+EPP                      &lt;本地用户目录&gt;\.conda\envs\EPP
+dl_project               &lt;本地用户目录&gt;\.conda\envs\dl_project
+fast_video               &lt;本地用户目录&gt;\.conda\envs\fast_video
+nlp_cpu                  &lt;本地用户目录&gt;\.conda\envs\nlp_cpu
+nlp_project          *   &lt;本地用户目录&gt;\.conda\envs\nlp_project
+one_api                  &lt;本地用户目录&gt;\.conda\envs\one_api
+base                     E:\miniconda3
+
+
+Note: you may need to restart the kernel to use updated packages.
+</code></pre>
+<p>进入虚拟环境</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">conda</span> <span class="n">activate</span> <span class="n">nlp_project</span>
+</pre></div>
+</div>
+<pre><code>Note: you may need to restart the kernel to use updated packages.
+
+
+
+CondaError: Run 'conda init' before 'conda activate'
+</code></pre>
+<p>退出虚拟环境</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">conda</span> <span class="n">deactivate</span>
+</pre></div>
+</div>
+<pre><code>Note: you may need to restart the kernel to use updated packages.
+
+
+
+CondaError: Run 'conda init' before 'conda deactivate'
+</code></pre>
+<p>删除虚拟环境</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># conda remove -n nlp_project --all</span>
+</pre></div>
+</div>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;pytorch版本: &quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;能否使用GPU: &quot;</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">())</span>
+
+<span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GPU型号: </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">get_device_name</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># 获取 GPU 名称</span>
+</pre></div>
+</div>
+<pre><code>pytorch版本:  2.9.1+cu128
+能否使用GPU:  True
+GPU型号: NVIDIA GeForce RTX 5070 Laptop GPU
+</code></pre>
+<h2 id="sec-23">7 常见面试题</h2>
+<h4>分词是什么？</h4>
+<ul>
+<li>将连续的字序列按规范切分为词序列的过程。</li>
+</ul>
+<hr />
+<h4>中文分词的三种模式有什么区别，分别适合什么场景？</h4>
+<ul>
+<li><strong>精确模式</strong>：切分最精确，适合文本分析。</li>
+<li><strong>全模式</strong>：召回高但歧义多，适合关键词提取。</li>
+<li><strong>搜索引擎模式</strong>：在精确模式基础上切长词，提高召回，适合搜索。</li>
+</ul>
+<hr />
+<h4>词性标注（POS）和命名实体识别（NER）分别是什么？</h4>
+<ul>
+<li><strong>POS</strong>：词性标注(Part-Of-Speech tagging, 简称POS)就是标注出一段文本中每个词/token的词性,提供语法结构信息，是句法分析与语义理解基础。</li>
+<li><strong>NER</strong>：命名实体识别(Named Entity Recognition, 简称NER)就是识别文本中的人名、地名、机构等实体，支撑检索与知识图谱。</li>
+</ul>
+<hr />
+<h4>one-hot 编码的主要缺点是什么？常见替代方案有哪些？</h4>
+<ul>
+<li><strong>缺点</strong>：高维稀疏、无语义相似性、占用内存大。</li>
+<li><strong>替代</strong>：Word2vec、FastText、Embedding 层等稠密向量表示。</li>
+</ul>
+<hr />
+<h4>词向量为什么能提升模型效果？</h4>
+<ul>
+<li>通过稠密向量表达语义相似性，降低维度并提高泛化能力。</li>
+</ul>
+<h3 id="sec-24">7.1 代码作业</h3>
+<ul>
+<li>
+<ol>
+<li>使用 jieba 对下列文本进行分词，按词频从高到低构建词表，并将文本转换为 one-hot 编码，打印每个词的 one-hot 向量（提示：词表索引处为 1，其余为 0）。
+  文本：<code>"自然语言处理是人工智能的重要分支，深度学习推动了自然语言处理的快速发展，让机器能够理解和生成自然语言。"</code></li>
+</ol>
+</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jieba</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+
+<span class="c1"># ==============================</span>
+<span class="c1"># 作业1：分词 + one-hot 编码</span>
+<span class="c1"># ==============================</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">homework1</span><span class="p">():</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;自然语言处理是人工智能的重要分支，深度学习推动了自然语言处理的快速发展，让机器能够理解和生成自然语言。&quot;</span>
+
+    <span class="c1"># 1.分词</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">jieba</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;分词结果: </span><span class="si">{</span><span class="n">tokens</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 2.按词频排序构建词表</span>
+    <span class="n">word_freq</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+    <span class="n">vocab</span> <span class="o">=</span> <span class="p">{</span><span class="n">word</span><span class="p">:</span> <span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">word_freq</span><span class="o">.</span><span class="n">most_common</span><span class="p">())}</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">词表（按词频排序）: </span><span class="si">{</span><span class="n">vocab</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># 3.one-hot 编码</span>
+    <span class="n">vocab_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">one-hot 编码（词表大小=</span><span class="si">{</span><span class="n">vocab_size</span><span class="si">}</span><span class="s2">）:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">:</span>
+        <span class="n">one_hot</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">)</span>
+        <span class="n">one_hot</span><span class="p">[</span><span class="n">vocab</span><span class="p">[</span><span class="n">token</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  </span><span class="si">{</span><span class="n">token</span><span class="si">!r:</span><span class="s2">8s</span><span class="si">}</span><span class="s2"> =&gt; </span><span class="si">{</span><span class="n">one_hot</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">homework1</span><span class="p">()</span>
+</pre></div>
+</div>
+<pre><code>分词结果: ['自然语言', '处理', '是', '人工智能', '的', '重要', '分支', '，', '深度', '学习', '推动', '了', '自然语言', '处理', '的', '快速', '发展', '，', '让', '机器', '能够', '理解', '和', '生成', '自然语言', '。']
+
+词表（按词频排序）: {'自然语言': 0, '处理': 1, '的': 2, '，': 3, '是': 4, '人工智能': 5, '重要': 6, '分支': 7, '深度': 8, '学习': 9, '推动': 10, '了': 11, '快速': 12, '发展': 13, '让': 14, '机器': 15, '能够': 16, '理解': 17, '和': 18, '生成': 19, '。': 20}
+
+one-hot 编码（词表大小=21）:
+  '自然语言'   =&gt; [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '处理'     =&gt; [0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '是'      =&gt; [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '人工智能'   =&gt; [0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '的'      =&gt; [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '重要'     =&gt; [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '分支'     =&gt; [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '，'      =&gt; [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '深度'     =&gt; [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '学习'     =&gt; [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '推动'     =&gt; [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '了'      =&gt; [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '自然语言'   =&gt; [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '处理'     =&gt; [0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '的'      =&gt; [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '快速'     =&gt; [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '发展'     =&gt; [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '，'      =&gt; [0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '让'      =&gt; [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '机器'     =&gt; [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '能够'     =&gt; [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0]
+  '理解'     =&gt; [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0]
+  '和'      =&gt; [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0]
+  '生成'     =&gt; [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0]
+  '自然语言'   =&gt; [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  '。'      =&gt; [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0]
+</code></pre><div class="done-bar"><button class="mark-done-btn" data-key="lesson35" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson34.html"><div class="dir">← 上一篇</div><div class="name">🔄 循环神经网络：词嵌入、RNN 与文本生成</div></a><a class="next" href="lesson36.html"><div class="dir">下一篇 →</div><div class="name">🧹 文本预处理、特征分析与数据增强</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">1 自然语言处理入门</a><a class="lv3" href="#sec-2">1.1 什么是自然语言处理</a><a class="lv3" href="#sec-3">1.2 自然语言处理的发展简史</a><a class="lv3" href="#sec-4">1.3 自然语言处理的应用场景</a><a class="lv3" href="#sec-5">1.4 机器翻译</a><a class="lv2" href="#sec-6">2 认识文本预处理</a><a class="lv2" href="#sec-7">3 文本处理的基本方法</a><a class="lv3" href="#sec-8">3.1 分词</a><a class="lv3" href="#sec-9">3.2 .演示jieba分词</a><a class="lv3" href="#sec-10">3.3 词性标注</a><a class="lv3" href="#sec-11">3.4 命名实体识别</a><a class="lv3" href="#sec-12">3.5 .NER和POS讲解</a><a class="lv3" href="#sec-13">3.6 小结</a><a class="lv2" href="#sec-14">4 文本张量表示方法</a><a class="lv3" href="#sec-15">4.1 文本张量表示</a><a class="lv3" href="#sec-16">4.2 one-hot词向量表示</a><a class="lv3" href="#sec-17">4.3 演示one-hot编码</a><a class="lv2" href="#sec-18">5 文本张量表示方法</a><a class="lv3" href="#sec-19">5.1 word2vec模型-静态预训练词向量</a><a class="lv3" href="#sec-20">5.2 Embedding层-一起训练的动态词向量</a><a class="lv3" href="#sec-21">5.3 小结</a><a class="lv2" href="#sec-22">6 扩展 - 新建虚拟环境</a><a class="lv2" href="#sec-23">7 常见面试题</a><a class="lv3" href="#sec-24">7.1 代码作业</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
