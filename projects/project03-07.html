@@ -31,7 +31,22 @@
 <h1>🗄️ 配置、日志与业务数据库</h1>
 <div class="chips"><span class="chip green">🏷️ Config / Logger</span><span class="chip green">🏷️ MySQL</span><span class="chip green">🏷️ 业务数据模型</span><a class="chip" href="project03.html">🚀 返回项目总览</a></div>
 </div>
-<nav class="project-chapter-nav" aria-label="项目章节"><div class="project-nav-label">项目进度 · 共 11 章</div><div class="project-steps"><a class="project-step" href="project03-01.html"><span>01</span>SmartVoyage 场景、目标与开发环境</a><a class="project-step" href="project03-02.html"><span>02</span>Function Call：让模型可靠调用工具</a><a class="project-step" href="project03-03.html"><span>03</span>MCP：模型与外部工具的标准接口</a><a class="project-step" href="project03-04.html"><span>04</span>Agent、ReAct 与五种智能体模式</a><a class="project-step" href="project03-05.html"><span>05</span>A2A：智能体通信、路由与协作</a><a class="project-step" href="project03-06.html"><span>06</span>SmartVoyage 业务架构与代码架构</a><a class="project-step active" href="project03-07.html"><span>07</span>配置、日志与业务数据库</a><a class="project-step" href="project03-08.html"><span>08</span>天气数据采集、入库与定时更新</a><a class="project-step" href="project03-09.html"><span>09</span>天气、票务与订票 MCP 服务</a><a class="project-step" href="project03-10.html"><span>10</span>天气、票务与订票 A2A Agent</a><a class="project-step" href="project03-11.html"><span>11</span>主控 Agent、意图路由与 Streamlit 应用</a></div></nav><div class="callout tip course-note"><span class="ico">🧭</span><p><strong>工程实践提示：</strong>示例中的模型地址、数据库账号和密钥均应通过环境变量或独立配置文件注入；部署前还需补充权限控制、输入校验、超时重试、日志脱敏、来源引用与离线评估。</p></div><h2 id="sec-1">1 整体流程</h2>
+<nav class="project-chapter-nav" aria-label="项目章节"><div class="project-nav-label">项目进度 · 共 11 章</div><div class="project-steps"><a class="project-step" href="project03-01.html"><span>01</span>SmartVoyage 场景、目标与开发环境</a><a class="project-step" href="project03-02.html"><span>02</span>Function Call：让模型可靠调用工具</a><a class="project-step" href="project03-03.html"><span>03</span>MCP：模型与外部工具的标准接口</a><a class="project-step" href="project03-04.html"><span>04</span>Agent、ReAct 与五种智能体模式</a><a class="project-step" href="project03-05.html"><span>05</span>A2A：智能体通信、路由与协作</a><a class="project-step" href="project03-06.html"><span>06</span>SmartVoyage 业务架构与代码架构</a><a class="project-step active" href="project03-07.html"><span>07</span>配置、日志与业务数据库</a><a class="project-step" href="project03-08.html"><span>08</span>天气数据采集、入库与定时更新</a><a class="project-step" href="project03-09.html"><span>09</span>天气、票务与订票 MCP 服务</a><a class="project-step" href="project03-10.html"><span>10</span>天气、票务与订票 A2A Agent</a><a class="project-step" href="project03-11.html"><span>11</span>主控 Agent、意图路由与 Streamlit 应用</a></div></nav><div class="callout tip course-note"><span class="ico">🧭</span><p><strong>工程实践提示：</strong>示例中的模型地址、数据库账号和密钥均应通过环境变量或独立配置文件注入；部署前还需补充权限控制、输入校验、超时重试、日志脱敏、来源引用与离线评估。</p></div><h2 id="sec-1">学习目标</h2>
+<ul>
+<li>
+<p>理解 A2A 协议的多代理协作</p>
+</li>
+<li>
+<p>理解LLM 意图识别</p>
+</li>
+<li>
+<p>理解SQL 生成和数据库交互的流程</p>
+</li>
+<li>
+<p>理解整个项目交互与架构</p>
+</li>
+</ul>
+<h2 id="sec-2">1 整体流程</h2>
 <ol>
 <li>配置基础环境（config.py 和 create_logger.py）</li>
 <li>初始化数据库（SQL 脚本）</li>
@@ -46,8 +61,8 @@
 </ul>
 </li>
 </ol>
-<h2 id="sec-2">2 配置模块</h2>
-<h3 id="sec-3">2.1 config.py</h3>
+<h2 id="sec-3">2 配置模块</h2>
+<h3 id="sec-4">2.1 config.py</h3>
 <p>config.py配置文件，主要是LLM 和数据库信息。统一管理配置，避免硬编码，便于修改。</p>
 <p><strong>项目中的定位</strong>：基础模块，提供全局参数（如 API 密钥、模型名称），所有脚本依赖它。</p>
 <p><strong>核心功能</strong>：定义 Config 类</p>
@@ -80,7 +95,7 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">Config</span><span class="p">()</span><span class="o">.</span><span class="n">log_file</span><span class="p">)</span>
 </pre></div>
 </div>
-<h3 id="sec-4">2.2 create_logger.py</h3>
+<h3 id="sec-5">2.2 create_logger.py</h3>
 <p>create_logger.py主要是配置日志，设置整个项目的logger对象。</p>
 <p><strong>项目中的定位</strong>：管理logger，全局统一使用这一个。</p>
 <p><strong>核心功能</strong>：通过setup_logger方法设置，然后调用setup_logger方法返回logger对象。</p>
@@ -125,7 +140,7 @@
 </pre></div>
 </div>
 <p><strong>注意</strong>：需要设置 logger.propagate = False 防止日志重复输出。因为某些包中，如create_fastapi_app也有日志对象，可能会重复。为了避免日志重复输出，需要设置 logger.propagate = False。</p>
-<h2 id="sec-5">3 数据库初始化</h2>
+<h2 id="sec-6">3 数据库初始化</h2>
 <p>SQL 脚本，创建票务和天气数据库表。定义数据结构，确保 MCP 服务器能查询存储的数据。</p>
 <p><strong>项目中的定位</strong>：数据基础，存储天气和票务信息。</p>
 <p><strong>核心功能</strong>：创建表、设置唯一键和注释。</p>
@@ -145,14 +160,14 @@
 </li>
 </ul>
 <p><img alt="配置、日志与业务数据库项目配图" decoding="async" loading="lazy" src="../assets/img/project03-07/figure-385c62e48fe5.png"/></p>
-<h3 id="sec-6">3.1 建库</h3>
+<h3 id="sec-7">3.1 建库</h3>
 <p><strong>代码路径</strong>：SmartVoyage/sql</p>
 <div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>DROP DATABASE IF EXISTS travel_rag;
 CREATE DATABASE travel_rag CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE travel_rag;
 </pre></div>
 </div>
-<h3 id="sec-7">3.2 train_tickets（火车票表）</h3>
+<h3 id="sec-8">3.2 train_tickets（火车票表）</h3>
 <p><strong>作用：</strong>存储火车票信息，记录出发地、目的地、时间、车次等。</p>
 <div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">train_tickets</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="n">AUTO_INCREMENT</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">'主键，自增，唯一标识每条记录'</span><span class="p">,</span>
@@ -170,7 +185,7 @@ USE travel_rag;
 <span class="p">)</span><span class="w"> </span><span class="k">COMMENT</span><span class="o">=</span><span class="s1">'火车票信息表'</span><span class="p">;</span>
 </pre></div>
 </div>
-<h3 id="sec-8">3.3 flight_tickets（机票表）</h3>
+<h3 id="sec-9">3.3 flight_tickets（机票表）</h3>
 <p><strong>作用：</strong>存储机票信息，记录航班、舱位、时间等。</p>
 <div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">flight_tickets</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="n">AUTO_INCREMENT</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="k">COMMENT</span><span class="w"> </span><span class="s1">'主键，自增，唯一标识每条记录'</span><span class="p">,</span>
@@ -188,7 +203,7 @@ USE travel_rag;
 <span class="p">)</span><span class="w"> </span><span class="k">COMMENT</span><span class="o">=</span><span class="s1">'航班机票信息表'</span><span class="p">;</span>
 </pre></div>
 </div>
-<h3 id="sec-9">3.4 concert_tickets（演唱会票表）</h3>
+<h3 id="sec-10">3.4 concert_tickets（演唱会票表）</h3>
 <p><strong>作用：</strong>存储演唱会票信息，记录艺人、场地、时间等。</p>
 <div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">concert_tickets</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="n">AUTO_INCREMENT</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span><span class="w"> </span><span class="c1">-- 主键，自增，唯一标识每条记录</span>
@@ -206,7 +221,7 @@ USE travel_rag;
 <span class="p">);</span>
 </pre></div>
 </div>
-<h3 id="sec-10">3.5 weather_data（天气表）</h3>
+<h3 id="sec-11">3.5 weather_data（天气表）</h3>
 <p><strong>作用：</strong>存储城市天气信息，城市名称、最高温度、最低温度等。</p>
 <div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">SQL</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">DROP</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">weather_data</span><span class="p">;</span>
 <span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">weather_data</span><span class="w"> </span><span class="p">(</span>
@@ -244,12 +259,12 @@ USE travel_rag;
 <span class="p">)</span><span class="w"> </span><span class="n">ENGINE</span><span class="o">=</span><span class="n">INNODB</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8mb4</span><span class="w"> </span><span class="k">COLLATE</span><span class="o">=</span><span class="n">utf8mb4_unicode_ci</span><span class="w"> </span><span class="k">COMMENT</span><span class="o">=</span><span class="s1">'天气数据表'</span><span class="p">;</span>
 </pre></div>
 </div>
-<h3 id="sec-11">3.6 数据插入</h3>
+<h3 id="sec-12">3.6 数据插入</h3>
 <p>运行 SmartVoyage/sql/insert_data.sql 插入测试数据。</p>
 <div class="done-bar"><button class="mark-done-btn" data-key="project03-07" type="button">⛳ 学完了？标记为已完成</button></div>
 <div class="pager"><a href="project03-06.html"><div class="dir">← 上一篇</div><div class="name">🏗️ SmartVoyage 业务架构与代码架构</div></a><a class="next" href="project03-08.html"><div class="dir">下一篇 →</div><div class="name">🌦️ 天气数据采集、入库与定时更新</div></a></div>
 </main>
-<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">1 整体流程</a><a class="lv2" href="#sec-2">2 配置模块</a><a class="lv3" href="#sec-3">2.1 config.py</a><a class="lv3" href="#sec-4">2.2 create_logger.py</a><a class="lv2" href="#sec-5">3 数据库初始化</a><a class="lv3" href="#sec-6">3.1 建库</a><a class="lv3" href="#sec-7">3.2 train_tickets（火车票表）</a><a class="lv3" href="#sec-8">3.3 flight_tickets（机票表）</a><a class="lv3" href="#sec-9">3.4 concert_tickets（演唱会票表）</a><a class="lv3" href="#sec-10">3.5 weather_data（天气表）</a><a class="lv3" href="#sec-11">3.6 数据插入</a></aside>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">学习目标</a><a class="lv2" href="#sec-2">1 整体流程</a><a class="lv2" href="#sec-3">2 配置模块</a><a class="lv3" href="#sec-4">2.1 config.py</a><a class="lv3" href="#sec-5">2.2 create_logger.py</a><a class="lv2" href="#sec-6">3 数据库初始化</a><a class="lv3" href="#sec-7">3.1 建库</a><a class="lv3" href="#sec-8">3.2 train_tickets（火车票表）</a><a class="lv3" href="#sec-9">3.3 flight_tickets（机票表）</a><a class="lv3" href="#sec-10">3.4 concert_tickets（演唱会票表）</a><a class="lv3" href="#sec-11">3.5 weather_data（天气表）</a><a class="lv3" href="#sec-12">3.6 数据插入</a></aside>
 </div>
 <footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
 <script src="../assets/js/main.js"></script>
