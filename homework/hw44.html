@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BERT、GPT 与主流预训练架构综合训练 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons">课程讲义</a>
+    <a href="../index.html#homework" class="active">课后练习</a>
+    <a href="../index.html#projects">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson58" href="../lessons/lesson58.html"><span class="no">19</span><span>NumPy 统计计算与科学分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">20</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">21</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">22</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">23</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">24</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">25</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">26</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">27</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">28</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">29</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">30</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">31</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">32</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">33</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">34</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">35</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">36</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">37</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">38</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">39</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">40</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">41</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">42</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">43</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">44</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">45</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">46</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">47</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">48</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">49</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">50</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">51</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">📘 医学知识图谱</div><a class="item" data-page-key="lesson51" href="../lessons/lesson51.html"><span class="no">52</span><span>知识图谱基础与医学图谱架构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson52" href="../lessons/lesson52.html"><span class="no">53</span><span>数据标注、查询语言与 Neo4j 工具链</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson53" href="../lessons/lesson53.html"><span class="no">54</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson54" href="../lessons/lesson54.html"><span class="no">55</span><span>关系抽取：规则、Pipeline 与 CasRel</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson55" href="../lessons/lesson55.html"><span class="no">56</span><span>知识融合：实体统一、链接与消歧</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson56" href="../lessons/lesson56.html"><span class="no">57</span><span>Neo4j 医学图谱搭建与质量验证</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson57" href="../lessons/lesson57.html"><span class="no">58</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">21</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">22</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">24</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">25</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">27</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">28</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">29</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">30</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">31</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">32</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw33" href="../homework/hw33.html"><span class="no">33</span><span>卷积神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw34" href="../homework/hw34.html"><span class="no">34</span><span>循环神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw35" href="../homework/hw35.html"><span class="no">35</span><span>自然语言处理入门与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw36" href="../homework/hw36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw37" href="../homework/hw37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw38" href="../homework/hw38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw39" href="../homework/hw39.html"><span class="no">39</span><span>Transformer 架构与工程实现综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw40" href="../homework/hw40.html"><span class="no">40</span><span>Transformer 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw41" href="../homework/hw41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw42" href="../homework/hw42.html"><span class="no">42</span><span>FastText：文本分类与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw43" href="../homework/hw43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务综合训练</span><span class="done-flag">✅</span></a><a class="item hw active" data-page-key="hw44" href="../homework/hw44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project07" href="../projects/project07.html"><span class="no">07</span><span>医学知识图谱：从信息抽取到 KBQA</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课后练习 / 练习 44</div>
+<h1>🧠 BERT、GPT 与主流预训练架构综合训练</h1>
+<div class="chips"><span class="chip amber">🏷️ 选择 + 简答 + 代码</span><span class="chip amber">🏷️ 55 题</span><a class="chip" href="../lessons/lesson44.html">📖 相关讲义：BERT、GPT 与主流预训练架构</a></div>
+</div>
+<p>55 道练习，按“架构可见性 → BERT 输入与双向编码 → MLM/NSP → 下游任务头 → GPT 因果语言建模 → 生成与缓存 → 主流变体 → 工程选型”组织。重点不是背模型名称，而是能从 Attention Mask、训练目标和输出粒度推导模型能做什么、不能做什么。</p>
+<blockquote>
+<p>建议先独立作答，再展开参考答案。练习按 <a href="https://arxiv.org/abs/1810.04805">BERT 原论文</a>、Hugging Face <a href="https://huggingface.co/docs/transformers/main/model_doc/bert">BERT</a>、<a href="https://huggingface.co/docs/transformers/main/tasks/masked_language_modeling">Masked Language Modeling</a>、<a href="https://huggingface.co/docs/transformers/main/tasks/language_modeling">Causal Language Modeling</a> 与 <a href="https://huggingface.co/docs/transformers/model_doc/gpt2">GPT-2</a> 官方资料校准；10 道代码题使用纯 Python/PyTorch，不下载外部 checkpoint。</p>
+</blockquote>
+<h2 id="sec-1">一、选择题（30 题）</h2>
+<div class="q-card"><h3 id="sec-2">1. 下列“结构—代表模型—主要任务”匹配正确的是？</h3>
+<p>A. Encoder-only—BERT—文本理解<br />
+B. Decoder-only—BERT—自回归生成<br />
+C. Encoder–Decoder—GPT-2—仅句子分类<br />
+D. Encoder-only—T5—机器翻译</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> BERT/RoBERTa 等以双向 Encoder 为主，擅长分类、标注和抽取式问答；GPT/LLaMA/Qwen 等通常是因果 Decoder-only；T5/BART 属于 Encoder–Decoder。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-3">2. BERT 的“深度双向”主要来自什么？</h3>
+<p>A. 每个位置只看左边<br />
+B. Encoder 自注意力没有因果 Mask，有效 token 可同时利用左右上下文<br />
+C. 将两个单向 LSTM 的最终状态相加<br />
+D. 训练时删除 Position Embedding</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> Padding Mask 仍用于屏蔽 PAD，但不会像因果 Mask 那样禁止关注未来位置；因此同一词在不同左右上下文中可获得不同表示。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-4">3. GPT 类因果语言模型为什么不能在预测位置 $t$ 时看到 $t+1$？</h3>
+<p>A. 词表不包含未来词<br />
+B. 因果 Attention Mask 屏蔽未来位置，防止训练标签泄漏<br />
+C. Position Embedding 全为零<br />
+D. Softmax 只支持一个 token</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 训练可并行计算所有位置，但每个位置的可见范围仍受下三角因果 Mask 限制，从而与逐 token 生成时的信息条件一致。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-5">4. Encoder–Decoder 模型中，Decoder 与 Encoder 输出交互通常依靠？</h3>
+<p>A. Cross-Attention<br />
+B. NSP 分类头<br />
+C. 只共享文件名<br />
+D. 删除所有 Mask</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Decoder 的自注意力建模已生成前缀，Cross-Attention 再读取 Encoder 对源序列的表示，适合翻译、摘要等条件生成任务。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-6">5. 原始 BERT 的输入 Embedding 通常由哪三部分相加？</h3>
+<p>A. Token、Position、Token Type（Segment）Embedding<br />
+B. Token、Label、Loss Embedding<br />
+C. Query、Key、Value 的概率<br />
+D. Encoder、Decoder、Cross-Attention</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Token Embedding 表示词元身份，Position Embedding 注入顺序，Token Type Embedding 可区分句子 A/B；实际模型是否使用 token type 仍要查看配置和 tokenizer 输出。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-7">6. BERT 句子对中 <code>token_type_ids</code> 的典型含义是？</h3>
+<p>A. 0/1 表示训练集和测试集<br />
+B. 0/1 区分第一段与第二段输入<br />
+C. 表示 Padding 与非 Padding<br />
+D. 表示正确与错误标签</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 原始 BERT 通常用 0 标记句段 A（含 <code>[CLS]</code> 和首个 <code>[SEP]</code>），用 1 标记句段 B；它不能替代 <code>attention_mask</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-8">7. 关于 <code>[CLS]</code>、<code>[SEP]</code> 及其 ID，哪项正确？</h3>
+<p>A. 所有预训练模型都保证 <code>[CLS]=101</code>、<code>[SEP]=102</code><br />
+B. 特殊 token 的名称、布局和 ID 由 tokenizer/checkpoint 决定，不应跨模型硬编码<br />
+C. GPT 必须使用 BERT 的两个 <code>[SEP]</code><br />
+D. 特殊 token 不占序列长度</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 101/102 是部分 BERT 词表的具体编号，不是 Transformer 标准；通用代码应读取 tokenizer 的特殊 token 配置。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-9">8. 原始 BERT MLM 的 15% 候选 token 中，经典 80/10/10 策略是？</h3>
+<p>A. 80% 换 <code>[MASK]</code>，10% 换随机 token，10% 保持原 token<br />
+B. 80% 删除，10% 加标签，10% Padding<br />
+C. 全部换 <code>[MASK]</code><br />
+D. 80% 保留，20% 删除</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 被选位置都以原 token 为监督目标；三路替换降低预训练只依赖 <code>[MASK]</code> 的分布偏移，并迫使模型结合上下文判断。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-10">9. MLM 训练时未被选中的 token 标签通常应设为？</h3>
+<p>A. <code>-100</code>，使交叉熵忽略这些位置<br />
+B. 全部设为 0 类<br />
+C. 当前位置的预测概率<br />
+D. 序列长度</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> <code>labels</code> 与输入同形状，但只有选中位置保留原 token ID；特殊 token、PAD 和未选位置通常用 <code>-100</code> 排除出损失。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-11">10. 关于 NSP，哪项更准确？</h3>
+<p>A. 所有 BERT 变体都必须保留 NSP<br />
+B. NSP 是原始 BERT 的预训练目标之一，但 RoBERTa 等变体移除了它<br />
+C. NSP 就是 next-token prediction<br />
+D. NSP 逐 token 预测实体类别</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 原始 NSP 判断 B 是否为 A 的下一句；后续工作表明预训练流程、数据规模与目标设计都可调整，不能把 NSP 当成 Encoder-only 的必要条件。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-12">11. “BERT 微调时仅调整任务头”这一说法的问题是？</h3>
+<p>A. 完全正确，Backbone 永远不会更新<br />
+B. 它只描述冻结特征抽取方案；经典全量微调会更新 Backbone 和任务头<br />
+C. BERT 没有任务头<br />
+D. 微调不需要标签</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 可根据数据、算力和稳定性选择冻结、逐层解冻、全量微调或 PEFT；“只需增加很小的任务头”不等于“只训练任务头”。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-13">12. BERT 基础模型的 <code>last_hidden_state</code> 常见形状是？</h3>
+<p>A. <code>[batch, sequence, hidden]</code><br />
+B. <code>[batch, classes]</code><br />
+C. <code>[vocab]</code><br />
+D. <code>[heads, layers]</code></p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 句级任务可选择特定位置或池化结果，token 级任务使用每个位置的隐藏状态；不同任务头再映射到类别数或起止位置。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-14">13. 为什么不应把任意 BERT 的 <code>[CLS]</code> 向量直接当成高质量语义相似度向量？</h3>
+<p>A. <code>[CLS]</code> 没有任何数值<br />
+B. 预训练目标未必优化余弦语义空间，池化策略与专门的句向量训练目标很重要<br />
+C. <code>[CLS]</code> 只能表示图片<br />
+D. 余弦相似度只支持 GPT</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> <code>[CLS]</code> 可作为分类输入，但通用句子检索通常应选用经过对比学习等目标训练的句向量模型，并验证池化和归一化方案。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-15">14. 为什么普通 BERT MLM 不能直接按 GPT 的方式连续生成长文本？</h3>
+<p>A. BERT 没有词表<br />
+B. 双向 MLM 预测被遮蔽位置，不具备天然的从左到右因果分解与生成接口<br />
+C. BERT 只能输入一个 token<br />
+D. BERT 不包含 Attention</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 可用迭代填空做特殊生成，但这与标准自回归语言模型不同；开放式生成通常使用 <code>AutoModelForCausalLM</code> 或 Encoder–Decoder 生成模型。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-16">15. “Decoder-only”中的 Decoder 与原始 Transformer Decoder 的关系，哪项更准确？</h3>
+<p>A. 必然含 Encoder–Decoder Cross-Attention<br />
+B. 通常保留因果自注意力和 FFN，但没有外部 Encoder 时不需要 Cross-Attention<br />
+C. 完全不使用 Attention<br />
+D. 每层都是双向 Encoder</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> GPT 类模型常被称为 Decoder-only，是因为其核心采用因果自注意力堆叠；不能据“Decoder”一词推断它一定连接了 Encoder。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-17">16. 因果语言建模训练中，序列 <code>[A,B,C,D]</code> 的核心监督关系是？</h3>
+<p>A. 用 A 预测 A<br />
+B. 用 A 预测 B、用 A/B 预测 C、用 A/B/C 预测 D<br />
+C. 用 D 预测 A<br />
+D. 同时看到完整序列后预测任意 Mask</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 实现上常把 logits 去掉最后一个位置、labels 去掉第一个位置再计算交叉熵；部分模型接口会在内部完成位移。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-18">17. BERT MLM 与 GPT 因果 LM 分别应优先使用哪类任务模型？</h3>
+<p>A. <code>AutoModelForMaskedLM</code> 与 <code>AutoModelForCausalLM</code><br />
+B. 两者都用 <code>AutoModelForQuestionAnswering</code><br />
+C. 两者都用 <code>AutoModelForTokenClassification</code><br />
+D. <code>AutoModel</code> 会自动生成任何文本</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 任务头和训练目标必须匹配；基础 <code>AutoModel</code> 通常只返回隐藏表示，不等价于带词表投影的语言模型头。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-19">18. 因果 LM 的 logits 常见形状是？</h3>
+<p>A. <code>[batch, sequence, vocab]</code><br />
+B. <code>[batch, classes]</code><br />
+C. <code>[sequence, sequence]</code><br />
+D. <code>[vocab, batch]</code></p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 每个序列位置对整个词表给出下一 token 的未归一化分数；生成时通常只消费当前最后有效位置的 logits。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-20">19. 长度为 4 的因果自注意力中，第 2 个位置（从 0 开始）可以关注？</h3>
+<p>A. 仅位置 3<br />
+B. 位置 0、1、2，但不能关注 3<br />
+C. 所有位置<br />
+D. 任何位置都不能关注</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 是否允许关注自身取决于具体矩阵定义，但标准 next-token 训练通常让位置 $t$ 的表示访问不晚于 $t$ 的输入，标签则是 $t+1$。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-21">20. 批量因果语言建模同时存在 Padding 时，应如何处理 Mask？</h3>
+<p>A. 只做因果 Mask，PAD 可随意参与<br />
+B. 合并因果约束与 Padding 约束，使未来位置和 PAD 都不可见<br />
+C. 只做 Padding Mask，未来 token 全可见<br />
+D. 删除 Position Embedding 即可</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 两种 Mask 解决不同问题：因果 Mask 防未来泄漏，Padding Mask 排除无效补齐位置；损失标签中的 PAD 也应设为 <code>-100</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-22">21. 对补齐后的 GPT 批量调用 <code>generate()</code>，哪项做法可靠？</h3>
+<p>A. 只传 <code>input_ids</code>，忽略模型警告<br />
+B. 显式传 <code>attention_mask</code>，正确配置 <code>pad_token_id</code>，并按模型/tokenizer约定处理 Padding 方向<br />
+C. 把 PAD 当作正常文本<br />
+D. 用 <code>token_type_ids</code> 代替 <code>attention_mask</code></p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> Padding 方向与位置编号会受具体架构和生成实现影响，不能跨模型套用单一规则；应遵循模型文档并对不同长度批次做一致性测试。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-23">22. 为什么不能把一次前向传播中每个位置的 <code>argmax</code> 直接拼成自回归生成结果？</h3>
+<p>A. Argmax 没有返回值<br />
+B. 后续位置的输入上下文尚未包含刚生成 token；应逐步调用或使用 <code>generate()</code> 维护状态<br />
+C. Logits 不含词表维<br />
+D. 自回归模型一次只能输出一个浮点数</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 自回归生成存在反馈环：第 $t$ 步产出的 token 会成为第 $t+1$ 步输入。<code>generate()</code> 还负责 EOS、采样策略、缓存和停止条件。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-24">23. KV Cache 的主要作用是？</h3>
+<p>A. 保存训练集标签<br />
+B. 生成下一 token 时复用历史 Key/Value，避免重复计算整个前缀的注意力投影<br />
+C. 替代模型权重<br />
+D. 让模型看到未来 token</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> KV Cache 以额外显存换取解码速度；上下文越长、层数越深、批量越大，缓存容量越需要规划。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-25">24. 因果 LM 的困惑度 PPL 常写为？</h3>
+<p>A. <code>exp(有效 token 的平均负对数似然)</code><br />
+B. <code>1 - accuracy</code><br />
+C. <code>预测长度 / 词表大小</code><br />
+D. <code>loss ** 0</code></p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 计算平均损失时必须排除 PAD/忽略位置；不同 tokenizer、切分和上下文策略下的 PPL 不宜直接横向比较。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-26">25. 输入 Embedding 与 LM Head 权重共享的直接好处是？</h3>
+<p>A. 减少约 $V\times H$ 个独立参数，并让输入/输出词空间关联<br />
+B. 消除所有训练损失<br />
+C. 不再需要词表<br />
+D. 自动把 Encoder 变成 Decoder</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Weight tying 让输出投影复用输入词嵌入矩阵；实现时应验证两处参数确实引用同一存储，而非仅初值相同。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-27">26. RoBERTa 相比原始 BERT 的典型改动包括？</h3>
+<p>A. 动态 Mask、更大数据和 batch、更长训练、移除 NSP<br />
+B. 改为双向 LSTM<br />
+C. 删除 MLM<br />
+D. 强制加入 Cross-Attention</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> RoBERTa 说明预训练数据、训练预算与流程设计同样关键；不能把指标变化简单归因于“换了模型名字”。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-28">27. ELECTRA 的核心预训练思想是？</h3>
+<p>A. 只预测被 <code>[MASK]</code> 的原词<br />
+B. 用 Generator 产生替换 token，再让 Discriminator 判断各位置是否被替换<br />
+C. 仅做句子顺序预测<br />
+D. 使用 RNN 生成图片</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 替换词检测能在更多 token 位置提供训练信号，提高样本效率；它和普通二分类下游任务不是一回事。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-29">28. ALBERT 降低参数量的关键设计是？</h3>
+<p>A. Embedding 因式分解与跨层参数共享<br />
+B. 扩大每层独立参数<br />
+C. 删除全部注意力头<br />
+D. 改成字符规则系统</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 参数共享能明显减少存储量，但实际时延、吞吐与激活内存仍需实测，参数少不自动等于所有硬件上更快。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-30">29. 下列变体定位匹配正确的是？</h3>
+<p>A. DistilBERT—知识蒸馏压缩；BioBERT—生物医学领域继续预训练<br />
+B. BioBERT—图像分割；DistilBERT—扩大到 10 倍层数<br />
+C. SpanBERT—只做音频；DeBERTa—删除位置概念<br />
+D. 所有变体的 tokenizer 和权重均可任意互换</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 变体选择应同时看领域语料、任务、许可、上下文长度、模型卡与部署约束；名称相近不代表词表或权重兼容。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-31">30. 医疗实体识别、开放式续写、医学摘要分别优先考虑哪类架构？</h3>
+<p>A. Encoder-only、Decoder-only、Encoder–Decoder（或经指令训练的生成模型）<br />
+B. 三者都只能用 K-Means<br />
+C. Decoder-only、Encoder-only、词袋模型<br />
+D. 只根据参数量最大者选择</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 这是基于任务结构的起点，不是绝对结论；最终还要比较领域适配、数据规模、指标、时延、显存、上下文长度和安全要求。</p></div></div>
+
+
+</div><h2 id="sec-32">二、简答题（15 题）</h2>
+<div class="q-card"><h3 id="sec-33">31. 用“银行”一词举例，解释 BERT 与 GPT 在同一位置上的可见上下文差异。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>BERT 编码“他去银行办理贷款”中的“银行”时，可同时利用“他去”和“办理贷款”，所以其表示受左右文共同影响。GPT 在读取到“他去银行”这一位置时只能利用当前及此前 token，不能提前看到“办理贷款”；只有这些词随后进入前缀后，后续位置才可利用它们。差异由 Attention Mask 决定，不只是“模型层数”造成。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-34">32. 写出原始 BERT 句子对 A、B 的典型输入布局，并说明三类输入张量。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>典型布局为 <code>[CLS] A [SEP] B [SEP]</code>。<code>input_ids</code> 给出 token 在词表中的编号；<code>attention_mask</code> 区分有效 token 与 PAD；<code>token_type_ids</code> 常用 0/1 区分 A/B 句段。具体特殊 token、编号和是否返回 token type 必须从 tokenizer/checkpoint 获取，不能硬编码为通用常量。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-35">33. 因果 LM 训练忘记加 causal mask 会发生什么？为什么训练损失可能反而很好看？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>每个位置将能直接访问未来 token，等于把答案信息泄漏到特征中。Teacher-forced 训练损失可能异常偏低，但逐步生成时未来 token 不存在，训练—推理条件失配会导致质量崩溃。应通过 Mask 可视化和“修改未来 token 不应改变过去位置输出”的单元测试验证因果性。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-36">34. 解释 MLM 80/10/10 策略三条分支分别解决什么问题。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>80% 替换为 <code>[MASK]</code>，明确制造需要上下文恢复的空位；10% 换随机 token，防止模型只在看到 <code>[MASK]</code> 时才做语义推断；10% 保持原样，减少预训练存在 <code>[MASK]</code>、下游却不存在它的分布偏移。三类位置的监督标签仍是原始 token。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-37">35. 为什么“BERT 一定需要 NSP”不成立？SOP 又试图解决什么？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>NSP 是原始 BERT 的设计，不是双向 Encoder 的结构必需项；RoBERTa 移除 NSP 后仍能取得强结果。NSP 的随机负样本可能让模型依赖主题差异，SOP（Sentence Order Prediction）通过交换同一文档内句子顺序，更聚焦连贯性和顺序关系。是否使用应看具体预训练方案。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-38">36. 分别说明 BERT 用于文本分类、NER 和抽取式问答时的输出头与 logits 形状。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>文本分类对池化后的句级表示接分类头，logits 常为 <code>[B,C]</code>；NER 对每个 token 隐藏状态接分类头，形状 <code>[B,S,C]</code>，并处理子词和 <code>-100</code>；抽取式问答通常用两个 token 级打分头，输出 <code>start_logits</code>、<code>end_logits</code>，均为 <code>[B,S]</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-39">37. 比较冻结特征抽取、全量微调和参数高效微调三种 BERT 适配方式。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>冻结特征抽取只训练任务头，显存与过拟合风险较低，但领域适配能力有限；全量微调更新 Backbone 与任务头，表达能力强但成本较高、对学习率敏感；PEFT 只训练少量新增或选定参数，在成本与适配能力之间折中。应在同一数据切分和指标下比较。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-40">38. 为什么 <code>[CLS]</code> 适合分类接口，却不保证是最佳检索向量？如何改进？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>分类微调可以让任务头利用 <code>[CLS]</code> 完成当前标签决策，但原始 MLM/NSP 不一定塑造出适合余弦距离的全局语义空间。可采用 Masked Mean Pooling、专门的 Sentence-BERT/对比学习 checkpoint、向量归一化，并用召回率、MRR 或人工相关性数据验证。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-41">39. 比较 greedy、beam search、temperature、top-k 与 top-p 对 GPT 生成的影响。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>Greedy 每步选最高概率，稳定但易重复；Beam Search 保留多个高分序列，适合目标较确定的生成；temperature 调整分布尖锐度；top-k 只在最高 k 个候选采样；top-p 选累计概率达到阈值的动态候选集。参数应按任务评估，不能把“更随机”等同于“更好”。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-42">40. 为什么 Decoder-only 的 Padding 方向不能脱离具体模型与生成实现机械背诵？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>Padding 会影响“最后有效位置”、Position ID 和批量生成取 logits 的位置；不同模型的绝对/相对/旋转位置编码及库实现约定不同。应阅读模型文档，显式传 <code>attention_mask</code> 和 <code>pad_token_id</code>，并测试单条输入与不同长度批量输入是否得到一致续写。对 GPT-2 当前文档还应遵守其绝对位置编码相关的 Padding 建议。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-43">41. KV Cache 如何降低自回归解码计算，又带来什么成本？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>无缓存时，第 $t$ 步会重复计算整个长度 $t$ 前缀的各层 K/V；缓存后只计算新 token 的投影，并复用历史 K/V。代价是每层、每头、每个历史位置都要保存 K/V，显存随批量、上下文长度、层数和 KV 头数增长；因此还会使用 GQA/MQA、量化缓存或分页管理。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-44">42. 解释 LM Head 与 Token Embedding 权重共享，并给出参数节省量。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>若词表大小为 $V$、隐藏维为 $H$，输入 Embedding 矩阵为 $V\times H$，输出词表投影也需同规模矩阵。两者绑定为同一参数可少存一份，约节省 $V\times H$ 个参数（不计输出 bias），同时让输入和输出词表示位于共享空间。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-45">43. 为什么“参数量更少”不必然意味着推理更快？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>时延还取决于序列长度、层数、注意力复杂度、内存访问、算子融合、并行度、批量大小、量化格式和硬件利用率。跨层共享可减少权重存储，但仍可能执行相同层数的计算；选型必须实际测量首 token 时延、每 token 时延、吞吐和峰值显存。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-46">44. 为“医疗文本分类、病历续写、病历到结构化摘要”各设计一个架构起点及主要指标。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>医疗文本分类可从领域 Encoder-only 加分类头开始，报告 Macro-F1、各类召回与校准；病历续写可从领域/指令化 Decoder-only 开始，除 PPL 外评估事实性、重复率和安全性；结构化摘要可用 Encoder–Decoder 或指令生成模型，评估字段级准确率、覆盖率、事实一致性和人工审核。所有实验必须按患者划分，避免同一患者跨集合泄漏。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-47">45. 设计一个公平比较 BERT 变体的实验，至少列出六个需要控制或报告的因素。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>固定数据版本与 train/dev/test 划分、相同 tokenizer 处理规则或明确记录差异、相同任务头和最大长度、可比的调参预算、多个随机种子、同一主指标与置信区间；同时报告参数量、训练 FLOPs/时间、峰值显存、推理吞吐/时延、预训练语料领域、checkpoint 许可和失败案例。不能只摘取各论文最优分数横比。</p></div></div>
+
+
+</div><h2 id="sec-48">三、代码题（10 题）</h2>
+<div class="q-card"><h3 id="sec-49">46. 根据任务名返回推荐的架构范式与 Hugging Face Auto 任务头。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>任务需求先决定“表示还是生成”，再选择匹配的任务头；模型名字不能替代接口契约。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">TASKS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;sentiment&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;encoder-only&quot;</span><span class="p">,</span> <span class="s2">&quot;AutoModelForSequenceClassification&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;ner&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;encoder-only&quot;</span><span class="p">,</span> <span class="s2">&quot;AutoModelForTokenClassification&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;extractive_qa&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;encoder-only&quot;</span><span class="p">,</span> <span class="s2">&quot;AutoModelForQuestionAnswering&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;fill_mask&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;encoder-only&quot;</span><span class="p">,</span> <span class="s2">&quot;AutoModelForMaskedLM&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;continuation&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;decoder-only&quot;</span><span class="p">,</span> <span class="s2">&quot;AutoModelForCausalLM&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;translation&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;encoder-decoder&quot;</span><span class="p">,</span> <span class="s2">&quot;AutoModelForSeq2SeqLM&quot;</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">choose_architecture</span><span class="p">(</span><span class="n">task</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">task</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TASKS</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;unknown task: </span><span class="si">{</span><span class="n">task</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">TASKS</span><span class="p">[</span><span class="n">task</span><span class="p">]</span>
+
+<span class="k">assert</span> <span class="n">choose_architecture</span><span class="p">(</span><span class="s2">&quot;ner&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span>
+    <span class="s2">&quot;encoder-only&quot;</span><span class="p">,</span> <span class="s2">&quot;AutoModelForTokenClassification&quot;</span>
+<span class="p">)</span>
+<span class="k">assert</span> <span class="n">choose_architecture</span><span class="p">(</span><span class="s2">&quot;continuation&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;decoder-only&quot;</span>
+<span class="k">assert</span> <span class="n">choose_architecture</span><span class="p">(</span><span class="s2">&quot;translation&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;AutoModelForSeq2SeqLM&quot;</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">choose_architecture</span><span class="p">(</span><span class="s2">&quot;clustering&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;unknown task should fail explicitly&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">TASKS</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-50">47. 构造双向 Padding 可见矩阵与“因果 + Padding”可见矩阵。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>这里 <code>True</code> 表示 query 可以关注 key。Padding query 行也全部关闭，便于可视化；真实框架可能分别处理 query 与 key Mask。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">bidirectional_visibility</span><span class="p">(</span><span class="n">attention_mask</span><span class="p">):</span>
+    <span class="n">valid</span> <span class="o">=</span> <span class="n">attention_mask</span><span class="o">.</span><span class="n">bool</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">valid</span><span class="p">[:,</span> <span class="p">:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">valid</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">causal_visibility</span><span class="p">(</span><span class="n">attention_mask</span><span class="p">):</span>
+    <span class="n">batch</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">attention_mask</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">valid</span> <span class="o">=</span> <span class="n">attention_mask</span><span class="o">.</span><span class="n">bool</span><span class="p">()</span>
+    <span class="n">causal</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tril</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">causal</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">valid</span><span class="p">[:,</span> <span class="p">:,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">valid</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:]</span>
+
+<span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="n">bi</span> <span class="o">=</span> <span class="n">bidirectional_visibility</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+<span class="n">causal</span> <span class="o">=</span> <span class="n">causal_visibility</span><span class="p">(</span><span class="n">mask</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">bi</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">causal</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">bi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">causal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">causal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
+<span class="k">assert</span> <span class="ow">not</span> <span class="n">bi</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">any</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">causal</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;bidirectional</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">bi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">int</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;causal + padding</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">causal</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">int</span><span class="p">())</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-51">48. 实现 BERT 三类 Embedding 的相加，并验证 Padding 位置可被置零。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>真实 BERT 在相加后还会应用 LayerNorm 与 Dropout；本题聚焦三类索引的形状与广播关系。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">BertStyleEmbeddings</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">max_length</span><span class="p">,</span> <span class="n">type_vocab_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">token</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">max_length</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">segment</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">type_vocab_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">,</span> <span class="n">token_type_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">):</span>
+        <span class="n">batch</span><span class="p">,</span> <span class="n">length</span> <span class="o">=</span> <span class="n">input_ids</span><span class="o">.</span><span class="n">shape</span>
+        <span class="n">position_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">input_ids</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="n">position_ids</span> <span class="o">=</span> <span class="n">position_ids</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">hidden</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">token</span><span class="p">(</span><span class="n">input_ids</span><span class="p">)</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="p">(</span><span class="n">position_ids</span><span class="p">)</span>
+            <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">segment</span><span class="p">(</span><span class="n">token_type_ids</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">hidden</span> <span class="o">*</span> <span class="n">attention_mask</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">layer</span> <span class="o">=</span> <span class="n">BertStyleEmbeddings</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="n">input_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
+<span class="n">token_types</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="n">attention_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="n">output</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">token_types</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">output</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+<span class="k">assert</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-52">49. 实现可复现的 MLM 15% 采样与 80/10/10 替换。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>特殊 token 与 PAD 不参与候选；<code>labels=-100</code> 的位置不计损失。大样本下比例才会接近 80/10/10。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">mask_for_mlm</span><span class="p">(</span>
+    <span class="n">input_ids</span><span class="p">,</span> <span class="n">special_mask</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">mask_token_id</span><span class="p">,</span>
+    <span class="n">mlm_probability</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+<span class="p">):</span>
+    <span class="n">generator</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Generator</span><span class="p">()</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">candidate</span> <span class="o">=</span> <span class="o">~</span><span class="n">special_mask</span><span class="o">.</span><span class="n">bool</span><span class="p">()</span>
+    <span class="n">selected</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">input_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">generator</span><span class="o">=</span><span class="n">generator</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">mlm_probability</span>
+    <span class="p">)</span> <span class="o">&amp;</span> <span class="n">candidate</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">input_ids</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+    <span class="n">labels</span><span class="p">[</span><span class="o">~</span><span class="n">selected</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span>
+
+    <span class="n">branch</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">input_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">generator</span><span class="o">=</span><span class="n">generator</span><span class="p">)</span>
+    <span class="n">replace_mask</span> <span class="o">=</span> <span class="n">selected</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">branch</span> <span class="o">&lt;</span> <span class="mf">0.8</span><span class="p">)</span>
+    <span class="n">replace_random</span> <span class="o">=</span> <span class="n">selected</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">branch</span> <span class="o">&gt;=</span> <span class="mf">0.8</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">branch</span> <span class="o">&lt;</span> <span class="mf">0.9</span><span class="p">)</span>
+
+    <span class="n">corrupted</span> <span class="o">=</span> <span class="n">input_ids</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+    <span class="n">corrupted</span><span class="p">[</span><span class="n">replace_mask</span><span class="p">]</span> <span class="o">=</span> <span class="n">mask_token_id</span>
+    <span class="n">random_tokens</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span>
+        <span class="mi">0</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">input_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">generator</span><span class="o">=</span><span class="n">generator</span>
+    <span class="p">)</span>
+    <span class="n">corrupted</span><span class="p">[</span><span class="n">replace_random</span><span class="p">]</span> <span class="o">=</span> <span class="n">random_tokens</span><span class="p">[</span><span class="n">replace_random</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">corrupted</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">selected</span>
+
+<span class="n">tokens</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span><span class="o">.</span><span class="n">remainder</span><span class="p">(</span><span class="mi">97</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">special</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">)</span>
+<span class="n">special</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">corrupted</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">selected</span> <span class="o">=</span> <span class="n">mask_for_mlm</span><span class="p">(</span>
+    <span class="n">tokens</span><span class="p">,</span> <span class="n">special</span><span class="p">,</span> <span class="n">vocab_size</span><span class="o">=</span><span class="mi">97</span><span class="p">,</span> <span class="n">mask_token_id</span><span class="o">=</span><span class="mi">96</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">7</span>
+<span class="p">)</span>
+<span class="k">assert</span> <span class="ow">not</span> <span class="n">selected</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="n">selected</span><span class="p">],</span> <span class="n">tokens</span><span class="p">[</span><span class="n">selected</span><span class="p">])</span>
+<span class="k">assert</span> <span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="o">~</span><span class="n">selected</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="n">ratio</span> <span class="o">=</span> <span class="n">selected</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="o">~</span><span class="n">special</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<span class="k">assert</span> <span class="mf">0.10</span> <span class="o">&lt;</span> <span class="n">ratio</span> <span class="o">&lt;</span> <span class="mf">0.20</span>
+<span class="nb">print</span><span class="p">({</span><span class="s2">&quot;selected&quot;</span><span class="p">:</span> <span class="n">selected</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="s2">&quot;candidate_ratio&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="mi">3</span><span class="p">)})</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-53">50. 计算只监督 MLM 选中位置的交叉熵，并与手工筛选结果核对。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><code>ignore_index=-100</code> 是标签规则，不是词表中的真实类别。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+
+<span class="n">logits</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span>
+    <span class="p">[[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]],</span>
+<span class="p">])</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+
+<span class="n">loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span>
+    <span class="n">logits</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">logits</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
+    <span class="n">labels</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">ignore_index</span><span class="o">=-</span><span class="mi">100</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">selected_logits</span> <span class="o">=</span> <span class="n">logits</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:]</span>
+<span class="n">selected_labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">manual</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">selected_logits</span><span class="p">,</span> <span class="n">selected_labels</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">manual</span><span class="p">)</span>
+
+<span class="n">changed</span> <span class="o">=</span> <span class="n">logits</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+<span class="n">changed</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="o">-</span><span class="mf">100.0</span><span class="p">,</span> <span class="mf">100.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">100.0</span><span class="p">])</span>
+<span class="n">changed_loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span>
+    <span class="n">changed</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">labels</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">ignore_index</span><span class="o">=-</span><span class="mi">100</span>
+<span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">changed_loss</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="mi">6</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-54">51. 为因果语言建模构造显式位移后的 logits、labels，并忽略 Padding。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>若模型文档说明内部自动 shift，可直接传同形状 <code>labels=input_ids</code>；自己写训练循环时必须确认只位移一次。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">causal_lm_loss</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">):</span>
+    <span class="n">shift_logits</span> <span class="o">=</span> <span class="n">logits</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+    <span class="n">shift_labels</span> <span class="o">=</span> <span class="n">input_ids</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+    <span class="n">shift_labels</span><span class="p">[</span><span class="n">attention_mask</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span>
+    <span class="k">return</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span>
+        <span class="n">shift_logits</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">shift_logits</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span>
+        <span class="n">shift_labels</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+        <span class="n">ignore_index</span><span class="o">=-</span><span class="mi">100</span><span class="p">,</span>
+    <span class="p">)</span>
+
+<span class="n">input_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="n">attention_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="n">logits</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="o">-</span><span class="mf">5.0</span><span class="p">)</span>
+<span class="n">logits</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">5.0</span>
+<span class="n">logits</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">5.0</span>
+<span class="n">logits</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="mf">5.0</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">causal_lm_loss</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.001</span>
+
+<span class="n">bad</span> <span class="o">=</span> <span class="n">logits</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+<span class="n">bad</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mf">999.0</span>  <span class="c1"># 最后位置没有 next-token 标签</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">causal_lm_loss</span><span class="p">(</span><span class="n">bad</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="mi">8</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-55">52. 用单层双向 Encoder 验证：修改未来 token 会影响较早位置的表示。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>测试体现“可见”而非保证影响大小；固定随机种子并关闭 Dropout 后结果可复现。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">TransformerEncoderLayer</span><span class="p">(</span>
+    <span class="n">d_model</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">nhead</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dim_feedforward</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+    <span class="n">dropout</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">encoder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">TransformerEncoder</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">enable_nested_tensor</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">encoder</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+<span class="n">first</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<span class="n">second</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">]])</span>  <span class="c1"># 只修改最后一个 token</span>
+<span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+    <span class="n">out_first</span> <span class="o">=</span> <span class="n">encoder</span><span class="p">(</span><span class="n">embedding</span><span class="p">(</span><span class="n">first</span><span class="p">))</span>
+    <span class="n">out_second</span> <span class="o">=</span> <span class="n">encoder</span><span class="p">(</span><span class="n">embedding</span><span class="p">(</span><span class="n">second</span><span class="p">))</span>
+
+<span class="k">assert</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">out_first</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">out_second</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">first</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">second</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">3</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;past position changed:&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">out_first</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">out_second</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-56">53. 用单层因果 Decoder 验证：修改未来 token 不应影响较早位置的表示。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>这是检测 causal mask 是否生效的实用单元测试；最后位置自身可以变化。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">TransformerEncoderLayer</span><span class="p">(</span>
+    <span class="n">d_model</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">nhead</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dim_feedforward</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+    <span class="n">dropout</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">decoder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">TransformerEncoder</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">enable_nested_tensor</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">decoder</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+<span class="n">first</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]])</span>
+<span class="n">second</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">9</span><span class="p">]])</span>
+<span class="n">causal_mask</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Transformer</span><span class="o">.</span><span class="n">generate_square_subsequent_mask</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+    <span class="n">out_first</span> <span class="o">=</span> <span class="n">decoder</span><span class="p">(</span><span class="n">embedding</span><span class="p">(</span><span class="n">first</span><span class="p">),</span> <span class="n">mask</span><span class="o">=</span><span class="n">causal_mask</span><span class="p">)</span>
+    <span class="n">out_second</span> <span class="o">=</span> <span class="n">decoder</span><span class="p">(</span><span class="n">embedding</span><span class="p">(</span><span class="n">second</span><span class="p">),</span> <span class="n">mask</span><span class="o">=</span><span class="n">causal_mask</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">out_first</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">out_second</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">)</span>
+<span class="k">assert</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">out_first</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">out_second</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;causal prefix invariant&quot;</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-57">54. 实现带 EOS 提前停止的贪心自回归生成。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>每一步只取当前前缀最后位置的 logits，再把新 token 反馈到下一步；真实项目通常直接调用 <code>generate()</code>。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">greedy_generate</span><span class="p">(</span><span class="n">next_logits</span><span class="p">,</span> <span class="n">prompt</span><span class="p">,</span> <span class="n">eos_token_id</span><span class="p">,</span> <span class="n">max_new_tokens</span><span class="p">):</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_new_tokens</span><span class="p">):</span>
+        <span class="n">logits</span> <span class="o">=</span> <span class="n">next_logits</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">))</span>
+        <span class="n">next_token</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">logits</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+        <span class="n">tokens</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">next_token</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">next_token</span> <span class="o">==</span> <span class="n">eos_token_id</span><span class="p">:</span>
+            <span class="k">break</span>
+    <span class="k">return</span> <span class="n">tokens</span>
+
+<span class="n">transition</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span>
+    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>  <span class="c1"># 0 -&gt; 1</span>
+    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>  <span class="c1"># 1 -&gt; 2</span>
+    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">],</span>  <span class="c1"># 2 -&gt; EOS(3)</span>
+    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">],</span>
+<span class="p">])</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">next_logits</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">transition</span><span class="p">[</span><span class="n">prefix</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+
+<span class="n">generated</span> <span class="o">=</span> <span class="n">greedy_generate</span><span class="p">(</span><span class="n">next_logits</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">eos_token_id</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">max_new_tokens</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">generated</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">generated</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">11</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">generated</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-58">55. 实现权重共享的微型 Causal LM，并计算有效 token 困惑度。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>断言不仅检查值相同，还检查 Embedding 与 LM Head 是否引用同一 Parameter；PPL 使用排除 <code>-100</code> 后的平均 token loss。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TiedLanguageModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lm_head</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lm_head</span><span class="o">.</span><span class="n">weight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="o">.</span><span class="n">weight</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">lm_head</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">input_ids</span><span class="p">))</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">TiedLanguageModel</span><span class="p">(</span><span class="n">vocab_size</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">lm_head</span><span class="o">.</span><span class="n">weight</span> <span class="ow">is</span> <span class="n">model</span><span class="o">.</span><span class="n">embedding</span><span class="o">.</span><span class="n">weight</span>
+<span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">lm_head</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data_ptr</span><span class="p">()</span> <span class="o">==</span> <span class="n">model</span><span class="o">.</span><span class="n">embedding</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">data_ptr</span><span class="p">()</span>
+
+<span class="n">input_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]])</span>
+<span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">input_ids</span><span class="p">)</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">-</span><span class="mi">100</span><span class="p">]])</span>
+<span class="n">loss_sum</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span>
+    <span class="n">logits</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">),</span> <span class="n">labels</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">ignore_index</span><span class="o">=-</span><span class="mi">100</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s2">&quot;sum&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">valid_tokens</span> <span class="o">=</span> <span class="p">(</span><span class="n">labels</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<span class="n">mean_nll</span> <span class="o">=</span> <span class="n">loss_sum</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">/</span> <span class="n">valid_tokens</span>
+<span class="n">perplexity</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">mean_nll</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">logits</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">valid_tokens</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">perplexity</span> <span class="o">&gt;=</span> <span class="mf">1.0</span>
+<span class="nb">print</span><span class="p">({</span><span class="s2">&quot;valid_tokens&quot;</span><span class="p">:</span> <span class="n">valid_tokens</span><span class="p">,</span> <span class="s2">&quot;perplexity&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">perplexity</span><span class="p">,</span> <span class="mi">4</span><span class="p">)})</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="done-bar"><button class="mark-done-btn" data-key="hw44" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="hw43.html"><div class="dir">← 上一篇</div><div class="name">🤗 Transformers 迁移学习与中文任务综合训练</div></a><a class="disabled next"></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、选择题（30 题）</a><a class="lv3" href="#sec-2">1. 下列“结构—代表模型—主要任务”匹配正确的是？</a><a class="lv3" href="#sec-3">2. BERT 的“深度双向”主要来自什么？</a><a class="lv3" href="#sec-4">3. GPT 类因果语言模型为什么不能在预测位置 $t$ 时看到 $t+1$？</a><a class="lv3" href="#sec-5">4. Encoder–Decoder 模型中，Decoder 与 Encoder 输出交互通常依靠？</a><a class="lv3" href="#sec-6">5. 原始 BERT 的输入 Embedding 通常由哪三部分相加？</a><a class="lv3" href="#sec-7">6. BERT 句子对中 token_type_ids 的典型含义是？</a><a class="lv3" href="#sec-8">7. 关于 [CLS]、[SEP] 及其 ID，哪项正确？</a><a class="lv3" href="#sec-9">8. 原始 BERT MLM 的 15% 候选 token 中，经典 80/10/10 策略是？</a><a class="lv3" href="#sec-10">9. MLM 训练时未被选中的 token 标签通常应设为？</a><a class="lv3" href="#sec-11">10. 关于 NSP，哪项更准确？</a><a class="lv3" href="#sec-12">11. “BERT 微调时仅调整任务头”这一说法的问题是？</a><a class="lv3" href="#sec-13">12. BERT 基础模型的 last_hidden_state 常见形状是？</a><a class="lv3" href="#sec-14">13. 为什么不应把任意 BERT 的 [CLS] 向量直接当成高质量语义相似度向量？</a><a class="lv3" href="#sec-15">14. 为什么普通 BERT MLM 不能直接按 GPT 的方式连续生成长文本？</a><a class="lv3" href="#sec-16">15. “Decoder-only”中的 Decoder 与原始 Transformer Decoder 的关系，哪项更准确？</a><a class="lv3" href="#sec-17">16. 因果语言建模训练中，序列 [A,B,C,D] 的核心监督关系是？</a><a class="lv3" href="#sec-18">17. BERT MLM 与 GPT 因果 LM 分别应优先使用哪类任务模型？</a><a class="lv3" href="#sec-19">18. 因果 LM 的 logits 常见形状是？</a><a class="lv3" href="#sec-20">19. 长度为 4 的因果自注意力中，第 2 个位置（从 0 开始）可以关注？</a><a class="lv3" href="#sec-21">20. 批量因果语言建模同时存在 Padding 时，应如何处理 Mask？</a><a class="lv3" href="#sec-22">21. 对补齐后的 GPT 批量调用 generate()，哪项做法可靠？</a><a class="lv3" href="#sec-23">22. 为什么不能把一次前向传播中每个位置的 argmax 直接拼成自回归生成结果？</a><a class="lv3" href="#sec-24">23. KV Cache 的主要作用是？</a><a class="lv3" href="#sec-25">24. 因果 LM 的困惑度 PPL 常写为？</a><a class="lv3" href="#sec-26">25. 输入 Embedding 与 LM Head 权重共享的直接好处是？</a><a class="lv3" href="#sec-27">26. RoBERTa 相比原始 BERT 的典型改动包括？</a><a class="lv3" href="#sec-28">27. ELECTRA 的核心预训练思想是？</a><a class="lv3" href="#sec-29">28. ALBERT 降低参数量的关键设计是？</a><a class="lv3" href="#sec-30">29. 下列变体定位匹配正确的是？</a><a class="lv3" href="#sec-31">30. 医疗实体识别、开放式续写、医学摘要分别优先考虑哪类架构？</a><a class="lv2" href="#sec-32">二、简答题（15 题）</a><a class="lv3" href="#sec-33">31. 用“银行”一词举例，解释 BERT 与 GPT 在同一位置上的可见上下文差异。</a><a class="lv3" href="#sec-34">32. 写出原始 BERT 句子对 A、B 的典型输入布局，并说明三类输入张量。</a><a class="lv3" href="#sec-35">33. 因果 LM 训练忘记加 causal mask 会发生什么？为什么训练损失可能反而很好看？</a><a class="lv3" href="#sec-36">34. 解释 MLM 80/10/10 策略三条分支分别解决什么问题。</a><a class="lv3" href="#sec-37">35. 为什么“BERT 一定需要 NSP”不成立？SOP 又试图解决什么？</a><a class="lv3" href="#sec-38">36. 分别说明 BERT 用于文本分类、NER 和抽取式问答时的输出头与 logits 形状。</a><a class="lv3" href="#sec-39">37. 比较冻结特征抽取、全量微调和参数高效微调三种 BERT 适配方式。</a><a class="lv3" href="#sec-40">38. 为什么 [CLS] 适合分类接口，却不保证是最佳检索向量？如何改进？</a><a class="lv3" href="#sec-41">39. 比较 greedy、beam search、temperature、top-k 与 top-p 对 GPT 生成的影响。</a><a class="lv3" href="#sec-42">40. 为什么 Decoder-only 的 Padding 方向不能脱离具体模型与生成实现机械背诵？</a><a class="lv3" href="#sec-43">41. KV Cache 如何降低自回归解码计算，又带来什么成本？</a><a class="lv3" href="#sec-44">42. 解释 LM Head 与 Token Embedding 权重共享，并给出参数节省量。</a><a class="lv3" href="#sec-45">43. 为什么“参数量更少”不必然意味着推理更快？</a><a class="lv3" href="#sec-46">44. 为“医疗文本分类、病历续写、病历到结构化摘要”各设计一个架构起点及主要指标。</a><a class="lv3" href="#sec-47">45. 设计一个公平比较 BERT 变体的实验，至少列出六个需要控制或报告的因素。</a><a class="lv2" href="#sec-48">三、代码题（10 题）</a><a class="lv3" href="#sec-49">46. 根据任务名返回推荐的架构范式与 Hugging Face Auto 任务头。</a><a class="lv3" href="#sec-50">47. 构造双向 Padding 可见矩阵与“因果 + Padding”可见矩阵。</a><a class="lv3" href="#sec-51">48. 实现 BERT 三类 Embedding 的相加，并验证 Padding 位置可被置零。</a><a class="lv3" href="#sec-52">49. 实现可复现的 MLM 15% 采样与 80/10/10 替换。</a><a class="lv3" href="#sec-53">50. 计算只监督 MLM 选中位置的交叉熵，并与手工筛选结果核对。</a><a class="lv3" href="#sec-54">51. 为因果语言建模构造显式位移后的 logits、labels，并忽略 Padding。</a><a class="lv3" href="#sec-55">52. 用单层双向 Encoder 验证：修改未来 token 会影响较早位置的表示。</a><a class="lv3" href="#sec-56">53. 用单层因果 Decoder 验证：修改未来 token 不应影响较早位置的表示。</a><a class="lv3" href="#sec-57">54. 实现带 EOS 提前停止的贪心自回归生成。</a><a class="lv3" href="#sec-58">55. 实现权重共享的微型 Causal LM，并计算有效 token 困惑度。</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
