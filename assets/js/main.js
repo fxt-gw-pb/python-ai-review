@@ -83,14 +83,14 @@
       bar.classList.toggle("done", done);
       bar.textContent = done ? "✓ 已完成，做得好！（点击取消）" : "⛳ 学完了？标记为已完成";
     }
-    // 首页进度统计
+    // 首页进度统计（总目录行与卡片均带 data-page-key，按唯一 key 去重）
     const prog = document.getElementById("progress-num");
     if (prog) {
       const total = parseInt(prog.dataset.total, 10) || 0;
+      const keys = new Set();
+      document.querySelectorAll("a[data-page-key]").forEach(c => keys.add(c.dataset.pageKey));
       let n = 0;
-      document.querySelectorAll(".lesson-card[data-page-key]").forEach(c => {
-        if (doneSet.has(c.dataset.pageKey)) n++;
-      });
+      keys.forEach(k => { if (doneSet.has(k)) n++; });
       prog.textContent = n + " / " + total;
     }
   }
