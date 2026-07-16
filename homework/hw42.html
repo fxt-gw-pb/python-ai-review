@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FastText：文本分类与词向量综合训练 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons">课程讲义</a>
+    <a href="../index.html#homework" class="active">课后练习</a>
+    <a href="../index.html#projects">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">32</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">33</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">34</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">35</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">39</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">40</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">42</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">49</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">50</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">📘 医学知识图谱</div><a class="item" data-page-key="lesson51" href="../lessons/lesson51.html"><span class="no">51</span><span>知识图谱基础与医学图谱架构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson52" href="../lessons/lesson52.html"><span class="no">52</span><span>数据标注、查询语言与 Neo4j 工具链</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson53" href="../lessons/lesson53.html"><span class="no">53</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson54" href="../lessons/lesson54.html"><span class="no">54</span><span>关系抽取：规则、Pipeline 与 CasRel</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson55" href="../lessons/lesson55.html"><span class="no">55</span><span>知识融合：实体统一、链接与消歧</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson56" href="../lessons/lesson56.html"><span class="no">56</span><span>Neo4j 医学图谱搭建与质量验证</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson57" href="../lessons/lesson57.html"><span class="no">57</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">21</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">22</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">24</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">25</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">27</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">28</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">29</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">30</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">31</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">32</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw33" href="../homework/hw33.html"><span class="no">33</span><span>卷积神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw34" href="../homework/hw34.html"><span class="no">34</span><span>循环神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw35" href="../homework/hw35.html"><span class="no">35</span><span>自然语言处理入门与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw36" href="../homework/hw36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw37" href="../homework/hw37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw38" href="../homework/hw38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw39" href="../homework/hw39.html"><span class="no">39</span><span>Transformer 架构与工程实现综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw40" href="../homework/hw40.html"><span class="no">40</span><span>Transformer 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw41" href="../homework/hw41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw active" data-page-key="hw42" href="../homework/hw42.html"><span class="no">42</span><span>FastText：文本分类与词向量综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project07" href="../projects/project07.html"><span class="no">07</span><span>医学知识图谱：从信息抽取到 KBQA</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课后练习 / 练习 42</div>
+<h1>⚡ FastText：文本分类与词向量综合训练</h1>
+<div class="chips"><span class="chip amber">🏷️ 选择 + 简答 + 代码</span><span class="chip amber">🏷️ 55 题</span><a class="chip" href="../lessons/lesson42.html">📖 相关讲义：FastText：文本分类与词向量</a></div>
+</div>
+<p>55 道练习，按“监督数据 → 平均词袋分类器 → word n-gram → 字符子词 → Softmax / HS / NS / OVA → 评估与部署”组织。重点是分清 FastText 的分类与词向量两条路线，并把 API 参数、指标含义和数据边界落实到可验证代码。</p>
+<blockquote>
+<p>建议先独立作答，再展开参考答案。参数默认值按 <a href="https://fasttext.cc/docs/en/python-module.html">FastText 官方 Python API</a> 校准：监督训练默认 <code>loss='softmax'</code>、<code>wordNgrams=1</code>、<code>minn=maxn=0</code>；无监督训练默认 <code>loss='ns'</code>、字符子词长度 3–6。代码题不依赖外部模型下载。</p>
+</blockquote>
+<h2 id="sec-1">一、选择题（30 题）</h2>
+<div class="q-card"><h3 id="sec-2">1. FastText 的两类核心用途是？</h3>
+<p>A. 目标检测与图像分割<br />
+B. 有监督文本分类与无监督词向量学习<br />
+C. SQL 查询与网页渲染<br />
+D. 语音合成与视频编码</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> <code>train_supervised</code> 学习标签预测器，<code>train_unsupervised</code> 使用 CBOW 或 Skip-gram 学习静态词向量；二者共享高效的浅层表示思想，但训练目标与参数默认值不同。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-3">2. FastText 监督分类器的典型文档表示是？</h3>
+<p>A. 词及词级 n-gram Embedding 的平均，再接线性输出层<br />
+B. 逐 token 的 48 层自注意力<br />
+C. 只使用最后一个字符<br />
+D. 对文本生成像素矩阵</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 它接近“可学习的平均词袋”：将词和可选 word n-gram 特征查表、平均池化，再预测类别，因此速度快且适合作为强基线。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-4">3. 这种平均池化架构的主要局限是？</h3>
+<p>A. 无法处理整数<br />
+B. 长距离顺序和复杂组合信息表达有限<br />
+C. 不能训练 Embedding<br />
+D. 类别数只能为 2</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 平均操作本身忽略全局词序；加入有限阶 word n-gram 可补充局部顺序，但仍不等同于上下文深度模型。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-5">4. FastText 监督训练文件的一行通常写成？</h3>
+<p>A. <code>__label__类别 文本内容</code><br />
+B. <code>文本内容,连续浮点标签</code><br />
+C. 只有类别，没有文本<br />
+D. 必须是二进制图片</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 标签 token 默认以 <code>__label__</code> 为前缀；多标签样本可在同一行放多个标签。文件应使用 UTF-8，且每行代表一个样本。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-6">5. 原始数据按类别或时间排序时，直接 <code>head</code> 作训练、<code>tail</code> 作验证的风险是？</h3>
+<p>A. 文件会自动压缩<br />
+B. 切分分布偏移，验证集可能只含后段类别或时间模式<br />
+C. 训练速度一定更快<br />
+D. wordNgrams 会自动变为 0</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 应先理解业务切分单位，再随机分层或按时间做符合目标场景的切分；重复文本、同一用户或同一会话也不能跨集合泄漏。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-7">6. 监督分类中 <code>wordNgrams=2</code> 表示？</h3>
+<p>A. 只使用长度为 2 的字符子词<br />
+B. 加入最长为 2 的词级 n-gram 特征<br />
+C. 词向量维度固定为 2<br />
+D. 每条文本只能有两个词</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 例如 <code>not good</code> 会成为一个局部短语特征；它与由 <code>minn/maxn</code> 控制的字符子词不是同一概念。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-8">7. <code>minn=3, maxn=6</code> 主要控制什么？</h3>
+<p>A. 类别数范围<br />
+B. 字符 n-gram 子词的最短与最长长度<br />
+C. batch size<br />
+D. 标签前缀长度</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 子词让形态相近词共享统计，并允许由字符片段组合 OOV 表示；对不同语言与分词方式应通过验证选择范围。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-9">8. 关于监督训练默认值，正确的是？</h3>
+<p>A. 默认一定使用层次 Softmax<br />
+B. 默认 <code>loss='softmax'</code>、<code>wordNgrams=1</code>，字符子词默认关闭<br />
+C. 默认使用 48 层 Transformer<br />
+D. 默认 <code>loss='ova'</code></p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 层次 Softmax 是可选的 <code>loss='hs'</code>，适合类别很多且需降低输出计算成本的场景；不能把一种优化选项描述成监督训练必然默认。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-10">9. 无监督词向量训练的官方默认组合更接近？</h3>
+<p>A. Skip-gram、负采样、字符子词 3–6<br />
+B. 监督 Softmax 且无子词<br />
+C. OVA 多标签分类<br />
+D. 决策树回归</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Python API 中无监督 <code>model</code> 默认 Skip-gram、<code>loss='ns'</code>、<code>minn=3,maxn=6</code>；CBOW 可显式选择。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-11">10. FastText 能为未登录词构造向量的关键是？</h3>
+<p>A. 从测试标签复制向量<br />
+B. 聚合该词的字符 n-gram 子词向量<br />
+C. 把所有 OOV 映射为零向量<br />
+D. 只使用词长</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 只要模型保留了已学习的子词桶，就能由 OOV 的字符片段组合表示；但形似不等于语义相同，仍需做语义与领域验证。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-12">11. 为什么 <code>.bin</code> 模型通常比导出的 <code>.vec</code> 更适合查询任意 OOV？</h3>
+<p>A. <code>.bin</code> 保留模型结构、词典和子词参数，而 <code>.vec</code> 主要保存显式词表向量<br />
+B. <code>.vec</code> 只能保存图片<br />
+C. <code>.bin</code> 不含任何参数<br />
+D. 二者完全相同</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 若下游需要 FastText 的子词组合能力，应保存并加载二进制模型；纯文本向量表对词表外项通常没有足够信息重新构造表示。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-13">12. 层次 Softmax 如何把 V 类预测降到约 $O(\log V)$？</h3>
+<p>A. 只保留一个类别<br />
+B. 将类别作为哈夫曼树叶子，沿根到叶路径进行二分类<br />
+C. 删除频繁类别<br />
+D. 对输入随机截断</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 类别概率是路径上各二元决策概率的乘积；哈夫曼树让高频输出通常拥有较短路径，从而降低平均计算量。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-14">13. 若某类别路径编码为 <code>110</code>，其概率由什么决定？</h3>
+<p>A. 三个路径节点对应方向概率的乘积<br />
+B. 三个概率的最大值<br />
+C. 类别名称的长度<br />
+D. 输入 token 数量本身</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 每个内部节点用 Sigmoid 给出走某个分支的概率；对数似然则化为路径上若干二元交叉熵之和。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-15">14. 负采样的训练目标是？</h3>
+<p>A. 对全部 V 个输出做精确归一化<br />
+B. 拉高正样本点积分数、压低少量采样负样本分数<br />
+C. 删除所有低频词<br />
+D. 计算标签树的完整路径</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 每个正对只更新正目标和 K 个负目标，成本约为 $O(K)$；这些独立二分类分数不是对全部输出归一化的概率分布。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-16">15. 负采样最常用于 FastText 的哪条路线？</h3>
+<p>A. 无监督词向量表示学习<br />
+B. 图片分类<br />
+C. SQL 聚合<br />
+D. 网页部署</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 官方无监督训练默认使用 <code>loss='ns'</code>；监督分类也暴露多个 loss 选项，但单标签、多标签和大标签空间应根据目标明确选择。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-17">16. 单标签互斥分类的常见首选 loss 是？</h3>
+<p>A. <code>softmax</code><br />
+B. <code>ova</code><br />
+C. 均方误差<br />
+D. CTC</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Softmax 产生类别间竞争的归一化分布；类别极多、速度成为瓶颈时可评估 <code>hs</code>，但需同时比较质量和延迟。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-18">17. 一条文本可同时属于多个非互斥标签时，更合适的 loss 是？</h3>
+<p>A. 强制只保留一个标签的 Softmax<br />
+B. <code>ova</code>，为每个标签训练独立二分类器<br />
+C. 不使用标签<br />
+D. 只使用层次聚类</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> OVA 允许多个标签同时具有高分；预测时需要选择 <code>k</code> 与阈值，并报告适合多标签任务的 micro/macro F1、P@k、R@k 等指标。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-19">18. <code>model.predict(text, k=-1, threshold=0.5)</code> 常用于？</h3>
+<p>A. 返回所有达到阈值的候选标签<br />
+B. 强制只返回一个标签<br />
+C. 训练词向量<br />
+D. 删除模型</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 多标签任务常需枚举所有过阈值标签；阈值必须在验证集选择，不能在测试集反复调整。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-20">19. <code>model.test(path, k=1)</code> 返回三元组 <code>(N, P@1, R@1)</code>，第三项是？</h3>
+<p>A. F1<br />
+B. 训练 loss<br />
+C. Recall at 1<br />
+D. 模型大小</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 课件或注释若把它写成“准确率、F1”会误导多标签评估；F1 需要由 Precision 和 Recall 另行计算，且先明确 micro/macro/样本平均方式。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-21">20. 对多标签样本，为什么 P@1 与 R@1 可能差别很大？</h3>
+<p>A. P@1 只考察一个预测是否正确，R@1 还受真实标签总数影响<br />
+B. 两者永远相等<br />
+C. R@1 不使用标签<br />
+D. P@1 只衡量文件大小</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 若每条样本平均有多个真标签，即使 top-1 经常命中，单次预测也只能召回其中一部分，因此 R@1 明显较低。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-22">21. 使用 <code>autotuneValidationFile</code> 时，验证集的正确定位是？</h3>
+<p>A. 参与超参数选择，之后仍需独立测试集做最终一次评估<br />
+B. 可同时当训练集和测试集<br />
+C. 必须来自线上未来数据并写回模型<br />
+D. 不含标签</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 自动调参反复查看验证表现，因此验证集不再是最终无偏估计；测试集必须保持锁定。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-23">22. 文本预处理为何必须在训练和线上推理保持一致？</h3>
+<p>A. 大小写、标点和分词差异会改变词与 n-gram 特征<br />
+B. FastText 会自动修复任何差异<br />
+C. 只影响文件名<br />
+D. 与模型输入无关</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 应把规范化逻辑、语言分词器和版本一起发布；对中文尤其要明确字粒度、分词粒度及标点处理，而不是假设空格会自动出现。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-24">23. <code>minCount</code> 提高通常带来什么权衡？</h3>
+<p>A. 词典和内存变小，但低频信息与覆盖率可能下降<br />
+B. 类别数自动翻倍<br />
+C. 文本长度固定<br />
+D. 一定提升所有指标</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 低频词可由子词部分补偿，但专名、医学术语等领域关键信息仍可能受损，应按频率和业务切片验证。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-25">24. <code>bucket</code> 与 n-gram 特征的关系是？</h3>
+<p>A. n-gram 经哈希映射到固定数量的桶，可能发生碰撞<br />
+B. 每个桶保存完整原始文本<br />
+C. bucket 就是类别数<br />
+D. bucket 只控制 epoch</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 更大 bucket 可减少碰撞但增加内存；碰撞是 FastText 高效表示的设计权衡，不应误认为每个 n-gram 都有独立无冲突 ID。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-26">25. CBOW 与 Skip-gram 的方向分别是？</h3>
+<p>A. CBOW 用上下文预测中心词；Skip-gram 用中心词预测上下文<br />
+B. 二者都只预测标签<br />
+C. CBOW 只用于图片<br />
+D. Skip-gram 不学习向量</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> CBOW 通常更快，Skip-gram 往往更重视低频词；实际效果取决于语料规模、窗口、负采样与子词配置。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-27">26. 用余弦相似度评估词向量时必须注意？</h3>
+<p>A. 对零范数向量做保护，并结合定性与下游任务评估<br />
+B. 余弦值一定等于概率<br />
+C. 只比较向量第一维<br />
+D. 相似度越高就一定是同义词</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 近邻可能来自词形、主题共现或偏见，并不保证可替换性；FastText 的子词机制尤其可能抬高拼写相近词。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-28">27. FastText 词向量属于什么表示？</h3>
+<p>A. 静态表示，同一个词在不同上下文通常返回同一向量<br />
+B. 上下文动态表示<br />
+C. 图像区域表示<br />
+D. 每次查询随机变化</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 它适合高效检索、初始化和轻量下游任务，但难以区分多义词在不同句子中的具体含义。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-29">28. 模型量化的主要目的与风险是？</h3>
+<p>A. 减小模型和内存、可能提高推理效率，但质量可能下降<br />
+B. 自动增加训练数据<br />
+C. 保证指标必然提升<br />
+D. 把多标签改成单标签</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 应对量化前后模型大小、延迟、吞吐与分标签指标做回归；若使用 autotune 的模型大小约束，也要保留独立测试集。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-30">29. 当验证准确率很高、线上新词很多且效果下降时，优先排查？</h3>
+<p>A. 训练/线上清洗与分词是否一致、OOV/子词配置和领域漂移<br />
+B. 显示器亮度<br />
+C. Git 提交信息<br />
+D. 只增加 <code>dim</code> 不做分析</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 还应按 OOV 率、文本长度、标签与来源切片；若监督模型字符子词默认关闭，却误以为已自动处理 OOV，线上退化会更明显。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-31">30. FastText 最适合作为？</h3>
+<p>A. 高效、可解释且容易复现的文本分类与静态表示基线<br />
+B. 所有 NLP 问题的唯一最优模型<br />
+C. 图像生成器<br />
+D. 数据库事务引擎</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 它训练和推理快、CPU 友好；应与 TF-IDF 线性模型及预训练 Transformer 在质量、延迟、内存和维护成本上公平比较。</p></div></div>
+
+
+</div><h2 id="sec-32">二、简答题（15 题）</h2>
+<div class="q-card"><h3 id="sec-33">31. 用公式描述 FastText 监督分类器的前向过程。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>设文本特征集合为 $F(x)$，包括词和可选 word n-gram；每个特征向量为 $e_f$。隐藏表示可写为 $h=|F(x)|^{-1}\sum_{f\in F(x)}e_f$，再由输出层得到 $z=Wh+b$。单标签使用 Softmax/HS，多标签常用独立 Sigmoid 的 OVA。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-34">32. 对比 <code>wordNgrams</code> 与 <code>minn/maxn</code>。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><code>wordNgrams</code> 组合相邻词，服务于局部短语与有限词序，例如 <code>not good</code>；<code>minn/maxn</code> 组合词内部字符片段，服务于形态共享与 OOV，例如 <code>&lt;play</code>、<code>lay&gt;</code>。两者粒度、特征空间和调参目标不同，可以同时使用但会增加桶碰撞与内存成本。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-35">33. 为什么“FastText 能处理 OOV”不能无条件成立？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>必须训练并保留字符子词参数；监督训练默认 <code>minn=maxn=0</code>，仅使用默认参数并不会自动启用字符子词。只加载 <code>.vec</code> 也通常无法组合任意 OOV。即使能生成向量，罕见字符、错误编码或形似语义不同仍会产生低质量表示。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-36">34. 对比普通 Softmax、层次 Softmax和负采样。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>普通 Softmax 对 V 个输出归一化，计算约 $O(V)$；HS 沿哈夫曼树路径做二分类，平均约 $O(\log V)$，可形成树上的类别概率；NS 只比较一个正样本与 K 个负样本，约 $O(K)$，训练高效但分数不是全类别归一化概率。应根据任务、标签规模和校准需求选择。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-37">35. 为什么哈夫曼树能降低 HS 的平均计算成本？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>它按输出频率构树，高频叶子通常离根更近，因此常见类别经过更少二元决策。某类概率是根到叶路径方向概率乘积，损失与梯度只涉及该路径内部节点。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-38">36. 写出负采样损失并解释更新范围。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>对中心表示 $x$、正目标 $y^+$ 和 K 个负目标 $y_k^-$，$L=-\log\sigma(x^Ty^+)-\sum_k\log\sigma(-x^Ty_k^-)$。一次样本只更新中心、正目标和抽到的负目标向量，而非全部词表，因此大输出空间下更快。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-39">37. 设计一个无泄漏的监督分类数据切分方案。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>先去重并确定组级单位，如用户、会话、文章来源或时间；按业务目标进行组级分层随机切分或时间切分。训练集拟合清洗与参数，验证集选择 <code>wordNgrams/dim/loss/threshold</code>，测试集锁定到最终一次评估。多标签数据还要检查各标签组合和长尾覆盖。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-40">38. <code>model.test()</code> 的结果应如何解读和补充？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>返回 <code>(N,P@k,R@k)</code>，不是直接返回“准确率和 F1”。单标签 k=1 时 P@1 常与准确率数值相同；多标签时必须按定义解释。应补充 micro/macro/weighted F1、每标签指标、混淆/共现错误、阈值曲线和业务代价。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-41">39. 多标签 FastText 如何选择 loss、k 与 threshold？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>优先以 <code>loss='ova'</code> 建立独立标签分数；在验证集按业务目标选择固定 k、全局阈值或分标签阈值。标签数变化大时通常用 <code>k=-1</code> 配合阈值；同时观察 precision–recall 权衡和无预测/过多预测比例。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-42">40. 如何公平比较 unigram 与 word bigram？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>固定数据切分、预处理、loss、dim、学习率、epoch、随机性与评估脚本，只改变 <code>wordNgrams=1/2</code>；报告整体和否定/短语切片指标、训练时间、模型大小和延迟。多次运行并检查增益是否来自数据泄漏或哈希桶容量变化。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-43">41. 中文 FastText 预处理应特别注意什么？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>FastText 以空格分隔词 token；中文若不分词，整句或连续片段可能成为异常 token。应明确采用字粒度还是经过版本化分词器的词粒度，统一全半角、繁简、大小写、数字和标点；同时区分词级 n-gram 与 UTF-8 字符子词。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-44">42. 如何评估预训练词向量迁移是否有效？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>先做近邻和类比等定性检查，再在固定下游任务比较随机初始化、冻结预训练向量和继续微调三种方案；按高频/低频/OOV/领域术语切片，报告质量、收敛速度和内存。训练语料领域、分词与词表不匹配时，预训练不一定优于从零训练。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-45">43. 设计一次 FastText 自动调参实验。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>准备独立训练、验证、测试文件，把验证路径传给 <code>autotuneValidationFile</code>，设定可复现的时长/模型大小约束与目标指标。调参结束冻结模型和阈值，只在测试集评估一次；保存搜索预算、最终参数、模型文件及量化前后指标，避免把验证结果当测试结果。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-46">44. 如何诊断“字符子词近邻都只是拼写相似、语义却不相关”？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>分别查看整词与子词贡献，比较关闭子词的模型；按词频、词形、语言和领域分析近邻。调整 <code>minn/maxn/bucket</code>、扩大高质量语料并统一规范化，同时用语义人工集和下游任务评估。子词提供形态归纳偏置，不能替代语义共现证据。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-47">45. 给出 FastText 分类服务的上线检查清单。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>固定预处理、标签前缀、模型和阈值版本；覆盖空文本、超长文本、乱码、OOV、无标签预测和多标签上限。量化前后做质量与延迟回归，监控标签分布、置信度、OOV/长度与数据漂移；保存可回滚模型，并对低置信或高风险样本设计人工兜底。</p></div></div>
+
+
+</div><h2 id="sec-48">三、代码题（10 题）</h2>
+<div class="q-card"><h3 id="sec-49">46. 解析 FastText 监督训练行，支持多标签并拒绝缺失标签或正文的坏样本。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>标签前缀可配置；标准数据通常把标签放在行首，但解析时可按 token 前缀识别。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">parse_fasttext_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">label_prefix</span><span class="o">=</span><span class="s2">&quot;__label__&quot;</span><span class="p">):</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">token</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">label_prefix</span><span class="p">):]</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span>
+              <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">label_prefix</span><span class="p">)]</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="n">token</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">token</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">label_prefix</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">labels</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;sample has no label&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">words</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;sample has no text&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">labels</span><span class="p">,</span> <span class="n">words</span>
+
+<span class="n">labels</span><span class="p">,</span> <span class="n">words</span> <span class="o">=</span> <span class="n">parse_fasttext_line</span><span class="p">(</span>
+    <span class="s2">&quot;__label__baking __label__dessert How to bake bread ?&quot;</span>
+<span class="p">)</span>
+<span class="k">assert</span> <span class="n">labels</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;baking&quot;</span><span class="p">,</span> <span class="s2">&quot;dessert&quot;</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">words</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;How&quot;</span><span class="p">,</span> <span class="s2">&quot;to&quot;</span><span class="p">,</span> <span class="s2">&quot;bake&quot;</span><span class="p">,</span> <span class="s2">&quot;bread&quot;</span><span class="p">,</span> <span class="s2">&quot;?&quot;</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">bad_line</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;text without a label&quot;</span><span class="p">,</span> <span class="s2">&quot;__label__empty&quot;</span><span class="p">]:</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">parse_fasttext_line</span><span class="p">(</span><span class="n">bad_line</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;bad line was accepted&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">pass</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">words</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-50">47. 对单标签样本做可复现的分层 train/valid/test 切分，并验证集合互斥。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>示例按标签分层；真实数据若有用户、文档簇或重复文本，应先升级为组级切分。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">stratified_split</span><span class="p">(</span><span class="n">records</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">7</span><span class="p">):</span>
+    <span class="n">by_label</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">text</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
+        <span class="n">by_label</span><span class="p">[</span><span class="n">label</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">text</span><span class="p">,</span> <span class="n">label</span><span class="p">))</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">Random</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+    <span class="n">train</span><span class="p">,</span> <span class="n">valid</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">by_label</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="n">rng</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;each label needs at least five samples&quot;</span><span class="p">)</span>
+        <span class="n">valid</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">test</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">train</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">group</span><span class="p">[</span><span class="mi">2</span><span class="p">:])</span>
+    <span class="n">rng</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">train</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">train</span><span class="p">,</span> <span class="n">valid</span><span class="p">,</span> <span class="n">test</span>
+
+<span class="n">records</span> <span class="o">=</span> <span class="p">[(</span><span class="sa">f</span><span class="s2">&quot;sports sample </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;sports&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">)]</span>
+<span class="n">records</span> <span class="o">+=</span> <span class="p">[(</span><span class="sa">f</span><span class="s2">&quot;tech sample </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;tech&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">)]</span>
+<span class="n">train</span><span class="p">,</span> <span class="n">valid</span><span class="p">,</span> <span class="n">test</span> <span class="o">=</span> <span class="n">stratified_split</span><span class="p">(</span><span class="n">records</span><span class="p">)</span>
+
+<span class="n">sets</span> <span class="o">=</span> <span class="p">[</span><span class="nb">set</span><span class="p">(</span><span class="n">text</span> <span class="k">for</span> <span class="n">text</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">split</span><span class="p">)</span> <span class="k">for</span> <span class="n">split</span> <span class="ow">in</span> <span class="p">(</span><span class="n">train</span><span class="p">,</span> <span class="n">valid</span><span class="p">,</span> <span class="n">test</span><span class="p">)]</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">train</span><span class="p">)</span> <span class="o">==</span> <span class="mi">8</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">test</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+<span class="k">assert</span> <span class="n">sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">sets</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">|</span> <span class="n">sets</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="ow">and</span> <span class="n">sets</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">sets</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="k">assert</span> <span class="p">{</span><span class="n">label</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">valid</span><span class="p">}</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;sports&quot;</span><span class="p">,</span> <span class="s2">&quot;tech&quot;</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">train</span><span class="p">),</span> <span class="n">valid</span><span class="p">,</span> <span class="n">test</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-51">48. 生成最长为 N 的词级 n-gram，并用稳定哈希映射到桶。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>哈希桶可限制特征表大小，但不同 n-gram 可能碰撞；不要使用进程间随机化的内置 <code>hash()</code> 作为持久 ID。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">word_ngrams</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">max_n</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">max_n</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;max_n must be positive&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">start</span> <span class="o">+</span> <span class="n">n</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">max_n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span> <span class="o">-</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">stable_bucket</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">bucket_size</span><span class="p">):</span>
+    <span class="n">raw</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\x1f</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+    <span class="n">digest</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">blake2b</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="n">digest_size</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">digest</span><span class="p">,</span> <span class="s2">&quot;little&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="n">bucket_size</span>
+
+<span class="n">features</span> <span class="o">=</span> <span class="n">word_ngrams</span><span class="p">([</span><span class="s2">&quot;not&quot;</span><span class="p">,</span> <span class="s2">&quot;very&quot;</span><span class="p">,</span> <span class="s2">&quot;good&quot;</span><span class="p">],</span> <span class="n">max_n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">bucket_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">stable_bucket</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span> <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="p">]</span>
+
+<span class="k">assert</span> <span class="n">features</span> <span class="o">==</span> <span class="p">[(</span><span class="s2">&quot;not&quot;</span><span class="p">,),</span> <span class="p">(</span><span class="s2">&quot;very&quot;</span><span class="p">,),</span> <span class="p">(</span><span class="s2">&quot;good&quot;</span><span class="p">,),</span>
+                    <span class="p">(</span><span class="s2">&quot;not&quot;</span><span class="p">,</span> <span class="s2">&quot;very&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;very&quot;</span><span class="p">,</span> <span class="s2">&quot;good&quot;</span><span class="p">)]</span>
+<span class="k">assert</span> <span class="n">bucket_ids</span> <span class="o">==</span> <span class="p">[</span><span class="n">stable_bucket</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span> <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="n">features</span><span class="p">]</span>
+<span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">1000</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">bucket_ids</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">bucket_ids</span><span class="p">)))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-52">49. 生成带边界符的字符 n-gram，并从哈希桶组合一个 OOV 向量。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>示例用平均池化表达组合思想；真实 FastText 的具体子词集合和词本身贡献由模型实现管理。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">char_ngrams</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">minn</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">maxn</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">bounded</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="n">word</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">bounded</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">start</span> <span class="o">+</span> <span class="n">n</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">minn</span><span class="p">,</span> <span class="n">maxn</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">start</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">bounded</span><span class="p">)</span> <span class="o">-</span> <span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">bucket_id</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">bucket_size</span><span class="p">):</span>
+    <span class="n">digest</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">blake2b</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">),</span> <span class="n">digest_size</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span><span class="o">.</span><span class="n">digest</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">int</span><span class="o">.</span><span class="n">from_bytes</span><span class="p">(</span><span class="n">digest</span><span class="p">,</span> <span class="s2">&quot;little&quot;</span><span class="p">)</span> <span class="o">%</span> <span class="n">bucket_size</span>
+
+<span class="n">bucket_vectors</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">101</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">oov_vector</span><span class="p">(</span><span class="n">word</span><span class="p">):</span>
+    <span class="n">grams</span> <span class="o">=</span> <span class="n">char_ngrams</span><span class="p">(</span><span class="n">word</span><span class="p">)</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">bucket_id</span><span class="p">(</span><span class="n">gram</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">bucket_vectors</span><span class="p">))</span> <span class="k">for</span> <span class="n">gram</span> <span class="ow">in</span> <span class="n">grams</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">bucket_vectors</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="nb">set</span><span class="p">(</span><span class="n">grams</span><span class="p">)</span>
+
+<span class="n">playing_vector</span><span class="p">,</span> <span class="n">playing_grams</span> <span class="o">=</span> <span class="n">oov_vector</span><span class="p">(</span><span class="s2">&quot;playing&quot;</span><span class="p">)</span>
+<span class="n">played_vector</span><span class="p">,</span> <span class="n">played_grams</span> <span class="o">=</span> <span class="n">oov_vector</span><span class="p">(</span><span class="s2">&quot;played&quot;</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">playing_vector</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">played_vector</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">6</span><span class="p">,)</span>
+<span class="k">assert</span> <span class="n">playing_grams</span> <span class="o">&amp;</span> <span class="n">played_grams</span>  <span class="c1"># 形态相关词共享部分字符片段</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">playing_vector</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">playing_grams</span> <span class="o">&amp;</span> <span class="n">played_grams</span><span class="p">)[:</span><span class="mi">5</span><span class="p">])</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-53">50. 用 <code>EmbeddingBag(mode='mean')</code> 实现一个微型 FastText 风格分类器并过拟合训练集。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><code>EmbeddingBag</code> 直接对每条文本的离散特征求均值；这里使用词 unigram，加入 bigram 时只需把它们分配到同一特征表。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">set_num_threads</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">texts</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s2">&quot;team&quot;</span><span class="p">,</span> <span class="s2">&quot;wins&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;player&quot;</span><span class="p">,</span> <span class="s2">&quot;scores&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;team&quot;</span><span class="p">,</span> <span class="s2">&quot;scores&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">,</span> <span class="s2">&quot;software&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;computer&quot;</span><span class="p">,</span> <span class="s2">&quot;chip&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;software&quot;</span><span class="p">,</span> <span class="s2">&quot;chip&quot;</span><span class="p">],</span>
+<span class="p">]</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">vocab</span> <span class="o">=</span> <span class="p">{</span><span class="n">word</span><span class="p">:</span> <span class="n">index</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">({</span><span class="n">w</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">texts</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">t</span><span class="p">}))}</span>
+
+<span class="n">encoded</span> <span class="o">=</span> <span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">vocab</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">text</span><span class="p">])</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">]</span>
+<span class="n">flat</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">(</span><span class="n">encoded</span><span class="p">)</span>
+<span class="n">offsets</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">encoded</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">FastTextLike</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_count</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">class_count</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">EmbeddingBag</span><span class="p">(</span><span class="n">feature_count</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;mean&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">class_count</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">feature_ids</span><span class="p">,</span> <span class="n">sample_offsets</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">feature_ids</span><span class="p">,</span> <span class="n">sample_offsets</span><span class="p">))</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">FastTextLike</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">),</span> <span class="n">dim</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">class_count</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.08</span><span class="p">)</span>
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">150</span><span class="p">):</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    <span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">flat</span><span class="p">,</span> <span class="n">offsets</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">flat</span><span class="p">,</span> <span class="n">offsets</span><span class="p">)</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">predictions</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.01</span>
+<span class="nb">print</span><span class="p">({</span><span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="mi">6</span><span class="p">),</span> <span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">})</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-54">51. 根据阈值计算多标签分类的 micro 与 macro Precision、Recall、F1。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>阈值应在验证集确定；macro 对每个标签等权，更能暴露长尾标签退化。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">multilabel_metrics</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.5</span><span class="p">):</span>
+    <span class="n">predicted</span> <span class="o">=</span> <span class="n">probabilities</span> <span class="o">&gt;=</span> <span class="n">threshold</span>
+    <span class="n">targets</span> <span class="o">=</span> <span class="n">targets</span><span class="o">.</span><span class="n">bool</span><span class="p">()</span>
+    <span class="n">tp</span> <span class="o">=</span> <span class="p">(</span><span class="n">predicted</span> <span class="o">&amp;</span> <span class="n">targets</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="p">(</span><span class="n">predicted</span> <span class="o">&amp;</span> <span class="o">~</span><span class="n">targets</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+    <span class="n">fn</span> <span class="o">=</span> <span class="p">(</span><span class="o">~</span><span class="n">predicted</span> <span class="o">&amp;</span> <span class="n">targets</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+
+    <span class="n">precision_per_label</span> <span class="o">=</span> <span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fp</span><span class="p">)</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">recall_per_label</span> <span class="o">=</span> <span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">f1_per_label</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">precision_per_label</span> <span class="o">*</span> <span class="n">recall_per_label</span>
+    <span class="n">f1_per_label</span> <span class="o">/=</span> <span class="p">(</span><span class="n">precision_per_label</span> <span class="o">+</span> <span class="n">recall_per_label</span><span class="p">)</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="mf">1e-12</span><span class="p">)</span>
+
+    <span class="n">micro_p</span> <span class="o">=</span> <span class="n">tp</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fp</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">micro_r</span> <span class="o">=</span> <span class="n">tp</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fn</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">micro_f1</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">micro_p</span> <span class="o">*</span> <span class="n">micro_r</span> <span class="o">/</span> <span class="p">(</span><span class="n">micro_p</span> <span class="o">+</span> <span class="n">micro_r</span><span class="p">)</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="mf">1e-12</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">micro_p</span><span class="p">,</span> <span class="n">micro_r</span><span class="p">,</span> <span class="n">micro_f1</span><span class="p">,</span> <span class="n">f1_per_label</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+<span class="n">probabilities</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">.9</span><span class="p">,</span> <span class="mf">.7</span><span class="p">,</span> <span class="mf">.1</span><span class="p">],</span> <span class="p">[</span><span class="mf">.8</span><span class="p">,</span> <span class="mf">.2</span><span class="p">,</span> <span class="mf">.6</span><span class="p">],</span> <span class="p">[</span><span class="mf">.1</span><span class="p">,</span> <span class="mf">.4</span><span class="p">,</span> <span class="mf">.7</span><span class="p">]])</span>
+<span class="n">targets</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="n">micro_p</span><span class="p">,</span> <span class="n">micro_r</span><span class="p">,</span> <span class="n">micro_f1</span><span class="p">,</span> <span class="n">macro_f1</span> <span class="o">=</span> <span class="n">multilabel_metrics</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">micro_p</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">4</span> <span class="o">/</span> <span class="mi">5</span><span class="p">))</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">micro_r</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">4</span> <span class="o">/</span> <span class="mi">5</span><span class="p">))</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">micro_f1</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">0.8</span><span class="p">))</span>
+<span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">macro_f1</span> <span class="o">&lt;=</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">micro_f1</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">macro_f1</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-55">52. 实现一条层次 Softmax 路径的概率与损失，并证明只有路径节点获得梯度。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>编码位 <code>1/0</code> 分别监督对应内部节点二分类方向；完整类别概率是各方向概率的乘积。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">node_vectors</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">hidden</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">path_nodes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">path_bits</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])</span>
+
+<span class="n">path_logits</span> <span class="o">=</span> <span class="n">node_vectors</span><span class="p">[</span><span class="n">path_nodes</span><span class="p">]</span> <span class="o">@</span> <span class="n">hidden</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">binary_cross_entropy_with_logits</span><span class="p">(</span><span class="n">path_logits</span><span class="p">,</span> <span class="n">path_bits</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s2">&quot;sum&quot;</span><span class="p">)</span>
+<span class="n">direction_probabilities</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">where</span><span class="p">(</span>
+    <span class="n">path_bits</span><span class="o">.</span><span class="n">bool</span><span class="p">(),</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">path_logits</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="o">-</span><span class="n">path_logits</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">class_probability</span> <span class="o">=</span> <span class="n">direction_probabilities</span><span class="o">.</span><span class="n">prod</span><span class="p">()</span>
+<span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+
+<span class="n">non_path_nodes</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">class_probability</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">1</span>
+<span class="k">assert</span> <span class="n">node_vectors</span><span class="o">.</span><span class="n">grad</span><span class="p">[</span><span class="n">path_nodes</span><span class="p">]</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">node_vectors</span><span class="o">.</span><span class="n">grad</span><span class="p">[</span><span class="n">non_path_nodes</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">detach</span><span class="p">(),</span> <span class="o">-</span><span class="n">class_probability</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">log</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">class_probability</span><span class="o">.</span><span class="n">detach</span><span class="p">()),</span> <span class="nb">float</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">detach</span><span class="p">()))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-56">53. 实现数值稳定的负采样损失，并检查只更新正目标和采到的负目标。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><code>logsigmoid</code> 避免手写 <code>log(sigmoid(x))</code> 的数值下溢。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">vocab_size</span><span class="p">,</span> <span class="n">dim</span> <span class="o">=</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">5</span>
+<span class="n">output_embeddings</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
+<span class="n">center</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">positive_id</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">negative_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+
+<span class="n">positive_score</span> <span class="o">=</span> <span class="n">output_embeddings</span><span class="p">(</span><span class="n">positive_id</span><span class="p">)</span> <span class="o">@</span> <span class="n">center</span>
+<span class="n">negative_scores</span> <span class="o">=</span> <span class="n">output_embeddings</span><span class="p">(</span><span class="n">negative_ids</span><span class="p">)</span> <span class="o">@</span> <span class="n">center</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="o">-</span><span class="n">F</span><span class="o">.</span><span class="n">logsigmoid</span><span class="p">(</span><span class="n">positive_score</span><span class="p">)</span> <span class="o">-</span> <span class="n">F</span><span class="o">.</span><span class="n">logsigmoid</span><span class="p">(</span><span class="o">-</span><span class="n">negative_scores</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+
+<span class="n">updated</span> <span class="o">=</span> <span class="n">output_embeddings</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">updated</span><span class="p">)</span> <span class="o">==</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">}</span>
+<span class="k">assert</span> <span class="n">center</span><span class="o">.</span><span class="n">grad</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">torch</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">({</span><span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">detach</span><span class="p">()),</span> <span class="s2">&quot;updated_ids&quot;</span><span class="p">:</span> <span class="n">updated</span><span class="p">})</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-57">54. 构造合法的 FastText 训练配置，并禁止把自动调参验证集复用为最终测试集。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>这道题把容易混淆的默认值和数据职责编码成可测试约束。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">make_config</span><span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="n">train_path</span><span class="p">,</span> <span class="n">valid_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">test_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">valid_path</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">valid_path</span> <span class="o">==</span> <span class="n">test_path</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;autotune validation and final test must be independent&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">task</span> <span class="o">==</span> <span class="s2">&quot;single_label&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="n">train_path</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="s2">&quot;softmax&quot;</span><span class="p">,</span> <span class="s2">&quot;wordNgrams&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;minn&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;maxn&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">task</span> <span class="o">==</span> <span class="s2">&quot;multi_label&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="n">train_path</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="s2">&quot;ova&quot;</span><span class="p">,</span> <span class="s2">&quot;wordNgrams&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="s2">&quot;minn&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;maxn&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">task</span> <span class="o">==</span> <span class="s2">&quot;word_vectors&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="n">train_path</span><span class="p">,</span> <span class="s2">&quot;model&quot;</span><span class="p">:</span> <span class="s2">&quot;skipgram&quot;</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="s2">&quot;ns&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;minn&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;maxn&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">}</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;unknown task&quot;</span><span class="p">)</span>
+
+<span class="n">single</span> <span class="o">=</span> <span class="n">make_config</span><span class="p">(</span><span class="s2">&quot;single_label&quot;</span><span class="p">,</span> <span class="s2">&quot;train.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;valid.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;test.txt&quot;</span><span class="p">)</span>
+<span class="n">multi</span> <span class="o">=</span> <span class="n">make_config</span><span class="p">(</span><span class="s2">&quot;multi_label&quot;</span><span class="p">,</span> <span class="s2">&quot;train.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;valid.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;test.txt&quot;</span><span class="p">)</span>
+<span class="n">vectors</span> <span class="o">=</span> <span class="n">make_config</span><span class="p">(</span><span class="s2">&quot;word_vectors&quot;</span><span class="p">,</span> <span class="s2">&quot;corpus.txt&quot;</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">single</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;softmax&quot;</span> <span class="ow">and</span> <span class="n">single</span><span class="p">[</span><span class="s2">&quot;minn&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span>
+<span class="k">assert</span> <span class="n">multi</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;ova&quot;</span>
+<span class="k">assert</span> <span class="n">vectors</span><span class="p">[</span><span class="s2">&quot;loss&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;ns&quot;</span> <span class="ow">and</span> <span class="p">(</span><span class="n">vectors</span><span class="p">[</span><span class="s2">&quot;minn&quot;</span><span class="p">],</span> <span class="n">vectors</span><span class="p">[</span><span class="s2">&quot;maxn&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">make_config</span><span class="p">(</span><span class="s2">&quot;single_label&quot;</span><span class="p">,</span> <span class="s2">&quot;train.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;holdout.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;holdout.txt&quot;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;leaking split was accepted&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">single</span><span class="p">,</span> <span class="n">multi</span><span class="p">,</span> <span class="n">vectors</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-58">55. 手工实现多标签 P@k 与 R@k，证明 <code>model.test()</code> 第三项不是 F1。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>P@k 的分母是每个样本返回的预测数，R@k 的分母是真实标签总数；以下实现按整个语料汇总。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">precision_recall_at_k</span><span class="p">(</span><span class="n">ranked_predictions</span><span class="p">,</span> <span class="n">true_labels</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+    <span class="n">hits</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">predicted_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">true_count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">ranked</span><span class="p">,</span> <span class="n">truth</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ranked_predictions</span><span class="p">,</span> <span class="n">true_labels</span><span class="p">):</span>
+        <span class="n">selected</span> <span class="o">=</span> <span class="n">ranked</span><span class="p">[:</span><span class="n">k</span><span class="p">]</span>
+        <span class="n">hits</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">truth</span><span class="p">))</span>
+        <span class="n">predicted_count</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span>
+        <span class="n">true_count</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">truth</span><span class="p">))</span>
+    <span class="n">precision</span> <span class="o">=</span> <span class="n">hits</span> <span class="o">/</span> <span class="n">predicted_count</span> <span class="k">if</span> <span class="n">predicted_count</span> <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="n">recall</span> <span class="o">=</span> <span class="n">hits</span> <span class="o">/</span> <span class="n">true_count</span> <span class="k">if</span> <span class="n">true_count</span> <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="k">return</span> <span class="n">precision</span><span class="p">,</span> <span class="n">recall</span>
+
+<span class="n">ranked</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">]]</span>
+<span class="n">truth</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;a&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;b&quot;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">}]</span>
+<span class="n">p_at_1</span><span class="p">,</span> <span class="n">r_at_1</span> <span class="o">=</span> <span class="n">precision_recall_at_k</span><span class="p">(</span><span class="n">ranked</span><span class="p">,</span> <span class="n">truth</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">f1</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">p_at_1</span> <span class="o">*</span> <span class="n">r_at_1</span> <span class="o">/</span> <span class="p">(</span><span class="n">p_at_1</span> <span class="o">+</span> <span class="n">r_at_1</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">p_at_1</span> <span class="o">==</span> <span class="mi">2</span> <span class="o">/</span> <span class="mi">3</span>       <span class="c1"># 三个 top-1 中两个命中</span>
+<span class="k">assert</span> <span class="n">r_at_1</span> <span class="o">==</span> <span class="mi">2</span> <span class="o">/</span> <span class="mi">5</span>       <span class="c1"># 五个真实标签只召回两个</span>
+<span class="k">assert</span> <span class="n">f1</span> <span class="o">!=</span> <span class="n">r_at_1</span>          <span class="c1"># test() 的第三项是 R@k，不是 F1</span>
+<span class="nb">print</span><span class="p">({</span><span class="s2">&quot;P@1&quot;</span><span class="p">:</span> <span class="n">p_at_1</span><span class="p">,</span> <span class="s2">&quot;R@1&quot;</span><span class="p">:</span> <span class="n">r_at_1</span><span class="p">,</span> <span class="s2">&quot;derived_F1&quot;</span><span class="p">:</span> <span class="n">f1</span><span class="p">})</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="done-bar"><button class="mark-done-btn" data-key="hw42" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="hw41.html"><div class="dir">← 上一篇</div><div class="name">🔁 RNN Seq2Seq 机器翻译实战综合训练</div></a><a class="disabled next"></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、选择题（30 题）</a><a class="lv3" href="#sec-2">1. FastText 的两类核心用途是？</a><a class="lv3" href="#sec-3">2. FastText 监督分类器的典型文档表示是？</a><a class="lv3" href="#sec-4">3. 这种平均池化架构的主要局限是？</a><a class="lv3" href="#sec-5">4. FastText 监督训练文件的一行通常写成？</a><a class="lv3" href="#sec-6">5. 原始数据按类别或时间排序时，直接 head 作训练、tail 作验证的风险是？</a><a class="lv3" href="#sec-7">6. 监督分类中 wordNgrams=2 表示？</a><a class="lv3" href="#sec-8">7. minn=3, maxn=6 主要控制什么？</a><a class="lv3" href="#sec-9">8. 关于监督训练默认值，正确的是？</a><a class="lv3" href="#sec-10">9. 无监督词向量训练的官方默认组合更接近？</a><a class="lv3" href="#sec-11">10. FastText 能为未登录词构造向量的关键是？</a><a class="lv3" href="#sec-12">11. 为什么 .bin 模型通常比导出的 .vec 更适合查询任意 OOV？</a><a class="lv3" href="#sec-13">12. 层次 Softmax 如何把 V 类预测降到约 $O(\log V)$？</a><a class="lv3" href="#sec-14">13. 若某类别路径编码为 110，其概率由什么决定？</a><a class="lv3" href="#sec-15">14. 负采样的训练目标是？</a><a class="lv3" href="#sec-16">15. 负采样最常用于 FastText 的哪条路线？</a><a class="lv3" href="#sec-17">16. 单标签互斥分类的常见首选 loss 是？</a><a class="lv3" href="#sec-18">17. 一条文本可同时属于多个非互斥标签时，更合适的 loss 是？</a><a class="lv3" href="#sec-19">18. model.predict(text, k=-1, threshold=0.5) 常用于？</a><a class="lv3" href="#sec-20">19. model.test(path, k=1) 返回三元组 (N, P@1, R@1)，第三项是？</a><a class="lv3" href="#sec-21">20. 对多标签样本，为什么 P@1 与 R@1 可能差别很大？</a><a class="lv3" href="#sec-22">21. 使用 autotuneValidationFile 时，验证集的正确定位是？</a><a class="lv3" href="#sec-23">22. 文本预处理为何必须在训练和线上推理保持一致？</a><a class="lv3" href="#sec-24">23. minCount 提高通常带来什么权衡？</a><a class="lv3" href="#sec-25">24. bucket 与 n-gram 特征的关系是？</a><a class="lv3" href="#sec-26">25. CBOW 与 Skip-gram 的方向分别是？</a><a class="lv3" href="#sec-27">26. 用余弦相似度评估词向量时必须注意？</a><a class="lv3" href="#sec-28">27. FastText 词向量属于什么表示？</a><a class="lv3" href="#sec-29">28. 模型量化的主要目的与风险是？</a><a class="lv3" href="#sec-30">29. 当验证准确率很高、线上新词很多且效果下降时，优先排查？</a><a class="lv3" href="#sec-31">30. FastText 最适合作为？</a><a class="lv2" href="#sec-32">二、简答题（15 题）</a><a class="lv3" href="#sec-33">31. 用公式描述 FastText 监督分类器的前向过程。</a><a class="lv3" href="#sec-34">32. 对比 wordNgrams 与 minn/maxn。</a><a class="lv3" href="#sec-35">33. 为什么“FastText 能处理 OOV”不能无条件成立？</a><a class="lv3" href="#sec-36">34. 对比普通 Softmax、层次 Softmax和负采样。</a><a class="lv3" href="#sec-37">35. 为什么哈夫曼树能降低 HS 的平均计算成本？</a><a class="lv3" href="#sec-38">36. 写出负采样损失并解释更新范围。</a><a class="lv3" href="#sec-39">37. 设计一个无泄漏的监督分类数据切分方案。</a><a class="lv3" href="#sec-40">38. model.test() 的结果应如何解读和补充？</a><a class="lv3" href="#sec-41">39. 多标签 FastText 如何选择 loss、k 与 threshold？</a><a class="lv3" href="#sec-42">40. 如何公平比较 unigram 与 word bigram？</a><a class="lv3" href="#sec-43">41. 中文 FastText 预处理应特别注意什么？</a><a class="lv3" href="#sec-44">42. 如何评估预训练词向量迁移是否有效？</a><a class="lv3" href="#sec-45">43. 设计一次 FastText 自动调参实验。</a><a class="lv3" href="#sec-46">44. 如何诊断“字符子词近邻都只是拼写相似、语义却不相关”？</a><a class="lv3" href="#sec-47">45. 给出 FastText 分类服务的上线检查清单。</a><a class="lv2" href="#sec-48">三、代码题（10 题）</a><a class="lv3" href="#sec-49">46. 解析 FastText 监督训练行，支持多标签并拒绝缺失标签或正文的坏样本。</a><a class="lv3" href="#sec-50">47. 对单标签样本做可复现的分层 train/valid/test 切分，并验证集合互斥。</a><a class="lv3" href="#sec-51">48. 生成最长为 N 的词级 n-gram，并用稳定哈希映射到桶。</a><a class="lv3" href="#sec-52">49. 生成带边界符的字符 n-gram，并从哈希桶组合一个 OOV 向量。</a><a class="lv3" href="#sec-53">50. 用 EmbeddingBag(mode=&#x27;mean&#x27;) 实现一个微型 FastText 风格分类器并过拟合训练集。</a><a class="lv3" href="#sec-54">51. 根据阈值计算多标签分类的 micro 与 macro Precision、Recall、F1。</a><a class="lv3" href="#sec-55">52. 实现一条层次 Softmax 路径的概率与损失，并证明只有路径节点获得梯度。</a><a class="lv3" href="#sec-56">53. 实现数值稳定的负采样损失，并检查只更新正目标和采到的负目标。</a><a class="lv3" href="#sec-57">54. 构造合法的 FastText 训练配置，并禁止把自动调参验证集复用为最终测试集。</a><a class="lv3" href="#sec-58">55. 手工实现多标签 P@k 与 R@k，证明 model.test() 第三项不是 F1。</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
