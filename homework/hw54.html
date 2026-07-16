@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>关系抽取：规则、Pipeline 与 CasRel 综合训练 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons">课程讲义</a>
+    <a href="../index.html#homework" class="active">课后练习</a>
+    <a href="../index.html#projects">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson58" href="../lessons/lesson58.html"><span class="no">19</span><span>NumPy 统计计算与科学分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">20</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">21</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">22</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">23</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">24</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">25</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">26</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">27</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">28</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">29</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">30</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">31</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">32</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">33</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">34</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">35</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">36</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">37</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">38</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">39</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">40</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">41</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">42</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">43</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">44</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">45</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">46</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">47</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">48</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">49</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">50</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">51</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">📘 医学知识图谱</div><a class="item" data-page-key="lesson51" href="../lessons/lesson51.html"><span class="no">52</span><span>知识图谱基础与医学图谱架构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson52" href="../lessons/lesson52.html"><span class="no">53</span><span>数据标注、查询语言与 Neo4j 工具链</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson53" href="../lessons/lesson53.html"><span class="no">54</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson54" href="../lessons/lesson54.html"><span class="no">55</span><span>关系抽取：规则、Pipeline 与 CasRel</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson55" href="../lessons/lesson55.html"><span class="no">56</span><span>知识融合：实体统一、链接与消歧</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson56" href="../lessons/lesson56.html"><span class="no">57</span><span>Neo4j 医学图谱搭建与质量验证</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson57" href="../lessons/lesson57.html"><span class="no">58</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">21</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">22</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">24</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">25</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">27</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">28</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">29</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">30</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">31</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">32</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw33" href="../homework/hw33.html"><span class="no">33</span><span>卷积神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw34" href="../homework/hw34.html"><span class="no">34</span><span>循环神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw35" href="../homework/hw35.html"><span class="no">35</span><span>自然语言处理入门与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw36" href="../homework/hw36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw37" href="../homework/hw37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw38" href="../homework/hw38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw39" href="../homework/hw39.html"><span class="no">39</span><span>Transformer 架构与工程实现综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw40" href="../homework/hw40.html"><span class="no">40</span><span>Transformer 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw41" href="../homework/hw41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw42" href="../homework/hw42.html"><span class="no">42</span><span>FastText：文本分类与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw43" href="../homework/hw43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw44" href="../homework/hw44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw45" href="../homework/hw45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw46" href="../homework/hw46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw47" href="../homework/hw47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw48" href="../homework/hw48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw49" href="../homework/hw49.html"><span class="no">49</span><span>Prompt-Tuning：PET、软提示与 P-tuning 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw50" href="../homework/hw50.html"><span class="no">50</span><span>PEFT：Prefix、Adapter、LoRA 与 QLoRA 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw51" href="../homework/hw51.html"><span class="no">51</span><span>知识图谱基础与医学图谱架构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw52" href="../homework/hw52.html"><span class="no">52</span><span>数据标注、查询语言与 Neo4j 工具链综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw53" href="../homework/hw53.html"><span class="no">53</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi 综合训练</span><span class="done-flag">✅</span></a><a class="item hw active" data-page-key="hw54" href="../homework/hw54.html"><span class="no">54</span><span>关系抽取：规则、Pipeline 与 CasRel 综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project07" href="../projects/project07.html"><span class="no">07</span><span>医学知识图谱：从信息抽取到 KBQA</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课后练习 / 练习 54</div>
+<h1>🔗 关系抽取：规则、Pipeline 与 CasRel 综合训练</h1>
+<div class="chips"><span class="chip amber">🏷️ 选择 + 简答 + 代码</span><span class="chip amber">🏷️ 55 题</span><a class="chip" href="../lessons/lesson54.html">📖 相关讲义：关系抽取：规则、Pipeline 与 CasRel</a></div>
+</div>
+<p>55 道练习，按“SPO 输出合同 → 规则关系抽取 → Pipeline 实体对分类 → BiLSTM+Attention → Joint 与 CasRel → 重叠三元组 → 解码、评估与医学安全”组织。做题时始终区分三层含义：<strong>文本表达了什么、模型抽取了什么、知识图谱最终采信了什么</strong>。文本中的关系 mention 不是自动成立的临床事实，否定、条件、时间、主体和证据来源必须随结果保留。</p>
+<blockquote>
+<p>建议先独立作答，再展开参考答案。本练习依据原课件第四章和站内重组讲义设计，并参考 <a href="https://aclanthology.org/P16-2034/">BiLSTM+Attention 关系分类论文</a>、<a href="https://aclanthology.org/P18-1047/">CopyRE 重叠三元组论文</a>、<a href="https://aclanthology.org/2020.acl-main.136/">CasRel 原始论文</a>、<a href="https://aclanthology.org/2022.aacl-short.55/">Pipeline 与 Joint 实证研究</a>及<a href="https://aclanthology.org/2021.naacl-main.5/">独立编码器 Pipeline 研究</a>校准。注意：CasRel 论文基准把关系建模为从主体到客体的函数，并在原实验中采用“关系与主体、客体 head 正确”的部分匹配；本练习面向医学建图，除特别说明外使用更严格的“主体/客体完整 span 与类型、方向、关系全部正确”口径。10 道代码题只使用 Python 标准库离线运行，不下载模型。</p>
+</blockquote>
+<h2 id="sec-1">一、选择题（30 题）</h2>
+<div class="q-card"><h3 id="sec-2">1. 封闭关系抽取的直接输出通常是什么？</h3>
+<p>A. 预定义关系集合中的 (subject, predicate, object) 及其文本证据  \
+B. 已经由医生确认的诊断结论  \
+C. 任意新谓词的自然语言解释  \
+D. Neo4j 的全部节点</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 封闭关系抽取在既定 Schema 内识别主体、关系和客体。模型输出仍是文本级抽取结果，不能跳过断言识别、实体链接、证据审核和入图策略。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-3">2. 封闭关系抽取与开放信息抽取的关键区别是？</h3>
+<p>A. 前者预先定义关系集合，后者可从文本发现谓词表达  \
+B. 前者只能处理英文，后者只能处理中文  \
+C. 前者不需要实体，后者不需要文本  \
+D. 二者只有模型参数量不同</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 医学知识图谱通常以封闭抽取保证语义统一，也可用开放抽取发现候选关系，再经归一化与人工审核扩展 Schema。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-4">3. 为什么 Drug-TREATS-Disease 不能随意交换为 Disease-TREATS-Drug？</h3>
+<p>A. 多数关系具有方向，交换主体和客体会改变或破坏语义  \
+B. 三元组只能按字符串长度排序  \
+C. 客体不能有实体类型  \
+D. 交换后会自动变成开放关系</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Schema 应明确主体类型、客体类型、方向，以及是否存在命名清楚的逆关系。无向关系也应在存储合同中规定规范化顺序。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-5">4. 关系抽取结果保留字符偏移和来源定位的主要价值是？</h3>
+<p>A. 可回到原文复核实体边界、语境和证据  \
+B. 自动提高模型参数量  \
+C. 取代实体链接  \
+D. 使任何关系都变为真</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> doc_id 与 [start,end)、句段定位、规则或模型版本等信息支持审计、纠错、去重和重新处理。只保存三个字符串会丢失证据链。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-6">5. 在生产级严格三元组评估中，什么情况才能计为 TP？</h3>
+<p>A. 主体和客体完整边界与类型、关系类型、方向全部正确  \
+B. 只要主体字符串出现过  \
+C. 只要关系类别正确，不看实体  \
+D. 预测置信度超过 0.5</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 阈值不是正确性的定义。若论文基准采用 head match 或忽略实体类型，必须另报该口径，不能与严格指标直接混用。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-7">6. 为什么除了总体 micro F1 还应报告按关系类型的指标？</h3>
+<p>A. 高频关系可能主导 micro F1，掩盖稀有但重要关系的失败  \
+B. macro F1 一定高于 micro F1  \
+C. 每类指标不需要 gold 标签  \
+D. micro F1 只能用于回归</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 还应按重叠类型、实体距离、否定语境和来源切片，避免一个汇总数掩盖关键风险。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-8">7. 规则关系抽取最适合哪种起点？</h3>
+<p>A. 样本少、句式稳定、关系高价值且需要可解释审计  \
+B. 关系集无限且文本风格完全未知  \
+C. 不允许维护规则版本  \
+D. 任何任务都要求零误差</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 规则能提供高精度冷启动和回归基线，但召回、冲突、跨域迁移和维护成本必须持续度量。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-9">8. “患者否认头痛”被规则匹配为 HAS_SYMPTOM(患者, 头痛)，首要问题是？</h3>
+<p>A. 没有处理否定范围，把被否认的提及当成肯定事实  \
+B. 主体字符串太短  \
+C. 必须改用无向关系  \
+D. 需要删除原文</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 可保留“头痛” mention，但关系证据应带 negated 断言或被入图策略拒绝。还要处理假设、家族史、历史状态和条件句。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-10">9. 一个可审计的规则命中至少应额外记录什么？</h3>
+<p>A. rule_id、规则版本、命中片段、来源和必要的过滤理由  \
+B. 只有最终三个字符串  \
+C. 训练轮数  \
+D. GPU 型号</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 这些字段能回答“为什么抽到了这条关系”，也便于规则变更后的定向回归和失效分析。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-11">10. 一句话识别出 (m) 个实体，枚举所有有向实体对的数量级通常是？</h3>
+<p>A. (O(m^2))  \
+B. (O(\log m))  \
+C. (O(1))  \
+D. (O(2^{-m}))</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 排除自环后有 (m(m-1)) 个有向对。类型约束、距离、句界和候选召回器可以减少无效组合，但不能无依据删掉可能的正例。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-12">11. 在候选生成阶段使用 Disease → Symptom 类型约束的主要作用是？</h3>
+<p>A. 提前排除与 Schema 不兼容的有向实体对  \
+B. 自动证明剩余实体对一定有关系  \
+C. 让 NER 不再出错  \
+D. 把多标签任务变成聚类</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 类型约束提高效率并缓解负类不平衡，但剩余候选仍需分类；若 NER 类型错，也可能误删真正候选。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-13">12. Pipeline 关系分类器为什么通常需要 NO_RELATION 类或等价机制？</h3>
+<p>A. 大多数候选实体对没有目标关系，需要显式拒绝  \
+B. 每个实体对都至少有一个关系  \
+C. 它用于替代 padding  \
+D. 它表示开放关系的谓词文本</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 负例数量和采样策略会影响校准与召回。未标注不一定等于真正负例，弱监督数据尤其要警惕假负例。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-14">13. 训练关系分类器使用 gold 实体，推理使用 predicted 实体，主要产生什么问题？</h3>
+<p>A. 训练与推理输入分布不一致，并出现上游边界和类型错误  \
+B. 自动消除误差传播  \
+C. 关系集合变为空  \
+D. 模型不再需要实体标记</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 应同时报告 gold-entity（oracle）与 predicted-entity 的端到端结果，并用带噪实体或实际预测实体构造训练样本做对照。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-15">14. 若某个 gold 三元组的主体或客体被 NER 漏掉，后续实体对分类器能否恢复它？</h3>
+<p>A. 标准 Pipeline 中不能，因为该实体对不会进入关系分类  \
+B. 一定能，Attention 会补齐实体  \
+C. 只要提高 softmax 温度就能  \
+D. 只要换成 macro F1 就能</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 这就是误差传播的硬上限之一。可通过更强 NER、联合建模、候选 span 补充或端到端召回器改善，但必须实测。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-16">15. 在关系分类输入中加入 SUBJ 与 OBJ 边界标记的主要原因是？</h3>
+<p>A. 明确当前待分类的有向实体对，并让编码器利用实体边界信息  \
+B. 自动完成知识库消歧  \
+C. 强制注意力权重等于因果证据  \
+D. 把所有 token 变成实体</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 同一句往往有多个候选对；没有实体标记、位置编码或 span 表示，模型难以知道当前分类目标和方向。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-17">16. 原课件 BiLSTM+Attention 关系分类器中，BiLSTM 与 Attention 分别做什么？</h3>
+<p>A. BiLSTM 编码双向上下文，Attention 对位置表示加权汇总  \
+B. BiLSTM 生成 Neo4j 节点，Attention 写 Cypher  \
+C. BiLSTM 只做分词，Attention 只做去重  \
+D. 二者都只负责实体链接</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 最终句子/实体对表示再送入关系分类层。实现时 padding 位置必须在注意力 softmax 前屏蔽。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-18">17. “Attention 权重最高的 token 就是模型的可靠解释”为什么不严谨？</h3>
+<p>A. 注意力是模型内部加权机制，不自动等价于充分、忠实的因果解释  \
+B. 注意力权重从不归一化  \
+C. Attention 不能用于文本  \
+D. 最高权重一定在 padding</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 可把权重用于诊断，但生产审计仍应保存原文证据，并结合遮挡、反事实、规则核验或人工复核。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-19">18. 关于 Pipeline 与 Joint 的说法，哪项最稳妥？</h3>
+<p>A. Joint 允许实体与关系表示或解码协同，但并不保证一定优于精心设计的 Pipeline  \
+B. Joint 永远没有错误传播  \
+C. Pipeline 永远不需要 NER  \
+D. Joint 必须使用同一个标签给每个 token</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Joint 也会受数据、解码结构和目标冲突影响；Pipeline 则有模块化、可替换和易诊断的优势。选型要靠同口径实验。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-20">19. CasRel 对关系的核心重新表述是什么？</h3>
+<p>A. 对每个关系学习从给定主体到可能客体的关系特定标注器  \
+B. 把每个关系随机映射为一个字符  \
+C. 对每个实体对只允许一个关系  \
+D. 先生成 Cypher 再识别实体</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 论文写作 (f_r(s)\rightarrow o)：先找主体，再在每个主体条件下由各关系通道找客体或输出空客体。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-21">20. CasRel 的低层主体标注器通常预测什么？</h3>
+<p>A. 每个 token 是主体 head / tail 的二元概率  \
+B. 每个 token 的关系类别 softmax  \
+C. 每个文档唯一主体 ID  \
+D. 关系图的最短路径</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> head 和 tail 是两个二元序列；解码时还要处理阈值、配对、子词偏移、特殊 token 与最大 span 长度。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-22">21. 若批大小为 (B)、序列长为 (L)、关系数为 (R)，CasRel 客体 head 概率常见形状是？</h3>
+<p>A. [B, L, R]  \
+B. [B]  \
+C. [R, R]  \
+D. [L, vocab_size]</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 每个主体条件下，每种关系都在每个位置预测客体 head；客体 tail 同形。训练损失需用 [B,L,R] 的有效 token mask。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-23">22. CasRel 为什么要把指定主体表示融合进文本表示后再预测客体？</h3>
+<p>A. 让客体和关系预测条件于当前主体，区分同句中的不同三元组  \
+B. 让所有主体共享同一客体  \
+C. 取消关系通道  \
+D. 只为增加序列长度</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 对每个检测到的主体分别运行高层标注器，才能保留同一句中“一主体多客体”和多个主体的不同关系。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-24">23. CasRel 某个关系通道的 head/tail 全为 0，通常表示什么？</h3>
+<p>A. 给定主体在该关系下没有检测到客体，即空客体  \
+B. 该主体一定不存在  \
+C. 该关系是无向关系  \
+D. 模型已经达到满分</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 论文目标同时学习有效关系的客体和其他关系的 null object。阈值与类别不平衡会影响空/非空判断。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-25">24. 三元组 A-r1-B 与 A-r2-C 属于哪种重叠？</h3>
+<p>A. SEO（SingleEntityOverlap）  \
+B. EPO（EntityPairOverlap）  \
+C. Normal  \
+D. 没有实体</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 两条三元组只共享实体 A，没有共享完整实体对。SEO 也可能是前一条的客体与后一条的主体共享。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-26">25. 三元组 A-r1-B 与 A-r2-B 属于哪种重叠？</h3>
+<p>A. EPO  \
+B. SEO  \
+C. Normal  \
+D. 只有在 r1=r2 时才是 EPO</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 同一有向实体对承载多个关系，单标签实体对 softmax 会丢失其中至少一种关系；需多标签分类或能表达多关系的联合结构。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-27">26. 关于 Normal、SEO 与 EPO 子集，哪项正确？</h3>
+<p>A. 一句话含多条三元组时可能同时出现 EPO 对和 SEO 对，评估脚本应明确分类规则  \
+B. 三类在任何定义下都必然互斥  \
+C. 只含一条三元组一定属于 EPO  \
+D. SEO 必须共享完整实体对</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> CasRel 论文的数据统计明确指出句子可同时属于 EPO 和 SEO。报告子集指标时要说明是否多标签归类或按优先级互斥。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-28">27. 直接用 zip(head_indices, tail_indices) 配对 span 的风险是？</h3>
+<p>A. 多个边界、噪声和缺失会错位配对，应定义合法且确定性的匹配策略  \
+B. zip 会自动搜索全局最优关系  \
+C. zip 会完成字符偏移映射  \
+D. 没有任何风险</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 常见策略是为每个 head 选择其后最近的合法 tail，并限制最大长度；也可做带分数的全局匹配。策略必须有边界用例测试。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-29">28. 主体阈值和各关系客体阈值应如何确定？</h3>
+<p>A. 在开发集按目标指标校准，并冻结后只在测试集做一次最终评估  \
+B. 看测试集结果反复调整  \
+C. 所有关系永远固定为 0.5 且无需验证  \
+D. 根据训练损失最低的 batch 临时改变</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 稀有关系可能需要分类别阈值，但参数更多也更易过拟合。应保存阈值、校准数据、模型与 Schema 版本。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-30">29. 远程监督把知识库三元组对齐到文本生成标签时，典型噪声是什么？</h3>
+<p>A. KB 有关系不代表当前句子表达它，且 KB 不完整会造成假负例  \
+B. 所有远程监督标签都由医生逐条确认  \
+C. 只会产生字符编码问题  \
+D. 自动获得完整因果证据</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 训练可采用多实例学习、噪声鲁棒损失或抽样复核；评测集最好人工标注并报告标注完整性。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-31">30. 医学关系抽取进入知识图谱前最重要的安全原则是？</h3>
+<p>A. 将抽取结果视为带来源、断言和不确定性的候选证据，按风险审核后入图  \
+B. 置信度最高的结果直接变成处方  \
+C. 删除否定和时间字段以便去重  \
+D. 同名实体默认是同一个患者</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> “文献说某药可用于某病”“患者目前正在使用某药”和“系统推荐某药”是不同语义；不能仅凭 SPO 字符串合并。</p></div></div>
+
+
+</div><h2 id="sec-32">二、简答题（15 题）</h2>
+<div class="q-card"><h3 id="sec-33">31. 为“慢性支气管炎常见咳嗽”设计一个可审计的 SPO 输出合同。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>至少包含：doc_id；主体 text/type/start/end/mention_id，如“慢性支气管炎” [0,6)、Disease；关系 HAS_SYMPTOM 与方向；客体“咳嗽” [8,10)、Symptom；证据句段与来源定位；assertion=affirmed、时间/主体范围；模型或规则版本、置信度、Schema 版本。实体链接后的标准 ID 应与原文 mention 分开保存，不能覆盖文本证据。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-34">32. 如何为 TREATS、HAS_SYMPTOM 两种关系定义最小 Schema？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>分别写明允许的有向类型对：TREATS: Drug → Disease，HAS_SYMPTOM: Disease → Symptom；定义关系语义、正反例、逆关系或无逆关系、是否允许多值、证据和断言要求。还要规定“缓解症状”是否等于治疗疾病，避免标注员把相近但不同的语义混为一类。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-35">33. 为“患者否认发热”和“肺炎常伴发热”设计规则时，怎样避免错误入图？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>先识别实体与触发词，再计算触发词和客体周围的否定范围。第一句可输出带 negated 的文本声明或不生成肯定 HAS_SYMPTOM；第二句才生成肯定候选。规则结果保存 rule_id、命中字符区间、否定 cue 和原句；句法复杂时进入人工复核而非猜测。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-36">34. 一个关系规则从开发到上线应经过哪些生命周期步骤？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>明确关系定义与类型约束；收集正例、硬负例和边界例；实现确定性规则及优先级；在独立开发/测试集评估；为每条规则建立单元测试；版本化发布；监控分关系 P/R、冲突和数据漂移；失败样本回流；回滚时保留旧版本和影响范围。不能只凭几个演示句判断有效。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-37">35. 一句中有 Drug、Disease、Symptom、Food 四个实体，Pipeline 候选如何缩减？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>全有向枚举有 (4\times3=12) 对。根据 Schema 只保留如 Drug→Disease、Disease→Symptom、Disease→Food 等兼容方向；再根据句界、最大距离、依存路径或候选召回器缩减。每个过滤器要在开发集评估候选召回率，不能只追求候选数量少。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-38">36. 如何构造关系分类训练样本并处理 NO_RELATION 不平衡？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>为每个候选保留句子、带方向的实体标记、边界和类型；gold 实体对赋一个或多个关系，其他候选为 NO_RELATION，但需考虑漏标造成的假负例。可用类型约束、分层/困难负采样、类权重或 focal loss；验证集和测试集不应通过采样改变真实分布。若同一实体对可有多个关系，应使用多标签目标而非单一 softmax。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-39">37. 设计一个量化 Pipeline 误差传播的 oracle 实验。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>固定同一关系分类器和测试集，至少跑两组：gold 实体输入与 predicted 实体输入。前者近似关系分类上限，后者是端到端性能；再统计 gold 三元组中主体/客体可达率、边界错、类型错和关系错。若 gold-entity F1 高而端到端低，优先修 NER/候选；两者都低则关系表示、标签或 Schema 更可疑。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-40">38. 写出 BiLSTM+Attention 的一种加权汇总形式，并说明 mask。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>设 BiLSTM 输出 (H=[h_1,\ldots,h_L])，可计算
+[
+u_i=\tanh(Wh_i+b),\quad
+\alpha_i=\operatorname{softmax}(u_i^\top q),\quad
+r=\sum_i\alpha_i h_i.
+]
+padding 和特殊 token 的 logit 应在 softmax 前置为负无穷，使其权重为 0；实体标记、相对位置或 span 表示要让模型知道当前有向实体对。(r) 再送入单标签 softmax 或多标签 sigmoid 分类器。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-41">39. 规则、Pipeline 与 CasRel 应如何选型？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>句式稳定、数据少、要求高可解释性时先做规则；已有可靠 NER、模块需独立替换或关系集频繁变化时选 Pipeline；标注充分、重叠三元组多且端到端召回重要时评估 CasRel/其他 Joint。生产中常组合三者：规则作保护与高精度通道，模型扩大召回，低置信度和高风险结果人工复核。最终以同一数据切分、Schema 和严格指标比较。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-42">40. “阿司匹林可缓解头痛并降低发热”的 CasRel 训练标签如何构造？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>若 gold 为 (阿司匹林, RELIEVES, 头痛) 与 (阿司匹林, RELIEVES, 发热)，主体 head/tail 序列在“阿司匹林”首尾置 1。选定该主体后，在 RELIEVES 关系通道把“头痛”“发热”的 head/tail 都置 1，其他关系通道全 0；padding 全部 mask。若 Schema 将两种谓词区分为不同关系，则分别在对应通道标注，不能由模型自行合并语义。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-43">41. CasRel 推理时为什么必须逐个预测主体运行客体标注器？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>客体概率是 (p_r(o\mid s,x))，依赖当前主体。应先解码全部主体，对每个主体构造其表示，然后遍历关系通道解码全部客体；最终做三元组级去重。只取第一个主体或把多个主体平均在一起，会把不同主体的客体错配，也会降低 SEO 场景召回。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-44">42. 分别给出一个 SEO 和 EPO 医学示例，并说明模型输出要求。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>SEO：肺炎-HAS_SYMPTOM-发热、肺炎-HAS_SYMPTOM-咳嗽，共享“肺炎”；EPO：阿司匹林-RELIEVES-头痛、阿司匹林-CONTRAINDICATED_FOR-头痛（仅作结构示例，实际标签须符合语义和证据），共享同一有向实体对但关系不同。输出结构必须允许一个实体参与多条三元组，也必须允许一个实体对多标签，不能用字典的单一 (s,o)→r 值覆盖。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-45">43. 子词 tokenizer、长文截断会怎样影响 CasRel，如何防护？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>实体字符边界要通过 offset mapping 对齐到子词，CLS/SEP/padding 不参与边界标签；被截断的主体或客体不应产生残缺 gold。长文可按句段或滑窗处理，保证实体对和必要上下文同窗，重叠窗结果按原文偏移合并。记录 tokenizer、最大长度、窗口策略和截断率，并单独评估长距离关系。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-46">44. 设计一份端到端关系抽取评估报告。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>核心报告严格 micro P/R/F1 与每关系 P/R/F1；同时给 gold-entity 与 predicted-entity、Normal/SEO/EPO、实体距离、否定/条件/跨句、来源和置信度分桶。错误分为主体/客体边界、类型、方向、关系混淆、漏检、虚假三元组、重复和证据范围错。说明去重、阈值、部分/严格匹配、macro 平均、数据切分和置信区间，避免指标不可复现。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-47">45. 医学关系抽取上线前需要哪些安全与治理控制？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>保留原文证据、来源、时间、主体、断言、不确定性与模型/Schema 版本；实体链接和关系抽取分层审计；高风险关系白名单与人工复核；按患者/文档隔离权限和脱敏；低置信度不自动入图；支持撤回、重跑和证据冲突共存；监控漂移与分关系错误。系统输出是知识候选，不是诊疗建议。</p></div></div>
+
+
+</div><h2 id="sec-48">三、代码题（10 题）</h2>
+<div class="q-card"><h3 id="sec-49">46. 校验严格 SPO 输出合同</h3>
+<p>实现字符偏移、文本切片、实体类型、关系方向、来源和置信度校验。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">validate_spo</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spo</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="n">required</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;subject&quot;</span><span class="p">,</span> <span class="s2">&quot;predicate&quot;</span><span class="p">,</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span> <span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;confidence&quot;</span><span class="p">}</span>
+    <span class="n">missing</span> <span class="o">=</span> <span class="n">required</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">spo</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">missing</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;缺少字段: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">missing</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spo</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">],</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">spo</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;source 必须是非空字符串&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">spo</span><span class="p">[</span><span class="s2">&quot;confidence&quot;</span><span class="p">],</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">spo</span><span class="p">[</span><span class="s2">&quot;confidence&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;confidence 必须在 [0,1]&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_entity</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">entity</span> <span class="o">=</span> <span class="n">spo</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">field</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">entity</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> 缺少 </span><span class="si">{</span><span class="n">field</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">entity</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="n">entity</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">end</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;偏移必须是整数&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">end</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> 偏移越界&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">text</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span> <span class="o">!=</span> <span class="n">entity</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> 文本与 [start,end) 不一致&quot;</span><span class="p">)</span>
+
+    <span class="n">validate_entity</span><span class="p">(</span><span class="s2">&quot;subject&quot;</span><span class="p">)</span>
+    <span class="n">validate_entity</span><span class="p">(</span><span class="s2">&quot;object&quot;</span><span class="p">)</span>
+    <span class="n">predicate</span> <span class="o">=</span> <span class="n">spo</span><span class="p">[</span><span class="s2">&quot;predicate&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">predicate</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">schema</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;未知关系&quot;</span><span class="p">)</span>
+    <span class="n">expected_subject</span><span class="p">,</span> <span class="n">expected_object</span> <span class="o">=</span> <span class="n">schema</span><span class="p">[</span><span class="n">predicate</span><span class="p">]</span>
+    <span class="n">actual_types</span> <span class="o">=</span> <span class="n">spo</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">][</span><span class="s2">&quot;type&quot;</span><span class="p">],</span> <span class="n">spo</span><span class="p">[</span><span class="s2">&quot;object&quot;</span><span class="p">][</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">actual_types</span> <span class="o">!=</span> <span class="p">(</span><span class="n">expected_subject</span><span class="p">,</span> <span class="n">expected_object</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;实体类型或关系方向不符合 Schema&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;慢性支气管炎常见咳嗽&quot;</span>
+<span class="n">spo</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;m1&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;慢性支气管炎&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">},</span>
+    <span class="s2">&quot;predicate&quot;</span><span class="p">:</span> <span class="s2">&quot;HAS_SYMPTOM&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;m2&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;咳嗽&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Symptom&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">},</span>
+    <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="s2">&quot;doc:1#sentence:1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="mf">0.93</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">schema</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;HAS_SYMPTOM&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;Symptom&quot;</span><span class="p">)}</span>
+<span class="k">assert</span> <span class="n">validate_spo</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">spo</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
+
+<span class="n">bad</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">spo</span><span class="p">,</span> <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="n">spo</span><span class="p">[</span><span class="s2">&quot;object&quot;</span><span class="p">],</span> <span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="n">spo</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">]}</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">validate_spo</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">bad</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;应拒绝反向三元组&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-50">47. 按 Schema 生成有向候选实体对</h3>
+<p>一个类型对可能允许多个关系；排除自环并确定性去重。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">generate_candidates</span><span class="p">(</span><span class="n">entities</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">schema</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+    <span class="n">candidates</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">subject</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">subject</span><span class="p">[</span><span class="s2">&quot;mention_id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;mention_id&quot;</span><span class="p">]:</span>
+                <span class="k">continue</span>
+            <span class="k">for</span> <span class="n">relation</span><span class="p">,</span> <span class="p">(</span><span class="n">subject_type</span><span class="p">,</span> <span class="n">object_type</span><span class="p">)</span> <span class="ow">in</span> <span class="n">schema</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">subject</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="p">(</span><span class="n">subject_type</span><span class="p">,</span> <span class="n">object_type</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">subject</span><span class="p">[</span><span class="s2">&quot;mention_id&quot;</span><span class="p">],</span> <span class="n">relation</span><span class="p">,</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;mention_id&quot;</span><span class="p">]</span>
+                <span class="n">candidates</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;subject_id&quot;</span><span class="p">:</span> <span class="n">subject</span><span class="p">[</span><span class="s2">&quot;mention_id&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;predicate&quot;</span><span class="p">:</span> <span class="n">relation</span><span class="p">,</span>
+                    <span class="s2">&quot;object_id&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;mention_id&quot;</span><span class="p">],</span>
+                <span class="p">}</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">candidates</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">candidates</span><span class="p">)]</span>
+
+
+<span class="n">entities</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;mention_id&quot;</span><span class="p">:</span> <span class="s2">&quot;d1&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;肺炎&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Disease&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;mention_id&quot;</span><span class="p">:</span> <span class="s2">&quot;s1&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;发热&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Symptom&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;mention_id&quot;</span><span class="p">:</span> <span class="s2">&quot;x1&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;咳嗽&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Symptom&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;mention_id&quot;</span><span class="p">:</span> <span class="s2">&quot;m1&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;阿莫西林&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Drug&quot;</span><span class="p">},</span>
+<span class="p">]</span>
+<span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;HAS_SYMPTOM&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;Symptom&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;TREATS&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Drug&quot;</span><span class="p">,</span> <span class="s2">&quot;Disease&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;RECOMMENDED_FOR&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Drug&quot;</span><span class="p">,</span> <span class="s2">&quot;Disease&quot;</span><span class="p">),</span>
+<span class="p">}</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">generate_candidates</span><span class="p">(</span><span class="n">entities</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span>
+<span class="k">assert</span> <span class="p">(</span><span class="s2">&quot;m1&quot;</span><span class="p">,</span> <span class="s2">&quot;TREATS&quot;</span><span class="p">,</span> <span class="s2">&quot;d1&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="p">{</span>
+    <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;subject_id&quot;</span><span class="p">],</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;predicate&quot;</span><span class="p">],</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;object_id&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">result</span>
+<span class="p">}</span>
+<span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;subject_id&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;object_id&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">result</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-51">48. 实现带否定过滤和证据溯源的规则关系抽取</h3>
+<p>实体由上游给出；规则匹配两个实体之间的触发词，并保留 rule_id 和证据范围。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">extract_by_rules</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">entities</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">rules</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">source</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">rules</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">subject</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">subject</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">]:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">subject</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">])</span> <span class="o">!=</span> <span class="p">(</span><span class="n">rule</span><span class="p">[</span><span class="s2">&quot;subject_type&quot;</span><span class="p">],</span> <span class="n">rule</span><span class="p">[</span><span class="s2">&quot;object_type&quot;</span><span class="p">]):</span>
+                    <span class="k">continue</span>
+                <span class="n">between</span> <span class="o">=</span> <span class="n">text</span><span class="p">[</span><span class="n">subject</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">]:</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">]]</span>
+                <span class="n">trigger_at</span> <span class="o">=</span> <span class="n">between</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">rule</span><span class="p">[</span><span class="s2">&quot;trigger&quot;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">trigger_at</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">left_context</span> <span class="o">=</span> <span class="n">between</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">trigger_at</span> <span class="o">-</span> <span class="mi">2</span><span class="p">):</span><span class="n">trigger_at</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">cue</span> <span class="ow">in</span> <span class="n">left_context</span> <span class="k">for</span> <span class="n">cue</span> <span class="ow">in</span> <span class="n">rule</span><span class="p">[</span><span class="s2">&quot;negation_cues&quot;</span><span class="p">]):</span>
+                    <span class="k">continue</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s2">&quot;subject_id&quot;</span><span class="p">:</span> <span class="n">subject</span><span class="p">[</span><span class="s2">&quot;mention_id&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;predicate&quot;</span><span class="p">:</span> <span class="n">rule</span><span class="p">[</span><span class="s2">&quot;predicate&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;object_id&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;mention_id&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;rule_id&quot;</span><span class="p">:</span> <span class="n">rule</span><span class="p">[</span><span class="s2">&quot;rule_id&quot;</span><span class="p">],</span>
+                    <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">source</span><span class="p">,</span>
+                    <span class="s2">&quot;evidence&quot;</span><span class="p">:</span> <span class="p">{</span>
+                        <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="n">subject</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">],</span>
+                        <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">],</span>
+                        <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">text</span><span class="p">[</span><span class="n">subject</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">]:</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">]],</span>
+                    <span class="p">},</span>
+                    <span class="s2">&quot;assertion&quot;</span><span class="p">:</span> <span class="s2">&quot;affirmed&quot;</span><span class="p">,</span>
+                <span class="p">})</span>
+    <span class="k">return</span> <span class="n">results</span>
+
+
+<span class="n">rules</span> <span class="o">=</span> <span class="p">[{</span>
+    <span class="s2">&quot;rule_id&quot;</span><span class="p">:</span> <span class="s2">&quot;disease_manifest_v2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;subject_type&quot;</span><span class="p">:</span> <span class="s2">&quot;Disease&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;object_type&quot;</span><span class="p">:</span> <span class="s2">&quot;Symptom&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;trigger&quot;</span><span class="p">:</span> <span class="s2">&quot;表现为&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;predicate&quot;</span><span class="p">:</span> <span class="s2">&quot;HAS_SYMPTOM&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;negation_cues&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;不&quot;</span><span class="p">,</span> <span class="s2">&quot;未&quot;</span><span class="p">,</span> <span class="s2">&quot;无&quot;</span><span class="p">],</span>
+<span class="p">}]</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;慢性支气管炎常表现为咳嗽&quot;</span>
+<span class="n">entities</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;mention_id&quot;</span><span class="p">:</span> <span class="s2">&quot;d1&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;mention_id&quot;</span><span class="p">:</span> <span class="s2">&quot;s1&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Symptom&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">},</span>
+<span class="p">]</span>
+<span class="n">found</span> <span class="o">=</span> <span class="n">extract_by_rules</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">entities</span><span class="p">,</span> <span class="n">rules</span><span class="p">,</span> <span class="s2">&quot;doc:1#s1&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">found</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="k">assert</span> <span class="n">found</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;evidence&quot;</span><span class="p">][</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">text</span>
+
+<span class="n">negated</span> <span class="o">=</span> <span class="s2">&quot;慢性支气管炎不表现为咳嗽&quot;</span>
+<span class="n">negated_entities</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;mention_id&quot;</span><span class="p">:</span> <span class="s2">&quot;d2&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;mention_id&quot;</span><span class="p">:</span> <span class="s2">&quot;s2&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Symptom&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">},</span>
+<span class="p">]</span>
+<span class="k">assert</span> <span class="n">extract_by_rules</span><span class="p">(</span><span class="n">negated</span><span class="p">,</span> <span class="n">negated_entities</span><span class="p">,</span> <span class="n">rules</span><span class="p">,</span> <span class="s2">&quot;doc:2#s1&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="p">[]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">found</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-52">49. 量化 Pipeline 的可达上限与误差传播</h3>
+<p>给定 gold 三元组数、NER 可完整覆盖的三元组数及其中关系分类正确数，计算三种召回率。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">pipeline_recall_report</span><span class="p">(</span><span class="n">gold_triples</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ner_reachable</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">relation_correct</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">relation_correct</span> <span class="o">&lt;=</span> <span class="n">ner_reachable</span> <span class="o">&lt;=</span> <span class="n">gold_triples</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;必须满足 0 &lt;= relation_correct &lt;= ner_reachable &lt;= gold_triples&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">gold_triples</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;ner_pair_recall&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;conditional_re_recall&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;end_to_end_recall&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
+    <span class="n">ner_pair_recall</span> <span class="o">=</span> <span class="n">ner_reachable</span> <span class="o">/</span> <span class="n">gold_triples</span>
+    <span class="n">conditional_re_recall</span> <span class="o">=</span> <span class="n">relation_correct</span> <span class="o">/</span> <span class="n">ner_reachable</span> <span class="k">if</span> <span class="n">ner_reachable</span> <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="n">end_to_end_recall</span> <span class="o">=</span> <span class="n">relation_correct</span> <span class="o">/</span> <span class="n">gold_triples</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;ner_pair_recall&quot;</span><span class="p">:</span> <span class="n">ner_pair_recall</span><span class="p">,</span>
+        <span class="s2">&quot;conditional_re_recall&quot;</span><span class="p">:</span> <span class="n">conditional_re_recall</span><span class="p">,</span>
+        <span class="s2">&quot;end_to_end_recall&quot;</span><span class="p">:</span> <span class="n">end_to_end_recall</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<span class="n">report</span> <span class="o">=</span> <span class="n">pipeline_recall_report</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">72</span><span class="p">,</span> <span class="mi">54</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">report</span> <span class="o">==</span> <span class="p">{</span>
+    <span class="s2">&quot;ner_pair_recall&quot;</span><span class="p">:</span> <span class="mf">0.72</span><span class="p">,</span>
+    <span class="s2">&quot;conditional_re_recall&quot;</span><span class="p">:</span> <span class="mf">0.75</span><span class="p">,</span>
+    <span class="s2">&quot;end_to_end_recall&quot;</span><span class="p">:</span> <span class="mf">0.54</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span>
+    <span class="n">report</span><span class="p">[</span><span class="s2">&quot;ner_pair_recall&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">report</span><span class="p">[</span><span class="s2">&quot;conditional_re_recall&quot;</span><span class="p">]</span>
+    <span class="o">-</span> <span class="n">report</span><span class="p">[</span><span class="s2">&quot;end_to_end_recall&quot;</span><span class="p">]</span>
+<span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-12</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-53">50. 构造支持 EPO 的多标签关系分类样本</h3>
+<p>同一有向实体对可有多个关系；无正关系时标为 NO_RELATION，并确定性截取负例。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">build_relation_examples</span><span class="p">(</span>
+    <span class="n">entities</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span>
+    <span class="n">schema</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="n">gold_triples</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]],</span>
+    <span class="n">negative_ratio</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+    <span class="n">positive</span><span class="p">,</span> <span class="n">negative</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">subject</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">subject</span><span class="p">[</span><span class="s2">&quot;mention_id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;mention_id&quot;</span><span class="p">]:</span>
+                <span class="k">continue</span>
+            <span class="n">allowed</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+                <span class="n">relation</span> <span class="k">for</span> <span class="n">relation</span><span class="p">,</span> <span class="n">type_pair</span> <span class="ow">in</span> <span class="n">schema</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">subject</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="n">type_pair</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">allowed</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">relation</span> <span class="k">for</span> <span class="n">relation</span> <span class="ow">in</span> <span class="n">allowed</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">subject</span><span class="p">[</span><span class="s2">&quot;mention_id&quot;</span><span class="p">],</span> <span class="n">relation</span><span class="p">,</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;mention_id&quot;</span><span class="p">])</span> <span class="ow">in</span> <span class="n">gold_triples</span>
+            <span class="p">]</span>
+            <span class="n">example</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;subject_id&quot;</span><span class="p">:</span> <span class="n">subject</span><span class="p">[</span><span class="s2">&quot;mention_id&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;object_id&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;mention_id&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;labels&quot;</span><span class="p">:</span> <span class="n">labels</span> <span class="ow">or</span> <span class="p">[</span><span class="s2">&quot;NO_RELATION&quot;</span><span class="p">],</span>
+            <span class="p">}</span>
+            <span class="p">(</span><span class="n">positive</span> <span class="k">if</span> <span class="n">labels</span> <span class="k">else</span> <span class="n">negative</span><span class="p">)</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">example</span><span class="p">)</span>
+
+    <span class="n">key</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;subject_id&quot;</span><span class="p">],</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;object_id&quot;</span><span class="p">])</span>
+    <span class="n">positive</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+    <span class="n">negative</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+    <span class="n">negative_limit</span> <span class="o">=</span> <span class="n">negative_ratio</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">positive</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">positive</span> <span class="o">+</span> <span class="n">negative</span><span class="p">[:</span><span class="n">negative_limit</span><span class="p">]</span>
+
+
+<span class="n">entities</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;mention_id&quot;</span><span class="p">:</span> <span class="s2">&quot;m1&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Drug&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;mention_id&quot;</span><span class="p">:</span> <span class="s2">&quot;d1&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Disease&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;mention_id&quot;</span><span class="p">:</span> <span class="s2">&quot;d2&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Disease&quot;</span><span class="p">},</span>
+<span class="p">]</span>
+<span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;TREATS&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Drug&quot;</span><span class="p">,</span> <span class="s2">&quot;Disease&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;PREVENTS&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Drug&quot;</span><span class="p">,</span> <span class="s2">&quot;Disease&quot;</span><span class="p">),</span>
+<span class="p">}</span>
+<span class="n">gold</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">(</span><span class="s2">&quot;m1&quot;</span><span class="p">,</span> <span class="s2">&quot;TREATS&quot;</span><span class="p">,</span> <span class="s2">&quot;d1&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;m1&quot;</span><span class="p">,</span> <span class="s2">&quot;PREVENTS&quot;</span><span class="p">,</span> <span class="s2">&quot;d1&quot;</span><span class="p">),</span>
+<span class="p">}</span>
+<span class="n">examples</span> <span class="o">=</span> <span class="n">build_relation_examples</span><span class="p">(</span><span class="n">entities</span><span class="p">,</span> <span class="n">schema</span><span class="p">,</span> <span class="n">gold</span><span class="p">,</span> <span class="n">negative_ratio</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">examples</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;labels&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;PREVENTS&quot;</span><span class="p">,</span> <span class="s2">&quot;TREATS&quot;</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">examples</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;labels&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;NO_RELATION&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">examples</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-54">51. 识别 Normal、SEO 与 EPO 重叠模式</h3>
+<p>一句可同时属于 EPO 和 SEO；三元组用 (subject, relation, object) 表示。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">overlap_patterns</span><span class="p">(</span><span class="n">triples</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="n">patterns</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">first</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">triples</span><span class="p">):</span>
+        <span class="n">first_subject</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">first_object</span> <span class="o">=</span> <span class="n">first</span>
+        <span class="k">for</span> <span class="n">second</span> <span class="ow">in</span> <span class="n">triples</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">second_subject</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">second_object</span> <span class="o">=</span> <span class="n">second</span>
+            <span class="n">same_pair</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">first_subject</span> <span class="o">==</span> <span class="n">second_subject</span>
+                <span class="ow">and</span> <span class="n">first_object</span> <span class="o">==</span> <span class="n">second_object</span>
+            <span class="p">)</span>
+            <span class="n">shared_entities</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">{</span><span class="n">first_subject</span><span class="p">,</span> <span class="n">first_object</span><span class="p">}</span>
+                <span class="o">&amp;</span> <span class="p">{</span><span class="n">second_subject</span><span class="p">,</span> <span class="n">second_object</span><span class="p">}</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">same_pair</span><span class="p">:</span>
+                <span class="n">patterns</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;EPO&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">shared_entities</span><span class="p">:</span>
+                <span class="n">patterns</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;SEO&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">patterns</span> <span class="ow">or</span> <span class="p">{</span><span class="s2">&quot;Normal&quot;</span><span class="p">}</span>
+
+
+<span class="k">assert</span> <span class="n">overlap_patterns</span><span class="p">([(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;r1&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;r2&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">)])</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;Normal&quot;</span><span class="p">}</span>
+<span class="k">assert</span> <span class="n">overlap_patterns</span><span class="p">([(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;r1&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;r2&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)])</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;SEO&quot;</span><span class="p">}</span>
+<span class="k">assert</span> <span class="n">overlap_patterns</span><span class="p">([(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;r1&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;r2&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">)])</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;EPO&quot;</span><span class="p">}</span>
+<span class="n">mixed</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;r1&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;r2&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;r3&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">)]</span>
+<span class="k">assert</span> <span class="n">overlap_patterns</span><span class="p">(</span><span class="n">mixed</span><span class="p">)</span> <span class="o">==</span> <span class="p">{</span><span class="s2">&quot;EPO&quot;</span><span class="p">,</span> <span class="s2">&quot;SEO&quot;</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">overlap_patterns</span><span class="p">(</span><span class="n">mixed</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-55">52. 将 head/tail 二元概率解码为合法 span</h3>
+<p>每个 head 选择其后最近且未使用的合法 tail，返回半开区间，并支持 mask 与最大长度。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">decode_spans</span><span class="p">(</span>
+    <span class="n">head_scores</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+    <span class="n">tail_scores</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+    <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">max_span_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="n">valid_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">head_scores</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tail_scores</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;head/tail 长度不一致&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">valid_mask</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">valid_mask</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">head_scores</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">valid_mask</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">head_scores</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;mask 长度不一致&quot;</span><span class="p">)</span>
+
+    <span class="n">heads</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">index</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">head_scores</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">valid_mask</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="ow">and</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="n">threshold</span>
+    <span class="p">]</span>
+    <span class="n">tails</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">index</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tail_scores</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">valid_mask</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="ow">and</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="n">threshold</span>
+    <span class="p">]</span>
+    <span class="n">used_tails</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">spans</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">head</span> <span class="ow">in</span> <span class="n">heads</span><span class="p">:</span>
+        <span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">tail</span> <span class="k">for</span> <span class="n">tail</span> <span class="ow">in</span> <span class="n">tails</span>
+            <span class="k">if</span> <span class="n">tail</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">used_tails</span>
+            <span class="ow">and</span> <span class="n">head</span> <span class="o">&lt;=</span> <span class="n">tail</span>
+            <span class="ow">and</span> <span class="n">tail</span> <span class="o">-</span> <span class="n">head</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">max_span_length</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="n">candidates</span><span class="p">:</span>
+            <span class="n">tail</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span>
+            <span class="n">used_tails</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tail</span><span class="p">)</span>
+            <span class="n">spans</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">head</span><span class="p">,</span> <span class="n">tail</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">spans</span>
+
+
+<span class="n">heads</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">]</span>
+<span class="n">tails</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.99</span><span class="p">]</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">decode_spans</span><span class="p">(</span><span class="n">heads</span><span class="p">,</span> <span class="n">tails</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span> <span class="o">==</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)]</span>
+<span class="k">assert</span> <span class="n">decode_spans</span><span class="p">([</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="p">[]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-56">53. 实现 CasRel 的级联三元组解码</h3>
+<p>先解码全部主体，再对每个主体的每个关系通道解码全部客体；必须保留 SEO 与 EPO。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">decode_spans</span><span class="p">(</span><span class="n">head_scores</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">tail_scores</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span><span class="p">):</span>
+    <span class="n">heads</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">head_scores</span><span class="p">)</span> <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">]</span>
+    <span class="n">tails</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tail_scores</span><span class="p">)</span> <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">]</span>
+    <span class="n">spans</span><span class="p">,</span> <span class="n">used</span> <span class="o">=</span> <span class="p">[],</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">head</span> <span class="ow">in</span> <span class="n">heads</span><span class="p">:</span>
+        <span class="n">possible</span> <span class="o">=</span> <span class="p">[</span><span class="n">tail</span> <span class="k">for</span> <span class="n">tail</span> <span class="ow">in</span> <span class="n">tails</span> <span class="k">if</span> <span class="n">tail</span> <span class="o">&gt;=</span> <span class="n">head</span> <span class="ow">and</span> <span class="n">tail</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">used</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">possible</span><span class="p">:</span>
+            <span class="n">tail</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">possible</span><span class="p">)</span>
+            <span class="n">used</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">tail</span><span class="p">)</span>
+            <span class="n">spans</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">head</span><span class="p">,</span> <span class="n">tail</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">spans</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">decode_casrel</span><span class="p">(</span>
+    <span class="n">subject_heads</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+    <span class="n">subject_tails</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+    <span class="n">object_scores_by_subject</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
+    <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+    <span class="n">triples</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">subjects</span> <span class="o">=</span> <span class="n">decode_spans</span><span class="p">(</span><span class="n">subject_heads</span><span class="p">,</span> <span class="n">subject_tails</span><span class="p">,</span> <span class="n">threshold</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">subject_span</span> <span class="ow">in</span> <span class="n">subjects</span><span class="p">:</span>
+        <span class="n">relation_channels</span> <span class="o">=</span> <span class="n">object_scores_by_subject</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">subject_span</span><span class="p">,</span> <span class="p">{})</span>
+        <span class="k">for</span> <span class="n">relation</span><span class="p">,</span> <span class="n">scores</span> <span class="ow">in</span> <span class="n">relation_channels</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">object_spans</span> <span class="o">=</span> <span class="n">decode_spans</span><span class="p">(</span><span class="n">scores</span><span class="p">[</span><span class="s2">&quot;heads&quot;</span><span class="p">],</span> <span class="n">scores</span><span class="p">[</span><span class="s2">&quot;tails&quot;</span><span class="p">],</span> <span class="n">threshold</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">object_span</span> <span class="ow">in</span> <span class="n">object_spans</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">subject_span</span><span class="p">,</span> <span class="n">relation</span><span class="p">,</span> <span class="n">object_span</span>
+                <span class="n">triples</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                    <span class="s2">&quot;subject_span&quot;</span><span class="p">:</span> <span class="n">subject_span</span><span class="p">,</span>
+                    <span class="s2">&quot;predicate&quot;</span><span class="p">:</span> <span class="n">relation</span><span class="p">,</span>
+                    <span class="s2">&quot;object_span&quot;</span><span class="p">:</span> <span class="n">object_span</span><span class="p">,</span>
+                <span class="p">}</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">triples</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">triples</span><span class="p">)]</span>
+
+
+<span class="n">subject_heads</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+<span class="n">subject_tails</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]</span>
+<span class="n">object_scores</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">):</span> <span class="p">{</span>
+        <span class="s2">&quot;TREATS&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;heads&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+            <span class="s2">&quot;tails&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;MANAGES&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;heads&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+            <span class="s2">&quot;tails&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>
+        <span class="p">},</span>
+        <span class="s2">&quot;PREVENTS&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;heads&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>
+            <span class="s2">&quot;tails&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>
+        <span class="p">},</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+<span class="n">triples</span> <span class="o">=</span> <span class="n">decode_casrel</span><span class="p">(</span><span class="n">subject_heads</span><span class="p">,</span> <span class="n">subject_tails</span><span class="p">,</span> <span class="n">object_scores</span><span class="p">)</span>
+<span class="n">keys</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;subject_span&quot;</span><span class="p">],</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;predicate&quot;</span><span class="p">],</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;object_span&quot;</span><span class="p">])</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">triples</span>
+<span class="p">}</span>
+<span class="k">assert</span> <span class="n">keys</span> <span class="o">==</span> <span class="p">{</span>
+    <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;TREATS&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+    <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;MANAGES&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+    <span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="s2">&quot;PREVENTS&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">)),</span>
+<span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">triples</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-57">54. 合并重复三元组但保留全部证据</h3>
+<p>用标准实体 ID 和关系作为事实键；证据按 evidence_id 去重，不能只保留最高分句子。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">merge_evidence</span><span class="p">(</span><span class="n">claims</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+    <span class="n">merged</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">claim</span> <span class="ow">in</span> <span class="n">claims</span><span class="p">:</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">claim</span><span class="p">[</span><span class="s2">&quot;subject_id&quot;</span><span class="p">],</span> <span class="n">claim</span><span class="p">[</span><span class="s2">&quot;predicate&quot;</span><span class="p">],</span> <span class="n">claim</span><span class="p">[</span><span class="s2">&quot;object_id&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">merged</span><span class="p">:</span>
+            <span class="n">merged</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;subject_id&quot;</span><span class="p">:</span> <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s2">&quot;predicate&quot;</span><span class="p">:</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="s2">&quot;object_id&quot;</span><span class="p">:</span> <span class="n">key</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                <span class="s2">&quot;evidence&quot;</span><span class="p">:</span> <span class="p">{},</span>
+            <span class="p">}</span>
+        <span class="n">evidence</span> <span class="o">=</span> <span class="n">claim</span><span class="p">[</span><span class="s2">&quot;evidence&quot;</span><span class="p">]</span>
+        <span class="n">evidence_id</span> <span class="o">=</span> <span class="n">evidence</span><span class="p">[</span><span class="s2">&quot;evidence_id&quot;</span><span class="p">]</span>
+        <span class="n">previous</span> <span class="o">=</span> <span class="n">merged</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;evidence&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">evidence_id</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">previous</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">evidence</span><span class="p">[</span><span class="s2">&quot;confidence&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">previous</span><span class="p">[</span><span class="s2">&quot;confidence&quot;</span><span class="p">]:</span>
+            <span class="n">merged</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;evidence&quot;</span><span class="p">][</span><span class="n">evidence_id</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">evidence</span><span class="p">)</span>
+
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">merged</span><span class="p">):</span>
+        <span class="n">item</span> <span class="o">=</span> <span class="n">merged</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">evidence_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;evidence&quot;</span><span class="p">][</span><span class="n">eid</span><span class="p">]</span> <span class="k">for</span> <span class="n">eid</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;evidence&quot;</span><span class="p">])]</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s2">&quot;subject_id&quot;</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;subject_id&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;predicate&quot;</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;predicate&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;object_id&quot;</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;object_id&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;max_confidence&quot;</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="n">ev</span><span class="p">[</span><span class="s2">&quot;confidence&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">ev</span> <span class="ow">in</span> <span class="n">evidence_list</span><span class="p">),</span>
+            <span class="s2">&quot;evidence&quot;</span><span class="p">:</span> <span class="n">evidence_list</span><span class="p">,</span>
+        <span class="p">})</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="n">claims</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;subject_id&quot;</span><span class="p">:</span> <span class="s2">&quot;D1&quot;</span><span class="p">,</span> <span class="s2">&quot;predicate&quot;</span><span class="p">:</span> <span class="s2">&quot;HAS_SYMPTOM&quot;</span><span class="p">,</span> <span class="s2">&quot;object_id&quot;</span><span class="p">:</span> <span class="s2">&quot;S1&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;evidence&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;evidence_id&quot;</span><span class="p">:</span> <span class="s2">&quot;doc1#s1&quot;</span><span class="p">,</span> <span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="mf">0.80</span><span class="p">,</span> <span class="s2">&quot;assertion&quot;</span><span class="p">:</span> <span class="s2">&quot;affirmed&quot;</span><span class="p">}},</span>
+    <span class="p">{</span><span class="s2">&quot;subject_id&quot;</span><span class="p">:</span> <span class="s2">&quot;D1&quot;</span><span class="p">,</span> <span class="s2">&quot;predicate&quot;</span><span class="p">:</span> <span class="s2">&quot;HAS_SYMPTOM&quot;</span><span class="p">,</span> <span class="s2">&quot;object_id&quot;</span><span class="p">:</span> <span class="s2">&quot;S1&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;evidence&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;evidence_id&quot;</span><span class="p">:</span> <span class="s2">&quot;doc2#s4&quot;</span><span class="p">,</span> <span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="mf">0.91</span><span class="p">,</span> <span class="s2">&quot;assertion&quot;</span><span class="p">:</span> <span class="s2">&quot;affirmed&quot;</span><span class="p">}},</span>
+    <span class="p">{</span><span class="s2">&quot;subject_id&quot;</span><span class="p">:</span> <span class="s2">&quot;D1&quot;</span><span class="p">,</span> <span class="s2">&quot;predicate&quot;</span><span class="p">:</span> <span class="s2">&quot;HAS_SYMPTOM&quot;</span><span class="p">,</span> <span class="s2">&quot;object_id&quot;</span><span class="p">:</span> <span class="s2">&quot;S1&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;evidence&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;evidence_id&quot;</span><span class="p">:</span> <span class="s2">&quot;doc1#s1&quot;</span><span class="p">,</span> <span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="mf">0.85</span><span class="p">,</span> <span class="s2">&quot;assertion&quot;</span><span class="p">:</span> <span class="s2">&quot;affirmed&quot;</span><span class="p">}},</span>
+<span class="p">]</span>
+<span class="n">merged</span> <span class="o">=</span> <span class="n">merge_evidence</span><span class="p">(</span><span class="n">claims</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">merged</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">merged</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;evidence&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">2</span>
+<span class="k">assert</span> <span class="n">merged</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;max_confidence&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.91</span>
+<span class="k">assert</span> <span class="n">merged</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;evidence&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;confidence&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.85</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">merged</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-58">55. 计算严格三元组指标并进行错误归因</h3>
+<p>严格键包含文档、主体 span/type、关系、客体 span/type；诊断方向错、关系错、边界/类型错和虚假预测。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">evaluate_triples</span><span class="p">(</span><span class="n">gold</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">predicted</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">key</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="n">item</span><span class="p">[</span><span class="s2">&quot;doc_id&quot;</span><span class="p">],</span>
+            <span class="nb">tuple</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">]),</span>
+            <span class="n">item</span><span class="p">[</span><span class="s2">&quot;predicate&quot;</span><span class="p">],</span>
+            <span class="nb">tuple</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;object&quot;</span><span class="p">]),</span>
+        <span class="p">)</span>
+
+    <span class="n">gold_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">(</span><span class="n">item</span><span class="p">):</span> <span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">gold</span><span class="p">}</span>
+    <span class="n">pred_map</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">(</span><span class="n">item</span><span class="p">):</span> <span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">predicted</span><span class="p">}</span>
+    <span class="n">exact</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">gold_map</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">pred_map</span><span class="p">)</span>
+    <span class="n">unmatched_gold</span> <span class="o">=</span> <span class="p">[</span><span class="n">gold_map</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">gold_map</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">-</span> <span class="n">exact</span><span class="p">]</span>
+    <span class="n">unmatched_pred</span> <span class="o">=</span> <span class="p">[</span><span class="n">pred_map</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">pred_map</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="o">-</span> <span class="n">exact</span><span class="p">]</span>
+    <span class="n">remaining</span> <span class="o">=</span> <span class="n">unmatched_gold</span><span class="p">[:]</span>
+    <span class="n">errors</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;direction_error&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;relation_confusion&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;entity_boundary_or_type&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;spurious&quot;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="s2">&quot;missed&quot;</span><span class="p">:</span> <span class="n">unmatched_gold</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">overlaps</span><span class="p">(</span><span class="n">first</span><span class="p">,</span> <span class="n">second</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">max</span><span class="p">(</span><span class="n">first</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">second</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&lt;</span> <span class="nb">min</span><span class="p">(</span><span class="n">first</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">second</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">for</span> <span class="n">prediction</span> <span class="ow">in</span> <span class="n">unmatched_pred</span><span class="p">:</span>
+        <span class="n">paired</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">truth</span> <span class="ow">in</span> <span class="n">remaining</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">prediction</span><span class="p">[</span><span class="s2">&quot;doc_id&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">truth</span><span class="p">[</span><span class="s2">&quot;doc_id&quot;</span><span class="p">]:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">prediction</span><span class="p">[</span><span class="s2">&quot;predicate&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">truth</span><span class="p">[</span><span class="s2">&quot;predicate&quot;</span><span class="p">]</span>
+                <span class="ow">and</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">truth</span><span class="p">[</span><span class="s2">&quot;object&quot;</span><span class="p">])</span>
+                <span class="ow">and</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="s2">&quot;object&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">truth</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">])</span>
+            <span class="p">):</span>
+                <span class="n">errors</span><span class="p">[</span><span class="s2">&quot;direction_error&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;gold&quot;</span><span class="p">:</span> <span class="n">truth</span><span class="p">,</span> <span class="s2">&quot;predicted&quot;</span><span class="p">:</span> <span class="n">prediction</span><span class="p">})</span>
+                <span class="n">paired</span> <span class="o">=</span> <span class="n">truth</span>
+                <span class="k">break</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="nb">tuple</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">truth</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">])</span>
+                <span class="ow">and</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="s2">&quot;object&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">truth</span><span class="p">[</span><span class="s2">&quot;object&quot;</span><span class="p">])</span>
+                <span class="ow">and</span> <span class="n">prediction</span><span class="p">[</span><span class="s2">&quot;predicate&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">truth</span><span class="p">[</span><span class="s2">&quot;predicate&quot;</span><span class="p">]</span>
+            <span class="p">):</span>
+                <span class="n">errors</span><span class="p">[</span><span class="s2">&quot;relation_confusion&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;gold&quot;</span><span class="p">:</span> <span class="n">truth</span><span class="p">,</span> <span class="s2">&quot;predicted&quot;</span><span class="p">:</span> <span class="n">prediction</span><span class="p">})</span>
+                <span class="n">paired</span> <span class="o">=</span> <span class="n">truth</span>
+                <span class="k">break</span>
+            <span class="n">same_relation</span> <span class="o">=</span> <span class="n">prediction</span><span class="p">[</span><span class="s2">&quot;predicate&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">truth</span><span class="p">[</span><span class="s2">&quot;predicate&quot;</span><span class="p">]</span>
+            <span class="n">subject_overlap</span> <span class="o">=</span> <span class="n">overlaps</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">],</span> <span class="n">truth</span><span class="p">[</span><span class="s2">&quot;subject&quot;</span><span class="p">])</span>
+            <span class="n">object_overlap</span> <span class="o">=</span> <span class="n">overlaps</span><span class="p">(</span><span class="n">prediction</span><span class="p">[</span><span class="s2">&quot;object&quot;</span><span class="p">],</span> <span class="n">truth</span><span class="p">[</span><span class="s2">&quot;object&quot;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">same_relation</span> <span class="ow">and</span> <span class="n">subject_overlap</span> <span class="ow">and</span> <span class="n">object_overlap</span><span class="p">:</span>
+                <span class="n">errors</span><span class="p">[</span><span class="s2">&quot;entity_boundary_or_type&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                    <span class="s2">&quot;gold&quot;</span><span class="p">:</span> <span class="n">truth</span><span class="p">,</span> <span class="s2">&quot;predicted&quot;</span><span class="p">:</span> <span class="n">prediction</span>
+                <span class="p">})</span>
+                <span class="n">paired</span> <span class="o">=</span> <span class="n">truth</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="n">paired</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">errors</span><span class="p">[</span><span class="s2">&quot;spurious&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prediction</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">remaining</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">paired</span><span class="p">)</span>
+
+    <span class="n">tp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">exact</span><span class="p">)</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pred_map</span><span class="p">)</span> <span class="o">-</span> <span class="n">tp</span>
+    <span class="n">fn</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">gold_map</span><span class="p">)</span> <span class="o">-</span> <span class="n">tp</span>
+    <span class="n">precision</span> <span class="o">=</span> <span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fp</span><span class="p">)</span> <span class="k">if</span> <span class="n">tp</span> <span class="o">+</span> <span class="n">fp</span> <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="n">recall</span> <span class="o">=</span> <span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fn</span><span class="p">)</span> <span class="k">if</span> <span class="n">tp</span> <span class="o">+</span> <span class="n">fn</span> <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="n">f1</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">precision</span> <span class="o">*</span> <span class="n">recall</span> <span class="o">/</span> <span class="p">(</span><span class="n">precision</span> <span class="o">+</span> <span class="n">recall</span><span class="p">)</span> <span class="k">if</span> <span class="n">precision</span> <span class="o">+</span> <span class="n">recall</span> <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;tp&quot;</span><span class="p">:</span> <span class="n">tp</span><span class="p">,</span> <span class="s2">&quot;fp&quot;</span><span class="p">:</span> <span class="n">fp</span><span class="p">,</span> <span class="s2">&quot;fn&quot;</span><span class="p">:</span> <span class="n">fn</span><span class="p">,</span>
+        <span class="s2">&quot;precision&quot;</span><span class="p">:</span> <span class="n">precision</span><span class="p">,</span> <span class="s2">&quot;recall&quot;</span><span class="p">:</span> <span class="n">recall</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">:</span> <span class="n">f1</span><span class="p">,</span>
+        <span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="n">errors</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<span class="n">gold</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;doc_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Disease&quot;</span><span class="p">),</span> <span class="s2">&quot;predicate&quot;</span><span class="p">:</span> <span class="s2">&quot;HAS_SYMPTOM&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;Symptom&quot;</span><span class="p">)},</span>
+    <span class="p">{</span><span class="s2">&quot;doc_id&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Drug&quot;</span><span class="p">),</span> <span class="s2">&quot;predicate&quot;</span><span class="p">:</span> <span class="s2">&quot;TREATS&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;Disease&quot;</span><span class="p">)},</span>
+    <span class="p">{</span><span class="s2">&quot;doc_id&quot;</span><span class="p">:</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Drug&quot;</span><span class="p">),</span> <span class="s2">&quot;predicate&quot;</span><span class="p">:</span> <span class="s2">&quot;AVOID_WITH&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;Drug&quot;</span><span class="p">)},</span>
+    <span class="p">{</span><span class="s2">&quot;doc_id&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span> <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;Disease&quot;</span><span class="p">),</span> <span class="s2">&quot;predicate&quot;</span><span class="p">:</span> <span class="s2">&quot;HAS_SYMPTOM&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="s2">&quot;Symptom&quot;</span><span class="p">)},</span>
+<span class="p">]</span>
+<span class="n">predicted</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">gold</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+    <span class="p">{</span><span class="s2">&quot;doc_id&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Drug&quot;</span><span class="p">),</span> <span class="s2">&quot;predicate&quot;</span><span class="p">:</span> <span class="s2">&quot;PREVENTS&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;Disease&quot;</span><span class="p">)},</span>
+    <span class="p">{</span><span class="s2">&quot;doc_id&quot;</span><span class="p">:</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;Drug&quot;</span><span class="p">),</span> <span class="s2">&quot;predicate&quot;</span><span class="p">:</span> <span class="s2">&quot;AVOID_WITH&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Drug&quot;</span><span class="p">)},</span>
+    <span class="p">{</span><span class="s2">&quot;doc_id&quot;</span><span class="p">:</span> <span class="s2">&quot;4&quot;</span><span class="p">,</span> <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Disease&quot;</span><span class="p">),</span> <span class="s2">&quot;predicate&quot;</span><span class="p">:</span> <span class="s2">&quot;HAS_SYMPTOM&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="s2">&quot;Symptom&quot;</span><span class="p">)},</span>
+    <span class="p">{</span><span class="s2">&quot;doc_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span> <span class="s2">&quot;subject&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;Disease&quot;</span><span class="p">),</span> <span class="s2">&quot;predicate&quot;</span><span class="p">:</span> <span class="s2">&quot;HAS_SYMPTOM&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;object&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;Symptom&quot;</span><span class="p">)},</span>
+<span class="p">]</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">evaluate_triples</span><span class="p">(</span><span class="n">gold</span><span class="p">,</span> <span class="n">predicted</span><span class="p">)</span>
+<span class="k">assert</span> <span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;tp&quot;</span><span class="p">],</span> <span class="n">report</span><span class="p">[</span><span class="s2">&quot;fp&quot;</span><span class="p">],</span> <span class="n">report</span><span class="p">[</span><span class="s2">&quot;fn&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;precision&quot;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span> <span class="o">==</span> <span class="mf">0.2</span>
+<span class="k">assert</span> <span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;recall&quot;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span> <span class="o">==</span> <span class="mf">0.25</span>
+<span class="k">assert</span> <span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;f1&quot;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span> <span class="o">==</span> <span class="mf">0.2222</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">][</span><span class="s2">&quot;relation_confusion&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">][</span><span class="s2">&quot;direction_error&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">][</span><span class="s2">&quot;entity_boundary_or_type&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">][</span><span class="s2">&quot;spurious&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">][</span><span class="s2">&quot;missed&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">3</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="done-bar"><button class="mark-done-btn" data-key="hw54" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="hw53.html"><div class="dir">← 上一篇</div><div class="name">🧬 医学实体抽取：规则、BiLSTM-CRF 与 Viterbi 综合训练</div></a><a class="disabled next"></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、选择题（30 题）</a><a class="lv3" href="#sec-2">1. 封闭关系抽取的直接输出通常是什么？</a><a class="lv3" href="#sec-3">2. 封闭关系抽取与开放信息抽取的关键区别是？</a><a class="lv3" href="#sec-4">3. 为什么 Drug-TREATS-Disease 不能随意交换为 Disease-TREATS-Drug？</a><a class="lv3" href="#sec-5">4. 关系抽取结果保留字符偏移和来源定位的主要价值是？</a><a class="lv3" href="#sec-6">5. 在生产级严格三元组评估中，什么情况才能计为 TP？</a><a class="lv3" href="#sec-7">6. 为什么除了总体 micro F1 还应报告按关系类型的指标？</a><a class="lv3" href="#sec-8">7. 规则关系抽取最适合哪种起点？</a><a class="lv3" href="#sec-9">8. “患者否认头痛”被规则匹配为 HAS_SYMPTOM(患者, 头痛)，首要问题是？</a><a class="lv3" href="#sec-10">9. 一个可审计的规则命中至少应额外记录什么？</a><a class="lv3" href="#sec-11">10. 一句话识别出 (m) 个实体，枚举所有有向实体对的数量级通常是？</a><a class="lv3" href="#sec-12">11. 在候选生成阶段使用 Disease → Symptom 类型约束的主要作用是？</a><a class="lv3" href="#sec-13">12. Pipeline 关系分类器为什么通常需要 NO_RELATION 类或等价机制？</a><a class="lv3" href="#sec-14">13. 训练关系分类器使用 gold 实体，推理使用 predicted 实体，主要产生什么问题？</a><a class="lv3" href="#sec-15">14. 若某个 gold 三元组的主体或客体被 NER 漏掉，后续实体对分类器能否恢复它？</a><a class="lv3" href="#sec-16">15. 在关系分类输入中加入 SUBJ 与 OBJ 边界标记的主要原因是？</a><a class="lv3" href="#sec-17">16. 原课件 BiLSTM+Attention 关系分类器中，BiLSTM 与 Attention 分别做什么？</a><a class="lv3" href="#sec-18">17. “Attention 权重最高的 token 就是模型的可靠解释”为什么不严谨？</a><a class="lv3" href="#sec-19">18. 关于 Pipeline 与 Joint 的说法，哪项最稳妥？</a><a class="lv3" href="#sec-20">19. CasRel 对关系的核心重新表述是什么？</a><a class="lv3" href="#sec-21">20. CasRel 的低层主体标注器通常预测什么？</a><a class="lv3" href="#sec-22">21. 若批大小为 (B)、序列长为 (L)、关系数为 (R)，CasRel 客体 head 概率常见形状是？</a><a class="lv3" href="#sec-23">22. CasRel 为什么要把指定主体表示融合进文本表示后再预测客体？</a><a class="lv3" href="#sec-24">23. CasRel 某个关系通道的 head/tail 全为 0，通常表示什么？</a><a class="lv3" href="#sec-25">24. 三元组 A-r1-B 与 A-r2-C 属于哪种重叠？</a><a class="lv3" href="#sec-26">25. 三元组 A-r1-B 与 A-r2-B 属于哪种重叠？</a><a class="lv3" href="#sec-27">26. 关于 Normal、SEO 与 EPO 子集，哪项正确？</a><a class="lv3" href="#sec-28">27. 直接用 zip(head_indices, tail_indices) 配对 span 的风险是？</a><a class="lv3" href="#sec-29">28. 主体阈值和各关系客体阈值应如何确定？</a><a class="lv3" href="#sec-30">29. 远程监督把知识库三元组对齐到文本生成标签时，典型噪声是什么？</a><a class="lv3" href="#sec-31">30. 医学关系抽取进入知识图谱前最重要的安全原则是？</a><a class="lv2" href="#sec-32">二、简答题（15 题）</a><a class="lv3" href="#sec-33">31. 为“慢性支气管炎常见咳嗽”设计一个可审计的 SPO 输出合同。</a><a class="lv3" href="#sec-34">32. 如何为 TREATS、HAS_SYMPTOM 两种关系定义最小 Schema？</a><a class="lv3" href="#sec-35">33. 为“患者否认发热”和“肺炎常伴发热”设计规则时，怎样避免错误入图？</a><a class="lv3" href="#sec-36">34. 一个关系规则从开发到上线应经过哪些生命周期步骤？</a><a class="lv3" href="#sec-37">35. 一句中有 Drug、Disease、Symptom、Food 四个实体，Pipeline 候选如何缩减？</a><a class="lv3" href="#sec-38">36. 如何构造关系分类训练样本并处理 NO_RELATION 不平衡？</a><a class="lv3" href="#sec-39">37. 设计一个量化 Pipeline 误差传播的 oracle 实验。</a><a class="lv3" href="#sec-40">38. 写出 BiLSTM+Attention 的一种加权汇总形式，并说明 mask。</a><a class="lv3" href="#sec-41">39. 规则、Pipeline 与 CasRel 应如何选型？</a><a class="lv3" href="#sec-42">40. “阿司匹林可缓解头痛并降低发热”的 CasRel 训练标签如何构造？</a><a class="lv3" href="#sec-43">41. CasRel 推理时为什么必须逐个预测主体运行客体标注器？</a><a class="lv3" href="#sec-44">42. 分别给出一个 SEO 和 EPO 医学示例，并说明模型输出要求。</a><a class="lv3" href="#sec-45">43. 子词 tokenizer、长文截断会怎样影响 CasRel，如何防护？</a><a class="lv3" href="#sec-46">44. 设计一份端到端关系抽取评估报告。</a><a class="lv3" href="#sec-47">45. 医学关系抽取上线前需要哪些安全与治理控制？</a><a class="lv2" href="#sec-48">三、代码题（10 题）</a><a class="lv3" href="#sec-49">46. 校验严格 SPO 输出合同</a><a class="lv3" href="#sec-50">47. 按 Schema 生成有向候选实体对</a><a class="lv3" href="#sec-51">48. 实现带否定过滤和证据溯源的规则关系抽取</a><a class="lv3" href="#sec-52">49. 量化 Pipeline 的可达上限与误差传播</a><a class="lv3" href="#sec-53">50. 构造支持 EPO 的多标签关系分类样本</a><a class="lv3" href="#sec-54">51. 识别 Normal、SEO 与 EPO 重叠模式</a><a class="lv3" href="#sec-55">52. 将 head/tail 二元概率解码为合法 span</a><a class="lv3" href="#sec-56">53. 实现 CasRel 的级联三元组解码</a><a class="lv3" href="#sec-57">54. 合并重复三元组但保留全部证据</a><a class="lv3" href="#sec-58">55. 计算严格三元组指标并进行错误归因</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
