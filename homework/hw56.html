@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neo4j 医学图谱搭建与质量验证综合训练 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons">课程讲义</a>
+    <a href="../index.html#homework" class="active">课后练习</a>
+    <a href="../index.html#projects">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson58" href="../lessons/lesson58.html"><span class="no">19</span><span>NumPy 统计计算与科学分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">20</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">21</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">22</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">23</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">24</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">25</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">26</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">27</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">28</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">29</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">30</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">31</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">32</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">33</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">34</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">35</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">36</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">37</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">38</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">39</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">40</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">41</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">42</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">43</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">44</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">45</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">46</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">47</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">48</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">49</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">50</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">51</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">📘 医学知识图谱</div><a class="item" data-page-key="lesson51" href="../lessons/lesson51.html"><span class="no">52</span><span>知识图谱基础与医学图谱架构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson52" href="../lessons/lesson52.html"><span class="no">53</span><span>数据标注、查询语言与 Neo4j 工具链</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson53" href="../lessons/lesson53.html"><span class="no">54</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson54" href="../lessons/lesson54.html"><span class="no">55</span><span>关系抽取：规则、Pipeline 与 CasRel</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson55" href="../lessons/lesson55.html"><span class="no">56</span><span>知识融合：实体统一、链接与消歧</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson56" href="../lessons/lesson56.html"><span class="no">57</span><span>Neo4j 医学图谱搭建与质量验证</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson57" href="../lessons/lesson57.html"><span class="no">58</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">21</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">22</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">24</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">25</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">27</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">28</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">29</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">30</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">31</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">32</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw33" href="../homework/hw33.html"><span class="no">33</span><span>卷积神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw34" href="../homework/hw34.html"><span class="no">34</span><span>循环神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw35" href="../homework/hw35.html"><span class="no">35</span><span>自然语言处理入门与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw36" href="../homework/hw36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw37" href="../homework/hw37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw38" href="../homework/hw38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw39" href="../homework/hw39.html"><span class="no">39</span><span>Transformer 架构与工程实现综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw40" href="../homework/hw40.html"><span class="no">40</span><span>Transformer 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw41" href="../homework/hw41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw42" href="../homework/hw42.html"><span class="no">42</span><span>FastText：文本分类与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw43" href="../homework/hw43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw44" href="../homework/hw44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw45" href="../homework/hw45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw46" href="../homework/hw46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw47" href="../homework/hw47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw48" href="../homework/hw48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw49" href="../homework/hw49.html"><span class="no">49</span><span>Prompt-Tuning：PET、软提示与 P-tuning 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw50" href="../homework/hw50.html"><span class="no">50</span><span>PEFT：Prefix、Adapter、LoRA 与 QLoRA 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw51" href="../homework/hw51.html"><span class="no">51</span><span>知识图谱基础与医学图谱架构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw52" href="../homework/hw52.html"><span class="no">52</span><span>数据标注、查询语言与 Neo4j 工具链综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw53" href="../homework/hw53.html"><span class="no">53</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw54" href="../homework/hw54.html"><span class="no">54</span><span>关系抽取：规则、Pipeline 与 CasRel 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw55" href="../homework/hw55.html"><span class="no">55</span><span>知识融合：实体统一、链接与消歧综合训练</span><span class="done-flag">✅</span></a><a class="item hw active" data-page-key="hw56" href="../homework/hw56.html"><span class="no">56</span><span>Neo4j 医学图谱搭建与质量验证综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project07" href="../projects/project07.html"><span class="no">07</span><span>医学知识图谱：从信息抽取到 KBQA</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课后练习 / 练习 56</div>
+<h1>🗃️ Neo4j 医学图谱搭建与质量验证综合训练</h1>
+<div class="chips"><span class="chip amber">🏷️ 选择 + 简答 + 代码</span><span class="chip amber">🏷️ 55 题</span><a class="chip" href="../lessons/lesson56.html">📖 相关讲义：Neo4j 医学图谱搭建与质量验证</a></div>
+</div>
+<p>55 道练习，按“原始 JSON → 节点/关系中间层 → 约束与索引 → 参数化批量写入 → 幂等与增量 → 图质量查询 → 回滚、安全和医学边界”组织。做题时始终记住：<strong>建图不是把数据塞进 Neo4j，而是把可验证、可追溯的数据合同安全地发布为可重复构建的图。</strong></p>
+<blockquote>
+<p>建议先独立作答，再展开参考答案。本练习依据原课件第六章和站内重组讲义设计，并用 Neo4j 官方的 <a href="https://neo4j.com/docs/cypher-manual/current/schema/syntax/">约束语法</a>、<a href="https://neo4j.com/docs/cypher-manual/current/clauses/merge/">MERGE 语义</a>、<a href="https://neo4j.com/docs/cypher-manual/current/clauses/unwind/">UNWIND 语义</a>、<a href="https://neo4j.com/docs/python-manual/current/query-simple/">Python Driver 查询参数</a>及<a href="https://neo4j.com/docs/python-manual/current/transactions/">事务与重试</a>校准。10 道代码题只使用 Python 标准库模拟导入前的数据治理与验收，不连接真实数据库，不访问真实患者数据。</p>
+</blockquote>
+<h2 id="sec-1">一、选择题（30 题）</h2>
+<div class="q-card"><h3 id="sec-2">1. 将 medical.json 建成医学知识图谱时，最稳妥的第一步是什么？</h3>
+<p>A. 先生成并验证节点、关系中间记录，再连接数据库  \
+B. 先清空生产数据库  \
+C. 直接把每行 JSON 拼进 Cypher  \
+D. 只看 Neo4j Browser 是否出现彩色节点</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 中间层将解析、标准化与数据库写入解耦，便于单元测试、对账、失败重放和回滚。图可视化只是展示，不是数据正确性的证明。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-3">2. 原始字段名为 recommand_drug，而图 Schema 计划使用 recommend_drug，合理做法是？</h3>
+<p>A. 在输入适配层兼容旧字段，在规范化中间层统一为新字段并记录版本  \
+B. 把拼写错误永久扩散到所有接口  \
+C. 同时创建两个语义完全相同的关系类型  \
+D. 静默丢弃该字段</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 原始快照应保持可追溯，规范化层负责字段映射。映射规则和 Schema 版本进入 manifest，避免上下游各自猜测字段含义。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-4">3. 为什么不应直接用疾病名称作为唯一主键？</h3>
+<p>A. 名称存在别名、同名异义、纠错和多语言变化  \
+B. Neo4j 节点不能保存字符串  \
+C. 名称不能建立索引  \
+D. 稳定 ID 只能是自增整数</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 名称是可变属性，不是概念身份。优先使用上游标准 ID；缺少标准 ID 时也要通过受控映射表分配持久 ID，而不是每次按当前名称重新生成。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-5">4. 下列哪条最符合当前 Cypher 的单属性唯一约束写法？</h3>
+<p>A. CREATE CONSTRAINT disease_id_unique IF NOT EXISTS FOR (n:Disease) REQUIRE n.id IS UNIQUE  \
+B. CREATE UNIQUE Disease.id  \
+C. ALTER NODE Disease UNIQUE id  \
+D. CREATE INDEX Disease(id) UNIQUE</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> IF NOT EXISTS 使 Schema 初始化可重复执行；唯一约束同时阻止同一标签下重复 id，并由索引支撑查找。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-6">5. 普通 name 索引与 id 唯一约束的关键区别是？</h3>
+<p>A. 普通索引主要加速查询，不保证值唯一；唯一约束同时校验唯一性  \
+B. 普通索引会自动删除重复节点  \
+C. 唯一约束只能用于关系  \
+D. 两者语义完全相同</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> name 常用于检索但允许同名；id 用于身份，应由约束守住唯一性。不要把“查得快”和“数据合法”混为一谈。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-7">6. 在可重复执行的建图任务中，CREATE 与 MERGE 的主要差别是？</h3>
+<p>A. CREATE 总是新建，MERGE 尝试匹配完整模式，未匹配才创建  \
+B. CREATE 会自动去重  \
+C. MERGE 永远不会创建数据  \
+D. MERGE 不支持属性</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> MERGE 类似“匹配或创建”，但只有配合稳定键和约束才能可靠控制重复；它不是自动理解业务实体的魔法去重器。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-8">7. 哪种节点写法最适合幂等导入？</h3>
+<p>A. MERGE (n:Disease {id: row.id})，再 SET 可变属性  \
+B. MERGE (n:Disease {id: row.id, name: row.name, updated_at: datetime()})  \
+C. CREATE (n:Disease {name: row.name})  \
+D. MERGE (n {name: row.name})</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> MERGE 模式只放稳定身份键。若把 name 或当前时间放进去，属性变化会使完整模式无法匹配，从而产生意外节点或约束冲突。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-9">8. 合并 Disease 到 Symptom 的关系时，推荐先 MATCH 两端节点再 MERGE 关系，主要因为？</h3>
+<p>A. 可以确保端点已按各自稳定 ID 绑定，避免整段模式意外创建节点  \
+B. MATCH 会自动补全缺失节点  \
+C. 关系不能有属性  \
+D. MERGE 只能用于节点</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 对已绑定的端点执行 MERGE (d)-[r:HAS_SYMPTOM]-&gt;(s)，身份边界最清楚。若端点不存在，本行不应偷偷造一个信息不完整的新节点，而应进入异常队列。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-10">9. 哪个属性最适合只在 ON CREATE SET 中赋值？</h3>
+<p>A. created_at  \
+B. updated_at  \
+C. 最新显示名称  \
+D. 最近一次导入 run_id</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> created_at 表示首次创建时间，不应在重跑时覆盖。updated_at、可变显示属性和最近批次通常在匹配或创建后更新，但也要遵守字段所有权。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-11">10. 为什么应使用查询参数传入名称、来源和置信度？</h3>
+<p>A. 降低 Cypher 注入风险，并利于查询计划复用  \
+B. 参数会自动修复所有脏数据  \
+C. 参数可以替代唯一约束  \
+D. 参数会自动创建标签</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 数据值应通过参数传递，不应通过字符串拼接进入查询文本。参数化不能代替 Schema 验证、权限控制或业务白名单。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-12">11. 为兼容不同 Neo4j 版本并控制 Schema，处理动态节点标签和关系类型最稳妥的课程方案是？</h3>
+<p>A. 用白名单把类型路由到预定义查询  \
+B. 把用户输入直接拼到冒号后  \
+C. 删除所有标签和关系类型  \
+D. 对任意输入只做引号转义</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 当前 Cypher 已提供部分动态标签/类型语法，但版本能力和查询结构需要明确管理。预定义查询加白名单最容易审计，也能阻止输入扩张图 Schema；数据属性仍用参数传递。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-13">12. UNWIND $rows AS row 在批量导入中的作用是？</h3>
+<p>A. 将参数列表展开为查询中的多行，供后续 MATCH、MERGE、SET 处理  \
+B. 保证所有行永久按输入顺序执行  \
+C. 自动为每行创建独立数据库  \
+D. 自动跳过所有非法行</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> UNWIND 适合把一批结构相同的参数记录交给一个查询。数据验证、错误隔离和批大小仍由导入程序设计。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-14">13. 若业务逻辑依赖批内顺序，关于 UNWIND 的正确判断是？</h3>
+<p>A. UNWIND 不保证输出行顺序，需显式 ORDER BY 或先消除顺序依赖  \
+B. UNWIND 永远保持 Python 列表顺序  \
+C. Neo4j 中所有查询都有默认稳定顺序  \
+D. 只要用了 MERGE 就有顺序保证</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 官方文档明确只有 ORDER BY 提供排序保证。建图任务通常应让每行独立且幂等，不把正确性绑定到隐式执行顺序。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-15">14. 将一百万条关系放进单个事务的主要风险是？</h3>
+<p>A. 内存、锁持有、超时和失败重试成本过高  \
+B. 唯一约束会失效  \
+C. 参数化查询会变成字符串拼接  \
+D. 图中不会产生关系</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 应通过压测选择批大小，记录批次边界和失败行。批越大不一定越快；批越小也会增加往返开销。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-16">15. Neo4j Driver 的托管事务可能因瞬时故障重试，因此事务回调应满足什么要求？</h3>
+<p>A. 幂等，且不依赖或重复修改不可控的外部全局状态  \
+B. 每次重试都发送一封通知  \
+C. 必须清空数据库  \
+D. 必须生成随机节点 ID</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 数据库事务本身保持原子性，但回调可能被再次执行。外部副作用、随机 ID 和非幂等计数会使重试产生不可预测结果。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-17">16. 为什么通常要先创建唯一约束，再导入节点？</h3>
+<p>A. 尽早暴露重复身份，并在并发写入时守住唯一性  \
+B. 约束会自动推断关系方向  \
+C. 约束能替代输入验证  \
+D. 约束创建后不再需要 ID</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 先导入脏数据再建约束，约束可能因现存重复而失败。约束是数据库边界的最后一道防线，不是上游质检的替代品。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-18">17. 一条关系的 to_id 在节点表中不存在时，最佳默认处理是？</h3>
+<p>A. 拒绝该关系并记录为缺失端点，待修复后重放  \
+B. 只凭名称自动创建未知类型节点  \
+C. 把关系改成自环  \
+D. 忽略且计为成功</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 悬空引用说明上游数据、导入顺序或 ID 映射有问题。静默造点会掩盖根因，并产生缺属性节点。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-19">18. 为使“疾病推荐药品”可追溯，关系至少应携带什么？</h3>
+<p>A. 来源或证据 ID、抽取/导入版本及适用的置信信息  \
+B. 仅关系颜色  \
+C. Neo4j 内部元素 ID 即可  \
+D. 浏览器窗口大小</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 医学事实需要回答“来自哪里、何时、由哪个版本产生”。Neo4j 内部 ID 不等于可跨导入稳定的业务标识。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-20">19. 两个可靠来源对同一药物推荐结论冲突时，图谱应如何处理？</h3>
+<p>A. 保留带来源的独立主张或证据，显式标记冲突和状态  \
+B. 后导入者无痕覆盖前者  \
+C. 随机保留一条  \
+D. 将置信度都改为 1</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 冲突是需要治理的信息。主张层可保留来源、时间、适用人群和审核状态，面向用户的回答再按政策聚合并提示不确定性。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-21">20. 验证幂等性的最直接测试是？</h3>
+<p>A. 对同一快照连续导入两次，节点/关系业务键集合不变，第二次无意外新增  \
+B. 只运行一次并查看界面  \
+C. 每次导入前 DETACH DELETE 全库  \
+D. 比较两次运行耗时是否相同</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 还应检查 created_at 不被覆盖、可变字段按规则更新、审计计数合理。清库重建会掩盖幂等缺陷。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-22">21. 新快照中某来源的一条主张消失时，安全的增量策略是？</h3>
+<p>A. 将该来源主张标为 retired/inactive，并保留批次和时间  \
+B. 删除所有共享端点节点  \
+C. 清空整个数据库  \
+D. 不区分来源直接删除同语义全部关系</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> “本来源不再提供”不等于事实绝对错误，也不应影响其他来源。软退役便于审计、恢复和时间查询。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-23">22. 下列查询意图中，哪一个直接用于发现孤立点？</h3>
+<p>A. MATCH (n) WHERE NOT (n)--() RETURN n  \
+B. MATCH (n) RETURN count(n)  \
+C. MATCH ()-[r]-&gt;() RETURN type(r)  \
+D. SHOW INDEXES</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 孤立点没有任何方向的关系。是否允许孤立要按标签和业务阶段定义，例如待链接概念可临时存在，但必须有明确阈值。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-24">23. Disease-[HAS_SYMPTOM]-&gt;Drug 为什么应被质量规则拦截？</h3>
+<p>A. 它违反 HAS_SYMPTOM 的 domain/range，目标应是 Symptom  \
+B. Neo4j 不允许不同标签连接  \
+C. 所有图都不能有有向边  \
+D. Drug 节点不能有名称</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 属性图数据库默认不会自动理解业务 Schema。domain、range、方向、自环规则等需要约束能力与离线/在线校验共同落实。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-25">24. 同一标签下多个不同 ID 具有完全相同规范名称，最合理的解释是？</h3>
+<p>A. 它们是需要复核的重复或同名异义候选，不能仅凭名称自动合并  \
+B. 一定是同一实体  \
+C. 一定都是错误数据  \
+D. 唯一约束已经失效</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 名称冲突查询用于生成候选清单。最终决策还要比较标准编码、定义、类型、来源和上下文，并保留 merge/split 审计。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-26">25. EXPLAIN 与 PROFILE 的常见区别是？</h3>
+<p>A. EXPLAIN 查看计划而不执行查询，PROFILE 执行并返回实际运行统计  \
+B. EXPLAIN 会删除索引  \
+C. PROFILE 不执行查询  \
+D. 两者都只用于写入密码</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 对可能昂贵或有写作用的查询要谨慎使用 PROFILE。性能诊断先确认过滤条件、索引和计划，再基于代表性数据测量。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-27">26. 数据库密码应如何管理？</h3>
+<p>A. 从受控环境变量或密钥管理系统读取，并避免进入源码、日志和作业答案  \
+B. 写在仓库里的 Python 常量中  \
+C. 作为节点属性保存  \
+D. 拼进 Cypher 注释</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 还应轮换密钥、限制可见范围、对日志脱敏。仅把源码中的密码换成命令行参数并不自动安全。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-28">27. 只负责质量查询的服务账号应获得什么权限？</h3>
+<p>A. 指定数据库和必要对象的最小只读权限  \
+B. DBMS 管理员权限  \
+C. 创建和删除所有数据库权限  \
+D. 操作系统 root 权限</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 导入账号、查询账号和运维账号应分离。权限范围还要结合网络边界、审计日志和凭据轮换。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-29">28. 每次建图 manifest 最重要的作用是？</h3>
+<p>A. 把 run_id、Schema、源快照、程序版本、计数和失败信息绑定起来  \
+B. 替代全部原始数据  \
+C. 自动证明所有医学结论正确  \
+D. 保存 Browser 的布局颜色</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> manifest 支撑复现、对账、问题定位和回滚。它本身仍需防篡改、版本化并与实际产物校验。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-30">29. 上线前的可靠回滚准备是什么？</h3>
+<p>A. 保存上一版本快照/备份和 manifest，并演练按 run_id 撤销或切换  \
+B. 只记住“上次大概能用”  \
+C. 依赖浏览器后退按钮  \
+D. 出错时删除所有节点</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 回滚机制必须在故障前设计和验证。增量导入可通过批次归属、软退役或蓝绿数据库降低恢复风险。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-31">30. 医学知识图谱上线后，最重要的产品边界之一是？</h3>
+<p>A. 图谱查询结果是可追溯知识证据，不应未经临床审核直接充当个体诊断或处方  \
+B. 图中有边就代表临床因果  \
+C. 置信度高于 0.5 即可自动开药  \
+D. 删除来源可使回答更简洁</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 医学应用还需隐私保护、访问控制、适用人群/时间限定、证据展示和人工升级通道。数据库中的关联不自动等于临床建议。</p></div></div>
+
+
+</div><h2 id="sec-32">二、简答题（15 题）</h2>
+<div class="q-card"><h3 id="sec-33">31. 原课件采用“名称作键、逐条字符串拼接、源码写密码”的方式。请给出迁移优先级。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>建议顺序：</p>
+<ol>
+<li>冻结并备份当前数据，导出节点、关系和来源计数；</li>
+<li>定义节点/关系中间层、稳定 ID、Schema 版本和字段所有权；</li>
+<li>清洗重复并在空的影子数据库先创建唯一约束；</li>
+<li>使用官方 Driver、密钥注入、参数化预定义查询与 UNWIND 分批导入；</li>
+<li>执行幂等、对账、Schema、孤立点和溯源检查；</li>
+<li>通过双跑/蓝绿切换上线，保留旧库回滚窗口。</li>
+</ol>
+<p>不能只把 py2neo 换成新 Driver 而保留不稳定身份与字符串拼接。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-34">32. 设计一个最小但可审计的节点中间记录合同。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>至少包含 id、type、canonical_name、source_id、source_record_id、schema_version 和 status。可选 aliases、codes、valid_from、valid_to、attributes。应规定必填项、类型、字符规范、允许标签、ID 命名空间、空值策略及谁有权更新每个字段。患者级数据还需去标识化策略和访问分级。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-35">33. 设计一个关系中间记录合同，说明关系业务键。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>至少包含 from_id、type、to_id、source_id、evidence_id、confidence、extractor_version、status 和时间字段。若同一事实允许多来源并存，业务键可用 from_id + type + to_id + source_id + evidence_id；若把事实与证据分层，则事实边用三元组键，证据建为独立 Claim/Evidence 节点。键的选择必须与冲突和退役策略一致。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-36">34. 为什么推荐“Schema → 节点 → 关系 → 质量检查”的导入顺序？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>先建约束可在身份边界尽早失败；节点先入库使关系端点能通过稳定 ID 匹配；关系后写避免偷偷创建残缺端点；最后质量检查对实际提交结果做全量对账。每阶段均应产出输入数、去重数、成功数、失败数和检查点，失败时只重放受影响批次。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-37">35. 创建唯一约束时发现存量重复 ID，应如何处理？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>先停止写入并导出冲突组，不要删除任意一条。比较来源、标准编码、属性和邻域，判断是重复、错误映射还是同一 ID 被错误复用；形成 winner、merge、split 或重分配方案，迁移关系和来源后再次对账。处理过程保留重定向与审计记录，然后创建约束并加入回归测试。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-38">36. 分别写出节点、关系和缺失端点的 Cypher 设计要点。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>节点查询用 UNWIND 展开 rows，以标签 + id 进行 MERGE，created_at 放 ON CREATE，名称和批次等可变字段按所有权更新。关系查询先按各自标签和 id MATCH 两端，再 MERGE 固定类型关系并设置溯源属性。缺失端点不能由关系查询匿名创建；可先运行 anti-join 式检查，或比较写入前引用集合并把异常行送入隔离表。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-39">37. 解释“MERGE 匹配完整模式”为什么容易被误用。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>MERGE 会尝试匹配它收到的整个模式，完整模式不存在时才整体创建。若把节点的可变名称、关系、端点和时间都塞入一个 MERGE，一处变化就可能导致模式不匹配，进而创建意外节点或触发唯一冲突。更清晰的做法是先分别 MERGE/MATCH 稳定身份节点，使变量绑定，再 MERGE 两个已绑定节点之间的关系。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-40">38. 一个批次中第 731 条数据失败，如何兼顾事务原子性与可恢复性？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>先区分数据库事务失败与单行数据非法。每批作为原子事务，失败则整批回滚；记录 run_id、batch_id、输入摘要、异常类型和安全脱敏样例。确定是永久数据错误后可二分定位或预验证隔离坏行，修复后用同一业务键重放。检查点只在事务提交后推进，不能把“已发送”当作“已提交”。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-41">39. 给出幂等导入的验收标准。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>同一快照连续执行两次后：</p>
+<ul>
+<li>节点和关系业务键集合、总数及来源计数不变；</li>
+<li>第二次 created 数为 0，matched/updated 计数符合设计；</li>
+<li>created_at 不变，updated_at 是否变化符合书面约定；</li>
+<li>无新增重复 ID、孤立点、非法边和缺失溯源；</li>
+<li>失败重放与事务重试不会重复外部副作用；</li>
+<li>输出 manifest 可关联到相同源摘要与程序版本。</li>
+</ul></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-42">40. 为第六章四类节点、四类关系设计一张质量规则矩阵。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>规则至少覆盖：Disease、Symptom、Drug、Food 的 id/name/source 必填与 id 唯一；HAS_SYMPTOM 的 Disease→Symptom；RECOMMEND_DRUG 的 Disease→Drug；DO_EAT 与 NOT_EAT 的 Disease→Food；默认禁止这些关系自环；所有关系端点存在、类型在白名单、来源可追溯。再设置孤立率、属性完整率、重复名称候选率、同一疾病-食物矛盾率及与源文件的计数差阈值。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-43">41. 同一疾病对同一食物同时出现 DO_EAT 和 NOT_EAT，怎样建模与验收？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>先判断是否因来源、适用人群、剂量、时间或条件不同而并非真正矛盾。保留各自主张的来源和限定条件，生成 conflict 记录供审核，不能静默覆盖。产品层默认不把冲突内容直接转成个体建议；可展示证据差异、降低回答确定性或升级人工审核。质量门禁可限制“未解释冲突”的比例。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-44">42. 某个数据源撤回一批记录，如何避免误删其他来源共享的实体？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>以 source_id 和 evidence/claim 业务键计算该来源的新旧差异，只退役该来源拥有的主张。节点是否可删除要看是否仍被其他有效来源或关系引用；通常先标记 inactive，经过保留期和引用检查再物理清理。任何删除都记录 run_id、原因、数量并支持恢复。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-45">43. 一个按 Disease.id 查询的 MERGE 变慢，你会怎样诊断？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>先确认数据库、标签、属性名和参数类型正确，再用 SHOW CONSTRAINTS/SHOW INDEXES 检查约束与索引状态；用 EXPLAIN 查看是否走索引查找及是否存在笛卡尔积；在代表性数据上谨慎 PROFILE。随后检查批大小、热点键竞争、事务日志、锁等待、网络往返和 Driver 连接复用。不能看到慢就盲目增加多个重复索引。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-46">44. 列出建图服务的最小安全与审计措施。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>密钥不入库并定期轮换；导入、查询、运维账号分权；限制网络来源和目标数据库；所有数据值参数化，Schema 类型白名单；日志脱敏并记录 run_id、查询类别、耗时和计数；患者数据最小化、去标识化并限制导出；备份加密且定期恢复演练；高风险删除需要审批和双重确认。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-47">45. 设计从源文件到上线的完整发布门禁。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>门禁可分五层：输入层校验 JSON、编码、必填和源摘要；中间层校验稳定键、去重、引用与 Schema；数据库层先建约束并在影子库导入；质量层校验计数对账、重复、孤立、非法边、溯源、冲突、幂等和关键查询性能；发布层核对 manifest、备份、回滚演练、权限和监控。任一硬指标失败都停止切换，不能以“页面能展示”放行。</p></div></div>
+
+
+</div><h2 id="sec-48">三、代码题（10 题）</h2>
+<div class="q-card"><h3 id="sec-49">46. 实现 validate_spo(row)，校验关系中间记录的必填字段、类型白名单、置信度和来源；返回错误列表。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">ALLOWED</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;HAS_SYMPTOM&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;disease:&quot;</span><span class="p">,</span> <span class="s2">&quot;symptom:&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;RECOMMEND_DRUG&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;disease:&quot;</span><span class="p">,</span> <span class="s2">&quot;drug:&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;DO_EAT&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;disease:&quot;</span><span class="p">,</span> <span class="s2">&quot;food:&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;NOT_EAT&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;disease:&quot;</span><span class="p">,</span> <span class="s2">&quot;food:&quot;</span><span class="p">),</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_spo</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+    <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">required</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;from_id&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;to_id&quot;</span><span class="p">,</span> <span class="s2">&quot;source_id&quot;</span><span class="p">,</span> <span class="s2">&quot;evidence_id&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">required</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">row</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;missing_or_invalid:&quot;</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span>
+
+    <span class="n">relation_type</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">relation_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ALLOWED</span><span class="p">:</span>
+        <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;invalid_relation_type&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;from_id&quot;</span><span class="p">),</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;to_id&quot;</span><span class="p">),</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">from_prefix</span><span class="p">,</span> <span class="n">to_prefix</span> <span class="o">=</span> <span class="n">ALLOWED</span><span class="p">[</span><span class="n">relation_type</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;from_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">from_prefix</span><span class="p">):</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;invalid_from_type&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;to_id&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">to_prefix</span><span class="p">):</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;invalid_to_type&quot;</span><span class="p">)</span>
+
+    <span class="n">confidence</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;confidence&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">confidence</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">))</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">confidence</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+        <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;invalid_confidence&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="nb">float</span><span class="p">(</span><span class="n">confidence</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mf">1.0</span><span class="p">:</span>
+        <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;confidence_out_of_range&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
+
+
+<span class="n">good</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;from_id&quot;</span><span class="p">:</span> <span class="s2">&quot;disease:001&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;HAS_SYMPTOM&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;to_id&quot;</span><span class="p">:</span> <span class="s2">&quot;symptom:008&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;source_id&quot;</span><span class="p">:</span> <span class="s2">&quot;dataset:v1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;evidence_id&quot;</span><span class="p">:</span> <span class="s2">&quot;line:19&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="mf">0.92</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="k">assert</span> <span class="n">validate_spo</span><span class="p">(</span><span class="n">good</span><span class="p">)</span> <span class="o">==</span> <span class="p">[]</span>
+<span class="n">bad</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">good</span><span class="p">,</span> <span class="n">to_id</span><span class="o">=</span><span class="s2">&quot;drug:009&quot;</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">validate_spo</span><span class="p">(</span><span class="n">bad</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;confidence_out_of_range&quot;</span><span class="p">,</span> <span class="s2">&quot;invalid_to_type&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>校验器只检查结构合同；医学语义正确性仍需词表、证据和人工审核。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-50">47. 实现 normalize_entity(raw)，只接受白名单类型和上游 source_id，并生成稳定业务 ID；名称变化不得改变 ID。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+<span class="n">TYPE_PREFIX</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Disease&quot;</span><span class="p">:</span> <span class="s2">&quot;disease&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Symptom&quot;</span><span class="p">:</span> <span class="s2">&quot;symptom&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Drug&quot;</span><span class="p">:</span> <span class="s2">&quot;drug&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Food&quot;</span><span class="p">:</span> <span class="s2">&quot;food&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">normalize_entity</span><span class="p">(</span><span class="n">raw</span><span class="p">):</span>
+    <span class="n">entity_type</span> <span class="o">=</span> <span class="n">raw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">entity_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">TYPE_PREFIX</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;unsupported entity type&quot;</span><span class="p">)</span>
+    <span class="n">source_id</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">raw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source_id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[A-Za-z0-9._-]+&quot;</span><span class="p">,</span> <span class="n">source_id</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid source_id&quot;</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">raw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;empty name&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">TYPE_PREFIX</span><span class="p">[</span><span class="n">entity_type</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="n">source_id</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span>
+        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">entity_type</span><span class="p">,</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+        <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">raw</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+    <span class="p">}</span>
+
+
+<span class="n">a</span> <span class="o">=</span> <span class="n">normalize_entity</span><span class="p">({</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;source_id&quot;</span><span class="p">:</span> <span class="s2">&quot;D-001&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot; 慢性   支气管炎 &quot;</span><span class="p">,</span> <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="s2">&quot;catalog:v1&quot;</span>
+<span class="p">})</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">normalize_entity</span><span class="p">({</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;source_id&quot;</span><span class="p">:</span> <span class="s2">&quot;D-001&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;慢支&quot;</span><span class="p">,</span> <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="s2">&quot;catalog:v2&quot;</span>
+<span class="p">})</span>
+<span class="k">assert</span> <span class="n">a</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">b</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;disease:d-001&quot;</span>
+<span class="k">assert</span> <span class="n">a</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">b</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>这里把上游稳定编码作为身份依据；若上游没有稳定编码，应维护持久映射表，而不是对名称哈希。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-51">48. 将一条疾病 JSON 转成去重、确定性排序的节点与关系载荷，并兼容旧字段 recommand_drug。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+<span class="n">FIELDS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;symptom&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Symptom&quot;</span><span class="p">,</span> <span class="s2">&quot;HAS_SYMPTOM&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;recommand_drug&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Drug&quot;</span><span class="p">,</span> <span class="s2">&quot;RECOMMEND_DRUG&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;recommend_drug&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Drug&quot;</span><span class="p">,</span> <span class="s2">&quot;RECOMMEND_DRUG&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;do_eat&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Food&quot;</span><span class="p">,</span> <span class="s2">&quot;DO_EAT&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;not_eat&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Food&quot;</span><span class="p">,</span> <span class="s2">&quot;NOT_EAT&quot;</span><span class="p">),</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">stable_id</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="n">normalized</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span>
+    <span class="n">digest</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">((</span><span class="n">label</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\0</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">normalized</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()[:</span><span class="mi">16</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">label</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="n">digest</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build_payload</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">source_id</span><span class="p">):</span>
+    <span class="n">disease_name</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="n">disease_id</span> <span class="o">=</span> <span class="n">record</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">stable_id</span><span class="p">(</span><span class="s2">&quot;Disease&quot;</span><span class="p">,</span> <span class="n">disease_name</span><span class="p">)</span>
+    <span class="n">nodes</span> <span class="o">=</span> <span class="p">{(</span><span class="n">disease_id</span><span class="p">,</span> <span class="s2">&quot;Disease&quot;</span><span class="p">,</span> <span class="n">disease_name</span><span class="p">)}</span>
+    <span class="n">relations</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">field</span><span class="p">,</span> <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">relation_type</span><span class="p">)</span> <span class="ow">in</span> <span class="n">FIELDS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">raw_name</span> <span class="ow">in</span> <span class="n">record</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">field</span><span class="p">,</span> <span class="p">[])</span> <span class="ow">or</span> <span class="p">[]:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">raw_name</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">target_id</span> <span class="o">=</span> <span class="n">stable_id</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">nodes</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">target_id</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+            <span class="n">relations</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">disease_id</span><span class="p">,</span> <span class="n">relation_type</span><span class="p">,</span> <span class="n">target_id</span><span class="p">,</span> <span class="n">source_id</span><span class="p">))</span>
+
+    <span class="n">node_rows</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">node_id</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="n">source_id</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="n">relation_rows</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span><span class="s2">&quot;from_id&quot;</span><span class="p">:</span> <span class="n">a</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">r</span><span class="p">,</span> <span class="s2">&quot;to_id&quot;</span><span class="p">:</span> <span class="n">b</span><span class="p">,</span> <span class="s2">&quot;source_id&quot;</span><span class="p">:</span> <span class="n">s</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">relations</span><span class="p">)</span>
+    <span class="p">]</span>
+    <span class="k">return</span> <span class="n">node_rows</span><span class="p">,</span> <span class="n">relation_rows</span>
+
+
+<span class="n">raw</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;disease:001&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;某疾病&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;symptom&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;咳嗽&quot;</span><span class="p">,</span> <span class="s2">&quot;咳嗽&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;recommand_drug&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;药品甲&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;recommend_drug&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;药品甲&quot;</span><span class="p">],</span>
+<span class="p">}</span>
+<span class="n">nodes</span><span class="p">,</span> <span class="n">relations</span> <span class="o">=</span> <span class="n">build_payload</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="s2">&quot;medical:v1&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">relations</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+<span class="k">assert</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">relations</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>示例在上游无 ID 的目标实体上用规范化名称生成过渡 ID；生产环境仍应优先标准术语 ID，并维护别名、合并和拆分历史。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-52">49. 实现 compile_upsert(kind, rows)，只允许白名单节点/关系类型，返回预定义参数化 Cypher 和参数；恶意类型必须被拒绝。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">NODE_QUERIES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;Disease&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">UNWIND $rows AS row</span>
+<span class="s2">MERGE (n:Disease {id: row.id})</span>
+<span class="s2">ON CREATE SET n.created_at = datetime()</span>
+<span class="s2">SET n.name = row.name, n.source = row.source, n.updated_at = datetime()</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+    <span class="s2">&quot;Symptom&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">UNWIND $rows AS row</span>
+<span class="s2">MERGE (n:Symptom {id: row.id})</span>
+<span class="s2">ON CREATE SET n.created_at = datetime()</span>
+<span class="s2">SET n.name = row.name, n.source = row.source, n.updated_at = datetime()</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+<span class="p">}</span>
+
+<span class="n">RELATION_QUERIES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;HAS_SYMPTOM&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">UNWIND $rows AS row</span>
+<span class="s2">MATCH (a:Disease {id: row.from_id})</span>
+<span class="s2">MATCH (b:Symptom {id: row.to_id})</span>
+<span class="s2">MERGE (a)-[r:HAS_SYMPTOM]-&gt;(b)</span>
+<span class="s2">SET r.source_id = row.source_id, r.updated_at = datetime()</span>
+<span class="s2">&quot;&quot;&quot;</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">compile_upsert</span><span class="p">(</span><span class="n">kind</span><span class="p">,</span> <span class="n">rows</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">kind</span> <span class="ow">in</span> <span class="n">NODE_QUERIES</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">NODE_QUERIES</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">kind</span> <span class="ow">in</span> <span class="n">RELATION_QUERIES</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">RELATION_QUERIES</span><span class="p">[</span><span class="n">kind</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;kind is not allowlisted&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">rows</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;rows must be a non-empty list&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">query</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;rows&quot;</span><span class="p">:</span> <span class="n">rows</span><span class="p">}</span>
+
+
+<span class="n">query</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">compile_upsert</span><span class="p">(</span>
+    <span class="s2">&quot;Disease&quot;</span><span class="p">,</span>
+    <span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;disease:001&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;某疾病&quot;</span><span class="p">,</span> <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="s2">&quot;medical:v1&quot;</span><span class="p">}],</span>
+<span class="p">)</span>
+<span class="k">assert</span> <span class="s2">&quot;$rows&quot;</span> <span class="ow">in</span> <span class="n">query</span> <span class="ow">and</span> <span class="n">params</span><span class="p">[</span><span class="s2">&quot;rows&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;disease:001&quot;</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">compile_upsert</span><span class="p">(</span><span class="s2">&quot;Disease) DETACH DELETE n //&quot;</span><span class="p">,</span> <span class="p">[{}])</span>
+    <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;malicious kind should fail&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>动态数据只进入 params；标签和关系类型由可审计白名单选择查询模板。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-53">50. 实现 make_batches(rows, size, run_id)，按业务键确定性排序并为每批计算可复核摘要。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">canonical_bytes</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
+        <span class="n">value</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">text</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">make_batches</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">run_id</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">size</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span> <span class="ow">or</span> <span class="n">size</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;size must be a positive integer&quot;</span><span class="p">)</span>
+    <span class="n">ordered</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">row</span><span class="p">:</span> <span class="p">(</span>
+        <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+        <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;from_id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+        <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+        <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;to_id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+        <span class="n">row</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source_id&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
+    <span class="p">))</span>
+    <span class="n">batches</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">offset</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">ordered</span><span class="p">),</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">payload</span> <span class="o">=</span> <span class="n">ordered</span><span class="p">[</span><span class="n">offset</span><span class="p">:</span><span class="n">offset</span> <span class="o">+</span> <span class="n">size</span><span class="p">]</span>
+        <span class="n">digest</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">(</span><span class="n">canonical_bytes</span><span class="p">(</span><span class="n">payload</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+        <span class="n">batches</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+            <span class="s2">&quot;run_id&quot;</span><span class="p">:</span> <span class="n">run_id</span><span class="p">,</span>
+            <span class="s2">&quot;batch_no&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">batches</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;row_count&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">payload</span><span class="p">),</span>
+            <span class="s2">&quot;sha256&quot;</span><span class="p">:</span> <span class="n">digest</span><span class="p">,</span>
+            <span class="s2">&quot;rows&quot;</span><span class="p">:</span> <span class="n">payload</span><span class="p">,</span>
+        <span class="p">})</span>
+    <span class="k">return</span> <span class="n">batches</span>
+
+
+<span class="n">rows</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;d:3&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;d:1&quot;</span><span class="p">},</span> <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;d:2&quot;</span><span class="p">}]</span>
+<span class="n">first</span> <span class="o">=</span> <span class="n">make_batches</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;kg-001&quot;</span><span class="p">)</span>
+<span class="n">second</span> <span class="o">=</span> <span class="n">make_batches</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">rows</span><span class="p">)),</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;kg-001&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">first</span> <span class="o">==</span> <span class="n">second</span>
+<span class="k">assert</span> <span class="p">[</span><span class="n">b</span><span class="p">[</span><span class="s2">&quot;row_count&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">first</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">([(</span><span class="n">b</span><span class="p">[</span><span class="s2">&quot;batch_no&quot;</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="s2">&quot;sha256&quot;</span><span class="p">][:</span><span class="mi">8</span><span class="p">])</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">first</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>摘要用于确认重放的是同一载荷；检查点只能在对应数据库事务提交成功后记录。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-54">51. 用内存结构模拟节点和关系的幂等 upsert：首次设置 created_run，重跑只更新可变属性。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MemoryGraph</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">relations</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">upsert_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">run_id</span><span class="p">):</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;created_run&quot;</span><span class="p">:</span> <span class="n">run_id</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">node</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+        <span class="n">node</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;source&quot;</span><span class="p">]</span>
+        <span class="n">node</span><span class="p">[</span><span class="s2">&quot;updated_run&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">run_id</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">upsert_relation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">,</span> <span class="n">run_id</span><span class="p">):</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">row</span><span class="p">[</span><span class="s2">&quot;from_id&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;to_id&quot;</span><span class="p">],</span>
+            <span class="n">row</span><span class="p">[</span><span class="s2">&quot;source_id&quot;</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;evidence_id&quot;</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">relations</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">relations</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;created_run&quot;</span><span class="p">:</span> <span class="n">run_id</span><span class="p">,</span>
+                <span class="s2">&quot;key&quot;</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="n">relation</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">relations</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">relation</span><span class="p">[</span><span class="s2">&quot;confidence&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;confidence&quot;</span><span class="p">]</span>
+        <span class="n">relation</span><span class="p">[</span><span class="s2">&quot;updated_run&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">run_id</span>
+
+
+<span class="n">graph</span> <span class="o">=</span> <span class="n">MemoryGraph</span><span class="p">()</span>
+<span class="n">node</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;disease:001&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Disease&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;旧名称&quot;</span><span class="p">,</span> <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="s2">&quot;medical:v1&quot;</span>
+<span class="p">}</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">upsert_node</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="s2">&quot;run-1&quot;</span><span class="p">)</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">upsert_node</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;新名称&quot;</span><span class="p">),</span> <span class="s2">&quot;run-2&quot;</span><span class="p">)</span>
+<span class="n">relation</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;from_id&quot;</span><span class="p">:</span> <span class="s2">&quot;disease:001&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;HAS_SYMPTOM&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;to_id&quot;</span><span class="p">:</span> <span class="s2">&quot;symptom:008&quot;</span><span class="p">,</span> <span class="s2">&quot;source_id&quot;</span><span class="p">:</span> <span class="s2">&quot;medical:v1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;evidence_id&quot;</span><span class="p">:</span> <span class="s2">&quot;line:19&quot;</span><span class="p">,</span> <span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">upsert_relation</span><span class="p">(</span><span class="n">relation</span><span class="p">,</span> <span class="s2">&quot;run-1&quot;</span><span class="p">)</span>
+<span class="n">graph</span><span class="o">.</span><span class="n">upsert_relation</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">relation</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="mf">0.9</span><span class="p">),</span> <span class="s2">&quot;run-2&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">relations</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="k">assert</span> <span class="n">graph</span><span class="o">.</span><span class="n">nodes</span><span class="p">[(</span><span class="s2">&quot;Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;disease:001&quot;</span><span class="p">)][</span><span class="s2">&quot;created_run&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;run-1&quot;</span>
+<span class="k">assert</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">relations</span><span class="o">.</span><span class="n">values</span><span class="p">()))[</span><span class="s2">&quot;confidence&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mf">0.9</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;idempotent&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>关系键含来源与证据，因此不同证据不会被无痕覆盖；具体键要与项目的 Claim 模型一致。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-55">52. 实现 audit_graph(nodes, relations)，检查重复节点键、缺失端点、非法 domain/range、自环和缺失来源。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+
+<span class="n">SCHEMA</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;HAS_SYMPTOM&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;Symptom&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;RECOMMEND_DRUG&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;Drug&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;DO_EAT&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;Food&quot;</span><span class="p">),</span>
+    <span class="s2">&quot;NOT_EAT&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;Food&quot;</span><span class="p">),</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">audit_graph</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">relations</span><span class="p">):</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="p">[(</span><span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">),</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">))</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">]</span>
+    <span class="n">counts</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">keys</span><span class="p">)</span>
+    <span class="n">duplicates</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">count</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">node_types</span> <span class="o">=</span> <span class="p">{</span><span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">):</span> <span class="n">node</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">nodes</span><span class="p">}</span>
+
+    <span class="n">missing_endpoints</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">schema_violations</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">self_loops</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">missing_source</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">relation</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">relations</span><span class="p">):</span>
+        <span class="n">left</span><span class="p">,</span> <span class="n">right</span> <span class="o">=</span> <span class="n">relation</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;from_id&quot;</span><span class="p">),</span> <span class="n">relation</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;to_id&quot;</span><span class="p">)</span>
+        <span class="n">relation_type</span> <span class="o">=</span> <span class="n">relation</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">left</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">node_types</span> <span class="ow">or</span> <span class="n">right</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">node_types</span><span class="p">:</span>
+            <span class="n">missing_endpoints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="n">SCHEMA</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">relation_type</span><span class="p">)</span>
+        <span class="n">actual</span> <span class="o">=</span> <span class="p">(</span><span class="n">node_types</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">left</span><span class="p">),</span> <span class="n">node_types</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">right</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">expected</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">actual</span> <span class="o">!=</span> <span class="n">expected</span><span class="p">:</span>
+            <span class="n">schema_violations</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">left</span> <span class="o">==</span> <span class="n">right</span><span class="p">:</span>
+            <span class="n">self_loops</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">relation</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;source_id&quot;</span><span class="p">):</span>
+            <span class="n">missing_source</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;duplicate_node_keys&quot;</span><span class="p">:</span> <span class="n">duplicates</span><span class="p">,</span>
+        <span class="s2">&quot;missing_endpoints&quot;</span><span class="p">:</span> <span class="n">missing_endpoints</span><span class="p">,</span>
+        <span class="s2">&quot;schema_violations&quot;</span><span class="p">:</span> <span class="n">schema_violations</span><span class="p">,</span>
+        <span class="s2">&quot;self_loops&quot;</span><span class="p">:</span> <span class="n">self_loops</span><span class="p">,</span>
+        <span class="s2">&quot;missing_source&quot;</span><span class="p">:</span> <span class="n">missing_source</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;d:1&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Disease&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;s:1&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Symptom&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;s:1&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Symptom&quot;</span><span class="p">},</span>
+<span class="p">]</span>
+<span class="n">relations</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;from_id&quot;</span><span class="p">:</span> <span class="s2">&quot;d:1&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;HAS_SYMPTOM&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;to_id&quot;</span><span class="p">:</span> <span class="s2">&quot;s:1&quot;</span><span class="p">,</span> <span class="s2">&quot;source_id&quot;</span><span class="p">:</span> <span class="s2">&quot;v1&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;from_id&quot;</span><span class="p">:</span> <span class="s2">&quot;d:1&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;RECOMMEND_DRUG&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;to_id&quot;</span><span class="p">:</span> <span class="s2">&quot;x:1&quot;</span><span class="p">,</span> <span class="s2">&quot;source_id&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">},</span>
+<span class="p">]</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">audit_graph</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="n">relations</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">report</span><span class="p">[</span><span class="s2">&quot;duplicate_node_keys&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="p">[(</span><span class="s2">&quot;Symptom&quot;</span><span class="p">,</span> <span class="s2">&quot;s:1&quot;</span><span class="p">)]</span>
+<span class="k">assert</span> <span class="n">report</span><span class="p">[</span><span class="s2">&quot;missing_endpoints&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">report</span><span class="p">[</span><span class="s2">&quot;schema_violations&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">report</span><span class="p">[</span><span class="s2">&quot;missing_source&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>生产审计还应检测名称空值、业务键重复、来源冲突、非法属性和标签级孤立率。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-56">53. 实现 validate_plan(steps)，要求四阶段顺序为 constraints、nodes、relations、checks，检查点编号连续且每步输入摘要非空。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">EXPECTED</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;constraints&quot;</span><span class="p">,</span> <span class="s2">&quot;nodes&quot;</span><span class="p">,</span> <span class="s2">&quot;relations&quot;</span><span class="p">,</span> <span class="s2">&quot;checks&quot;</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_plan</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
+    <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">phases</span> <span class="o">=</span> <span class="p">[</span><span class="n">step</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;phase&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">phases</span> <span class="o">!=</span> <span class="n">EXPECTED</span><span class="p">:</span>
+        <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;invalid_phase_order&quot;</span><span class="p">)</span>
+
+    <span class="n">checkpoints</span> <span class="o">=</span> <span class="p">[</span><span class="n">step</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;checkpoint&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">checkpoints</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">steps</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
+        <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;invalid_checkpoints&quot;</span><span class="p">)</span>
+
+    <span class="n">run_ids</span> <span class="o">=</span> <span class="p">{</span><span class="n">step</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;run_id&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">}</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">run_ids</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">run_ids</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span> <span class="ow">in</span> <span class="n">run_ids</span><span class="p">:</span>
+        <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;inconsistent_run_id&quot;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">steps</span><span class="p">):</span>
+        <span class="n">digest</span> <span class="o">=</span> <span class="n">step</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;input_sha256&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">digest</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">digest</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">64</span><span class="p">:</span>
+            <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;invalid_digest_at:&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">errors</span>
+
+
+<span class="n">steps</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;phase&quot;</span><span class="p">:</span> <span class="n">phase</span><span class="p">,</span> <span class="s2">&quot;checkpoint&quot;</span><span class="p">:</span> <span class="n">i</span><span class="p">,</span> <span class="s2">&quot;run_id&quot;</span><span class="p">:</span> <span class="s2">&quot;kg-001&quot;</span><span class="p">,</span>
+     <span class="s2">&quot;input_sha256&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">*</span> <span class="mi">64</span><span class="p">}</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">phase</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">EXPECTED</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="p">]</span>
+<span class="k">assert</span> <span class="n">validate_plan</span><span class="p">(</span><span class="n">steps</span><span class="p">)</span> <span class="o">==</span> <span class="p">[]</span>
+<span class="n">bad</span> <span class="o">=</span> <span class="p">[</span><span class="nb">dict</span><span class="p">(</span><span class="n">step</span><span class="p">)</span> <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="n">steps</span><span class="p">]</span>
+<span class="n">bad</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">bad</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">bad</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">bad</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="k">assert</span> <span class="s2">&quot;invalid_phase_order&quot;</span> <span class="ow">in</span> <span class="n">validate_plan</span><span class="p">(</span><span class="n">bad</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>真实系统还要保存提交状态、开始/结束时间、程序版本、行数和异常；这里只验证最小发布顺序合同。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-57">54. 实现 diff_claims(old_rows, new_rows)，按来源级主张业务键计算 upsert 与 retire，不做物理删除。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">claim_key</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="n">row</span><span class="p">[</span><span class="s2">&quot;from_id&quot;</span><span class="p">],</span>
+        <span class="n">row</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span>
+        <span class="n">row</span><span class="p">[</span><span class="s2">&quot;to_id&quot;</span><span class="p">],</span>
+        <span class="n">row</span><span class="p">[</span><span class="s2">&quot;source_id&quot;</span><span class="p">],</span>
+        <span class="n">row</span><span class="p">[</span><span class="s2">&quot;evidence_id&quot;</span><span class="p">],</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">diff_claims</span><span class="p">(</span><span class="n">old_rows</span><span class="p">,</span> <span class="n">new_rows</span><span class="p">):</span>
+    <span class="n">old</span> <span class="o">=</span> <span class="p">{</span><span class="n">claim_key</span><span class="p">(</span><span class="n">row</span><span class="p">):</span> <span class="nb">dict</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">old_rows</span><span class="p">}</span>
+    <span class="n">new</span> <span class="o">=</span> <span class="p">{</span><span class="n">claim_key</span><span class="p">(</span><span class="n">row</span><span class="p">):</span> <span class="nb">dict</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">new_rows</span><span class="p">}</span>
+    <span class="n">upsert</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">new</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">old</span> <span class="ow">or</span> <span class="n">new</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">!=</span> <span class="n">old</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">new</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="n">row</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;active&quot;</span>
+            <span class="n">upsert</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+    <span class="n">retire</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">old</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">new</span><span class="p">)):</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">old</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+        <span class="n">row</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;retired&quot;</span>
+        <span class="n">retire</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">upsert</span><span class="p">,</span> <span class="n">retire</span>
+
+
+<span class="n">base</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;from_id&quot;</span><span class="p">:</span> <span class="s2">&quot;d:1&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;HAS_SYMPTOM&quot;</span><span class="p">,</span> <span class="s2">&quot;to_id&quot;</span><span class="p">:</span> <span class="s2">&quot;s:1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;source_id&quot;</span><span class="p">:</span> <span class="s2">&quot;medical:v1&quot;</span><span class="p">,</span> <span class="s2">&quot;evidence_id&quot;</span><span class="p">:</span> <span class="s2">&quot;line:1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;confidence&quot;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">removed</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+<span class="n">changed</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">evidence_id</span><span class="o">=</span><span class="s2">&quot;line:2&quot;</span><span class="p">,</span> <span class="n">confidence</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+<span class="n">upsert</span><span class="p">,</span> <span class="n">retire</span> <span class="o">=</span> <span class="n">diff_claims</span><span class="p">([</span><span class="n">removed</span><span class="p">],</span> <span class="p">[</span><span class="n">changed</span><span class="p">])</span>
+<span class="k">assert</span> <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">upsert</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;active&quot;</span><span class="p">]</span>
+<span class="k">assert</span> <span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">retire</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;retired&quot;</span><span class="p">]</span>
+<span class="k">assert</span> <span class="s2">&quot;status&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">removed</span>
+<span class="nb">print</span><span class="p">({</span><span class="s2">&quot;upsert&quot;</span><span class="p">:</span> <span class="n">upsert</span><span class="p">,</span> <span class="s2">&quot;retire&quot;</span><span class="p">:</span> <span class="n">retire</span><span class="p">})</span>
+</pre></div>
+</div>
+<p>退役范围由 source_id + evidence_id 限定，不会删除其他来源对同一三元组的主张。最后一个断言也验证输入记录没有被函数原地修改。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-58">55. 实现 quality_gate(stats, limits)，计算完整率、孤立率、溯源覆盖率和重复率，并返回是否放行及失败原因。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">safe_ratio</span><span class="p">(</span><span class="n">numerator</span><span class="p">,</span> <span class="n">denominator</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">numerator</span> <span class="o">/</span> <span class="n">denominator</span> <span class="k">if</span> <span class="n">denominator</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">quality_gate</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span> <span class="n">limits</span><span class="p">):</span>
+    <span class="n">nodes</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;nodes&quot;</span><span class="p">]</span>
+    <span class="n">relations</span> <span class="o">=</span> <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;relations&quot;</span><span class="p">]</span>
+    <span class="n">metrics</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;node_completeness&quot;</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">safe_ratio</span><span class="p">(</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;nodes_missing_required&quot;</span><span class="p">],</span> <span class="n">nodes</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;isolated_rate&quot;</span><span class="p">:</span> <span class="n">safe_ratio</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s2">&quot;isolated_nodes&quot;</span><span class="p">],</span> <span class="n">nodes</span><span class="p">),</span>
+        <span class="s2">&quot;provenance_coverage&quot;</span><span class="p">:</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="n">safe_ratio</span><span class="p">(</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;relations_missing_source&quot;</span><span class="p">],</span> <span class="n">relations</span>
+        <span class="p">),</span>
+        <span class="s2">&quot;duplicate_rate&quot;</span><span class="p">:</span> <span class="n">safe_ratio</span><span class="p">(</span><span class="n">stats</span><span class="p">[</span><span class="s2">&quot;duplicate_keys&quot;</span><span class="p">],</span> <span class="n">nodes</span><span class="p">),</span>
+        <span class="s2">&quot;schema_violation_rate&quot;</span><span class="p">:</span> <span class="n">safe_ratio</span><span class="p">(</span>
+            <span class="n">stats</span><span class="p">[</span><span class="s2">&quot;schema_violations&quot;</span><span class="p">],</span> <span class="n">relations</span>
+        <span class="p">),</span>
+    <span class="p">}</span>
+    <span class="n">failures</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;node_completeness&quot;</span><span class="p">,</span> <span class="s2">&quot;provenance_coverage&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">metrics</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">limits</span><span class="p">[</span><span class="s2">&quot;min_&quot;</span> <span class="o">+</span> <span class="n">metric</span><span class="p">]:</span>
+            <span class="n">failures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span> <span class="o">+</span> <span class="s2">&quot;_below_min&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;isolated_rate&quot;</span><span class="p">,</span> <span class="s2">&quot;duplicate_rate&quot;</span><span class="p">,</span> <span class="s2">&quot;schema_violation_rate&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">metrics</span><span class="p">[</span><span class="n">metric</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">limits</span><span class="p">[</span><span class="s2">&quot;max_&quot;</span> <span class="o">+</span> <span class="n">metric</span><span class="p">]:</span>
+            <span class="n">failures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">metric</span> <span class="o">+</span> <span class="s2">&quot;_above_max&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;passed&quot;</span><span class="p">:</span> <span class="ow">not</span> <span class="n">failures</span><span class="p">,</span> <span class="s2">&quot;metrics&quot;</span><span class="p">:</span> <span class="n">metrics</span><span class="p">,</span> <span class="s2">&quot;failures&quot;</span><span class="p">:</span> <span class="n">failures</span><span class="p">}</span>
+
+
+<span class="n">stats</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;nodes&quot;</span><span class="p">:</span> <span class="mi">1000</span><span class="p">,</span>
+    <span class="s2">&quot;relations&quot;</span><span class="p">:</span> <span class="mi">3000</span><span class="p">,</span>
+    <span class="s2">&quot;nodes_missing_required&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;isolated_nodes&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="s2">&quot;relations_missing_source&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;duplicate_keys&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="s2">&quot;schema_violations&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">limits</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;min_node_completeness&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="s2">&quot;min_provenance_coverage&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="s2">&quot;max_isolated_rate&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span>
+    <span class="s2">&quot;max_duplicate_rate&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+    <span class="s2">&quot;max_schema_violation_rate&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">quality_gate</span><span class="p">(</span><span class="n">stats</span><span class="p">,</span> <span class="n">limits</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;passed&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span>
+<span class="k">assert</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;failures&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;schema_violation_rate_above_max&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>阈值应按标签、数据源和发布阶段分层，并与源文件对账、幂等重跑、关键查询及人工抽检共同组成门禁。</p></div></div>
+
+
+</div><div class="done-bar"><button class="mark-done-btn" data-key="hw56" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="hw55.html"><div class="dir">← 上一篇</div><div class="name">🧩 知识融合：实体统一、链接与消歧综合训练</div></a><a class="disabled next"></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、选择题（30 题）</a><a class="lv3" href="#sec-2">1. 将 medical.json 建成医学知识图谱时，最稳妥的第一步是什么？</a><a class="lv3" href="#sec-3">2. 原始字段名为 recommand_drug，而图 Schema 计划使用 recommend_drug，合理做法是？</a><a class="lv3" href="#sec-4">3. 为什么不应直接用疾病名称作为唯一主键？</a><a class="lv3" href="#sec-5">4. 下列哪条最符合当前 Cypher 的单属性唯一约束写法？</a><a class="lv3" href="#sec-6">5. 普通 name 索引与 id 唯一约束的关键区别是？</a><a class="lv3" href="#sec-7">6. 在可重复执行的建图任务中，CREATE 与 MERGE 的主要差别是？</a><a class="lv3" href="#sec-8">7. 哪种节点写法最适合幂等导入？</a><a class="lv3" href="#sec-9">8. 合并 Disease 到 Symptom 的关系时，推荐先 MATCH 两端节点再 MERGE 关系，主要因为？</a><a class="lv3" href="#sec-10">9. 哪个属性最适合只在 ON CREATE SET 中赋值？</a><a class="lv3" href="#sec-11">10. 为什么应使用查询参数传入名称、来源和置信度？</a><a class="lv3" href="#sec-12">11. 为兼容不同 Neo4j 版本并控制 Schema，处理动态节点标签和关系类型最稳妥的课程方案是？</a><a class="lv3" href="#sec-13">12. UNWIND $rows AS row 在批量导入中的作用是？</a><a class="lv3" href="#sec-14">13. 若业务逻辑依赖批内顺序，关于 UNWIND 的正确判断是？</a><a class="lv3" href="#sec-15">14. 将一百万条关系放进单个事务的主要风险是？</a><a class="lv3" href="#sec-16">15. Neo4j Driver 的托管事务可能因瞬时故障重试，因此事务回调应满足什么要求？</a><a class="lv3" href="#sec-17">16. 为什么通常要先创建唯一约束，再导入节点？</a><a class="lv3" href="#sec-18">17. 一条关系的 to_id 在节点表中不存在时，最佳默认处理是？</a><a class="lv3" href="#sec-19">18. 为使“疾病推荐药品”可追溯，关系至少应携带什么？</a><a class="lv3" href="#sec-20">19. 两个可靠来源对同一药物推荐结论冲突时，图谱应如何处理？</a><a class="lv3" href="#sec-21">20. 验证幂等性的最直接测试是？</a><a class="lv3" href="#sec-22">21. 新快照中某来源的一条主张消失时，安全的增量策略是？</a><a class="lv3" href="#sec-23">22. 下列查询意图中，哪一个直接用于发现孤立点？</a><a class="lv3" href="#sec-24">23. Disease-[HAS_SYMPTOM]-&gt;Drug 为什么应被质量规则拦截？</a><a class="lv3" href="#sec-25">24. 同一标签下多个不同 ID 具有完全相同规范名称，最合理的解释是？</a><a class="lv3" href="#sec-26">25. EXPLAIN 与 PROFILE 的常见区别是？</a><a class="lv3" href="#sec-27">26. 数据库密码应如何管理？</a><a class="lv3" href="#sec-28">27. 只负责质量查询的服务账号应获得什么权限？</a><a class="lv3" href="#sec-29">28. 每次建图 manifest 最重要的作用是？</a><a class="lv3" href="#sec-30">29. 上线前的可靠回滚准备是什么？</a><a class="lv3" href="#sec-31">30. 医学知识图谱上线后，最重要的产品边界之一是？</a><a class="lv2" href="#sec-32">二、简答题（15 题）</a><a class="lv3" href="#sec-33">31. 原课件采用“名称作键、逐条字符串拼接、源码写密码”的方式。请给出迁移优先级。</a><a class="lv3" href="#sec-34">32. 设计一个最小但可审计的节点中间记录合同。</a><a class="lv3" href="#sec-35">33. 设计一个关系中间记录合同，说明关系业务键。</a><a class="lv3" href="#sec-36">34. 为什么推荐“Schema → 节点 → 关系 → 质量检查”的导入顺序？</a><a class="lv3" href="#sec-37">35. 创建唯一约束时发现存量重复 ID，应如何处理？</a><a class="lv3" href="#sec-38">36. 分别写出节点、关系和缺失端点的 Cypher 设计要点。</a><a class="lv3" href="#sec-39">37. 解释“MERGE 匹配完整模式”为什么容易被误用。</a><a class="lv3" href="#sec-40">38. 一个批次中第 731 条数据失败，如何兼顾事务原子性与可恢复性？</a><a class="lv3" href="#sec-41">39. 给出幂等导入的验收标准。</a><a class="lv3" href="#sec-42">40. 为第六章四类节点、四类关系设计一张质量规则矩阵。</a><a class="lv3" href="#sec-43">41. 同一疾病对同一食物同时出现 DO_EAT 和 NOT_EAT，怎样建模与验收？</a><a class="lv3" href="#sec-44">42. 某个数据源撤回一批记录，如何避免误删其他来源共享的实体？</a><a class="lv3" href="#sec-45">43. 一个按 Disease.id 查询的 MERGE 变慢，你会怎样诊断？</a><a class="lv3" href="#sec-46">44. 列出建图服务的最小安全与审计措施。</a><a class="lv3" href="#sec-47">45. 设计从源文件到上线的完整发布门禁。</a><a class="lv2" href="#sec-48">三、代码题（10 题）</a><a class="lv3" href="#sec-49">46. 实现 validate_spo(row)，校验关系中间记录的必填字段、类型白名单、置信度和来源；返回错误列表。</a><a class="lv3" href="#sec-50">47. 实现 normalize_entity(raw)，只接受白名单类型和上游 source_id，并生成稳定业务 ID；名称变化不得改变 ID。</a><a class="lv3" href="#sec-51">48. 将一条疾病 JSON 转成去重、确定性排序的节点与关系载荷，并兼容旧字段 recommand_drug。</a><a class="lv3" href="#sec-52">49. 实现 compile_upsert(kind, rows)，只允许白名单节点/关系类型，返回预定义参数化 Cypher 和参数；恶意类型必须被拒绝。</a><a class="lv3" href="#sec-53">50. 实现 make_batches(rows, size, run_id)，按业务键确定性排序并为每批计算可复核摘要。</a><a class="lv3" href="#sec-54">51. 用内存结构模拟节点和关系的幂等 upsert：首次设置 created_run，重跑只更新可变属性。</a><a class="lv3" href="#sec-55">52. 实现 audit_graph(nodes, relations)，检查重复节点键、缺失端点、非法 domain/range、自环和缺失来源。</a><a class="lv3" href="#sec-56">53. 实现 validate_plan(steps)，要求四阶段顺序为 constraints、nodes、relations、checks，检查点编号连续且每步输入摘要非空。</a><a class="lv3" href="#sec-57">54. 实现 diff_claims(old_rows, new_rows)，按来源级主张业务键计算 upsert 与 retire，不做物理删除。</a><a class="lv3" href="#sec-58">55. 实现 quality_gate(stats, limits)，计算完整率、孤立率、溯源覆盖率和重复率，并返回是否放行及失败原因。</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
