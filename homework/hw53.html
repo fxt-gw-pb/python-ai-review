@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi 综合训练 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons">课程讲义</a>
+    <a href="../index.html#homework" class="active">课后练习</a>
+    <a href="../index.html#projects">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson58" href="../lessons/lesson58.html"><span class="no">19</span><span>NumPy 统计计算与科学分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">20</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">21</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">22</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">23</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">24</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">25</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">26</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">27</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">28</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">29</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">30</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">31</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">32</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">33</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">34</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">35</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">36</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">37</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">38</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">39</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">40</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">41</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">42</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">43</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">44</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">45</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">46</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">47</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">48</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">49</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">50</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">51</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">📘 医学知识图谱</div><a class="item" data-page-key="lesson51" href="../lessons/lesson51.html"><span class="no">52</span><span>知识图谱基础与医学图谱架构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson52" href="../lessons/lesson52.html"><span class="no">53</span><span>数据标注、查询语言与 Neo4j 工具链</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson53" href="../lessons/lesson53.html"><span class="no">54</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson54" href="../lessons/lesson54.html"><span class="no">55</span><span>关系抽取：规则、Pipeline 与 CasRel</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson55" href="../lessons/lesson55.html"><span class="no">56</span><span>知识融合：实体统一、链接与消歧</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson56" href="../lessons/lesson56.html"><span class="no">57</span><span>Neo4j 医学图谱搭建与质量验证</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson57" href="../lessons/lesson57.html"><span class="no">58</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">21</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">22</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">24</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">25</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">27</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">28</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">29</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">30</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">31</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">32</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw33" href="../homework/hw33.html"><span class="no">33</span><span>卷积神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw34" href="../homework/hw34.html"><span class="no">34</span><span>循环神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw35" href="../homework/hw35.html"><span class="no">35</span><span>自然语言处理入门与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw36" href="../homework/hw36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw37" href="../homework/hw37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw38" href="../homework/hw38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw39" href="../homework/hw39.html"><span class="no">39</span><span>Transformer 架构与工程实现综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw40" href="../homework/hw40.html"><span class="no">40</span><span>Transformer 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw41" href="../homework/hw41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw42" href="../homework/hw42.html"><span class="no">42</span><span>FastText：文本分类与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw43" href="../homework/hw43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw44" href="../homework/hw44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw45" href="../homework/hw45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw46" href="../homework/hw46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw47" href="../homework/hw47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw48" href="../homework/hw48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw49" href="../homework/hw49.html"><span class="no">49</span><span>Prompt-Tuning：PET、软提示与 P-tuning 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw50" href="../homework/hw50.html"><span class="no">50</span><span>PEFT：Prefix、Adapter、LoRA 与 QLoRA 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw51" href="../homework/hw51.html"><span class="no">51</span><span>知识图谱基础与医学图谱架构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw52" href="../homework/hw52.html"><span class="no">52</span><span>数据标注、查询语言与 Neo4j 工具链综合训练</span><span class="done-flag">✅</span></a><a class="item hw active" data-page-key="hw53" href="../homework/hw53.html"><span class="no">53</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi 综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project07" href="../projects/project07.html"><span class="no">07</span><span>医学知识图谱：从信息抽取到 KBQA</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课后练习 / 练习 53</div>
+<h1>🧬 医学实体抽取：规则、BiLSTM-CRF 与 Viterbi 综合训练</h1>
+<div class="chips"><span class="chip amber">🏷️ 选择 + 简答 + 代码</span><span class="chip amber">🏷️ 55 题</span><a class="chip" href="../lessons/lesson53.html">📖 相关讲义：医学实体抽取：规则、BiLSTM-CRF 与 Viterbi</a></div>
+</div>
+<p>55 道练习，按“NER 任务与输出合同 → BIO/BIOES → 规则基线 → BiLSTM 发射分数 → 线性链 CRF → 前向算法与 Viterbi → Mask、约束和严格实体级评估”组织。做题时始终区分三个对象：<strong>文本中的 mention、模型输出的 span、知识图谱中的标准实体</strong>。NER 只完成前两者，不能跳过实体链接、断言识别和证据审核直接写入图谱。</p>
+<blockquote>
+<p>建议先独立作答，再展开参考答案。本练习依据原课件第三章和站内重组讲义设计，并参考 <a href="https://arxiv.org/abs/1508.01991">BiLSTM-CRF 原始论文</a>、<a href="https://repository.upenn.edu/cis_papers/159/">CRF 原始论文</a>、<a href="https://aclanthology.org/W03-0419/">CoNLL-2003 NER 任务</a>与 <a href="https://doi.org/10.1109/PROC.1973.9030">Forney 的 Viterbi 教程论文</a>校准。注意：BiLSTM 产生上下文相关的发射分数，CRF 对完整标签序列建分数；训练分母使用 <code>logsumexp</code> 汇总所有路径，Viterbi 使用 <code>max</code> 和回指针寻找单条最优路径；padding 必须同时从损失和解码中排除；严格实体级指标要求边界与类型全部正确。10 道代码题只使用 Python 标准库离线运行，不下载模型。</p>
+</blockquote>
+<h2 id="sec-1">一、选择题（30 题）</h2>
+<div class="q-card"><h3 id="sec-2">1. 医学命名实体识别（NER）的直接输出通常是什么？</h3>
+<p>A. 文本中实体 mention 的边界、类别及可选分数<br />
+B. 已确认的患者诊断和处方<br />
+C. Neo4j 中唯一标准实体 ID<br />
+D. 任意两个实体之间的全部关系</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> NER 找到“哪里提到了什么类型的实体”。把 mention 对齐到标准概念属于实体链接；判断否定、假设和时间属于断言/语境识别；形成图谱事实还需关系、来源与审核。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-3">2. 统一输出 <code>start=0, end=6</code> 表示文本切片 <code>[0,6)</code>，最重要的原因是？</h3>
+<p>A. 明确 end 为开区间，使 <code>text[start:end]</code> 可直接复现 mention<br />
+B. 让所有实体固定为 6 个字符<br />
+C. 自动完成实体消歧<br />
+D. 让模型不需要标签</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 偏移合同必须写清字符计数和区间语义。若标注、训练、推理一方使用闭区间，容易产生系统性的差一位错误。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-4">3. BIOES 中 <code>S-Disease</code> 表示什么？</h3>
+<p>A. 单个 token 构成的 Disease 实体<br />
+B. Disease 实体的第二个 token<br />
+C. 句子开始符<br />
+D. padding 标签</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> <code>B</code>、<code>I</code>、<code>E</code> 分别表示多 token 实体的开始、内部、结束，<code>S</code> 表示单 token 实体，<code>O</code> 表示目标实体之外。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-5">4. 下列哪条 BIOES 路径合法？</h3>
+<p>A. <code>B-Disease, I-Disease, E-Disease, O, S-Symptom</code><br />
+B. <code>O, I-Disease, O</code><br />
+C. <code>B-Disease, I-Symptom, E-Disease</code><br />
+D. <code>START, E-Disease, O</code></p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> <code>I/E-X</code> 必须延续同类型的 <code>B/I-X</code>；序列不能从 <code>I</code> 或 <code>E</code> 开始。实现中应同时约束 START 和 STOP 转移。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-6">5. 字级 NER 改用子词 tokenizer 后，最需要补充什么？</h3>
+<p>A. 子词到原文字符偏移的对齐与特殊 token/padding 的 mask<br />
+B. 把所有标签改成 O<br />
+C. 删除原始文本<br />
+D. 只保留 token ID 不保存 tokenizer 版本</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 训练标签、预测 token 和原文 span 必须可逆映射。<code>[CLS]</code>、<code>[SEP]</code>、wordpiece 延续片段等不能凭位置猜测，需使用 offset mapping 和明确的标签对齐策略。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-7">6. 单层 BIO/BIOES 序列标注对嵌套实体的典型限制是？</h3>
+<p>A. 同一 token 通常只能有一个标签，难以同时表示内外两层实体<br />
+B. 无法表示任何单层实体<br />
+C. 只能识别英文<br />
+D. 必须把每个字符建成图节点</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 如“右肺上叶癌”既标整体疾病又标“右肺上叶”部位，单标签序列无法同时表达。可改用 span 分类、多层标签或超图等方案，评测合同也需相应改变。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-8">7. 为什么应长期保留词典/正则 NER 基线？</h3>
+<p>A. 它可解释、易回归，在规范文本和高精度场景中仍有价值<br />
+B. 规则在任何数据上一定优于模型<br />
+C. 规则不需要版本管理<br />
+D. 规则自动理解所有否定语境</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 规则基线可提供冷启动、回归比较和保护层，但召回、冲突与维护成本需要度量。模型上线不意味着规则应被删除。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-9">8. 词典同时匹配“支气管炎”和“慢性支气管炎”，正确处理方式是？</h3>
+<p>A. 按任务规范执行确定性的重叠策略，并保留被舍弃候选和原因<br />
+B. 两个 span 无条件都输出，即使规范禁止重叠<br />
+C. 随机选一个<br />
+D. 永远选最短字符串</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 最长优先只是常用策略，不保证全局最优。若候选有分数，可用加权区间选择；嵌套是否保留由标注合同决定。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-10">9. 用正则抽取剂量时，哪项最重要？</h3>
+<p>A. 同时校验数值、单位、边界、范围与上下文，避免匹配到编号或无关数字<br />
+B. 只写 <code>\d+</code> 即可覆盖所有情况<br />
+C. 把所有数字都标成 Drug<br />
+D. 正则不需要测试集</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 医学数值表达可能包含小数、范围、复合单位和中文数字。规则应有正反例测试、版本与来源，而非只看一个演示句。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-11">10. “患者否认发热”中规则或模型识别出“发热”，下一步应该？</h3>
+<p>A. 保留 mention，同时识别其 negated 断言，不能直接当肯定症状事实<br />
+B. 删除“否认”并写入肯定关系<br />
+C. 把“患者”标成疾病<br />
+D. 自动生成处方</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> NER 正确不等于事实判断正确。知识图谱管道还要处理否定、假设、家族史、条件和时间范围。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-12">11. 先用完整词典自动标全量语料，再随机切分训练/测试，主要风险是？</h3>
+<p>A. 规则来源与重复文本可能让测试集不独立，并掩盖未登录实体能力<br />
+B. 标签数量一定减少<br />
+C. CRF 无法训练<br />
+D. Viterbi 复杂度变为指数级</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 应按患者/文档/来源分组切分，记录自动标注与人工修订，单独报告词典内、词典外和困难子集，避免把规则覆盖率误当模型泛化。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-13">12. BiLSTM 在 BiLSTM-CRF 中的主要作用是？</h3>
+<p>A. 融合每个位置左右两侧上下文，生成上下文表示<br />
+B. 保证所有标签转移合法<br />
+C. 计算全部路径的归一化常数<br />
+D. 把 mention 链接到知识库 ID</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 线性层再把 BiLSTM 隐状态映射为每个位置对各标签的发射分数；序列级标签依赖主要由 CRF 层建模。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-14">13. 批量发射分数张量常见形状是？</h3>
+<p>A. <code>[batch, sequence_length, num_tags]</code><br />
+B. <code>[num_tags, vocab_size, vocab_size]</code><br />
+C. <code>[batch]</code> 且没有位置维<br />
+D. <code>[sequence_length, sequence_length]</code> 且没有标签维</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 不同库可能使用 batch-first 或 time-first，但每个有效位置都必须有 K 个标签分数，mask 的形状也必须与批次和序列维对齐。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-15">14. 线性链 CRF 的转移分数通常表达什么？</h3>
+<p>A. 相邻标签从前一状态到当前状态的兼容性<br />
+B. token 在词表中的频率<br />
+C. 文档与知识库实体的相似度<br />
+D. 字符在原文中的像素位置</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 发射分数依赖输入位置，转移分数描述标签序列结构。还应显式处理 START/STOP 或等价的起止参数。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-16">15. 一条 CRF 路径的完整分数通常包含？</h3>
+<p>A. 每个位置的发射分数、相邻标签转移分数及起止转移<br />
+B. 只有最后一个 token 的发射分数<br />
+C. 只有标签计数<br />
+D. 只有模型参数数量</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 若训练和解码对起止状态的处理不一致，路径概率与最优路径都会出错。padding 位置不应贡献发射或转移。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-17">16. 为什么逐位置取发射分数 argmax 不等价于 Viterbi？</h3>
+<p>A. 局部最大不考虑标签转移，组合后可能不是全局最高分或合法路径<br />
+B. Viterbi 不使用发射分数<br />
+C. argmax 会自动枚举所有路径<br />
+D. 二者只在 batch 大小时不同</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Viterbi 同时考虑到当前位置的最佳累计分和前驱，通过动态规划得到完整序列的全局最优路径。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-18">17. CRF 中 $p(y\mid x)$ 的分母是什么？</h3>
+<p>A. 给定输入下所有允许标签路径分数指数和<br />
+B. 词表大小<br />
+C. gold 路径长度<br />
+D. 测试集样本数</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 分母是配分函数 $Z(x)=\sum_{y'}\exp s(x,y')$。不能显式枚举 $K^T$ 条路径，应使用前向动态规划计算。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-19">18. 单样本 CRF 负对数似然可写为？</h3>
+<p>A. $\log Z(x)-s(x,y^{gold})$<br />
+B. $s(x,y^{gold})+\log Z(x)$<br />
+C. 只对每个 token 独立做 MSE<br />
+D. $K^T$</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 最小化它会提高 gold 路径相对全部候选路径的分数。不同库返回 log-likelihood 或 negative log-likelihood，调用时要确认符号和 reduction。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-20">19. 前向算法与 Viterbi 的关键差异是？</h3>
+<p>A. 前向用 <code>logsumexp</code> 汇总全部路径，Viterbi 用 <code>max</code> 并保存回指针<br />
+B. 前向只用于删除节点<br />
+C. Viterbi 会更新模型参数<br />
+D. 二者一个用标签、一个不用标签</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 两者利用相同的 Markov 分解和动态规划结构，但求解目标不同：一个计算归一化常数，一个求最优路径。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-21">20. Viterbi 为什么必须保存 backpointer？</h3>
+<p>A. 终点只给出最佳末状态，回指针用于恢复此前每一步的最优前驱<br />
+B. 用来保存原始病历全文<br />
+C. 用来计算 tokenizer 词表<br />
+D. 用来随机采样标签</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 只保存每层最大分数无法还原完整路径。到达 STOP 后从最佳末标签沿 backpointer 逆序回溯。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-22">21. 长度为 $T$、标签数为 $K$ 的一阶线性链 CRF，朴素动态规划复杂度通常是？</h3>
+<p>A. $O(TK^2)$<br />
+B. $O(K^T)$<br />
+C. $O(T+K)$ 且不看转移<br />
+D. $O(1)$</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 每个位置的每个当前标签要比较/汇总 K 个前驱。动态规划把指数枚举降为多项式，但标签集很大时转移计算仍需关注。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-23">22. 为什么 CRF 前向计算应在 log 空间使用稳定 <code>logsumexp</code>？</h3>
+<p>A. 长序列概率连乘易下溢，直接指数大分数又可能上溢<br />
+B. log 会让所有路径分数相同<br />
+C. logsumexp 等于 max 且永远无误差<br />
+D. 为了删除 transition 参数</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 常用公式是 $m+\log\sum_i\exp(a_i-m)$。<code>logsumexp</code> 平滑汇总全部路径，不应在训练中随意替换成 <code>max</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-24">23. batch 中第二个句子长度为 3，却把第 4、5 个 padding 位置计入 CRF 损失，会怎样？</h3>
+<p>A. 模型学习无意义的 padding 转移，损失和梯度被污染<br />
+B. 自动提高实体级 F1<br />
+C. 只影响页面显示<br />
+D. 与不计 padding 完全相同</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> mask 必须覆盖发射、转移、起止和解码路径长度。还要测试长度 1、全 O 与不同长度混批。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-25">24. 把 <code>O → I-Disease</code> 的转移分数固定为极小值主要为了？</h3>
+<p>A. 阻止解码产生不符合 BIO/BIOES 语法的路径<br />
+B. 保证 Disease 永不出现<br />
+C. 让所有发射分数归零<br />
+D. 减少原文长度</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 可用硬约束或极小分数。训练数据本身也必须先验证合法性，否则模型可能在相互矛盾的约束下训练。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-26">25. 为什么 checkpoint 必须保存 <code>tag2id/id2tag</code>？</h3>
+<p>A. 同一个输出维度在不同映射下语义不同，映射错会静默解释成错误实体类型<br />
+B. 标签映射只影响训练速度<br />
+C. CRF 会自动从文本恢复标签名<br />
+D. 只保存模型文件名即可</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 还应保存 tokenizer/词表、大小写和规范化规则、模型配置、最大长度、代码版本、数据/指南版本和评测阈值。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-27">26. 对变长 batch 计算平均损失时，哪项需要明确？</h3>
+<p>A. reduction 是按序列、按有效 token 还是求和，不同定义会改变长短句权重<br />
+B. padding 数量越多损失一定越正确<br />
+C. 所有库 reduction 含义完全相同<br />
+D. 只需看训练集最后一条样本</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 应阅读所用 CRF 库接口，并在小张量上手算验证符号、mask 和 reduction，不能只凭类名假设。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-28">27. Token Accuracy 为 98% 仍可能实体识别很差，原因是？</h3>
+<p>A. 大量 O token 容易被判对，而一个边界错误就能让整个实体严格匹配失败<br />
+B. Accuracy 永远不能计算<br />
+C. F1 只适用于回归<br />
+D. token 与实体总是一一对应</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 应报告严格实体级 P/R/F1、逐类指标和边界/类型错误。Token Accuracy 可作为辅助诊断，但不能作为主验收指标。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-29">28. 预测“慢性支气管”为 Disease，gold 是“慢性支气管炎”，严格实体级评估如何计数？</h3>
+<p>A. 一个 FP 和一个 FN，不算 TP<br />
+B. 算完整 TP<br />
+C. 只算半个 TP<br />
+D. 不参与评估</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 严格匹配要求文档、起点、终点和类型一致。错误分析可另标为“边界过短”，但主指标不应偷偷给部分得分。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-30">29. micro-F1 与 macro-F1 的区别是？</h3>
+<p>A. micro 汇总各类 TP/FP/FN 后计算，macro 先算各类指标再等权平均<br />
+B. 二者永远相等<br />
+C. macro 只看多数类<br />
+D. micro 不使用预测结果</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 类别不平衡时 micro 更受高频类影响，macro 能暴露稀有类问题。应同时给逐类样本量，避免无支持类别的处理方式不透明。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-31">30. 关于“加 CRF 一定优于独立 softmax”最稳妥的结论是？</h3>
+<p>A. CRF 能显式建模标签依赖，但收益依赖编码器、数据、约束和实现，应做同条件消融<br />
+B. 这是无条件定理<br />
+C. CRF 会自动解决实体链接<br />
+D. 只要训练更慢就一定更准</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 强 Transformer 编码器、不同标签体系和数据规模下收益可能不同。应比较规则、编码器+softmax、编码器+CRF，并同时报告速度、显存和错误类型。</p></div></div>
+
+
+</div><h2 id="sec-32">二、简答题（15 题）</h2>
+<div class="q-card"><h3 id="sec-33">31. 为“慢性支气管炎常见咳嗽”给出字级 BIOES 标签，并说明偏移。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>若 Disease 为 <code>[0,6)</code>、Symptom“咳嗽”为 <code>[8,10)</code>，可标为：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>慢 B-Disease
+性 I-Disease
+支 I-Disease
+气 I-Disease
+管 I-Disease
+炎 E-Disease
+常 O
+见 O
+咳 B-Symptom
+嗽 E-Symptom
+</pre></div>
+</div>
+<p>区间采用左闭右开，必须验证 <code>text[0:6] &lt;mark&gt; "慢性支气管炎"</code>、<code>text[8:10] &lt;/mark&gt; "咳嗽"</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-34">32. BIO 与 BIOES 各有什么取舍？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>BIO 标签更少、实现简单；BIOES 显式区分实体结束和单 token 实体，能提供更细的边界信号和更严格的合法转移。二者都能表达非嵌套连续实体，不能天然解决嵌套或不连续实体。选择后必须固定编码、解码、约束和评测规则，不能训练用 BIO、解码却按 BIOES 解释。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-35">33. 如何建模“右肺上叶癌”中的嵌套实体？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>先由业务定义是否需要同时输出 Disease“右肺上叶癌”和 BodyPart“右肺上叶”。若需要，单层 BIOES 不够，可使用按类型多层序列标签、候选 span 分类、biaffine/span matrix 或其他支持嵌套的结构。输出合同应允许重叠 span，评测按每个 <code>(start,end,type)</code> 严格匹配；不要用冲突消解静默删除业务需要的内层实体。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-36">34. 设计一个可上线的规则 NER 管道。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>维护带版本和来源的标准词典、别名与正则；先做规范化但保留原文偏移映射；生成全部候选；按边界、词性/后缀、黑白名单和上下文过滤；使用确定性重叠策略；识别否定、假设、家族史和时间；输出 span、类型、分数、规则 ID、版本和证据；用固定测试集回归，并监控覆盖率、冲突率和人工抽检误差。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-37">35. 为什么“最长匹配优先”不总是最优？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>最长候选可能低置信、类型错误，且一个长 span 可能阻塞两个总价值更高的相邻实体。若规范禁止重叠，可以把候选看成带权区间，使用确定性的加权区间调度最大化总分；若允许嵌套，则不能简单互斥。策略和 tie-break 必须版本化并留存被舍弃候选。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-38">36. 给出 BiLSTM-CRF 从输入到输出的张量流。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>输入 token IDs <code>[B,T]</code> 经 Embedding 得 <code>[B,T,D]</code>；双向 LSTM 每个方向隐藏维为 H 时拼接为 <code>[B,T,2H]</code>；Linear 映射为发射分数 <code>[B,T,K]</code>；CRF 用 <code>[B,T]</code> mask、转移矩阵和起止分数计算每条序列 log-likelihood；推理时 Viterbi 为每个样本返回长度等于有效 token 数的标签 ID 路径，再映射回原文 span。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-39">37. 手工说明一条标签路径如何计分。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>长度 T 的路径分数为 START 到首标签转移，加每个位置对应标签的发射分数，加相邻标签转移，最后加末标签到 STOP 的转移。即
+$s(x,y)=A_{START,y_1}+\sum_i P_{i,y_i}+\sum_{i=2}^T A_{y_{i-1},y_i}+A_{y_T,STOP}$。
+若有硬约束，非法转移不进入路径集合或赋极小分数；padding 不计分。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-40">38. 为什么训练用前向算法而推理用 Viterbi？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>训练负对数似然需要配分函数，即所有候选路径的总质量，所以递推时对前驱做 <code>logsumexp</code>；推理需要分数最高的单条路径，所以对前驱做 <code>max</code>，并保存达到最大值的前驱供回溯。二者共享状态分解，但不能互换目标。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-41">39. 如何设计 BIOES 的 START/STOP 与合法转移？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>START 只能到 O、B-X、S-X；O、E-X、S-X 可到 O、B-Y、S-Y 或 STOP；B-X、I-X 只能到 I-X 或 E-X，不能换类型；START 不能作为普通当前位置，STOP 不能再转出。训练数据先验证，解码时用 mask 或极小分数约束。若库已内置起止参数，应避免重复计算。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-42">40. 设计一个能发现 mask 错误的最小测试。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>构造两个样本：长度 3 和长度 1，padding 到 3。分别单独计算短样本与混批计算短样本的 log-likelihood/解码，结果应一致；改变短样本 padding 位置的发射分数，结果仍应不变；返回路径长度必须为 1。再测试长度 1 的 START→tag→STOP，以及 mask 非连续或首位为 false 时库应明确拒绝。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-43">41. 医学 NER 数据应如何切分以避免泄漏？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>先规范化和去重，再按患者、病例、文档或来源 group 切分，确保同源模板和近重复不跨集合；词典和规则若由全量数据统计，也要只使用训练侧信息或单独标注外部来源；测试集冻结并记录指南版本。报告词典内/外、长实体、缩写、否定和不同科室子集。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-44">42. 一份实体抽取错误分析报告至少包含什么？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>严格 TP/FP/FN 与 micro/macro/逐类 P/R/F1；边界过短/过长、类型混淆、漏检、虚假实体；BIOES 非法路径；否定、假设、家族史和时间错误；长实体、嵌套、缩写、中英文混合、未登录词、不同来源/科室子集；规则与模型各自贡献和冲突。每类给真实样例与数量，不只列百分比。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-45">43. NER checkpoint 除模型权重外还应保存哪些工件？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>Tokenizer/字符词表及版本、<code>tag2id/id2tag</code>、规范化和 offset 对齐规则、模型结构与超参数、CRF 约束、最大长度和窗口策略、数据与标注指南版本、随机种子、代码提交、评测脚本、阈值和规则词典版本。加载时校验哈希与兼容性，避免“权重能加载但语义错位”。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-46">44. 超长病历采用滑窗推理时如何合并实体？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>窗口需保留全局字符偏移和足够 overlap；特殊 token 与 padding 不参与实体；把窗口预测映射回原文，按相同 <code>(start,end,type)</code> 去重；跨窗口被截断的实体可通过中心优先、完整窗口优先或带分数的区间策略合并；冲突必须可追溯。评估应在整文档全局 span 上进行，而不是把窗口局部 F1 当最终指标。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-47">45. 为什么 NER 输出不能直接成为医学知识图谱事实？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>NER 只证明文本中出现某个类型的 mention，不证明它是肯定、当前、属于哪个主体，也未解决标准实体 ID。后续至少需要断言与时间识别、实体链接、关系抽取、Schema 校验、证据来源、置信度和人工/规则审核。患者文本中的“排除肺炎”不能因识别出“肺炎”就生成肯定诊断关系。</p></div></div>
+
+
+</div><h2 id="sec-48">三、代码题（10 题）</h2>
+<div class="q-card"><h3 id="sec-49">46. 将字符 span 转为 BIOES 标签</h3>
+<p>区间采用 <code>[start,end)</code>；检查越界、mention 不一致和 span 重叠。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">spans_to_bioes</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">spans</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;O&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    <span class="n">previous_end</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">spans</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">])):</span>
+        <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">entity_type</span> <span class="o">=</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">],</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">end</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;span 越界&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">previous_end</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;本标签体系不允许重叠 span&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;text&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">text</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]</span> <span class="o">!=</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;mention 与原文切片不一致&quot;</span><span class="p">)</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span>
+        <span class="k">if</span> <span class="n">length</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">tags</span><span class="p">[</span><span class="n">start</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;S-</span><span class="si">{</span><span class="n">entity_type</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">tags</span><span class="p">[</span><span class="n">start</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;B-</span><span class="si">{</span><span class="n">entity_type</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">end</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="n">tags</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;I-</span><span class="si">{</span><span class="n">entity_type</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="n">tags</span><span class="p">[</span><span class="n">end</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;E-</span><span class="si">{</span><span class="n">entity_type</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">previous_end</span> <span class="o">=</span> <span class="n">end</span>
+    <span class="k">return</span> <span class="n">tags</span>
+
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;慢性支气管炎常见咳嗽&quot;</span>
+<span class="n">disease</span> <span class="o">=</span> <span class="s2">&quot;慢性支气管炎&quot;</span>
+<span class="n">cough</span> <span class="o">=</span> <span class="s2">&quot;咳嗽&quot;</span>
+<span class="n">spans</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="n">text</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">disease</span><span class="p">),</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="n">text</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">disease</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">disease</span><span class="p">),</span>
+     <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">disease</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="n">text</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">cough</span><span class="p">),</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="n">text</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">cough</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">cough</span><span class="p">),</span>
+     <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Symptom&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">cough</span><span class="p">},</span>
+<span class="p">]</span>
+<span class="n">tags</span> <span class="o">=</span> <span class="n">spans_to_bioes</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">spans</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">tags</span> <span class="o">==</span> <span class="p">[</span>
+    <span class="s2">&quot;B-Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;I-Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;I-Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;I-Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;I-Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;E-Disease&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;B-Symptom&quot;</span><span class="p">,</span> <span class="s2">&quot;E-Symptom&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-50">47. 严格解码 BIOES 标签为实体 span</h3>
+<p>遇到孤立 <code>I/E</code>、类型切换或未闭合 <code>B</code> 时抛错，输出可复现的 <code>[start,end)</code>。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">bioes_to_spans</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tags</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tags</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;文本与标签长度不一致&quot;</span><span class="p">)</span>
+    <span class="n">spans</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">tags</span><span class="p">):</span>
+        <span class="n">tag</span> <span class="o">=</span> <span class="n">tags</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">tag</span> <span class="o">==</span> <span class="s2">&quot;O&quot;</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="s2">&quot;-&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tag</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;非法标签: </span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">prefix</span><span class="p">,</span> <span class="n">entity_type</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">prefix</span> <span class="o">==</span> <span class="s2">&quot;S&quot;</span><span class="p">:</span>
+            <span class="n">spans</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="n">index</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                          <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">entity_type</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">text</span><span class="p">[</span><span class="n">index</span><span class="p">:</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]})</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">prefix</span> <span class="o">!=</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;位置 </span><span class="si">{</span><span class="n">index</span><span class="si">}</span><span class="s2"> 出现孤立 </span><span class="si">{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span> <span class="ow">and</span> <span class="n">tags</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">==</span> <span class="sa">f</span><span class="s2">&quot;I-</span><span class="si">{</span><span class="n">entity_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span> <span class="ow">or</span> <span class="n">tags</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">!=</span> <span class="sa">f</span><span class="s2">&quot;E-</span><span class="si">{</span><span class="n">entity_type</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;从位置 </span><span class="si">{</span><span class="n">start</span><span class="si">}</span><span class="s2"> 开始的实体未合法闭合&quot;</span><span class="p">)</span>
+        <span class="n">end</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">spans</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="n">start</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="n">end</span><span class="p">,</span>
+                      <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">entity_type</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">text</span><span class="p">[</span><span class="n">start</span><span class="p">:</span><span class="n">end</span><span class="p">]})</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">end</span>
+    <span class="k">return</span> <span class="n">spans</span>
+
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;肺炎伴发热&quot;</span>
+<span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;B-Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;E-Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;B-Symptom&quot;</span><span class="p">,</span> <span class="s2">&quot;E-Symptom&quot;</span><span class="p">]</span>
+<span class="n">spans</span> <span class="o">=</span> <span class="n">bioes_to_spans</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">tags</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">spans</span> <span class="o">==</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;肺炎&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Symptom&quot;</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;发热&quot;</span><span class="p">},</span>
+<span class="p">]</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">bioes_to_spans</span><span class="p">(</span><span class="s2">&quot;肺炎&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;I-Disease&quot;</span><span class="p">])</span>
+<span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+    <span class="k">assert</span> <span class="s2">&quot;孤立 I&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;非法路径必须被拒绝&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">spans</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-51">48. 生成词典规则的全部候选 span</h3>
+<p>支持同一 mention 多次出现和嵌套匹配，输出规则来源，暂不做冲突消解。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">dictionary_candidates</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lexicon</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+    <span class="n">candidates</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">lexicon</span><span class="p">:</span>
+        <span class="n">mention</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;mention&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">mention</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;词典 mention 不能为空&quot;</span><span class="p">)</span>
+        <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">start</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">mention</span><span class="p">,</span> <span class="n">start</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">start</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">candidates</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="n">start</span><span class="p">,</span>
+                <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="n">start</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">mention</span><span class="p">),</span>
+                <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">mention</span><span class="p">,</span>
+                <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;rule_id&quot;</span><span class="p">:</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;rule_id&quot;</span><span class="p">],</span>
+                <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="n">entry</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;score&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+            <span class="p">})</span>
+            <span class="n">start</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;rule_id&quot;</span><span class="p">]))</span>
+
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;慢性支气管炎可表现为咳嗽，支气管炎也可咳嗽&quot;</span>
+<span class="n">lexicon</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;mention&quot;</span><span class="p">:</span> <span class="s2">&quot;慢性支气管炎&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;rule_id&quot;</span><span class="p">:</span> <span class="s2">&quot;d1&quot;</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="mf">0.98</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;mention&quot;</span><span class="p">:</span> <span class="s2">&quot;支气管炎&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;rule_id&quot;</span><span class="p">:</span> <span class="s2">&quot;d2&quot;</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="mf">0.90</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;mention&quot;</span><span class="p">:</span> <span class="s2">&quot;咳嗽&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Symptom&quot;</span><span class="p">,</span> <span class="s2">&quot;rule_id&quot;</span><span class="p">:</span> <span class="s2">&quot;s1&quot;</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="mf">0.95</span><span class="p">},</span>
+<span class="p">]</span>
+<span class="n">candidates</span> <span class="o">=</span> <span class="n">dictionary_candidates</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">lexicon</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">sum</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;支气管炎&quot;</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+<span class="k">assert</span> <span class="nb">sum</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;咳嗽&quot;</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+<span class="k">assert</span> <span class="nb">any</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;慢性支气管炎&quot;</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-52">49. 用加权区间调度消解重叠候选</h3>
+<p>候选不能重叠，目标是最大化总分；证明简单“取单个最高分”可能不是全局最优。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">bisect</span><span class="w"> </span><span class="kn">import</span> <span class="n">bisect_right</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">select_non_overlapping</span><span class="p">(</span><span class="n">candidates</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]:</span>
+    <span class="n">items</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">candidates</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]))</span>
+    <span class="n">ends</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">]</span>
+    <span class="n">previous</span> <span class="o">=</span> <span class="p">[</span><span class="n">bisect_right</span><span class="p">(</span><span class="n">ends</span><span class="p">,</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="n">hi</span><span class="o">=</span><span class="n">i</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">items</span><span class="p">)]</span>
+    <span class="n">dp</span> <span class="o">=</span> <span class="p">[(</span><span class="mf">0.0</span><span class="p">,</span> <span class="p">[])]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">items</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="n">without_score</span><span class="p">,</span> <span class="n">without_items</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">base_score</span><span class="p">,</span> <span class="n">base_items</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="n">previous</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">with_score</span> <span class="o">=</span> <span class="n">base_score</span> <span class="o">+</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span>
+        <span class="n">with_items</span> <span class="o">=</span> <span class="n">base_items</span> <span class="o">+</span> <span class="p">[</span><span class="n">item</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">with_score</span> <span class="o">&gt;</span> <span class="n">without_score</span><span class="p">:</span>
+            <span class="n">dp</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">with_score</span><span class="p">,</span> <span class="n">with_items</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="n">with_score</span> <span class="o">&lt;</span> <span class="n">without_score</span><span class="p">:</span>
+            <span class="n">dp</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">without_score</span><span class="p">,</span> <span class="n">without_items</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">key_with</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">with_items</span><span class="p">]</span>
+            <span class="n">key_without</span> <span class="o">=</span> <span class="p">[(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">without_items</span><span class="p">]</span>
+            <span class="n">dp</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">with_score</span><span class="p">,</span> <span class="n">with_items</span> <span class="k">if</span> <span class="n">key_with</span> <span class="o">&lt;</span> <span class="n">key_without</span> <span class="k">else</span> <span class="n">without_items</span><span class="p">))</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">]))</span>
+
+
+<span class="n">candidates</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;长候选&quot;</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="mf">6.0</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;左实体&quot;</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;右实体&quot;</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="mf">4.0</span><span class="p">},</span>
+<span class="p">]</span>
+<span class="n">selected</span> <span class="o">=</span> <span class="n">select_non_overlapping</span><span class="p">(</span><span class="n">candidates</span><span class="p">)</span>
+<span class="k">assert</span> <span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">selected</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;左实体&quot;</span><span class="p">,</span> <span class="s2">&quot;右实体&quot;</span><span class="p">]</span>
+<span class="k">assert</span> <span class="nb">sum</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;score&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">selected</span><span class="p">)</span> <span class="o">==</span> <span class="mf">8.0</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">selected</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-53">50. 为规则候选添加简单断言分类</h3>
+<p>在 mention 前的有限窗口识别否定、假设与家族史；这是可回归基线，不应被误当完整临床语境模型。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">classify_assertion</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">end</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">window</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">start</span> <span class="o">&lt;</span> <span class="n">end</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;span 越界&quot;</span><span class="p">)</span>
+    <span class="n">context</span> <span class="o">=</span> <span class="n">text</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">start</span> <span class="o">-</span> <span class="n">window</span><span class="p">):</span><span class="n">start</span><span class="p">]</span>
+    <span class="n">cue_groups</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;family_history&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;家族史&quot;</span><span class="p">,</span> <span class="s2">&quot;母亲&quot;</span><span class="p">,</span> <span class="s2">&quot;父亲&quot;</span><span class="p">]),</span>
+        <span class="p">(</span><span class="s2">&quot;negated&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;否认&quot;</span><span class="p">,</span> <span class="s2">&quot;未见&quot;</span><span class="p">,</span> <span class="s2">&quot;无&quot;</span><span class="p">]),</span>
+        <span class="p">(</span><span class="s2">&quot;hypothetical&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;考虑&quot;</span><span class="p">,</span> <span class="s2">&quot;疑似&quot;</span><span class="p">,</span> <span class="s2">&quot;若出现&quot;</span><span class="p">]),</span>
+    <span class="p">]</span>
+    <span class="k">for</span> <span class="n">assertion</span><span class="p">,</span> <span class="n">cues</span> <span class="ow">in</span> <span class="n">cue_groups</span><span class="p">:</span>
+        <span class="n">matched</span> <span class="o">=</span> <span class="p">[</span><span class="n">cue</span> <span class="k">for</span> <span class="n">cue</span> <span class="ow">in</span> <span class="n">cues</span> <span class="k">if</span> <span class="n">cue</span> <span class="ow">in</span> <span class="n">context</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">matched</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;assertion&quot;</span><span class="p">:</span> <span class="n">assertion</span><span class="p">,</span> <span class="s2">&quot;cue&quot;</span><span class="p">:</span> <span class="n">matched</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="n">context</span><span class="p">}</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;assertion&quot;</span><span class="p">:</span> <span class="s2">&quot;affirmed&quot;</span><span class="p">,</span> <span class="s2">&quot;cue&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;context&quot;</span><span class="p">:</span> <span class="n">context</span><span class="p">}</span>
+
+
+<span class="n">cases</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;患者否认发热&quot;</span><span class="p">,</span> <span class="s2">&quot;发热&quot;</span><span class="p">,</span> <span class="s2">&quot;negated&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;考虑肺炎可能&quot;</span><span class="p">,</span> <span class="s2">&quot;肺炎&quot;</span><span class="p">,</span> <span class="s2">&quot;hypothetical&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;母亲患糖尿病&quot;</span><span class="p">,</span> <span class="s2">&quot;糖尿病&quot;</span><span class="p">,</span> <span class="s2">&quot;family_history&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;患者出现咳嗽&quot;</span><span class="p">,</span> <span class="s2">&quot;咳嗽&quot;</span><span class="p">,</span> <span class="s2">&quot;affirmed&quot;</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="k">for</span> <span class="n">text</span><span class="p">,</span> <span class="n">mention</span><span class="p">,</span> <span class="n">expected</span> <span class="ow">in</span> <span class="n">cases</span><span class="p">:</span>
+    <span class="n">start</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">mention</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">classify_assertion</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">start</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">mention</span><span class="p">))</span>
+    <span class="k">assert</span> <span class="n">result</span><span class="p">[</span><span class="s2">&quot;assertion&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">expected</span><span class="p">,</span> <span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-54">51. 校验 BIOES 合法转移与完整路径</h3>
+<p>实现 START/STOP 规则，检查类型一致性。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">split_tag</span><span class="p">(</span><span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">tag</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;START&quot;</span><span class="p">,</span> <span class="s2">&quot;STOP&quot;</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">}:</span>
+        <span class="k">return</span> <span class="n">tag</span><span class="p">,</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="s2">&quot;-&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tag</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;非法标签: </span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">prefix</span><span class="p">,</span> <span class="n">entity_type</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">prefix</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">}</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">entity_type</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;非法标签: </span><span class="si">{</span><span class="n">tag</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">entity_type</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">legal_transition</span><span class="p">(</span><span class="n">previous</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">current</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="n">prev_prefix</span><span class="p">,</span> <span class="n">prev_type</span> <span class="o">=</span> <span class="n">split_tag</span><span class="p">(</span><span class="n">previous</span><span class="p">)</span>
+    <span class="n">curr_prefix</span><span class="p">,</span> <span class="n">curr_type</span> <span class="o">=</span> <span class="n">split_tag</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">previous</span> <span class="o">==</span> <span class="s2">&quot;STOP&quot;</span> <span class="ow">or</span> <span class="n">current</span> <span class="o">==</span> <span class="s2">&quot;START&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">previous</span> <span class="o">==</span> <span class="s2">&quot;START&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">curr_prefix</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">current</span> <span class="o">==</span> <span class="s2">&quot;STOP&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">prev_prefix</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">prev_prefix</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">}:</span>
+        <span class="k">return</span> <span class="n">curr_prefix</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">prev_prefix</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">}</span> <span class="ow">and</span> <span class="n">curr_prefix</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;I&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">}</span> <span class="ow">and</span> <span class="n">prev_type</span> <span class="o">==</span> <span class="n">curr_type</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">valid_path</span><span class="p">(</span><span class="n">tags</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="n">states</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;START&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">tags</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;STOP&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">legal_transition</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">states</span><span class="p">,</span> <span class="n">states</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+
+
+<span class="k">assert</span> <span class="n">valid_path</span><span class="p">([</span><span class="s2">&quot;B-Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;E-Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;S-Symptom&quot;</span><span class="p">])</span>
+<span class="k">assert</span> <span class="ow">not</span> <span class="n">valid_path</span><span class="p">([</span><span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;I-Disease&quot;</span><span class="p">])</span>
+<span class="k">assert</span> <span class="ow">not</span> <span class="n">valid_path</span><span class="p">([</span><span class="s2">&quot;B-Disease&quot;</span><span class="p">,</span> <span class="s2">&quot;E-Symptom&quot;</span><span class="p">])</span>
+<span class="k">assert</span> <span class="n">valid_path</span><span class="p">([</span><span class="s2">&quot;O&quot;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ok&quot;</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-55">52. 计算一条 CRF 路径的完整分数</h3>
+<p>发射分数为 <code>[T,K]</code>，转移字典含 START 和 STOP。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">sequence_score</span><span class="p">(</span><span class="n">emissions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="n">tags</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">labels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">transitions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">emissions</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">tags</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;序列长度必须一致且非空&quot;</span><span class="p">)</span>
+    <span class="n">label_to_id</span> <span class="o">=</span> <span class="p">{</span><span class="n">label</span><span class="p">:</span> <span class="n">index</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">)}</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">row</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">emissions</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;发射分数维度错误&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">tag</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">label_to_id</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;未知标签&quot;</span><span class="p">)</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">transitions</span><span class="p">[(</span><span class="s2">&quot;START&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">+</span> <span class="n">emissions</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">label_to_id</span><span class="p">[</span><span class="n">tags</span><span class="p">[</span><span class="mi">0</span><span class="p">]]]</span>
+    <span class="k">for</span> <span class="n">position</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">tags</span><span class="p">)):</span>
+        <span class="n">score</span> <span class="o">+=</span> <span class="n">transitions</span><span class="p">[(</span><span class="n">tags</span><span class="p">[</span><span class="n">position</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">tags</span><span class="p">[</span><span class="n">position</span><span class="p">])]</span>
+        <span class="n">score</span> <span class="o">+=</span> <span class="n">emissions</span><span class="p">[</span><span class="n">position</span><span class="p">][</span><span class="n">label_to_id</span><span class="p">[</span><span class="n">tags</span><span class="p">[</span><span class="n">position</span><span class="p">]]]</span>
+    <span class="n">score</span> <span class="o">+=</span> <span class="n">transitions</span><span class="p">[(</span><span class="n">tags</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;STOP&quot;</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">score</span>
+
+
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;B-X&quot;</span><span class="p">]</span>
+<span class="n">emissions</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]]</span>
+<span class="n">transitions</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">(</span><span class="s2">&quot;START&quot;</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">):</span> <span class="mf">0.0</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;START&quot;</span><span class="p">,</span> <span class="s2">&quot;B-X&quot;</span><span class="p">):</span> <span class="mf">0.3</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">):</span> <span class="mf">0.2</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;B-X&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;B-X&quot;</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">):</span> <span class="mf">0.5</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;B-X&quot;</span><span class="p">,</span> <span class="s2">&quot;B-X&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;O&quot;</span><span class="p">,</span> <span class="s2">&quot;STOP&quot;</span><span class="p">):</span> <span class="mf">0.1</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;B-X&quot;</span><span class="p">,</span> <span class="s2">&quot;STOP&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">score</span> <span class="o">=</span> <span class="n">sequence_score</span><span class="p">(</span><span class="n">emissions</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;B-X&quot;</span><span class="p">,</span> <span class="s2">&quot;O&quot;</span><span class="p">],</span> <span class="n">labels</span><span class="p">,</span> <span class="n">transitions</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">score</span> <span class="o">-</span> <span class="p">(</span><span class="mf">0.3</span> <span class="o">+</span> <span class="mf">1.0</span> <span class="o">+</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="mf">0.8</span> <span class="o">+</span> <span class="mf">0.1</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mf">1e-9</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-56">53. 用前向算法计算 log 配分函数</h3>
+<p>实现稳定 <code>logsumexp</code>，并用穷举小样例验证动态规划结果。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">logsumexp</span><span class="p">(</span><span class="n">values</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">inf</span>
+    <span class="n">maximum</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">maximum</span> <span class="o">==</span> <span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">maximum</span>
+    <span class="k">return</span> <span class="n">maximum</span> <span class="o">+</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">value</span> <span class="o">-</span> <span class="n">maximum</span><span class="p">)</span> <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">values</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">log_partition</span><span class="p">(</span><span class="n">emissions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="n">labels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">transitions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">emissions</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">transitions</span><span class="p">[(</span><span class="s2">&quot;START&quot;</span><span class="p">,</span> <span class="s2">&quot;STOP&quot;</span><span class="p">)]</span>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">label</span><span class="p">:</span> <span class="n">transitions</span><span class="p">[(</span><span class="s2">&quot;START&quot;</span><span class="p">,</span> <span class="n">label</span><span class="p">)]</span> <span class="o">+</span> <span class="n">emissions</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">emissions</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">current</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="n">current_index</span><span class="p">]</span> <span class="o">+</span> <span class="n">logsumexp</span><span class="p">([</span>
+                <span class="n">alpha</span><span class="p">[</span><span class="n">previous</span><span class="p">]</span> <span class="o">+</span> <span class="n">transitions</span><span class="p">[(</span><span class="n">previous</span><span class="p">,</span> <span class="n">current</span><span class="p">)]</span> <span class="k">for</span> <span class="n">previous</span> <span class="ow">in</span> <span class="n">labels</span>
+            <span class="p">])</span>
+            <span class="k">for</span> <span class="n">current_index</span><span class="p">,</span> <span class="n">current</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="k">return</span> <span class="n">logsumexp</span><span class="p">([</span><span class="n">alpha</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">+</span> <span class="n">transitions</span><span class="p">[(</span><span class="n">label</span><span class="p">,</span> <span class="s2">&quot;STOP&quot;</span><span class="p">)]</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">])</span>
+
+
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">]</span>
+<span class="n">emissions</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]]</span>
+<span class="n">transitions</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">(</span><span class="s2">&quot;START&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="mf">0.1</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;START&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="mf">0.3</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mf">0.4</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="mf">0.2</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">):</span> <span class="mf">0.1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;STOP&quot;</span><span class="p">):</span> <span class="mf">0.0</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;STOP&quot;</span><span class="p">):</span> <span class="mf">0.2</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">brute_score</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="n">transitions</span><span class="p">[(</span><span class="s2">&quot;START&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+    <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">tag</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">score</span> <span class="o">+=</span> <span class="n">emissions</span><span class="p">[</span><span class="n">position</span><span class="p">][</span><span class="n">labels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">tag</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">position</span><span class="p">:</span>
+            <span class="n">score</span> <span class="o">+=</span> <span class="n">transitions</span><span class="p">[(</span><span class="n">path</span><span class="p">[</span><span class="n">position</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">tag</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">score</span> <span class="o">+</span> <span class="n">transitions</span><span class="p">[(</span><span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;STOP&quot;</span><span class="p">)]</span>
+
+
+<span class="n">all_scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">brute_score</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">emissions</span><span class="p">))]</span>
+<span class="n">expected</span> <span class="o">=</span> <span class="n">logsumexp</span><span class="p">(</span><span class="n">all_scores</span><span class="p">)</span>
+<span class="n">actual</span> <span class="o">=</span> <span class="n">log_partition</span><span class="p">(</span><span class="n">emissions</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">transitions</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">actual</span> <span class="o">-</span> <span class="n">expected</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-12</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">actual</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-57">54. 实现带回指针的 Viterbi 解码</h3>
+<p>返回全局最优标签路径和分数，并用穷举验证。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">viterbi_decode</span><span class="p">(</span><span class="n">emissions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span> <span class="n">labels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">transitions</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">emissions</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[],</span> <span class="n">transitions</span><span class="p">[(</span><span class="s2">&quot;START&quot;</span><span class="p">,</span> <span class="s2">&quot;STOP&quot;</span><span class="p">)]</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">label</span><span class="p">:</span> <span class="n">transitions</span><span class="p">[(</span><span class="s2">&quot;START&quot;</span><span class="p">,</span> <span class="n">label</span><span class="p">)]</span> <span class="o">+</span> <span class="n">emissions</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="n">backpointers</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">emissions</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+        <span class="n">new_scores</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">step_back</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">current_index</span><span class="p">,</span> <span class="n">current</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
+            <span class="n">choices</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">(</span><span class="n">scores</span><span class="p">[</span><span class="n">previous</span><span class="p">]</span> <span class="o">+</span> <span class="n">transitions</span><span class="p">[(</span><span class="n">previous</span><span class="p">,</span> <span class="n">current</span><span class="p">)],</span> <span class="n">previous</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">previous</span> <span class="ow">in</span> <span class="n">labels</span>
+            <span class="p">]</span>
+            <span class="n">best_score</span><span class="p">,</span> <span class="n">best_previous</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">choices</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="n">new_scores</span><span class="p">[</span><span class="n">current</span><span class="p">]</span> <span class="o">=</span> <span class="n">best_score</span> <span class="o">+</span> <span class="n">row</span><span class="p">[</span><span class="n">current_index</span><span class="p">]</span>
+            <span class="n">step_back</span><span class="p">[</span><span class="n">current</span><span class="p">]</span> <span class="o">=</span> <span class="n">best_previous</span>
+        <span class="n">scores</span> <span class="o">=</span> <span class="n">new_scores</span>
+        <span class="n">backpointers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">step_back</span><span class="p">)</span>
+    <span class="n">best_final_score</span><span class="p">,</span> <span class="n">best_last</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+        <span class="p">((</span><span class="n">scores</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">+</span> <span class="n">transitions</span><span class="p">[(</span><span class="n">label</span><span class="p">,</span> <span class="s2">&quot;STOP&quot;</span><span class="p">)],</span> <span class="n">label</span><span class="p">)</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">),</span>
+        <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+    <span class="p">)</span>
+    <span class="n">path</span> <span class="o">=</span> <span class="p">[</span><span class="n">best_last</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">step_back</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">backpointers</span><span class="p">):</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">step_back</span><span class="p">[</span><span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span>
+    <span class="n">path</span><span class="o">.</span><span class="n">reverse</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">path</span><span class="p">,</span> <span class="n">best_final_score</span>
+
+
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">]</span>
+<span class="n">emissions</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]]</span>
+<span class="n">transitions</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="p">(</span><span class="s2">&quot;START&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="mf">0.1</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;START&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="mf">0.3</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">):</span> <span class="o">-</span><span class="mf">0.4</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">):</span> <span class="mf">0.2</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">):</span> <span class="mf">0.1</span><span class="p">,</span>
+    <span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;STOP&quot;</span><span class="p">):</span> <span class="mf">0.0</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;STOP&quot;</span><span class="p">):</span> <span class="mf">0.2</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">score</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="n">transitions</span><span class="p">[(</span><span class="s2">&quot;START&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span> <span class="o">+</span> <span class="n">transitions</span><span class="p">[(</span><span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;STOP&quot;</span><span class="p">)]</span>
+    <span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">tag</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+        <span class="n">total</span> <span class="o">+=</span> <span class="n">emissions</span><span class="p">[</span><span class="n">position</span><span class="p">][</span><span class="n">labels</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">tag</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">position</span><span class="p">:</span>
+            <span class="n">total</span> <span class="o">+=</span> <span class="n">transitions</span><span class="p">[(</span><span class="n">path</span><span class="p">[</span><span class="n">position</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">tag</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">total</span>
+
+
+<span class="n">path</span><span class="p">,</span> <span class="n">best_score</span> <span class="o">=</span> <span class="n">viterbi_decode</span><span class="p">(</span><span class="n">emissions</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">transitions</span><span class="p">)</span>
+<span class="n">brute_path</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">repeat</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">emissions</span><span class="p">)),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="p">(</span><span class="n">score</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="n">p</span><span class="p">))</span>
+<span class="k">assert</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">path</span><span class="p">)</span> <span class="o">==</span> <span class="n">brute_path</span>
+<span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">best_score</span> <span class="o">-</span> <span class="n">score</span><span class="p">(</span><span class="n">brute_path</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mf">1e-12</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">best_score</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-58">55. 计算严格实体级指标并分类错误</h3>
+<p>严格 TP 要求文档、边界和类型全部相同；把非严格命中拆成类型错、边界错、虚假实体，剩余 gold 为漏检。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">evaluate_entities</span><span class="p">(</span><span class="n">gold</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">predicted</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">key</span><span class="p">(</span><span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;doc_id&quot;</span><span class="p">],</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">],</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
+
+    <span class="n">gold_by_key</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">(</span><span class="n">item</span><span class="p">):</span> <span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">gold</span><span class="p">}</span>
+    <span class="n">predicted_by_key</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">(</span><span class="n">item</span><span class="p">):</span> <span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">predicted</span><span class="p">}</span>
+    <span class="n">exact_keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">gold_by_key</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">predicted_by_key</span><span class="p">)</span>
+    <span class="n">unmatched_gold</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">gold</span> <span class="k">if</span> <span class="n">key</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exact_keys</span><span class="p">]</span>
+    <span class="n">unmatched_predicted</span> <span class="o">=</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">predicted</span> <span class="k">if</span> <span class="n">key</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">exact_keys</span><span class="p">]</span>
+    <span class="n">errors</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;type_confusion&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;boundary_error&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;spurious&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;missed&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+
+    <span class="n">remaining_gold</span> <span class="o">=</span> <span class="n">unmatched_gold</span><span class="p">[:]</span>
+    <span class="k">for</span> <span class="n">prediction</span> <span class="ow">in</span> <span class="n">unmatched_predicted</span><span class="p">:</span>
+        <span class="n">same_boundary</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">remaining_gold</span>
+                              <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;doc_id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">prediction</span><span class="p">[</span><span class="s2">&quot;doc_id&quot;</span><span class="p">]</span>
+                              <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">prediction</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">]</span>
+                              <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">prediction</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">]),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">same_boundary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">errors</span><span class="p">[</span><span class="s2">&quot;type_confusion&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;gold&quot;</span><span class="p">:</span> <span class="n">same_boundary</span><span class="p">,</span> <span class="s2">&quot;predicted&quot;</span><span class="p">:</span> <span class="n">prediction</span><span class="p">})</span>
+            <span class="n">remaining_gold</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">same_boundary</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="n">same_type_overlap</span> <span class="o">=</span> <span class="nb">next</span><span class="p">((</span><span class="n">item</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">remaining_gold</span>
+                                  <span class="k">if</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;doc_id&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">prediction</span><span class="p">[</span><span class="s2">&quot;doc_id&quot;</span><span class="p">]</span>
+                                  <span class="ow">and</span> <span class="n">item</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">prediction</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span>
+                                  <span class="ow">and</span> <span class="nb">max</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">],</span> <span class="n">prediction</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">])</span>
+                                  <span class="o">&lt;</span> <span class="nb">min</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">],</span> <span class="n">prediction</span><span class="p">[</span><span class="s2">&quot;end&quot;</span><span class="p">])),</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">same_type_overlap</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">errors</span><span class="p">[</span><span class="s2">&quot;boundary_error&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;gold&quot;</span><span class="p">:</span> <span class="n">same_type_overlap</span><span class="p">,</span> <span class="s2">&quot;predicted&quot;</span><span class="p">:</span> <span class="n">prediction</span><span class="p">})</span>
+            <span class="n">remaining_gold</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">same_type_overlap</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">errors</span><span class="p">[</span><span class="s2">&quot;spurious&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prediction</span><span class="p">)</span>
+    <span class="n">errors</span><span class="p">[</span><span class="s2">&quot;missed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">remaining_gold</span>
+
+    <span class="n">tp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">exact_keys</span><span class="p">)</span>
+    <span class="n">fp</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">predicted_by_key</span><span class="p">)</span> <span class="o">-</span> <span class="n">tp</span>
+    <span class="n">fn</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">gold_by_key</span><span class="p">)</span> <span class="o">-</span> <span class="n">tp</span>
+    <span class="n">precision</span> <span class="o">=</span> <span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fp</span><span class="p">)</span> <span class="k">if</span> <span class="n">tp</span> <span class="o">+</span> <span class="n">fp</span> <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="n">recall</span> <span class="o">=</span> <span class="n">tp</span> <span class="o">/</span> <span class="p">(</span><span class="n">tp</span> <span class="o">+</span> <span class="n">fn</span><span class="p">)</span> <span class="k">if</span> <span class="n">tp</span> <span class="o">+</span> <span class="n">fn</span> <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="n">f1</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">precision</span> <span class="o">*</span> <span class="n">recall</span> <span class="o">/</span> <span class="p">(</span><span class="n">precision</span> <span class="o">+</span> <span class="n">recall</span><span class="p">)</span> <span class="k">if</span> <span class="n">precision</span> <span class="o">+</span> <span class="n">recall</span> <span class="k">else</span> <span class="mf">0.0</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;tp&quot;</span><span class="p">:</span> <span class="n">tp</span><span class="p">,</span> <span class="s2">&quot;fp&quot;</span><span class="p">:</span> <span class="n">fp</span><span class="p">,</span> <span class="s2">&quot;fn&quot;</span><span class="p">:</span> <span class="n">fn</span><span class="p">,</span>
+            <span class="s2">&quot;precision&quot;</span><span class="p">:</span> <span class="n">precision</span><span class="p">,</span> <span class="s2">&quot;recall&quot;</span><span class="p">:</span> <span class="n">recall</span><span class="p">,</span> <span class="s2">&quot;f1&quot;</span><span class="p">:</span> <span class="n">f1</span><span class="p">,</span> <span class="s2">&quot;errors&quot;</span><span class="p">:</span> <span class="n">errors</span><span class="p">}</span>
+
+
+<span class="n">gold</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;doc_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Disease&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;doc_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Symptom&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;doc_id&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Drug&quot;</span><span class="p">},</span>
+<span class="p">]</span>
+<span class="n">predicted</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;doc_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Disease&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;doc_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Symptom&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;doc_id&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Disease&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;doc_id&quot;</span><span class="p">:</span> <span class="s2">&quot;3&quot;</span><span class="p">,</span> <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;Disease&quot;</span><span class="p">},</span>
+<span class="p">]</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">evaluate_entities</span><span class="p">(</span><span class="n">gold</span><span class="p">,</span> <span class="n">predicted</span><span class="p">)</span>
+<span class="k">assert</span> <span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;tp&quot;</span><span class="p">],</span> <span class="n">report</span><span class="p">[</span><span class="s2">&quot;fp&quot;</span><span class="p">],</span> <span class="n">report</span><span class="p">[</span><span class="s2">&quot;fn&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;precision&quot;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span> <span class="o">==</span> <span class="mf">0.25</span>
+<span class="k">assert</span> <span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;recall&quot;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span> <span class="o">==</span> <span class="mf">0.3333</span>
+<span class="k">assert</span> <span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;f1&quot;</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span> <span class="o">==</span> <span class="mf">0.2857</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">][</span><span class="s2">&quot;boundary_error&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">][</span><span class="s2">&quot;type_confusion&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;errors&quot;</span><span class="p">][</span><span class="s2">&quot;spurious&quot;</span><span class="p">])</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="done-bar"><button class="mark-done-btn" data-key="hw53" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="hw52.html"><div class="dir">← 上一篇</div><div class="name">🏷️ 数据标注、查询语言与 Neo4j 工具链综合训练</div></a><a class="disabled next"></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、选择题（30 题）</a><a class="lv3" href="#sec-2">1. 医学命名实体识别（NER）的直接输出通常是什么？</a><a class="lv3" href="#sec-3">2. 统一输出 start=0, end=6 表示文本切片 [0,6)，最重要的原因是？</a><a class="lv3" href="#sec-4">3. BIOES 中 S-Disease 表示什么？</a><a class="lv3" href="#sec-5">4. 下列哪条 BIOES 路径合法？</a><a class="lv3" href="#sec-6">5. 字级 NER 改用子词 tokenizer 后，最需要补充什么？</a><a class="lv3" href="#sec-7">6. 单层 BIO/BIOES 序列标注对嵌套实体的典型限制是？</a><a class="lv3" href="#sec-8">7. 为什么应长期保留词典/正则 NER 基线？</a><a class="lv3" href="#sec-9">8. 词典同时匹配“支气管炎”和“慢性支气管炎”，正确处理方式是？</a><a class="lv3" href="#sec-10">9. 用正则抽取剂量时，哪项最重要？</a><a class="lv3" href="#sec-11">10. “患者否认发热”中规则或模型识别出“发热”，下一步应该？</a><a class="lv3" href="#sec-12">11. 先用完整词典自动标全量语料，再随机切分训练/测试，主要风险是？</a><a class="lv3" href="#sec-13">12. BiLSTM 在 BiLSTM-CRF 中的主要作用是？</a><a class="lv3" href="#sec-14">13. 批量发射分数张量常见形状是？</a><a class="lv3" href="#sec-15">14. 线性链 CRF 的转移分数通常表达什么？</a><a class="lv3" href="#sec-16">15. 一条 CRF 路径的完整分数通常包含？</a><a class="lv3" href="#sec-17">16. 为什么逐位置取发射分数 argmax 不等价于 Viterbi？</a><a class="lv3" href="#sec-18">17. CRF 中 $p(y\mid x)$ 的分母是什么？</a><a class="lv3" href="#sec-19">18. 单样本 CRF 负对数似然可写为？</a><a class="lv3" href="#sec-20">19. 前向算法与 Viterbi 的关键差异是？</a><a class="lv3" href="#sec-21">20. Viterbi 为什么必须保存 backpointer？</a><a class="lv3" href="#sec-22">21. 长度为 $T$、标签数为 $K$ 的一阶线性链 CRF，朴素动态规划复杂度通常是？</a><a class="lv3" href="#sec-23">22. 为什么 CRF 前向计算应在 log 空间使用稳定 logsumexp？</a><a class="lv3" href="#sec-24">23. batch 中第二个句子长度为 3，却把第 4、5 个 padding 位置计入 CRF 损失，会怎样？</a><a class="lv3" href="#sec-25">24. 把 O → I-Disease 的转移分数固定为极小值主要为了？</a><a class="lv3" href="#sec-26">25. 为什么 checkpoint 必须保存 tag2id/id2tag？</a><a class="lv3" href="#sec-27">26. 对变长 batch 计算平均损失时，哪项需要明确？</a><a class="lv3" href="#sec-28">27. Token Accuracy 为 98% 仍可能实体识别很差，原因是？</a><a class="lv3" href="#sec-29">28. 预测“慢性支气管”为 Disease，gold 是“慢性支气管炎”，严格实体级评估如何计数？</a><a class="lv3" href="#sec-30">29. micro-F1 与 macro-F1 的区别是？</a><a class="lv3" href="#sec-31">30. 关于“加 CRF 一定优于独立 softmax”最稳妥的结论是？</a><a class="lv2" href="#sec-32">二、简答题（15 题）</a><a class="lv3" href="#sec-33">31. 为“慢性支气管炎常见咳嗽”给出字级 BIOES 标签，并说明偏移。</a><a class="lv3" href="#sec-34">32. BIO 与 BIOES 各有什么取舍？</a><a class="lv3" href="#sec-35">33. 如何建模“右肺上叶癌”中的嵌套实体？</a><a class="lv3" href="#sec-36">34. 设计一个可上线的规则 NER 管道。</a><a class="lv3" href="#sec-37">35. 为什么“最长匹配优先”不总是最优？</a><a class="lv3" href="#sec-38">36. 给出 BiLSTM-CRF 从输入到输出的张量流。</a><a class="lv3" href="#sec-39">37. 手工说明一条标签路径如何计分。</a><a class="lv3" href="#sec-40">38. 为什么训练用前向算法而推理用 Viterbi？</a><a class="lv3" href="#sec-41">39. 如何设计 BIOES 的 START/STOP 与合法转移？</a><a class="lv3" href="#sec-42">40. 设计一个能发现 mask 错误的最小测试。</a><a class="lv3" href="#sec-43">41. 医学 NER 数据应如何切分以避免泄漏？</a><a class="lv3" href="#sec-44">42. 一份实体抽取错误分析报告至少包含什么？</a><a class="lv3" href="#sec-45">43. NER checkpoint 除模型权重外还应保存哪些工件？</a><a class="lv3" href="#sec-46">44. 超长病历采用滑窗推理时如何合并实体？</a><a class="lv3" href="#sec-47">45. 为什么 NER 输出不能直接成为医学知识图谱事实？</a><a class="lv2" href="#sec-48">三、代码题（10 题）</a><a class="lv3" href="#sec-49">46. 将字符 span 转为 BIOES 标签</a><a class="lv3" href="#sec-50">47. 严格解码 BIOES 标签为实体 span</a><a class="lv3" href="#sec-51">48. 生成词典规则的全部候选 span</a><a class="lv3" href="#sec-52">49. 用加权区间调度消解重叠候选</a><a class="lv3" href="#sec-53">50. 为规则候选添加简单断言分类</a><a class="lv3" href="#sec-54">51. 校验 BIOES 合法转移与完整路径</a><a class="lv3" href="#sec-55">52. 计算一条 CRF 路径的完整分数</a><a class="lv3" href="#sec-56">53. 用前向算法计算 log 配分函数</a><a class="lv3" href="#sec-57">54. 实现带回指针的 Viterbi 解码</a><a class="lv3" href="#sec-58">55. 计算严格实体级指标并分类错误</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
