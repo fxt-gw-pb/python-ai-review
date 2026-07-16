@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RNN 进阶：LSTM、GRU 与双向网络综合训练 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons">课程讲义</a>
+    <a href="../index.html#homework" class="active">课后练习</a>
+    <a href="../index.html#projects">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">32</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">33</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">34</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">35</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">39</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">40</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">42</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">49</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">50</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">📘 医学知识图谱</div><a class="item" data-page-key="lesson51" href="../lessons/lesson51.html"><span class="no">51</span><span>知识图谱基础与医学图谱架构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson52" href="../lessons/lesson52.html"><span class="no">52</span><span>数据标注、查询语言与 Neo4j 工具链</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson53" href="../lessons/lesson53.html"><span class="no">53</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson54" href="../lessons/lesson54.html"><span class="no">54</span><span>关系抽取：规则、Pipeline 与 CasRel</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson55" href="../lessons/lesson55.html"><span class="no">55</span><span>知识融合：实体统一、链接与消歧</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson56" href="../lessons/lesson56.html"><span class="no">56</span><span>Neo4j 医学图谱搭建与质量验证</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson57" href="../lessons/lesson57.html"><span class="no">57</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">21</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">22</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">24</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">25</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">27</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">28</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">29</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">30</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">31</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">32</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw33" href="../homework/hw33.html"><span class="no">33</span><span>卷积神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw34" href="../homework/hw34.html"><span class="no">34</span><span>循环神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw35" href="../homework/hw35.html"><span class="no">35</span><span>自然语言处理入门与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw36" href="../homework/hw36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强综合训练</span><span class="done-flag">✅</span></a><a class="item hw active" data-page-key="hw37" href="../homework/hw37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project07" href="../projects/project07.html"><span class="no">07</span><span>医学知识图谱：从信息抽取到 KBQA</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课后练习 / 练习 37</div>
+<h1>🧬 RNN 进阶：LSTM、GRU 与双向网络综合训练</h1>
+<div class="chips"><span class="chip amber">🏷️ 选择 + 简答 + 代码</span><span class="chip amber">🏷️ 55 题</span><a class="chip" href="../lessons/lesson37.html">📖 相关讲义：RNN 进阶：LSTM、GRU 与双向网络</a></div>
+</div>
+<p>55 道练习，按“梯度问题 → LSTM 门控 → GRU 简化 → 多层双向形状 → 变长批处理 → 序列分类闭环”组织。题目与基础 RNN 练习错开，重点训练门控公式、PyTorch 张量语义和真实批处理中的边界条件。</p>
+<blockquote>
+<p>建议先独立作答，再展开参考答案。代码题均带断言，可直接运行验证；形状题统一使用 $B$ 表示批量大小、$T$ 表示序列长度、$I$ 表示输入维度、$H$ 表示隐藏维度、$L$ 表示层数、$D$ 表示方向数。</p>
+</blockquote>
+<h2 id="sec-1">一、选择题（30 题）</h2>
+<div class="q-card"><h3 id="sec-2">1. 传统 RNN 难以并行处理同一序列各时间步的根本原因是？</h3>
+<p>A. 输入必须是 One-hot<br />
+B. 当前隐藏状态依赖上一时间步隐藏状态<br />
+C. RNN 没有可训练参数<br />
+D. 只能在 CPU 上运行</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> $h_t$ 依赖 $h_{t-1}$，时间步之间存在递归数据依赖，因此同一层的序列计算通常不能像 Transformer 那样一次并行完成。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-3">2. 传统 tanh RNN 在长序列反向传播中容易出现梯度消失或爆炸，主要因为？</h3>
+<p>A. 每个时间步使用完全不同的参数<br />
+B. 交叉熵不能处理序列<br />
+C. 梯度需要经过多个雅可比矩阵连乘<br />
+D. 隐藏状态必须是整数</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 连乘中若相关谱尺度长期小于 1，梯度趋近于 0；长期大于 1，则可能快速放大。门控、合理初始化、归一化和梯度裁剪可缓解不同方面的问题。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-4">3. LSTM 相比传统 RNN 新增的核心状态是？</h3>
+<p>A. 细胞状态 $c_t$<br />
+B. 类别标签 $y_t$<br />
+C. 注意力矩阵<br />
+D. 位置编码</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> LSTM 同时传播隐藏状态 $h_t$ 和细胞状态 $c_t$。细胞状态通过加法式更新形成更直接的信息与梯度通道。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-5">4. LSTM 遗忘门 $f_t$ 的主要作用是？</h3>
+<p>A. 决定最终类别<br />
+B. 生成输入 token<br />
+C. 将概率变成对数<br />
+D. 控制上一细胞状态 $c_{t-1}$ 保留多少</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> $f_t$ 通常由 $[x_t;h_{t-1}]$ 经线性层和 sigmoid 得到，再逐元素乘到 $c_{t-1}$ 上。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-6">5. LSTM 输入门 $i_t$ 的主要作用是？</h3>
+<p>A. 删除整个序列<br />
+B. 控制候选记忆有多少写入细胞状态<br />
+C. 只选择输出类别<br />
+D. 把双向结果相加</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 候选记忆 $\tilde c_t$ 描述可写入的新内容，输入门 $i_t$ 控制写入强度，二者逐元素相乘后进入细胞更新。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-7">6. LSTM 中候选记忆 $\tilde c_t$ 通常使用什么激活函数？</h3>
+<p>A. Softmax<br />
+B. ReLU6<br />
+C. tanh<br />
+D. Argmax</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 门值通常使用 sigmoid 映射到 $(0,1)$，候选内容常用 tanh 映射到 $(-1,1)$；二者职责不同。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-8">7. LSTM 输出门 $o_t$ 控制什么？</h3>
+<p>A. 更新后的细胞状态有多少暴露为隐藏状态 $h_t$<br />
+B. 上一细胞状态是否进入遗忘门<br />
+C. batch 中包含多少样本<br />
+D. 优化器的学习率</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 常见公式为 $h_t=o_t\odot\tanh(c_t)$。$c_t$ 保存内部记忆，$h_t$ 是当前时间步对外提供的表示。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-9">8. 下列哪一个是标准 LSTM 细胞状态更新形式？</h3>
+<p>A. $c_t=f_t+i_t+\tilde c_t$<br />
+B. $c_t=o_t\odot h_{t-1}$<br />
+C. $c_t=\operatorname{softmax}(x_t)$<br />
+D. $c_t=f_t\odot c_{t-1}+i_t\odot\tilde c_t$</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> 第一项选择性保留旧记忆，第二项选择性写入新记忆；加法式通道是 LSTM 缓解长期梯度消失的重要原因之一。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-10">9. 已得到 $c_t$ 与输出门 $o_t$，LSTM 隐藏状态通常如何计算？</h3>
+<p>A. $h_t=c_t-o_t$<br />
+B. $h_t=o_t\odot\tanh(c_t)$<br />
+C. $h_t=\operatorname{argmax}(c_t)$<br />
+D. $h_t=i_t\odot c_{t-1}$</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 输出门决定记忆中哪些部分对外可见，tanh 则限制细胞状态映射后的数值范围。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-11">10. LSTM 的遗忘门、输入门和输出门通常使用 sigmoid，主要是因为？</h3>
+<p>A. sigmoid 输出和为 1<br />
+B. sigmoid 不需要参数<br />
+C. 输出在 0 到 1 之间，适合作为逐元素软门值<br />
+D. sigmoid 永远不会饱和</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 门值接近 0 表示抑制，接近 1 表示放行，中间值表示部分通过。sigmoid 仍会饱和，所以不能说它彻底消除了梯度问题。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-12">11. 关于 LSTM 与长期依赖，哪项表述最准确？</h3>
+<p>A. LSTM 通常缓解传统 RNN 的梯度消失，但不保证任意长序列都能无损记忆<br />
+B. LSTM 完全不会发生梯度爆炸<br />
+C. LSTM 不需要反向传播<br />
+D. 只要使用 LSTM，数据质量就不重要</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 门控和细胞状态改善了梯度流，但门饱和、优化困难、有限容量和超长依赖仍然存在；梯度裁剪也仍有价值。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-13">12. <code>nn.LSTM</code> 的最终状态返回值是什么？</h3>
+<p>A. 只有 <code>output</code><br />
+B. 只有 <code>h_n</code><br />
+C. 一个概率张量<br />
+D. <code>(h_n, c_n)</code>，分别表示最终隐藏状态与细胞状态</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> 调用形式为 <code>output, (h_n, c_n) = lstm(x)</code>。<code>output</code> 保存最后一层每个时间步的隐藏状态，<code>h_n/c_n</code> 保存每层每方向的最终状态。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-14">13. <code>nn.GRU</code> 与 <code>nn.LSTM</code> 的状态接口最直接的差异是？</h3>
+<p>A. GRU 没有隐藏状态<br />
+B. GRU 只返回 <code>h_n</code>，没有独立的 <code>c_n</code><br />
+C. GRU 必须返回注意力权重<br />
+D. GRU 不能接收初始状态</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> GRU 把长期记忆与对外隐藏表示合并在同一个 $h_t$ 中，因此接口为 <code>output, h_n = gru(x)</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-15">14. GRU 的两个主要门通常是？</h3>
+<p>A. 输入门与输出门<br />
+B. 遗忘门与输出门<br />
+C. 更新门与重置门<br />
+D. 查询门与键门</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 更新门控制新旧状态融合，重置门控制计算候选状态时使用多少旧信息；不同资料对更新门公式的符号约定可能相反，应结合完整公式理解。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-16">15. 在输入维度与隐藏维度相同、层数和方向相同的情况下，三个循环层门组数量通常满足？</h3>
+<p>A. RNN 为 1 组、GRU 为 3 组、LSTM 为 4 组<br />
+B. RNN 为 4 组、GRU 为 3 组、LSTM 为 1 组<br />
+C. 三者完全相同<br />
+D. 只由 batch size 决定</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> PyTorch 的普通 RNN 每层每方向有一组状态变换，GRU 有三组，LSTM 有四组，因此参数量与计算量通常依次增加。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-17">16. 单层单向、带两组偏置的 PyTorch LSTM，<code>input_size=I</code>、<code>hidden_size=H</code>，参数量是多少？</h3>
+<p>A. $HI+H^2$<br />
+B. $4HI+H$<br />
+C. $I+H$<br />
+D. $4(HI+H^2+2H)$</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> 四组门各包含 $H\times I$ 输入权重、$H\times H$ 循环权重，以及 <code>bias_ih</code>、<code>bias_hh</code> 各 $H$ 个参数。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-18">17. 单层单向 PyTorch GRU 的参数量公式是？</h3>
+<p>A. $2(HI+H^2+H)$<br />
+B. $3(HI+H^2+2H)$<br />
+C. $4(HI+H^2+2H)$<br />
+D. $HI+H^2$</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> GRU 有 reset、update、new 三组参数；PyTorch 默认为输入变换和循环变换分别保留偏置，所以每组有 $2H$ 个偏置参数。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-19">18. <code>batch_first=True</code>、双向 LSTM 的输入为 <code>[B,T,I]</code>，隐藏维度为 $H$，<code>output</code> 形状是？</h3>
+<p>A. <code>[B,T,H]</code><br />
+B. <code>[2,B,H]</code><br />
+C. <code>[B,T,2H]</code><br />
+D. <code>[B,2,T,H]</code></p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 最后一层正向与反向在特征维拼接，因此 <code>output</code> 最后一维为 $D\times H=2H$。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-20">19. 两层双向 LSTM 的 <code>h_n</code> 形状是？</h3>
+<p>A. <code>[4,B,H]</code><br />
+B. <code>[2,B,2H]</code><br />
+C. <code>[B,T,2H]</code><br />
+D. <code>[B,4,H]</code></p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 状态第一维为 $L\times D=2\times2=4$。它的顺序按层和方向交错，稳妥做法是 reshape 成 <code>[L,D,B,H]</code> 后再索引。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-21">20. <code>batch_first=True</code> 会怎样影响 <code>h_n</code> 和 <code>c_n</code>？</h3>
+<p>A. 变为 <code>[B,L D,H]</code><br />
+B. 把隐藏维移到最前<br />
+C. 让状态不再包含方向维<br />
+D. 不影响，它们仍是 <code>[L D,B,H]</code></p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> <code>batch_first</code> 只改变输入和 <code>output</code> 的前两维布局，不改变 RNN/LSTM/GRU 最终状态张量的布局。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-22">21. 双向 LSTM 最适合下列哪类场景？</h3>
+<p>A. 只能访问过去 token 的实时下一个词生成<br />
+B. 输入完整可见的离线文本分类或序列标注<br />
+C. 严格流式语音输出且不能等待未来帧<br />
+D. 因果语言模型解码</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 离线任务能同时利用左右上下文；严格在线或自回归任务在当前时刻不能读取未来信息，反向网络会破坏因果约束或增加等待延迟。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-23">22. 双向循环网络不适合作为严格自回归语言模型主干，根本原因是？</h3>
+<p>A. 参数太少<br />
+B. 不能处理文本<br />
+C. 反向方向在训练表示中使用了当前预测位置之后的未来 token<br />
+D. 没有激活函数</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 自回归概率要求 $p(x_t\mid x_{<t})$ 只能依赖过去；若编码时利用 $x_{>t}$，就发生未来信息泄漏。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-24">23. 对双向 LSTM 直接把 <code>output[:, -1, :]</code> 当作“正反两方向的最终状态拼接”，问题是什么？</h3>
+<p>A. 末位包含正向最终状态，但反向部分对应末位输入处的反向输出，不是反向遍历完整序列后的最终状态<br />
+B. 它会返回四维张量<br />
+C. 正向部分一定全为零<br />
+D. 双向网络没有 <code>output</code></p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 完整序列的反向最终状态位于反向遍历结束处，对应 <code>output[:, 0, H:]</code>，或更直接地从最后一层 <code>h_n</code> 中取正、反两个方向再拼接。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-25">24. 为稳定取得最后一层双向 LSTM 的两个最终隐藏状态，最清晰的做法是？</h3>
+<p>A. 对 <code>output</code> 全部求最大值<br />
+B. 只取 <code>h_n[0]</code><br />
+C. 把 batch 维删除<br />
+D. 将 <code>h_n</code> reshape 为 <code>[L,D,B,H]</code>，取 <code>h_n[-1,0]</code> 与 <code>h_n[-1,1]</code> 拼接</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> 显式恢复层与方向两个轴后，代码含义清楚，也不依赖层数恰好为 1。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-26">25. 一批右侧 padding 的变长序列直接使用 <code>output[:, -1, :]</code> 分类，主要风险是？</h3>
+<p>A. 一定产生 NaN<br />
+B. 较短样本取到的是 PAD 时间步表示，而不是最后一个真实 token<br />
+C. 隐藏维自动减半<br />
+D. 标签会自动改变</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 应按 <code>lengths-1</code> gather 最后有效位置，或使用 packed sequence 后读取正确的 <code>h_n</code>；仅设置 <code>padding_idx</code> 不能自动修正索引语义。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-27">26. <code>pack_padded_sequence</code> 在 batch 未按长度降序排列时，常用哪个设置？</h3>
+<p>A. <code>batch_first=False</code><br />
+B. <code>bidirectional=False</code><br />
+C. <code>enforce_sorted=False</code><br />
+D. <code>padding_value=-1</code></p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 传入真实长度并设 <code>enforce_sorted=False</code> 可让工具内部处理未排序 batch；长度通常需位于 CPU，且不能包含 0 长序列。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-28">27. RNN 返回 PackedSequence 后，若还需要恢复补齐张量与长度，应使用？</h3>
+<p>A. <code>pad_packed_sequence</code><br />
+B. <code>pack_sequence</code><br />
+C. <code>interpolate</code><br />
+D. <code>flatten_parameters</code></p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> <code>pad_packed_sequence</code> 把压缩表示还原为 padded tensor，并返回每条序列长度；可用 <code>total_length</code> 固定恢复长度。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-29">28. <code>nn.LSTM(..., num_layers=1, dropout=0.5)</code> 中的内置 dropout 实际如何？</h3>
+<p>A. 自动作用在循环状态每个时间步<br />
+B. 自动作用在输入 embedding<br />
+C. 推理时仍随机丢弃<br />
+D. 不形成有效层间 dropout，因为只有一层</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> 循环层的 <code>dropout</code> 参数作用在相邻循环层之间，要求 <code>num_layers&gt;1</code>。单层模型若要正则化，可在 embedding、最终表示或分类头显式加入 Dropout。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-30">29. 人名分类模型最后一层输出 <code>[B,C]</code> logits，配合 <code>CrossEntropyLoss</code> 时应该？</h3>
+<p>A. 先对 logits <code>argmax</code> 再计算损失<br />
+B. 直接传入原始 logits 和 <code>torch.long</code> 类别 ID<br />
+C. 先转成字符串标签<br />
+D. 手动 Softmax 后再取最大值作为损失</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> <code>CrossEntropyLoss</code> 内部组合了 <code>LogSoftmax</code> 与负对数似然，直接接收未归一化 logits，数值更稳定。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-31">30. 在 RNN、GRU 和 LSTM 之间选择时，最可靠的原则是？</h3>
+<p>A. LSTM 永远优于所有模型<br />
+B. 参数越多一定越好<br />
+C. 固定数据划分与预算，比较验证效果、速度、显存和长序列切片，再按需求选择<br />
+D. 只比较训练集准确率</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> GRU 通常更轻，LSTM 状态更细分，普通 RNN 在短序列上可能足够；实际优劣取决于数据、任务、预算和实现，需公平实验验证。</p></div></div>
+
+
+</div><h2 id="sec-32">二、简答题（15 题）</h2>
+<div class="q-card"><h3 id="sec-33">31. 从 BPTT 的角度解释传统 RNN 为什么会梯度消失或爆炸，并分别给出缓解方法。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>跨越多个时间步的梯度包含循环雅可比矩阵的连乘。若其有效尺度长期小于 1，早期信息的梯度指数衰减；长期大于 1，则梯度迅速放大。LSTM/GRU 的门控与加法式状态通道主要缓解长期梯度消失；正交初始化、合适激活、归一化、截断 BPTT 也可能有帮助。梯度裁剪主要限制爆炸，不能把已经消失的梯度“恢复”。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-34">32. 按数据流写出一个 LSTM 时间步的完整计算过程。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>先由当前输入 $x_t$ 和上一隐藏状态 $h_{t-1}$ 计算遗忘门、输入门、候选记忆和输出门：</p>
+<p>$$
+f_t=\sigma(W_f[x_t;h_{t-1}]+b_f),\quad
+i_t=\sigma(W_i[x_t;h_{t-1}]+b_i),
+$$</p>
+<p>$$
+\tilde c_t=\tanh(W_c[x_t;h_{t-1}]+b_c),\quad
+o_t=\sigma(W_o[x_t;h_{t-1}]+b_o).
+$$</p>
+<p>再更新 $c_t=f_t\odot c_{t-1}+i_t\odot\tilde c_t$，最后得到 $h_t=o_t\odot\tanh(c_t)$。实现时四组仿射变换通常合并为一次大矩阵计算。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-35">33. 为什么 LSTM 的细胞状态通道比普通 tanh RNN 更利于长期梯度传播？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>普通 RNN 每一步都让状态经过仿射变换和 tanh，长期梯度要反复乘权重与激活导数。LSTM 的 $c_t=f_t\odot c_{t-1}+i_t\odot\tilde c_t$ 含加法式通道，沿旧记忆路径的局部导数直接包含 $f_t$。当遗忘门接近 1 时，信息和梯度可较少衰减地跨越多个时间步。但门值仍可能饱和或关闭，所以只是缓解，不是无条件保证。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-36">34. 为什么有人会把 LSTM 遗忘门偏置初始化为正值？有什么边界？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>正偏置经 sigmoid 后会让初始遗忘门更接近“保留”，训练早期不容易立即擦除记忆，有时有助于长依赖优化。但这是一种初始化先验，不保证适合所有任务；过强保留也可能妨碍快速遗忘无关信息。应结合框架默认设置、验证实验和状态诊断决定，不能当作固定规则。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-37">35. 比较 GRU 与 LSTM 的状态、门控、参数量及适用场景。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>LSTM 有独立的 $h_t$、$c_t$，通常包含遗忘、输入、输出三门和候选记忆；GRU 只有 $h_t$，用更新门、重置门和候选状态完成新旧信息融合。相同 $I,H,L,D$ 下，GRU 通常约为三组参数、LSTM 为四组，因此 GRU 更轻更快。LSTM 的状态分工更明确，但不代表一定更准；应在相同预算下比较效果、速度和稳定性。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-38">36. 计算 <code>I=64</code>、<code>H=128</code> 的单层单向 PyTorch RNN、GRU、LSTM 参数量。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>PyTorch 默认每个门都有输入权重、循环权重，以及两组偏置：</p>
+<ul>
+<li>RNN：$HI+H^2+2H=128\times64+128^2+256=24{,}832$；</li>
+<li>GRU：$3(HI+H^2+2H)=74{,}496$；</li>
+<li>LSTM：$4(HI+H^2+2H)=99{,}328$。</li>
+</ul>
+<p>若关闭 <code>bias</code> 或加入更多层、方向，公式需要相应调整；高层的 <code>input_size</code> 也会变为前一层的 $D H$，不能简单把单层结果乘层数。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-39">37. 两层双向 LSTM 输入 <code>[32,20,100]</code>，<code>H=64</code>、<code>batch_first=True</code>，输出状态形状分别是什么？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>方向数 $D=2$、层数 $L=2$：<code>output</code> 为 <code>[32,20,128]</code>，因为只输出最后一层且拼接两个方向；<code>h_n</code> 与 <code>c_n</code> 都是 <code>[4,32,64]</code>，第一维为 $L\times D$。<code>batch_first=True</code> 不改变最终状态的布局。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-40">38. 解释双向网络中 <code>output</code> 与 <code>h_n</code> 的对应关系，为什么不能机械取 <code>output[:, -1, :]</code>？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>最后一层 <code>output[t]</code> 拼接“正向网络处理到位置 $t$ 的状态”和“反向网络从序列末端处理到位置 $t$ 的状态”。因此 <code>output[:, -1, :H]</code> 是正向最终状态，但 <code>output[:, -1, H:]</code> 是反向网络刚开始处理末位时的输出。反向最终状态对应 <code>output[:,0,H:]</code>。序列级分类更稳妥的写法是把 <code>h_n</code> 变为 <code>[L,D,B,H]</code>，拼接最后一层两个方向。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-41">39. 双向网络为何适合 NER，却不适合严格流式生成？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>NER 在离线条件下可看到完整句子，一个实体标签往往同时依赖左右上下文，双向编码能充分利用这些信息。严格流式或自回归生成在时刻 $t$ 只能访问过去；反向网络需要未来 token，会造成因果泄漏，或必须等待后续输入从而增加延迟。是否可用双向结构取决于推理时未来信息是否真实可用。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-42">40. 设计一个变长文本批次进入 LSTM 的无泄漏、无 padding 干扰流程。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>先在训练集建立词表，把文本转为 ID 并记录真实长度；<code>collate_fn</code> 在当前 batch 内动态右填充，长度保持 CPU 整数。Embedding 使用 <code>padding_idx</code>，随后用 <code>pack_padded_sequence(..., enforce_sorted=False)</code> 压缩有效时间步，送入 LSTM。分类可直接使用正确的 <code>h_n</code>；若要逐 token 输出，则用 <code>pad_packed_sequence</code> 还原并结合 mask 计算损失。验证和测试复用冻结词表与同一管线。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-43">41. <code>pack_padded_sequence</code> 为什么通常不接受长度为 0 的样本？工程上怎样处理空文本？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>循环网络至少需要一个有效时间步才能定义序列状态，packed sequence 的每条长度也必须大于 0。工程上应在数据质检阶段记录并处理空文本：可删除无效样本、回查数据源，或明确映射成一个专用 <code>&lt;empty&gt;</code> token，使长度变为 1。不能悄悄把空文本标成任意类别，否则会制造不可解释的训练信号。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-44">42. 除最终隐藏状态外，序列分类还可以怎样从 <code>output</code> 得到句子表示？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>可以对有效时间步做 masked mean/max pooling，或学习 attention pooling；长文也可分段聚合。均值池化汇总全句、实现稳定；最大池化突出最强局部特征；attention pooling 能学习不同位置权重，但复杂度更高。任何 pooling 都必须排除 PAD，并在相同数据划分下与 <code>h_n</code> 基线比较。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-45">43. 人名分类使用字符 One-hot 与字符 Embedding 各有什么特点？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>字符 One-hot 不需学习输入映射，适合字符表很小的教学基线，但输入维度等于字符表大小，任意字符彼此正交。Embedding 把字符 ID 映射为低维稠密向量，参数更紧凑，可学习共享模式，也便于加入 <code>&lt;unk&gt;/&lt;pad&gt;</code>。两者都需处理大小写、重音符号、连字符和未知字符；字符表必须只由训练数据或预先固定规范确定。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-46">44. 一个循环分类模型的训练循环至少应正确处理哪些状态？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>每个 batch 先 <code>zero_grad</code>，前向得到原始 logits，用 <code>CrossEntropyLoss</code> 与整数标签计算损失，反向后可做梯度裁剪，再 <code>optimizer.step</code>。训练阶段启用 <code>model.train()</code>，验证阶段使用 <code>model.eval()</code> 与 <code>torch.no_grad()</code>；隐藏状态若跨 batch 复用必须 <code>detach</code>，普通独立样本分类则通常每个 batch 重新初始化。还应记录损失、分类指标、随机种子和最佳验证权重。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-47">45. 如何公平比较 RNN、GRU、LSTM 与双向版本？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>固定训练/验证/测试分组、词表、输入长度、优化器搜索空间、训练预算和指标；同时报告参数量、吞吐、显存、延迟与多随机种子结果。若要求参数预算相近，可适当调整不同模型的 $H$，否则 LSTM 天然参数更多。除整体指标外，还应按序列长度、低频字符和类别做切片，并检查双向结构是否符合线上因果与延迟约束。</p></div></div>
+
+
+</div><h2 id="sec-48">三、代码题（10 题）</h2>
+<div class="q-card"><h3 id="sec-49">46. 构造两层双向 LSTM，验证 <code>output/h_n/c_n</code> 形状并核对参数量。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>高层每个方向的输入维度是前一层双向输出的 $2H$，因此手算多层参数时不能简单使用第一层输入维度。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">B</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span>
+    <span class="n">input_size</span><span class="o">=</span><span class="n">I</span><span class="p">,</span>
+    <span class="n">hidden_size</span><span class="o">=</span><span class="n">H</span><span class="p">,</span>
+    <span class="n">num_layers</span><span class="o">=</span><span class="n">L</span><span class="p">,</span>
+    <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span>
+<span class="n">output</span><span class="p">,</span> <span class="p">(</span><span class="n">h_n</span><span class="p">,</span> <span class="n">c_n</span><span class="p">)</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">output</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">D</span> <span class="o">*</span> <span class="n">H</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">h_n</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">L</span> <span class="o">*</span> <span class="n">D</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">c_n</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">L</span> <span class="o">*</span> <span class="n">D</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span>
+
+<span class="c1"># 第一层每方向输入 I；第二层每方向输入 D*H。</span>
+<span class="n">expected</span> <span class="o">=</span> <span class="n">D</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">*</span> <span class="p">(</span><span class="n">H</span> <span class="o">*</span> <span class="n">I</span> <span class="o">+</span> <span class="n">H</span> <span class="o">*</span> <span class="n">H</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">H</span><span class="p">)</span>
+<span class="n">expected</span> <span class="o">+=</span> <span class="n">D</span> <span class="o">*</span> <span class="mi">4</span> <span class="o">*</span> <span class="p">(</span><span class="n">H</span> <span class="o">*</span> <span class="p">(</span><span class="n">D</span> <span class="o">*</span> <span class="n">H</span><span class="p">)</span> <span class="o">+</span> <span class="n">H</span> <span class="o">*</span> <span class="n">H</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">H</span><span class="p">)</span>
+<span class="n">actual</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+<span class="k">assert</span> <span class="n">actual</span> <span class="o">==</span> <span class="n">expected</span>
+<span class="nb">print</span><span class="p">({</span><span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="s2">&quot;h_n&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">h_n</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">actual</span><span class="p">})</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-50">47. 根据 <code>nn.LSTMCell</code> 的参数手动实现一个时间步，并与框架输出对齐。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>PyTorch LSTM 的门排列为 input、forget、cell candidate、output，即 <code>i, f, g, o</code>。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">B</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">H</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span>
+<span class="n">cell</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTMCell</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span>
+<span class="n">h_prev</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span>
+<span class="n">c_prev</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span>
+
+<span class="n">h_ref</span><span class="p">,</span> <span class="n">c_ref</span> <span class="o">=</span> <span class="n">cell</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">h_prev</span><span class="p">,</span> <span class="n">c_prev</span><span class="p">))</span>
+<span class="n">gates</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">x</span> <span class="o">@</span> <span class="n">cell</span><span class="o">.</span><span class="n">weight_ih</span><span class="o">.</span><span class="n">T</span>
+    <span class="o">+</span> <span class="n">cell</span><span class="o">.</span><span class="n">bias_ih</span>
+    <span class="o">+</span> <span class="n">h_prev</span> <span class="o">@</span> <span class="n">cell</span><span class="o">.</span><span class="n">weight_hh</span><span class="o">.</span><span class="n">T</span>
+    <span class="o">+</span> <span class="n">cell</span><span class="o">.</span><span class="n">bias_hh</span>
+<span class="p">)</span>
+<span class="n">i_gate</span><span class="p">,</span> <span class="n">f_gate</span><span class="p">,</span> <span class="n">candidate</span><span class="p">,</span> <span class="n">o_gate</span> <span class="o">=</span> <span class="n">gates</span><span class="o">.</span><span class="n">chunk</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">i_gate</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">i_gate</span><span class="p">)</span>
+<span class="n">f_gate</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">f_gate</span><span class="p">)</span>
+<span class="n">candidate</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span>
+<span class="n">o_gate</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">o_gate</span><span class="p">)</span>
+<span class="n">c_manual</span> <span class="o">=</span> <span class="n">f_gate</span> <span class="o">*</span> <span class="n">c_prev</span> <span class="o">+</span> <span class="n">i_gate</span> <span class="o">*</span> <span class="n">candidate</span>
+<span class="n">h_manual</span> <span class="o">=</span> <span class="n">o_gate</span> <span class="o">*</span> <span class="n">torch</span><span class="o">.</span><span class="n">tanh</span><span class="p">(</span><span class="n">c_manual</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">c_manual</span><span class="p">,</span> <span class="n">c_ref</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">h_manual</span><span class="p">,</span> <span class="n">h_ref</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+<span class="k">assert</span> <span class="p">((</span><span class="n">i_gate</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">i_gate</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;manual LSTMCell matches PyTorch&quot;</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-51">48. 构造双向 GRU，验证状态形状和单层参数量公式。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>GRU 没有独立的 <code>c_n</code>，每层每方向包含三组输入/循环变换。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">B</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">2</span>
+<span class="n">gru</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GRU</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span>
+<span class="n">output</span><span class="p">,</span> <span class="n">h_n</span> <span class="o">=</span> <span class="n">gru</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">output</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">D</span> <span class="o">*</span> <span class="n">H</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">h_n</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span>
+<span class="n">expected</span> <span class="o">=</span> <span class="n">D</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">*</span> <span class="p">(</span><span class="n">H</span> <span class="o">*</span> <span class="n">I</span> <span class="o">+</span> <span class="n">H</span> <span class="o">*</span> <span class="n">H</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">H</span><span class="p">)</span>
+<span class="n">actual</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">gru</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+<span class="k">assert</span> <span class="n">actual</span> <span class="o">==</span> <span class="n">expected</span>
+<span class="nb">print</span><span class="p">({</span><span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="s2">&quot;h_n&quot;</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">h_n</span><span class="o">.</span><span class="n">shape</span><span class="p">),</span> <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="n">actual</span><span class="p">})</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-52">49. 验证双向 LSTM 的最终状态与 <code>output</code> 两端位置的对应关系。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>这段代码直接证明：反向最终状态对应时间轴位置 0，而不是 <code>output</code> 的末位反向部分。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">B</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span>
+<span class="n">lstm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="n">L</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span>
+<span class="n">output</span><span class="p">,</span> <span class="p">(</span><span class="n">h_n</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">lstm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">h_view</span> <span class="o">=</span> <span class="n">h_n</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span>
+
+<span class="n">forward_final</span> <span class="o">=</span> <span class="n">h_view</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">backward_final</span> <span class="o">=</span> <span class="n">h_view</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">forward_final</span><span class="p">,</span> <span class="n">output</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:</span><span class="n">H</span><span class="p">],</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">backward_final</span><span class="p">,</span> <span class="n">output</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">H</span><span class="p">:],</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+
+<span class="n">sentence_vector</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">forward_final</span><span class="p">,</span> <span class="n">backward_final</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">sentence_vector</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">H</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sentence_vector</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-53">50. 使用 packed sequence 处理未排序的变长 batch，并验证补齐尾部不参与循环计算。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><code>pad_packed_sequence</code> 恢复后，无效尾部使用默认值 0；<code>lengths</code> 用于定义真正的时间步数。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.nn.utils.rnn</span><span class="w"> </span><span class="kn">import</span> <span class="n">pack_padded_sequence</span><span class="p">,</span> <span class="n">pad_packed_sequence</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">B</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">H</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span>
+<span class="n">lengths</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>  <span class="c1"># 故意不按降序排列</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span>
+
+<span class="n">lstm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">packed</span> <span class="o">=</span> <span class="n">pack_padded_sequence</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">lengths</span><span class="o">.</span><span class="n">cpu</span><span class="p">(),</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">enforce_sorted</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+<span class="n">packed_output</span><span class="p">,</span> <span class="p">(</span><span class="n">h_n</span><span class="p">,</span> <span class="n">c_n</span><span class="p">)</span> <span class="o">=</span> <span class="n">lstm</span><span class="p">(</span><span class="n">packed</span><span class="p">)</span>
+<span class="n">output</span><span class="p">,</span> <span class="n">recovered_lengths</span> <span class="o">=</span> <span class="n">pad_packed_sequence</span><span class="p">(</span>
+    <span class="n">packed_output</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">total_length</span><span class="o">=</span><span class="n">T</span>
+<span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">output</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">h_n</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">c_n</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">H</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">recovered_lengths</span><span class="p">,</span> <span class="n">lengths</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">:],</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">H</span><span class="p">))</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">output</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">:],</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">H</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">recovered_lengths</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-54">51. 对右填充 batch，按真实长度 gather 最后有效输出，并验证它等于单向 packed GRU 的 <code>h_n</code>。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>普通单向 GRU 在真实位置以前不会受到后续 PAD 影响，因此可用同一模型对照两种提取方法。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.nn.utils.rnn</span><span class="w"> </span><span class="kn">import</span> <span class="n">pack_padded_sequence</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">B</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">I</span><span class="p">,</span> <span class="n">H</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span>
+<span class="n">lengths</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span>
+<span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">x</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">gru</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GRU</span><span class="p">(</span><span class="n">I</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">full_output</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">gru</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">batch_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">B</span><span class="p">)</span>
+<span class="n">last_valid</span> <span class="o">=</span> <span class="n">full_output</span><span class="p">[</span><span class="n">batch_index</span><span class="p">,</span> <span class="n">lengths</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="n">packed</span> <span class="o">=</span> <span class="n">pack_padded_sequence</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">lengths</span><span class="o">.</span><span class="n">cpu</span><span class="p">(),</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">enforce_sorted</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">packed_h_n</span> <span class="o">=</span> <span class="n">gru</span><span class="p">(</span><span class="n">packed</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">last_valid</span><span class="p">,</span> <span class="n">packed_h_n</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+<span class="k">assert</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">full_output</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">last_valid</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">last_valid</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-55">52. 实现一个支持变长输入的双向 LSTM 文本分类器。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>分类表示直接来自最后一层两个方向的 <code>h_n</code>，不会误取 PAD 时间步。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.nn.utils.rnn</span><span class="w"> </span><span class="kn">import</span> <span class="n">pack_padded_sequence</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">BiLSTMClassifier</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">,</span> <span class="n">padding_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span>
+            <span class="n">embed_dim</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classifier</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token_ids</span><span class="p">,</span> <span class="n">lengths</span><span class="p">):</span>
+        <span class="n">embedded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">token_ids</span><span class="p">)</span>
+        <span class="n">packed</span> <span class="o">=</span> <span class="n">pack_padded_sequence</span><span class="p">(</span>
+            <span class="n">embedded</span><span class="p">,</span> <span class="n">lengths</span><span class="o">.</span><span class="n">cpu</span><span class="p">(),</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">enforce_sorted</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="p">(</span><span class="n">h_n</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">packed</span><span class="p">)</span>
+        <span class="n">h_n</span> <span class="o">=</span> <span class="n">h_n</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">token_ids</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">)</span>
+        <span class="n">sentence_vector</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">h_n</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">h_n</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">classifier</span><span class="p">(</span><span class="n">sentence_vector</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">BiLSTMClassifier</span><span class="p">(</span><span class="n">vocab_size</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">embed_dim</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">token_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]])</span>
+<span class="n">lengths</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+<span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">token_ids</span><span class="p">,</span> <span class="n">lengths</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">logits</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">logits</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-56">53. 对一个 LSTM 分类模型执行反向传播，并验证梯度裁剪后的全局范数不超过阈值。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><code>clip_grad_norm_</code> 的返回值是裁剪前范数；下面另行计算裁剪后范数。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">encoder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">head</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+<span class="n">output</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">encoder</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">logits</span> <span class="o">=</span> <span class="n">head</span><span class="p">(</span><span class="n">output</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()(</span><span class="n">logits</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span>
+<span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+
+<span class="n">parameters</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">encoder</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">head</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+<span class="n">pre_clip</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">max_norm</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<span class="n">post_clip</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span>
+    <span class="n">parameter</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">parameters</span>
+    <span class="k">if</span> <span class="n">parameter</span><span class="o">.</span><span class="n">grad</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<span class="p">))</span>
+
+<span class="k">assert</span> <span class="n">pre_clip</span> <span class="o">&gt;</span> <span class="mf">1.0</span>
+<span class="k">assert</span> <span class="n">post_clip</span> <span class="o">&lt;=</span> <span class="mf">1.00001</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">post_clip</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">({</span><span class="s2">&quot;before&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">pre_clip</span><span class="p">),</span> <span class="s2">&quot;after&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">post_clip</span><span class="p">)})</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-57">54. 将分类 logits 转成概率并输出每个样本的 Top-2 标签。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>训练损失直接使用 logits；只有解释预测结果时才显式计算 Softmax 概率。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;English&quot;</span><span class="p">,</span> <span class="s2">&quot;French&quot;</span><span class="p">,</span> <span class="s2">&quot;Italian&quot;</span><span class="p">,</span> <span class="s2">&quot;Spanish&quot;</span><span class="p">]</span>
+<span class="n">logits</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">1.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span> <span class="p">[</span><span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.7</span><span class="p">]])</span>
+<span class="n">probabilities</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">top_probabilities</span><span class="p">,</span> <span class="n">top_indices</span> <span class="o">=</span> <span class="n">probabilities</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">top_labels</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="n">labels</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">top_indices</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="p">]</span>
+
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">probabilities</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="k">assert</span> <span class="n">top_probabilities</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">top_indices</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="k">assert</span> <span class="p">(</span><span class="n">top_probabilities</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">top_probabilities</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">top_labels</span> <span class="o">==</span> <span class="p">[[</span><span class="s2">&quot;Italian&quot;</span><span class="p">,</span> <span class="s2">&quot;English&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;French&quot;</span><span class="p">,</span> <span class="s2">&quot;Spanish&quot;</span><span class="p">]]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">top_labels</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">top_probabilities</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-58">55. 在一个微型变长数据集上完成 Embedding + GRU 分类训练闭环。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>数据的类别由首 token 决定，用于验证数据管线、packed sequence、损失和优化器是否能共同工作，而不是代表真实泛化性能。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.nn.utils.rnn</span><span class="w"> </span><span class="kn">import</span> <span class="n">pack_padded_sequence</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TinyGRUClassifier</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="n">padding_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gru</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">GRU</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">head</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">token_ids</span><span class="p">,</span> <span class="n">lengths</span><span class="p">):</span>
+        <span class="n">embedded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">token_ids</span><span class="p">)</span>
+        <span class="n">packed</span> <span class="o">=</span> <span class="n">pack_padded_sequence</span><span class="p">(</span>
+            <span class="n">embedded</span><span class="p">,</span> <span class="n">lengths</span><span class="o">.</span><span class="n">cpu</span><span class="p">(),</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">enforce_sorted</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">h_n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gru</span><span class="p">(</span><span class="n">packed</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">h_n</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="n">token_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="p">])</span>
+<span class="n">lengths</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">TinyGRUClassifier</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">80</span><span class="p">):</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    <span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">token_ids</span><span class="p">,</span> <span class="n">lengths</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+    <span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">token_ids</span><span class="p">,</span> <span class="n">lengths</span><span class="p">)</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">accuracy</span> <span class="o">=</span> <span class="p">(</span><span class="n">predictions</span> <span class="o">==</span> <span class="n">labels</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+
+<span class="k">assert</span> <span class="n">accuracy</span> <span class="o">==</span> <span class="mf">1.0</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">({</span><span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="mi">4</span><span class="p">),</span> <span class="s2">&quot;accuracy&quot;</span><span class="p">:</span> <span class="n">accuracy</span><span class="p">})</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="done-bar"><button class="mark-done-btn" data-key="hw37" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="hw36.html"><div class="dir">← 上一篇</div><div class="name">🧹 文本预处理、特征分析与数据增强综合训练</div></a><a class="disabled next"></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、选择题（30 题）</a><a class="lv3" href="#sec-2">1. 传统 RNN 难以并行处理同一序列各时间步的根本原因是？</a><a class="lv3" href="#sec-3">2. 传统 tanh RNN 在长序列反向传播中容易出现梯度消失或爆炸，主要因为？</a><a class="lv3" href="#sec-4">3. LSTM 相比传统 RNN 新增的核心状态是？</a><a class="lv3" href="#sec-5">4. LSTM 遗忘门 $f_t$ 的主要作用是？</a><a class="lv3" href="#sec-6">5. LSTM 输入门 $i_t$ 的主要作用是？</a><a class="lv3" href="#sec-7">6. LSTM 中候选记忆 $\tilde c_t$ 通常使用什么激活函数？</a><a class="lv3" href="#sec-8">7. LSTM 输出门 $o_t$ 控制什么？</a><a class="lv3" href="#sec-9">8. 下列哪一个是标准 LSTM 细胞状态更新形式？</a><a class="lv3" href="#sec-10">9. 已得到 $c_t$ 与输出门 $o_t$，LSTM 隐藏状态通常如何计算？</a><a class="lv3" href="#sec-11">10. LSTM 的遗忘门、输入门和输出门通常使用 sigmoid，主要是因为？</a><a class="lv3" href="#sec-12">11. 关于 LSTM 与长期依赖，哪项表述最准确？</a><a class="lv3" href="#sec-13">12. nn.LSTM 的最终状态返回值是什么？</a><a class="lv3" href="#sec-14">13. nn.GRU 与 nn.LSTM 的状态接口最直接的差异是？</a><a class="lv3" href="#sec-15">14. GRU 的两个主要门通常是？</a><a class="lv3" href="#sec-16">15. 在输入维度与隐藏维度相同、层数和方向相同的情况下，三个循环层门组数量通常满足？</a><a class="lv3" href="#sec-17">16. 单层单向、带两组偏置的 PyTorch LSTM，input_size=I、hidden_size=H，参数量是多少？</a><a class="lv3" href="#sec-18">17. 单层单向 PyTorch GRU 的参数量公式是？</a><a class="lv3" href="#sec-19">18. batch_first=True、双向 LSTM 的输入为 [B,T,I]，隐藏维度为 $H$，output 形状是？</a><a class="lv3" href="#sec-20">19. 两层双向 LSTM 的 h_n 形状是？</a><a class="lv3" href="#sec-21">20. batch_first=True 会怎样影响 h_n 和 c_n？</a><a class="lv3" href="#sec-22">21. 双向 LSTM 最适合下列哪类场景？</a><a class="lv3" href="#sec-23">22. 双向循环网络不适合作为严格自回归语言模型主干，根本原因是？</a><a class="lv3" href="#sec-24">23. 对双向 LSTM 直接把 output[:, -1, :] 当作“正反两方向的最终状态拼接”，问题是什么？</a><a class="lv3" href="#sec-25">24. 为稳定取得最后一层双向 LSTM 的两个最终隐藏状态，最清晰的做法是？</a><a class="lv3" href="#sec-26">25. 一批右侧 padding 的变长序列直接使用 output[:, -1, :] 分类，主要风险是？</a><a class="lv3" href="#sec-27">26. pack_padded_sequence 在 batch 未按长度降序排列时，常用哪个设置？</a><a class="lv3" href="#sec-28">27. RNN 返回 PackedSequence 后，若还需要恢复补齐张量与长度，应使用？</a><a class="lv3" href="#sec-29">28. nn.LSTM(..., num_layers=1, dropout=0.5) 中的内置 dropout 实际如何？</a><a class="lv3" href="#sec-30">29. 人名分类模型最后一层输出 [B,C] logits，配合 CrossEntropyLoss 时应该？</a><a class="lv3" href="#sec-31">30. 在 RNN、GRU 和 LSTM 之间选择时，最可靠的原则是？</a><a class="lv2" href="#sec-32">二、简答题（15 题）</a><a class="lv3" href="#sec-33">31. 从 BPTT 的角度解释传统 RNN 为什么会梯度消失或爆炸，并分别给出缓解方法。</a><a class="lv3" href="#sec-34">32. 按数据流写出一个 LSTM 时间步的完整计算过程。</a><a class="lv3" href="#sec-35">33. 为什么 LSTM 的细胞状态通道比普通 tanh RNN 更利于长期梯度传播？</a><a class="lv3" href="#sec-36">34. 为什么有人会把 LSTM 遗忘门偏置初始化为正值？有什么边界？</a><a class="lv3" href="#sec-37">35. 比较 GRU 与 LSTM 的状态、门控、参数量及适用场景。</a><a class="lv3" href="#sec-38">36. 计算 I=64、H=128 的单层单向 PyTorch RNN、GRU、LSTM 参数量。</a><a class="lv3" href="#sec-39">37. 两层双向 LSTM 输入 [32,20,100]，H=64、batch_first=True，输出状态形状分别是什么？</a><a class="lv3" href="#sec-40">38. 解释双向网络中 output 与 h_n 的对应关系，为什么不能机械取 output[:, -1, :]？</a><a class="lv3" href="#sec-41">39. 双向网络为何适合 NER，却不适合严格流式生成？</a><a class="lv3" href="#sec-42">40. 设计一个变长文本批次进入 LSTM 的无泄漏、无 padding 干扰流程。</a><a class="lv3" href="#sec-43">41. pack_padded_sequence 为什么通常不接受长度为 0 的样本？工程上怎样处理空文本？</a><a class="lv3" href="#sec-44">42. 除最终隐藏状态外，序列分类还可以怎样从 output 得到句子表示？</a><a class="lv3" href="#sec-45">43. 人名分类使用字符 One-hot 与字符 Embedding 各有什么特点？</a><a class="lv3" href="#sec-46">44. 一个循环分类模型的训练循环至少应正确处理哪些状态？</a><a class="lv3" href="#sec-47">45. 如何公平比较 RNN、GRU、LSTM 与双向版本？</a><a class="lv2" href="#sec-48">三、代码题（10 题）</a><a class="lv3" href="#sec-49">46. 构造两层双向 LSTM，验证 output/h_n/c_n 形状并核对参数量。</a><a class="lv3" href="#sec-50">47. 根据 nn.LSTMCell 的参数手动实现一个时间步，并与框架输出对齐。</a><a class="lv3" href="#sec-51">48. 构造双向 GRU，验证状态形状和单层参数量公式。</a><a class="lv3" href="#sec-52">49. 验证双向 LSTM 的最终状态与 output 两端位置的对应关系。</a><a class="lv3" href="#sec-53">50. 使用 packed sequence 处理未排序的变长 batch，并验证补齐尾部不参与循环计算。</a><a class="lv3" href="#sec-54">51. 对右填充 batch，按真实长度 gather 最后有效输出，并验证它等于单向 packed GRU 的 h_n。</a><a class="lv3" href="#sec-55">52. 实现一个支持变长输入的双向 LSTM 文本分类器。</a><a class="lv3" href="#sec-56">53. 对一个 LSTM 分类模型执行反向传播，并验证梯度裁剪后的全局范数不超过阈值。</a><a class="lv3" href="#sec-57">54. 将分类 logits 转成概率并输出每个样本的 Top-2 标签。</a><a class="lv3" href="#sec-58">55. 在一个微型变长数据集上完成 Embedding + GRU 分类训练闭环。</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
