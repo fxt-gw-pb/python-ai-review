@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>人机交互预测与 Flask Web 服务 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#projects" class="active">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">32</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">33</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">34</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">35</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">39</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">40</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">42</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">49</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">50</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">21</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">22</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">23</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">24</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">25</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">26</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">27</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">28</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">29</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">30</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">31</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">32</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project active" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="project04.html">医疗问诊机器人：GPT2 从零训练对话模型</a> / 第 3 章</div>
+<h1>💬 人机交互预测与 Flask Web 服务</h1>
+<div class="chips"><span class="chip green">🏷️ 采样解码</span><span class="chip green">🏷️ 多轮对话</span><span class="chip green">🏷️ Flask</span><a class="chip" href="project04.html">🚀 返回项目总览</a></div>
+</div>
+<nav class="project-chapter-nav" aria-label="项目章节"><div class="project-nav-label">项目进度 · 共 3 章</div><div class="project-steps"><a class="project-step" href="project04-01.html"><span>01</span>项目背景与医疗对话数据处理</a><a class="project-step" href="project04-02.html"><span>02</span>GPT2 模型搭建与训练验证</a><a class="project-step active" href="project04-03.html"><span>03</span>人机交互预测与 Flask Web 服务</a></div></nav><div class="callout tip course-note"><span class="ico">🧭</span><p><strong>工程实践提示：</strong>示例中的模型地址、数据库账号和密钥均应通过环境变量或独立配置文件注入；部署前还需补充权限控制、输入校验、超时重试、日志脱敏、来源引用与离线评估。</p></div><h2 id="sec-1">5. 模型预测（人机交互）</h2>
+<ul>
+<li>使用训练好的模型，进行人机交互，输入Ctrl+Z结束对话之后，聊天记录将保存到sample目录下的sample.txt文件中。</li>
+</ul>
+<p>代码位置：llm_tuning/Gpt2_Chatbot/interact.py</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">GPT2LMHeadModel</span><span class="p">,</span> <span class="n">BertTokenizer</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">Gpt2_Chatbot.parameter_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParameterConfig</span>
+
+<span class="n">pc</span> <span class="o">=</span> <span class="n">ParameterConfig</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">top_k_top_p_filtering</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">top_p</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">filter_value</span><span class="o">=-</span><span class="nb">float</span><span class="p">(</span><span class="s1">'Inf'</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">'''</span>
+<span class="sd">    使用top-k和/或nucleus（top-p）筛选来过滤logits的分布</span>
+<span class="sd">    :param logits: 最后一个token的logits的分布，形状为（词汇大小）</span>
+<span class="sd">    :param top_k: top_k &gt; 0: 保留概率最高的top k个token（top-k筛选）</span>
+<span class="sd">    :param top_p: top_p &gt; 0.0: 保留累积概率大于等于top_p的top token（nucleus筛选）</span>
+<span class="sd">    :param filter_value: 极小值</span>
+<span class="sd">    :return: logits: 过滤后的logits分布，其中低概率标记被设置为 filter_value。</span>
+<span class="sd">    '''</span>
+    <span class="c1"># 确保logits的维度为1，这里只处理批量大小为1的情况。</span>
+    <span class="k">assert</span> <span class="n">logits</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="c1"># 对top_k值进行安全性检查，防止它超过logits最后一个维度的大小，避免运行时错误。</span>
+    <span class="n">top_k</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">top_k</span><span class="p">,</span> <span class="n">logits</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">top_k</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># 移除概率小于top_k标记</span>
+        <span class="c1"># torch.topk()返回最后一维中最大的top_k个元素，返回值为二维(values, indices)</span>
+        <span class="c1"># print(f'torch.topk(logits, top_k)---&gt;{torch.topk(logits, top_k)}')</span>
+        <span class="c1"># print(f'torch.topk(logits, top_k)[0]--&gt;{torch.topk(logits, top_k)[0]}')</span>
+        <span class="c1"># print(f'torch.topk(logits, top_k)[0][-1]--&gt;{torch.topk(logits, top_k)[0][-1]}')</span>
+        <span class="c1"># 判断logits的值，如果小于top_k标记，则设置为filter_value</span>
+        <span class="n">indices_to_remove</span> <span class="o">=</span> <span class="n">logits</span> <span class="o">&lt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">top_k</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># print(f'indices_to_remove---&gt;{indices_to_remove}')</span>
+        <span class="c1"># print(f'logits---&gt;{logits}')</span>
+        <span class="n">logits</span><span class="p">[</span><span class="n">indices_to_remove</span><span class="p">]</span> <span class="o">=</span> <span class="n">filter_value</span>  <span class="c1"># 对于topk之外的其他元素的logits值设为负无穷</span>
+        <span class="c1"># print(f'过滤后的logits---&gt;{logits}')</span>
+
+    <span class="k">if</span> <span class="n">top_p</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">sorted_logits</span><span class="p">,</span> <span class="n">sorted_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># 对logits进行递减排序</span>
+        <span class="c1"># print(f'sorted_logits--&gt;{sorted_logits}')</span>
+        <span class="c1"># print(f'sorted_indices--&gt;{sorted_indices}')</span>
+
+        <span class="c1"># F.softmax(sorted_logits, dim=-1)：将排序后的 logits 转为概率分布</span>
+        <span class="c1"># torch.cumsum(..., dim=-1)：计算累积概率</span>
+        <span class="n">cumulative_probs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">sorted_logits</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># 对应位置为 True 的 token 是 累积概率超过 top_p 阈值的 token，通常需要被移除</span>
+        <span class="n">sorted_indices_to_remove</span> <span class="o">=</span> <span class="n">cumulative_probs</span> <span class="o">&gt;</span> <span class="n">top_p</span>
+        <span class="c1"># print(f'sorted_indices_to_remove1--&gt;{sorted_indices_to_remove}')</span>
+        <span class="c1"># 将索引向右移动，以确保即使第一个token超过阈值也能保留</span>
+        <span class="n">sorted_indices_to_remove</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">sorted_indices_to_remove</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>  <span class="c1"># 将索引向右移动一位</span>
+        <span class="n">sorted_indices_to_remove</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 将第一个token设为False，确保第一个 token 被保留</span>
+        <span class="c1"># print(f'sorted_indices_to_remove2---&gt;{sorted_indices_to_remove}')</span>
+
+        <span class="c1"># 将需要移除的token设置为filter_value。</span>
+        <span class="n">indices_to_remove</span> <span class="o">=</span> <span class="n">sorted_indices</span><span class="p">[</span><span class="n">sorted_indices_to_remove</span><span class="p">]</span>
+        <span class="c1"># print(f'indices_to_remove---&gt;{indices_to_remove}')</span>
+        <span class="n">logits</span><span class="p">[</span><span class="n">indices_to_remove</span><span class="p">]</span> <span class="o">=</span> <span class="n">filter_value</span>
+        <span class="c1"># print(f'logits---&gt;{logits}')</span>
+    <span class="k">return</span> <span class="n">logits</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">model2predict</span><span class="p">():</span>
+    <span class="c1"># 1、加载模型</span>
+    <span class="n">model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">save_model_path</span><span class="p">,</span> <span class="s1">'best_model'</span><span class="p">)</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">GPT2LMHeadModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="c1"># 将模型设置为预测模式</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+    <span class="c1"># 加载分词器</span>
+    <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">BertTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">vocab_path</span><span class="p">)</span>
+
+    <span class="c1"># 将用户和机器人的对话保存到文件中</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">save_samples_path</span><span class="p">,</span> <span class="s1">'samples.txt'</span><span class="p">),</span> <span class="s1">'w'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">'utf-8'</span><span class="p">)</span>
+
+
+    <span class="c1"># 2、处理数据，送入模型预测</span>
+    <span class="c1"># 2.1 需要保存用户上下文，将上下文一起送入模型中</span>
+    <span class="c1"># 使用history列表来存储用户的问题和模型的输出</span>
+    <span class="n">history</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="c1"># 获取用户输入</span>
+        <span class="n">user_input</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">'请输入问题：'</span><span class="p">)</span>
+        <span class="c1"># print(f'user_input--&gt;{user_input}')</span>
+        <span class="c1"># 将用户的问题写入文件中</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'用户问题：'</span> <span class="o">+</span> <span class="n">user_input</span> <span class="o">+</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+        <span class="n">query_ids</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'用户问题：'</span> <span class="o">+</span> <span class="n">user_input</span><span class="p">,</span> <span class="n">add_special_tokens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># print(f'query_ids--&gt;{query_ids}')</span>
+        <span class="c1"># 将问题ids加入到history中</span>
+        <span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">query_ids</span><span class="p">)</span>
+        <span class="c1"># print(f'history--&gt;{history}')</span>
+
+        <span class="c1"># 2.2每次送入大模型时，需要将用户的问题和模型的输出拼接到一起送入大模型</span>
+        <span class="n">input_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">cls_token_id</span><span class="p">]</span>  <span class="c1"># 给大模型的输入需要以[CLS]开头</span>
+        <span class="c1"># 遍历history列表，将列表中的 用户问题 和 模型输出 拼接成输入，送给大模型</span>
+        <span class="k">for</span> <span class="n">ids</span> <span class="ow">in</span> <span class="n">history</span><span class="p">[</span><span class="o">-</span><span class="n">pc</span><span class="o">.</span><span class="n">max_history_len</span><span class="p">:]:</span>  <span class="c1"># 为了防止输入过长，只取最后5个历史记录</span>
+            <span class="n">input_ids</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+            <span class="c1"># 在每个句子结束之后，添加[SEP]作为分割</span>
+            <span class="n">input_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">sep_token_id</span><span class="p">)</span>
+        <span class="c1"># print(f'遍历完history的input_ids--&gt;{input_ids}')</span>
+
+        <span class="c1"># 把数据转为张量</span>
+        <span class="n">input_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">input_ids</span><span class="p">)</span><span class="o">.</span><span class="n">long</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+        <span class="c1"># 2.3 送入模型进行预测</span>
+        <span class="c1"># 初始化一个空列表，用来存储模型输出的ids</span>
+        <span class="n">outputs_ids</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">max_len</span><span class="p">):</span>
+            <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">input_ids</span><span class="p">)</span><span class="o">.</span><span class="n">logits</span>
+            <span class="c1"># print(f'outputs--&gt;{outputs.shape}')</span>
+            <span class="c1"># 直接取最后一行的结果，即为模型输出的概率分布</span>
+            <span class="n">next_token_logits</span> <span class="o">=</span> <span class="n">outputs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="c1"># print(f'next_token_logits--&gt;{next_token_logits.shape}')</span>
+            <span class="c1"># print(f'next_token_logits--&gt;{next_token_logits}')</span>
+
+            <span class="c1"># 2.4 模型预测结果的选择</span>
+            <span class="c1"># 1）对于已经生成的结果中的每个token添加一个重复惩罚项，降低其生成概率，从而缓解复读机问题。</span>
+            <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">outputs_ids</span><span class="p">):</span>
+                <span class="c1"># print(f'id--&gt;{id}')</span>
+                <span class="c1"># print(f'next_token_logits[id]--&gt;{next_token_logits[id]}')</span>
+                <span class="k">if</span> <span class="n">next_token_logits</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">next_token_logits</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">/=</span> <span class="n">pc</span><span class="o">.</span><span class="n">repetition_penalty</span>
+                <span class="k">else</span><span class="p">:</span>  <span class="c1"># 如果这个logits为负数，则需要乘以重复惩罚项</span>
+                    <span class="n">next_token_logits</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">*=</span> <span class="n">pc</span><span class="o">.</span><span class="n">repetition_penalty</span>
+            <span class="c1"># 2）为了避免预测结果中出现[UNK]字符，需要将[UNK]这个token的logits设为无穷小。</span>
+            <span class="n">next_token_logits</span><span class="p">[</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">unk_token_id</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s1">'Inf'</span><span class="p">)</span>
+            <span class="c1"># 3）使用了top_k_top_p_filtering策略，这个策略的作用是根据给定的top_k参数和top_p参数，选出前几个高概率的预测结果，并且累积概率不超过top_p。这样做的一个效果就是：可以保证文本生成质量的同时，具有一定的多样性。具体实现时，就是将不符合要求的token的概率设置成无穷小。</span>
+            <span class="n">filtered_logits</span> <span class="o">=</span> <span class="n">top_k_top_p_filtering</span><span class="p">(</span><span class="n">next_token_logits</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="n">pc</span><span class="o">.</span><span class="n">topk</span><span class="p">,</span> <span class="n">top_p</span><span class="o">=</span><span class="n">pc</span><span class="o">.</span><span class="n">topp</span><span class="p">)</span>
+
+            <span class="c1"># 4）使用torch.multinomial方法，对预测结果中的token进行随机取样，这个函数的特性是，token的概率越大，被抽取的几率就越高。</span>
+            <span class="n">next_token</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">filtered_logits</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="c1"># print(f'next_token--&gt;{next_token}')</span>
+
+            <span class="c1"># 如果预测结果是[SEP]，则说明已经生成了一个完整的句子，可以结束预测</span>
+            <span class="k">if</span> <span class="n">next_token</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">==</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">sep_token_id</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="c1"># 将预测结果加入到outputs_ids中</span>
+            <span class="n">outputs_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">next_token</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+
+            <span class="c1"># 将 next_token 和 原来的 input_ids 连接起来，作为下一次输入</span>
+            <span class="n">input_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">next_token</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># print(f'outputs_ids--&gt;{outputs_ids}')</span>
+        <span class="c1"># 将模型的回复加到history中</span>
+        <span class="n">model_ids</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"模型回答："</span><span class="p">,</span> <span class="n">add_special_tokens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="c1"># print(f'model_ids+outputs_ids--&gt;{model_ids+outputs_ids}')</span>
+        <span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model_ids</span><span class="o">+</span><span class="n">outputs_ids</span><span class="p">)</span>
+
+        <span class="c1"># 将预测结果ids转为文本</span>
+        <span class="n">answer</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">outputs_ids</span><span class="p">)</span>
+        <span class="c1"># print(f'answer--&gt;{answer}')</span>
+        <span class="c1"># 打印机器人的回复</span>
+        <span class="n">answer_sentence</span> <span class="o">=</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">answer</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">'模型回答：'</span> <span class="o">+</span> <span class="n">answer_sentence</span> <span class="o">+</span> <span class="s1">'</span><span class="se">\n</span><span class="s1">'</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">'模型回答：'</span><span class="p">,</span> <span class="n">answer_sentence</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="n">model2predict</span><span class="p">()</span>
+</pre></div>
+</div>
+<h2 id="sec-2">6. 基于Flask框架web开发(了解)</h2>
+<ul>
+<li>对interact.py进行调整, 去除while无限循环，由前端保存history，只需要对传入的句子进行预测即可。</li>
+</ul>
+<p>代码位置：llm_tuning/Gpt2_Chatbot/flask_predict.py</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">GPT2LMHeadModel</span><span class="p">,</span> <span class="n">BertTokenizer</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">Gpt2_Chatbot.parameter_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">ParameterConfig</span>
+
+<span class="n">pc</span> <span class="o">=</span> <span class="n">ParameterConfig</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">top_k_top_p_filtering</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">top_p</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">filter_value</span><span class="o">=-</span><span class="nb">float</span><span class="p">(</span><span class="s1">'Inf'</span><span class="p">)):</span>
+<span class="w">    </span><span class="sd">'''</span>
+<span class="sd">    使用top-k和/或nucleus（top-p）筛选来过滤logits的分布</span>
+<span class="sd">    :param logits: 最后一个token的logits的分布，形状为（词汇大小）</span>
+<span class="sd">    :param top_k: top_k &gt; 0: 保留概率最高的top k个token（top-k筛选）</span>
+<span class="sd">    :param top_p: top_p &gt; 0.0: 保留累积概率大于等于top_p的top token（nucleus筛选）</span>
+<span class="sd">    :param filter_value: 极小值</span>
+<span class="sd">    :return: logits: 过滤后的logits分布，其中低概率标记被设置为 filter_value。</span>
+<span class="sd">    '''</span>
+    <span class="c1"># 确保logits的维度为1，这里只处理批量大小为1的情况。</span>
+    <span class="k">assert</span> <span class="n">logits</span><span class="o">.</span><span class="n">dim</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="c1"># 对top_k值进行安全性检查，防止它超过logits最后一个维度的大小，避免运行时错误。</span>
+    <span class="n">top_k</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">top_k</span><span class="p">,</span> <span class="n">logits</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">top_k</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="c1"># 移除概率小于top_k标记</span>
+        <span class="c1"># torch.topk()返回最后一维中最大的top_k个元素，返回值为二维(values, indices)</span>
+        <span class="c1"># print(f'torch.topk(logits, top_k)---&gt;{torch.topk(logits, top_k)}')</span>
+        <span class="c1"># print(f'torch.topk(logits, top_k)[0]--&gt;{torch.topk(logits, top_k)[0]}')</span>
+        <span class="c1"># print(f'torch.topk(logits, top_k)[0][-1]--&gt;{torch.topk(logits, top_k)[0][-1]}')</span>
+        <span class="c1"># 判断logits的值，如果小于top_k标记，则设置为filter_value</span>
+        <span class="n">indices_to_remove</span> <span class="o">=</span> <span class="n">logits</span> <span class="o">&lt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">top_k</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># print(f'indices_to_remove---&gt;{indices_to_remove}')</span>
+        <span class="c1"># print(f'logits---&gt;{logits}')</span>
+        <span class="n">logits</span><span class="p">[</span><span class="n">indices_to_remove</span><span class="p">]</span> <span class="o">=</span> <span class="n">filter_value</span>  <span class="c1"># 对于topk之外的其他元素的logits值设为负无穷</span>
+        <span class="c1"># print(f'过滤后的logits---&gt;{logits}')</span>
+
+    <span class="k">if</span> <span class="n">top_p</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+        <span class="n">sorted_logits</span><span class="p">,</span> <span class="n">sorted_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">descending</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># 对logits进行递减排序</span>
+        <span class="c1"># print(f'sorted_logits--&gt;{sorted_logits}')</span>
+        <span class="c1"># print(f'sorted_indices--&gt;{sorted_indices}')</span>
+
+        <span class="c1"># F.softmax(sorted_logits, dim=-1)：将排序后的 logits 转为概率分布</span>
+        <span class="c1"># torch.cumsum(..., dim=-1)：计算累积概率</span>
+        <span class="n">cumulative_probs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">sorted_logits</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># 对应位置为 True 的 token 是 累积概率超过 top_p 阈值的 token，通常需要被移除</span>
+        <span class="n">sorted_indices_to_remove</span> <span class="o">=</span> <span class="n">cumulative_probs</span> <span class="o">&gt;</span> <span class="n">top_p</span>
+        <span class="c1"># print(f'sorted_indices_to_remove1--&gt;{sorted_indices_to_remove}')</span>
+        <span class="c1"># 将索引向右移动，以确保即使第一个token超过阈值也能保留</span>
+        <span class="n">sorted_indices_to_remove</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">:]</span> <span class="o">=</span> <span class="n">sorted_indices_to_remove</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>  <span class="c1"># 将索引向右移动一位</span>
+        <span class="n">sorted_indices_to_remove</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>  <span class="c1"># 将第一个token设为False，确保第一个 token 被保留</span>
+        <span class="c1"># print(f'sorted_indices_to_remove2---&gt;{sorted_indices_to_remove}')</span>
+
+        <span class="c1"># 将需要移除的token设置为filter_value。</span>
+        <span class="n">indices_to_remove</span> <span class="o">=</span> <span class="n">sorted_indices</span><span class="p">[</span><span class="n">sorted_indices_to_remove</span><span class="p">]</span>
+        <span class="c1"># print(f'indices_to_remove---&gt;{indices_to_remove}')</span>
+        <span class="n">logits</span><span class="p">[</span><span class="n">indices_to_remove</span><span class="p">]</span> <span class="o">=</span> <span class="n">filter_value</span>
+        <span class="c1"># print(f'logits---&gt;{logits}')</span>
+    <span class="k">return</span> <span class="n">logits</span>
+
+
+<span class="c1"># 1、加载模型</span>
+<span class="n">model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">save_model_path</span><span class="p">,</span> <span class="s1">'best_model'</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">GPT2LMHeadModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+<span class="c1"># 将模型设置为预测模式</span>
+<span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+<span class="c1"># 加载分词器</span>
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">BertTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">vocab_path</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">model_predict</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">history</span><span class="p">):</span>
+    <span class="c1"># 2.1 获取用户输入</span>
+    <span class="n">query_ids</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">'用户问题：'</span> <span class="o">+</span> <span class="n">text</span><span class="p">,</span> <span class="n">add_special_tokens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># print(f'query_ids--&gt;{query_ids}')</span>
+    <span class="c1"># 将问题ids加入到history中</span>
+    <span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">query_ids</span><span class="p">)</span>
+    <span class="c1"># print(f'history--&gt;{history}')</span>
+
+    <span class="c1"># 2.2每次送入大模型时，需要将用户的问题和模型的输出拼接到一起送入大模型</span>
+    <span class="n">input_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">cls_token_id</span><span class="p">]</span>  <span class="c1"># 给大模型的输入需要以[CLS]开头</span>
+    <span class="c1"># 遍历history列表，将列表中的 用户问题 和 模型输出 拼接成输入，送给大模型</span>
+    <span class="k">for</span> <span class="n">ids</span> <span class="ow">in</span> <span class="n">history</span><span class="p">[</span><span class="o">-</span><span class="n">pc</span><span class="o">.</span><span class="n">max_history_len</span><span class="p">:]:</span>  <span class="c1"># 为了防止输入过长，只取最后5个历史记录</span>
+        <span class="n">input_ids</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+        <span class="c1"># 在每个句子结束之后，添加[SEP]作为分割</span>
+        <span class="n">input_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">sep_token_id</span><span class="p">)</span>
+    <span class="c1"># print(f'遍历完history的input_ids--&gt;{input_ids}')</span>
+
+    <span class="c1"># 把数据转为张量</span>
+    <span class="n">input_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">input_ids</span><span class="p">)</span><span class="o">.</span><span class="n">long</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="c1"># 2.3 送入模型进行预测</span>
+    <span class="c1"># 初始化一个空列表，用来存储模型输出的ids</span>
+    <span class="n">outputs_ids</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">max_len</span><span class="p">):</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">input_ids</span><span class="p">)</span><span class="o">.</span><span class="n">logits</span>
+        <span class="c1"># print(f'outputs--&gt;{outputs.shape}')</span>
+        <span class="c1"># 直接取最后一行的结果，即为模型输出的概率分布</span>
+        <span class="n">next_token_logits</span> <span class="o">=</span> <span class="n">outputs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="c1"># print(f'next_token_logits--&gt;{next_token_logits.shape}')</span>
+        <span class="c1"># print(f'next_token_logits--&gt;{next_token_logits}')</span>
+        <span class="c1"># 2.4 模型预测结果的选择</span>
+        <span class="c1"># 1）对于已经生成的结果中的每个token添加一个重复惩罚项，降低其生成概率，从而缓解复读机问题。</span>
+        <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">outputs_ids</span><span class="p">):</span>
+            <span class="c1"># print(f'id--&gt;{id}')</span>
+            <span class="c1"># print(f'next_token_logits[id]--&gt;{next_token_logits[id]}')</span>
+            <span class="k">if</span> <span class="n">next_token_logits</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">next_token_logits</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">/=</span> <span class="n">pc</span><span class="o">.</span><span class="n">repetition_penalty</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># 如果这个logits为负数，则需要乘以重复惩罚项</span>
+                <span class="n">next_token_logits</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span> <span class="o">*=</span> <span class="n">pc</span><span class="o">.</span><span class="n">repetition_penalty</span>
+        <span class="c1"># 2）为了避免预测结果中出现[UNK]字符，需要将[UNK]这个token的logits设为无穷小。</span>
+        <span class="n">next_token_logits</span><span class="p">[</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">unk_token_id</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="nb">float</span><span class="p">(</span><span class="s1">'Inf'</span><span class="p">)</span>
+        <span class="c1"># 3）使用了top_k_top_p_filtering策略，这个策略的作用是根据给定的top_k参数和top_p参数，选出前几个高概率的预测结果，并且累积概率不超过top_p。这样做的一个效果就是：可以保证文本生成质量的同时，具有一定的多样性。具体实现时，就是将不符合要求的token的概率设置成无穷小。</span>
+        <span class="n">filtered_logits</span> <span class="o">=</span> <span class="n">top_k_top_p_filtering</span><span class="p">(</span><span class="n">next_token_logits</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="n">pc</span><span class="o">.</span><span class="n">topk</span><span class="p">,</span> <span class="n">top_p</span><span class="o">=</span><span class="n">pc</span><span class="o">.</span><span class="n">topp</span><span class="p">)</span>
+
+        <span class="c1"># 4）使用torch.multinomial方法，对预测结果中的token进行随机取样，这个函数的特性是，token的概率越大，被抽取的几率就越高。</span>
+        <span class="n">next_token</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">multinomial</span><span class="p">(</span><span class="n">F</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">filtered_logits</span><span class="p">,</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="c1"># print(f'next_token--&gt;{next_token}')</span>
+
+        <span class="c1"># 如果预测结果是[SEP]，则说明已经生成了一个完整的句子，可以结束预测</span>
+        <span class="k">if</span> <span class="n">next_token</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">==</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">sep_token_id</span><span class="p">:</span>
+            <span class="k">break</span>
+
+        <span class="c1"># 将预测结果加入到outputs_ids中</span>
+        <span class="n">outputs_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">next_token</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+
+        <span class="c1"># 将 next_token 和 原来的 input_ids 连接起来，作为下一次输入</span>
+        <span class="n">input_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">next_token</span><span class="p">],</span> <span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c1"># print(f'outputs_ids--&gt;{outputs_ids}')</span>
+    <span class="c1"># 将模型的回复加到history中</span>
+    <span class="n">model_ids</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"模型回答："</span><span class="p">,</span> <span class="n">add_special_tokens</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="c1"># print(f'model_ids+outputs_ids--&gt;{model_ids+outputs_ids}')</span>
+    <span class="n">history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">model_ids</span><span class="o">+</span><span class="n">outputs_ids</span><span class="p">)</span>
+
+    <span class="c1"># 将预测结果ids转为文本</span>
+    <span class="n">answer</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">convert_ids_to_tokens</span><span class="p">(</span><span class="n">outputs_ids</span><span class="p">)</span>
+    <span class="c1"># print(f'answer--&gt;{answer}')</span>
+    <span class="c1"># 打印机器人的回复</span>
+    <span class="n">answer_sentence</span> <span class="o">=</span> <span class="s1">''</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">answer</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">answer_sentence</span><span class="p">,</span> <span class="n">history</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="s1">'你好'</span>
+    <span class="n">history</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">answer_sentence</span><span class="p">,</span> <span class="n">history</span> <span class="o">=</span> <span class="n">model_predict</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">history</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'answer_sentence--&gt;</span><span class="si">{</span><span class="n">answer_sentence</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'history--&gt;</span><span class="si">{</span><span class="n">history</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+
+    <span class="n">text</span> <span class="o">=</span> <span class="s1">'头疼怎么办'</span>
+    <span class="n">answer_sentence</span><span class="p">,</span> <span class="n">history</span> <span class="o">=</span> <span class="n">model_predict</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">history</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'answer_sentence--&gt;</span><span class="si">{</span><span class="n">answer_sentence</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'history--&gt;</span><span class="si">{</span><span class="n">history</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul>
+<li>基于Flask框架的web后端接口</li>
+</ul>
+<p>这部分可以用大模型生成，写好提示词即可。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>使用大模型生成web前后端代码, 描述如下:
+现在你是一个代码专家, 目前已经训练好了一个模型, 并且已经将该模型进行了封装, 函数名为model_predict(), 该函数传入参数为text, history，其中text为用户问题，history为一个列表，用来保存上下文信息；返回值为response, history，其中response为预测结果，history为列表。
+
+现在需要你基于Flask框架, 对该函数进行API接口封装制作, 并且希望能够制作一个简单的web界面, 界面的主要功能呈现如下:
+1. 用户输入问题和history列表, 然后返回预测结果和history。这个history不需要前端往里边添加内容，只需要保存这个变量即可。在前端页面刷新时，这个变量清空为[]。
+2. 将用户和模型的聊天信息保留在页面上展示
+3. 页面标题名称叫做:医疗问诊机器人
+4. 页面标题和输入对话框布局要对称, 并且用不同的颜色渲染
+请给出详细的app.py和index.html的代码
+</pre></div>
+</div>
+<p>代码位置：llm_tuning/Gpt2_Chatbot/app.py</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">flask</span><span class="w"> </span><span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">render_template</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">Gpt2_Chatbot.flask_predict</span><span class="w"> </span><span class="kn">import</span> <span class="n">model_predict</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="c1"># API 接口</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/api/predict'</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">'POST'</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">predict</span><span class="p">():</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="n">question</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'question'</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Question--&gt;</span><span class="si">{</span><span class="n">question</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+    <span class="c1"># 前端传过来一个 history 列表（例如：[[872, 1962], [872, 1962, 8024, 6821...]]）</span>
+    <span class="n">history</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'history'</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'History--&gt;</span><span class="si">{</span><span class="n">history</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+
+    <span class="c1"># 调用模型预测，假设 model_predict 返回 (answer, new_history)</span>
+    <span class="n">answer</span><span class="p">,</span> <span class="n">new_history</span> <span class="o">=</span> <span class="n">model_predict</span><span class="p">(</span><span class="n">question</span><span class="p">,</span> <span class="n">history</span><span class="o">=</span><span class="n">history</span><span class="p">)</span>
+
+    <span class="c1"># 把 answer 和更新后的 history 一并返回（前端保存并更新history，企业中也可以将history其保存到数据库或文件中）</span>
+    <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s1">'question'</span><span class="p">:</span> <span class="n">question</span><span class="p">,</span> <span class="s1">'answer'</span><span class="p">:</span> <span class="n">answer</span><span class="p">,</span> <span class="s1">'history'</span><span class="p">:</span> <span class="n">new_history</span><span class="p">})</span>
+
+<span class="c1"># Web 界面</span>
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s1">'/'</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">'index.html'</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul>
+<li>web前端代码</li>
+</ul>
+<p>代码位置：llm_tuning/Gpt2_Chatbot/templates/index.html</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">HTML</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span> <span class="na">lang</span><span class="o">=</span><span class="s">"zh-CN"</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">charset</span><span class="o">=</span><span class="s">"UTF-8"</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">meta</span> <span class="na">name</span><span class="o">=</span><span class="s">"viewport"</span> <span class="na">content</span><span class="o">=</span><span class="s">"width=device-width, initial-scale=1.0"</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span>医疗问诊机器人<span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+<span class="w">        </span><span class="nt">body</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">font-family</span><span class="p">:</span><span class="w"> </span><span class="s1">'Arial'</span><span class="p">,</span><span class="w"> </span><span class="kc">sans-serif</span><span class="p">;</span>
+<span class="w">            </span><span class="k">max-width</span><span class="p">:</span><span class="w"> </span><span class="mi">800</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">            </span><span class="k">margin</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="kc">auto</span><span class="p">;</span>
+<span class="w">            </span><span class="k">padding</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">            </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#f5f5f5</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="p">.</span><span class="nc">header</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">text-align</span><span class="p">:</span><span class="w"> </span><span class="kc">center</span><span class="p">;</span>
+<span class="w">            </span><span class="k">margin-bottom</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">            </span><span class="k">padding</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">            </span><span class="k">background</span><span class="p">:</span><span class="w"> </span><span class="nb">linear-gradient</span><span class="p">(</span><span class="mi">135</span><span class="kt">deg</span><span class="p">,</span><span class="w"> </span><span class="mh">#4b6cb7</span><span class="p">,</span><span class="w"> </span><span class="mh">#182848</span><span class="p">);</span>
+<span class="w">            </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="kc">white</span><span class="p">;</span>
+<span class="w">            </span><span class="k">border-radius</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">            </span><span class="k">box-shadow</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="mi">4</span><span class="kt">px</span><span class="w"> </span><span class="mi">8</span><span class="kt">px</span><span class="w"> </span><span class="nb">rgba</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="p">.</span><span class="nc">chat-container</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="kc">white</span><span class="p">;</span>
+<span class="w">            </span><span class="k">border-radius</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">            </span><span class="k">box-shadow</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="mi">4</span><span class="kt">px</span><span class="w"> </span><span class="mi">8</span><span class="kt">px</span><span class="w"> </span><span class="nb">rgba</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mf">0.1</span><span class="p">);</span>
+<span class="w">            </span><span class="k">padding</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">            </span><span class="k">margin-bottom</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">            </span><span class="k">height</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">            </span><span class="k">overflow-y</span><span class="p">:</span><span class="w"> </span><span class="kc">auto</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="p">.</span><span class="nc">message</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">margin-bottom</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">            </span><span class="k">padding</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="kt">px</span><span class="w"> </span><span class="mi">15</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">            </span><span class="k">border-radius</span><span class="p">:</span><span class="w"> </span><span class="mi">18</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">            </span><span class="k">max-width</span><span class="p">:</span><span class="w"> </span><span class="mi">70</span><span class="kt">%</span><span class="p">;</span>
+<span class="w">            </span><span class="k">word-wrap</span><span class="p">:</span><span class="w"> </span><span class="kc">break-word</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="p">.</span><span class="nc">user-message</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#e3f2fd</span><span class="p">;</span>
+<span class="w">            </span><span class="k">margin-left</span><span class="p">:</span><span class="w"> </span><span class="kc">auto</span><span class="p">;</span>
+<span class="w">            </span><span class="k">border-bottom-right-radius</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="p">.</span><span class="nc">bot-message</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#f1f1f1</span><span class="p">;</span>
+<span class="w">            </span><span class="k">margin-right</span><span class="p">:</span><span class="w"> </span><span class="kc">auto</span><span class="p">;</span>
+<span class="w">            </span><span class="k">border-bottom-left-radius</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="p">.</span><span class="nc">input-container</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">display</span><span class="p">:</span><span class="w"> </span><span class="kc">flex</span><span class="p">;</span>
+<span class="w">            </span><span class="k">gap</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="p">#</span><span class="nn">user-input</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">flex</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="w">            </span><span class="k">padding</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">            </span><span class="k">border</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="kt">px</span><span class="w"> </span><span class="kc">solid</span><span class="w"> </span><span class="mh">#ddd</span><span class="p">;</span>
+<span class="w">            </span><span class="k">border-radius</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">            </span><span class="k">font-size</span><span class="p">:</span><span class="w"> </span><span class="mi">16</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="p">#</span><span class="nn">send-button</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">padding</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="kt">px</span><span class="w"> </span><span class="mi">20</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">            </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#4b6cb7</span><span class="p">;</span>
+<span class="w">            </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="kc">white</span><span class="p">;</span>
+<span class="w">            </span><span class="k">border</span><span class="p">:</span><span class="w"> </span><span class="kc">none</span><span class="p">;</span>
+<span class="w">            </span><span class="k">border-radius</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">            </span><span class="k">cursor</span><span class="p">:</span><span class="w"> </span><span class="kc">pointer</span><span class="p">;</span>
+<span class="w">            </span><span class="k">font-size</span><span class="p">:</span><span class="w"> </span><span class="mi">16</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">            </span><span class="k">transition</span><span class="p">:</span><span class="w"> </span><span class="k">background-color</span><span class="w"> </span><span class="mf">0.3</span><span class="kt">s</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="p">#</span><span class="nn">send-button</span><span class="p">:</span><span class="nd">hover</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="mh">#3a56a1</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="p">.</span><span class="nc">timestamp</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="k">font-size</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">            </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="mh">#777</span><span class="p">;</span>
+<span class="w">            </span><span class="k">margin-top</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="kt">px</span><span class="p">;</span>
+<span class="w">            </span><span class="k">text-align</span><span class="p">:</span><span class="w"> </span><span class="kc">right</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">    </span><span class="p">&lt;/</span><span class="nt">style</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">"header"</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>医疗问诊机器人<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span>您的智能健康顾问<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">"chat-container"</span> <span class="na">id</span><span class="o">=</span><span class="s">"chat-box"</span><span class="p">&gt;</span>
+        <span class="cm">&lt;!-- 初始系统消息 --&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">"message bot-message"</span><span class="p">&gt;</span>
+            您好！我是小健康助手，请问有什么健康问题可以帮您解答？
+            <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">"timestamp"</span><span class="p">&gt;</span>系统消息<span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+    <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">"input-container"</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"text"</span> <span class="na">id</span><span class="o">=</span><span class="s">"user-input"</span> <span class="na">placeholder</span><span class="o">=</span><span class="s">"请输入您的健康问题..."</span> <span class="na">autofocus</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">button</span> <span class="na">id</span><span class="o">=</span><span class="s">"send-button"</span><span class="p">&gt;</span>发送<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+
+<span class="p">&lt;</span><span class="nt">script</span><span class="p">&gt;</span>
+<span class="w">    </span><span class="c1">// 每次刷新页面 history 都从空开始</span>
+<span class="w">    </span><span class="kd">let</span><span class="w"> </span><span class="nx">history</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[];</span>
+
+<span class="w">    </span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'send-button'</span><span class="p">).</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'click'</span><span class="p">,</span><span class="w"> </span><span class="nx">sendMessage</span><span class="p">);</span>
+<span class="w">    </span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'user-input'</span><span class="p">).</span><span class="nx">addEventListener</span><span class="p">(</span><span class="s1">'keypress'</span><span class="p">,</span><span class="w"> </span><span class="kd">function</span><span class="p">(</span><span class="nx">e</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">e</span><span class="p">.</span><span class="nx">key</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'Enter'</span><span class="p">)</span><span class="w"> </span><span class="nx">sendMessage</span><span class="p">();</span>
+<span class="w">    </span><span class="p">});</span>
+
+<span class="w">    </span><span class="kd">function</span><span class="w"> </span><span class="nx">sendMessage</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">userInput</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'user-input'</span><span class="p">);</span>
+<span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">question</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">userInput</span><span class="p">.</span><span class="nx">value</span><span class="p">.</span><span class="nx">trim</span><span class="p">();</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nx">question</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">''</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">// 显示用户消息</span>
+<span class="w">        </span><span class="nx">addMessage</span><span class="p">(</span><span class="nx">question</span><span class="p">,</span><span class="w"> </span><span class="s1">'user'</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">userInput</span><span class="p">.</span><span class="nx">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">''</span><span class="p">;</span>
+
+<span class="w">        </span><span class="c1">// 把当前 history 发给后端</span>
+<span class="w">        </span><span class="nx">fetch</span><span class="p">(</span><span class="s1">'/api/predict'</span><span class="p">,</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">method</span><span class="o">:</span><span class="w"> </span><span class="s1">'POST'</span><span class="p">,</span>
+<span class="w">            </span><span class="nx">headers</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s1">'Content-Type'</span><span class="o">:</span><span class="w"> </span><span class="s1">'application/json'</span><span class="w"> </span><span class="p">},</span>
+<span class="w">            </span><span class="nx">body</span><span class="o">:</span><span class="w"> </span><span class="nb">JSON</span><span class="p">.</span><span class="nx">stringify</span><span class="p">({</span><span class="w"> </span><span class="nx">question</span><span class="o">:</span><span class="w"> </span><span class="nx">question</span><span class="p">,</span><span class="w"> </span><span class="nx">history</span><span class="o">:</span><span class="w"> </span><span class="nx">history</span><span class="w"> </span><span class="p">})</span>
+<span class="w">        </span><span class="p">})</span>
+<span class="w">        </span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">response</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">response</span><span class="p">.</span><span class="nx">json</span><span class="p">())</span>
+<span class="w">        </span><span class="p">.</span><span class="nx">then</span><span class="p">(</span><span class="nx">data</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="c1">// 显示机器人回答</span>
+<span class="w">            </span><span class="nx">addMessage</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">answer</span><span class="p">,</span><span class="w"> </span><span class="s1">'bot'</span><span class="p">);</span>
+
+<span class="w">            </span><span class="c1">// 更新 history</span>
+<span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">Array</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">history</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">history</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">data</span><span class="p">.</span><span class="nx">history</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="nb">Array</span><span class="p">.</span><span class="nx">isArray</span><span class="p">(</span><span class="nx">data</span><span class="p">.</span><span class="nx">new_history</span><span class="p">))</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">history</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">data</span><span class="p">.</span><span class="nx">new_history</span><span class="p">;</span>
+<span class="w">            </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">history</span><span class="p">.</span><span class="nx">push</span><span class="p">([</span><span class="nx">question</span><span class="p">,</span><span class="w"> </span><span class="nx">data</span><span class="p">.</span><span class="nx">answer</span><span class="p">]);</span>
+<span class="w">            </span><span class="p">}</span>
+<span class="w">        </span><span class="p">})</span>
+<span class="w">        </span><span class="p">.</span><span class="k">catch</span><span class="p">(</span><span class="nx">error</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">            </span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s1">'Error:'</span><span class="p">,</span><span class="w"> </span><span class="nx">error</span><span class="p">);</span>
+<span class="w">            </span><span class="nx">addMessage</span><span class="p">(</span><span class="s1">'抱歉，服务暂时不可用，请稍后再试。'</span><span class="p">,</span><span class="w"> </span><span class="s1">'bot'</span><span class="p">);</span>
+<span class="w">        </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kd">function</span><span class="w"> </span><span class="nx">addMessage</span><span class="p">(</span><span class="nx">text</span><span class="p">,</span><span class="w"> </span><span class="nx">sender</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">chatBox</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">getElementById</span><span class="p">(</span><span class="s1">'chat-box'</span><span class="p">);</span>
+<span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">messageDiv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">document</span><span class="p">.</span><span class="nx">createElement</span><span class="p">(</span><span class="s1">'div'</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">messageDiv</span><span class="p">.</span><span class="nx">className</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`message </span><span class="si">${</span><span class="nx">sender</span><span class="si">}</span><span class="sb">-message`</span><span class="p">;</span>
+
+<span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">now</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nb">Date</span><span class="p">();</span>
+<span class="w">        </span><span class="kd">const</span><span class="w"> </span><span class="nx">timeString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">now</span><span class="p">.</span><span class="nx">toLocaleTimeString</span><span class="p">([],</span><span class="w"> </span><span class="p">{</span><span class="nx">hour</span><span class="o">:</span><span class="w"> </span><span class="s1">'2-digit'</span><span class="p">,</span><span class="w"> </span><span class="nx">minute</span><span class="o">:</span><span class="s1">'2-digit'</span><span class="p">});</span>
+
+<span class="w">        </span><span class="nx">messageDiv</span><span class="p">.</span><span class="nx">innerHTML</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="sb">`</span>
+<span class="sb">            </span><span class="si">${</span><span class="nx">text</span><span class="si">}</span>
+<span class="sb">            &lt;div class="timestamp"&gt;</span><span class="si">${</span><span class="nx">sender</span><span class="w"> </span><span class="o">===</span><span class="w"> </span><span class="s1">'user'</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="s1">'您'</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="s1">'小健康助手'</span><span class="si">}</span><span class="sb"> · </span><span class="si">${</span><span class="nx">timeString</span><span class="si">}</span><span class="sb">&lt;/div&gt;</span>
+<span class="sb">        `</span><span class="p">;</span>
+
+<span class="w">        </span><span class="nx">chatBox</span><span class="p">.</span><span class="nx">appendChild</span><span class="p">(</span><span class="nx">messageDiv</span><span class="p">);</span>
+<span class="w">        </span><span class="nx">chatBox</span><span class="p">.</span><span class="nx">scrollTop</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">chatBox</span><span class="p">.</span><span class="nx">scrollHeight</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">&lt;/</span><span class="nt">script</span><span class="p">&gt;</span>
+
+<span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+<ul>
+<li>运行 app.py 后，用浏览器打开对应地址即可看到网页版问诊界面：页面上方是标题栏，中间为对话气泡区域，底部是输入框。输入健康问题（如“低T3综合征的并发症是什么？”）发送后，模型生成的解答会以聊天气泡展示，并支持连续多轮问诊。（原课件此处的界面截图含品牌元素，已省略。）</li>
+</ul>
+<p></p>
+<div class="done-bar"><button class="mark-done-btn" data-key="project04-03" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="project04-02.html"><div class="dir">← 上一篇</div><div class="name">🧠 GPT2 模型搭建与训练验证</div></a><a class="disabled next"></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">5. 模型预测（人机交互）</a><a class="lv2" href="#sec-2">6. 基于Flask框架web开发(了解)</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

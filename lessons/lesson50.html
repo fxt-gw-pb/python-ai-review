@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#projects">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">32</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">33</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">34</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">35</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">39</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">40</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">42</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">49</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">50</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">21</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">22</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">23</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">24</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">25</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">26</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">27</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">28</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">29</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">30</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">31</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">32</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 50 讲</div>
+<h1>🧩 PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</h1>
+<div class="chips"><span class="chip">🏷️ Prefix / Adapter</span><span class="chip">🏷️ LoRA</span><span class="chip">🏷️ QLoRA</span></div>
+</div>
+<div class="callout tip course-note"><span class="ico">📝</span><p><strong>课堂笔记提要：</strong>PEFT 的共同思路是冻结大模型主干、只训练小的新增参数：Prefix 在每层注意力拼接可学习的 K/V，Adapter 在层间插入瓶颈模块，LoRA 用低秩矩阵近似权重更新，QLoRA 再叠加 4-bit 量化让消费级显卡也能微调大模型。</p></div>
+
+<hr/>
+<h2 id="sec-1">学习目标</h2>
+<ul>
+<li>理解Prefix-Tuning、Adapter-Tuning、LoRA三种大模型参数微调方法的原理</li>
+</ul>
+<hr/>
+<h2 id="sec-2">PEFT(大模型参数高效微调)</h2>
+<p>目前在工业界应用大模型主流方式：<strong>参数高效微调方法（Parameter-Efficient Fine-Tuning，PEFT）</strong>，<strong>PEFT 方法仅微调少量或额外的模型参数，固定大部分预训练参数，大大降低了计算和存储成本，同时最先进的 PEFT 技术也能实现了与全量微调相当的性能</strong>。</p>
+<p>该方法可以使 PLM 高效适应各种下游应用任务，而无需微调预训练模型的所有参数，且让大模型在消费级硬件上进行全量微调（Full Fine-Tuning）变得可行。</p>
+<hr/>
+<p>目前应用较多的PEFT方法主要分为三大类：</p>
+<ul>
+<li><strong>Prefix/Prompt-Tuning</strong>：在模型的输入或隐层添加 <span class="math-inline">\(k\)</span>个额外可训练的前缀 tokens（这些前缀是连续的伪 tokens，不对应真实的 tokens），只训练这些前缀参数；</li>
+<li><strong>Adapter-Tuning</strong>：将较小的神经网络层或模块插入预训练模型的每一层，这些新插入的神经模块称为 adapter（适配器），下游任务微调时也只训练这些适配器参数；</li>
+<li><strong>LoRA</strong>：通过学习小参数的低秩矩阵来近似模型权重矩阵 <span class="math-inline">\(W\)</span>的参数更新，训练时只优化低秩矩阵参数；</li>
+</ul>
+<p>此外Hugging Face 开源的一个高效微调大模型的库PEFT，该算法库支持上述三类方法，可以直接调用。</p>
+<h3 id="sec-3">1. Prefix Tuning</h3>
+<p>Prefix-Tuning 在模型输入前添加一个连续的且任务特定的向量序列（continuous task-specific vectors），称之为前缀（prefix）。前缀被视为一系列“虚拟 tokens”，但是它由不对应于真实 tokens 的自由参数组成。与更新所有 PLM 参数的全量微调不同，Prefix-Tuning 固定 PLM 的所有参数，只更新优化特定任务的 prefix。因此，在生产部署时，只需要存储一个大型 PLM 的副本和一个学习到的特定任务的 prefix，每个下游任务只产生非常小的额外的计算和存储开销。</p>
+<div align="center"><img alt="课程配图" decoding="async" loading="lazy" src="../assets/img/lesson50/figure-8f4815ec036e.png"/></div>
+<p>Fine-tuning 更新所有 PLM 参数，并且需要为每个任务存储完整的模型副本。Prefix-tuning 冻结了 PLM 参数并且只优化了 prefix。因此，只需要为每个任务存储特定 prefix，使 Prefix-tuning 模块化且节省存储空间。</p>
+<hr/>
+<p>具体实现流程如下：</p>
+<p>（1）<strong>确定任务与基模型</strong></p>
+<ul>
+<li>任务：条件生成（如摘要、表格到文本、对话）或 seq2seq。</li>
+<li>选模型：GPT-2/decoder-only 或 BART/T5（encoder-decoder）。</li>
+</ul>
+<p>（2）<strong>设计 prefix 配置</strong></p>
+<ul>
+<li>决定 <code>num_prefix</code>（每层的虚拟 token 数，常见 10–100），以及是否对所有层都使用 prefix（论文对每层都用了 prefix，但可做只对部分层）。</li>
+</ul>
+<p>（3）<strong>构造可训练参数（初始化）</strong></p>
+<p>可以为每层创建一个可以训练的矩阵<span class="math-inline">\(P_θ\)</span> ，作为前缀向量拼接到原向量中。但是论文中提出直接优化 <span class="math-inline">\(P_θ\)</span> 会导致训练不稳定，可以通过一个更小的矩阵 <span class="math-inline">\(P_w\)</span>和一个更大的前馈神经网络<span class="math-inline">\(MLP_θ\)</span> 对<span class="math-inline">\(P_θ\)</span> 进行重参数化: <span class="math-inline">\(P_θ[i,:]=MLP_θ(P_w[i,:])\)</span> 。</p>
+<p>所以目前实际实现时，通常会先训练一个 <code>(num_layers, num_prefix, hidden_dim)</code> 的 prefix embedding，然后通过一个小的 MLP 投影成 <code>(num_layers, num_prefix, 2 * head_dim * num_heads)</code>，再 reshape 成 <code>(num_layers, num_heads, num_prefix, head_dim)</code>，分别拆成 K 和 V。因此需要创建一个可训练的矩阵 <span class="math-inline">\(P_θ\)</span>  ，以及一个MLP模型。</p>
+<p>（4）<strong>修改模型前向（插入 prefix）</strong></p>
+<ul>
+<li>在 Transformer 的每一层注意力里，将 prefix 对应的 key/value 拼接到原始的 key/value——这样后续 token 可以像“看到真实 tokens”一样 attend 到 prefix，然后一起进行训练。</li>
+</ul>
+<p>（5）<strong>训练设置</strong></p>
+<ul>
+<li>冻结原模型参数（<code>requires_grad=False</code>），只对 prefix 参数做优化。</li>
+<li>损失函数通常是标准的交叉熵，训练器只更新 prefix。 </li>
+</ul>
+<p>（6）<strong>推理</strong></p>
+<ul>
+<li>推理时把训练好的 prefix 附加到每层（同训练时），然后用常见的解码策略进行生成。</li>
+</ul>
+<hr/>
+<p>如下图所示，以 GPT2 的自回归语言模型为例，将输入 <span class="math-inline">\(x\)</span> 和输出 <span class="math-inline">\(y\)</span> 拼接为 <span class="math-inline">\(z=[x;y]\)</span> ，经过 LM 的某一层计算隐层表示<span class="math-inline">\(h=[h_1,...,h_i,....,h_n]\)</span> ， <span class="math-inline">\(h_i=LM_Ø(z_i, h&lt;i)\)</span> ，其中， <span class="math-inline">\(X_{idx}\)</span> 和<span class="math-inline">\(Y_{idx}\)</span>分别为输入和输出序列的索引。</p>
+<p>Prefix-Tuning 在输入前添加前缀，即<span class="math-inline">\(z=[Prefix,x,y]\)</span> ，<span class="math-inline">\(P_{idx}\)</span>为前缀序列的索引，<span class="math-inline">\(|P_{idx}|\)</span> 为前缀的长度。前缀索引对应着由<span class="math-inline">\(θ\)</span>参数化的向量矩阵 <span class="math-inline">\(P_θ\)</span> ，维度为<span class="math-inline">\(|P_{idx}|×dim(h_i)\)</span>。</p>
+<p><div align="center"><img alt="课程配图" decoding="async" loading="lazy" src="../assets/img/lesson50/figure-ad674cf7238b.png"/></div></p>
+<p>在训练时，LM 的参数 <span class="math-inline">\(Ø\)</span> 被固定，只有前缀参数 <span class="math-inline">\(θ\)</span> 为可训练的参数。训练完成后，只有前缀<span class="math-inline">\(P_θ\)</span>被保存。</p>
+<hr/>
+<p>示例代码：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 除了下面这个地方外，其他和P-Tuning V2大致相同。</span>
+
+<span class="c1"># “经典 Prefix Tuning” 与P-Tuning V2的核心差异：没有 virtual tokens + MLP 映射，而是为每层直接学习 k/v 参数。</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SimplePrefixTuningEncoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prefix_len</span><span class="p">,</span> <span class="n">num_layers</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">head_dim</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix_len</span> <span class="o">=</span> <span class="n">prefix_len</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span> <span class="o">=</span> <span class="n">num_layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span> <span class="o">=</span> <span class="n">num_heads</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span> <span class="o">=</span> <span class="n">head_dim</span>
+        <span class="c1"># 直接为每层维护 k 和 v（注意这里是未 reshape 的扁平表示）</span>
+        <span class="c1"># shape: (num_layers, prefix_len, num_heads * head_dim)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">k_params</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">num_layers</span><span class="p">,</span> <span class="n">prefix_len</span><span class="p">,</span> <span class="n">num_heads</span> <span class="o">*</span> <span class="n">head_dim</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.02</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v_params</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">num_layers</span><span class="p">,</span> <span class="n">prefix_len</span><span class="p">,</span> <span class="n">num_heads</span> <span class="o">*</span> <span class="n">head_dim</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.02</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+        <span class="n">outs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="p">):</span>
+            <span class="n">k_flat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k_params</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (B, P, H*D_h)</span>
+            <span class="n">v_flat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v_params</span><span class="p">[</span><span class="n">l</span><span class="p">]</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">reshape_to_kv</span><span class="p">(</span><span class="n">k_flat</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">)</span>  <span class="c1"># (B,H,P,D_h)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">reshape_to_kv</span><span class="p">(</span><span class="n">v_flat</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">)</span>
+            <span class="n">outs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">outs</span>
+</pre></div>
+</div>
+<hr/>
+<p><strong>Prefix Tuning的特点</strong>：</p>
+<ul>
+<li>优点：<ul>
+<li>只训练少量 prefix 参数，相对全量微调的存储和训练成本低。</li>
+<li>不同任务只需切换 prefix，无需保存多个完整模型。</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>小模型表现差：在 BERT-base 等小模型上效果不佳</li>
+<li>需在每层注入 prefix，会占用输入序列的长度</li>
+<li>在判别式任务上常逊于 LoRA、P-Tuning v2</li>
+</ul>
+</li>
+</ul>
+<h3 id="sec-4">2. Adapter Tuning</h3>
+<p>与 Prefix Tuning 和 Prompt Tuning 这类在输入前可训练添加 prompt embedding 参数来以少量参数适配下游任务不同，<strong>Adapter Tuning 则是在预训练模型内部的网络层之间添加新的网络层或模块来适配下游任务</strong>。</p>
+<hr/>
+<p>假设预训练模型函数表示为<span class="math-inline">\(Ø_w(x)\)</span>，对于 Adapter Tuning ，添加适配器之后模型函数更新为<span class="math-inline">\(Ø_{w,w_0}(x)\)</span>， <span class="math-inline">\(w\)</span>是预训练模型的参数， <span class="math-inline">\(w_0\)</span>是新添加的适配器的参数，在训练过程中， <span class="math-inline">\(w\)</span>被固定，只有 <span class="math-inline">\(w_0\)</span>被更新。<span class="math-inline">\(|w_0|&lt;&lt;|w|\)</span> ，这使得不同下游任务只需要添加少量可训练的参数即可，节省计算和存储开销，同时共享大规模预训练模型。</p>
+<div align="center"><img alt="课程配图" decoding="async" loading="lazy" src="../assets/img/lesson50/figure-4f9d35e6b2b4.png"/></div>
+<p>Series Adapter的适配器结构和与 Transformer 的集成如上图所示。适配器模块被添加到每个 Transformer 层两次：多头注意力映射之后和两层前馈神经网络之后。适配器是一个 bottleneck（瓶颈）结构的模块，由一个两层的前馈神经网络（由向下投影矩阵、非线性函数和向上投影矩阵构成）和一个输出输出之间的残差连接组成。</p>
+<hr/>
+<p>示例代码：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.optim</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">optim</span>
+
+<span class="c1"># --------- Adapter 模块（bottleneck 结构）---------</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">Adapter</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">,</span> <span class="n">bottleneck_size</span><span class="p">,</span> <span class="n">nonlinearity</span><span class="o">=</span><span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">()):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        hidden_size: Transformer 层输出维度（例如 768）</span>
+<span class="sd">        bottleneck_size: adapter 内部降维 (e.g., 64)</span>
+<span class="sd">        """</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># down-project -&gt; nonlinearity -&gt; up-project</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">down_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">bottleneck_size</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">act</span> <span class="o">=</span> <span class="n">nonlinearity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">up_proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">bottleneck_size</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">)</span>
+        <span class="c1"># 可选的小膨胀（scaling）参数</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="mf">1.0</span><span class="p">))</span>  <span class="c1"># 或常量</span>
+        <span class="c1"># 有时在 adapter 前加 LayerNorm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layer_norm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="n">hidden_size</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c1"># x: [batch, seq_len, hidden_size]</span>
+        <span class="n">residual</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer_norm</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">down_proj</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>       <span class="c1"># 降维</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">act</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">up_proj</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>         <span class="c1"># 恢复维度</span>
+        <span class="k">return</span> <span class="n">residual</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">*</span> <span class="n">x</span>   <span class="c1"># skip connection（残差）</span>
+
+<span class="c1"># --------- 在 Transformer Block 中插入 Adapter（常见位置）---------</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">TransformerBlockWithAdapter</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">original_block</span><span class="p">,</span> <span class="n">adapter_cfg</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        original_block: 预训练的 Transformer 子模块（包含 attention + ff）</span>
+<span class="sd">        adapter_cfg: dict, e.g. {"bottleneck":64, "position":"after_ff"}</span>
+<span class="sd">        """</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orig</span> <span class="o">=</span> <span class="n">original_block</span>  <span class="c1"># 冻结或不冻结由上层决定</span>
+        <span class="c1"># 根据配置在 attention 或 feed-forward 后插入 adapter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span> <span class="o">=</span> <span class="n">Adapter</span><span class="p">(</span><span class="n">hidden_size</span><span class="o">=</span><span class="n">original_block</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span>
+                               <span class="n">bottleneck_size</span><span class="o">=</span><span class="n">adapter_cfg</span><span class="p">[</span><span class="s2">"bottleneck"</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">adapter_cfg</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"position"</span><span class="p">,</span> <span class="s2">"after_ff"</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hidden_states</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># 使用原始 block 的 forward（attention + ff）</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orig</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">hidden_states</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="n">attention_mask</span><span class="p">)</span>
+        <span class="c1"># 在指定位置调用 adapter（这里把 orig.forward 的输出看成 final）</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">"after_ff"</span><span class="p">,</span> <span class="s2">"after_output"</span><span class="p">):</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">adapter</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">h</span>
+
+<span class="c1"># --------- 构造带 Adapter 的模型（示意）---------</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ModelWithAdapters</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_transformer</span><span class="p">,</span> <span class="n">adapter_cfg</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># 把每个 transformer layer 包装为带 adapter 的 layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">layers</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ModuleList</span><span class="p">([</span>
+            <span class="n">TransformerBlockWithAdapter</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">adapter_cfg</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="n">base_transformer</span><span class="o">.</span><span class="n">layers</span>
+        <span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pooler</span> <span class="o">=</span> <span class="n">base_transformer</span><span class="o">.</span><span class="n">pooler</span>  <span class="c1"># 或自定义 classifier head</span>
+        <span class="c1"># 任务输出头（比如分类）</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classifier</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">base_transformer</span><span class="o">.</span><span class="n">hidden_size</span><span class="p">,</span> <span class="n">num_labels</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">base_transformer</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">input_ids</span><span class="p">)</span>  <span class="c1"># 词嵌入</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
+            <span class="n">h</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">)</span>
+        <span class="n">pooled</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pooler</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>   <span class="c1"># [batch, hidden_size]</span>
+        <span class="n">logits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">classifier</span><span class="p">(</span><span class="n">pooled</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">logits</span>
+
+
+<span class="c1"># --------- 冻结基模型权重，只训练 adapter（和可能的 task head）---------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">freeze_base_model_params</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    冻结模型中除 Adapter 与 classifier 外的所有参数。</span>
+<span class="sd">    假设 Adapter 的类名为 Adapter，任务头命名为 model.classifier（可按需调整）。</span>
+<span class="sd">    """</span>
+    <span class="c1"># 先默认冻结所有参数</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># 解冻所有 Adapter 模块的参数</span>
+    <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">modules</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">Adapter</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># 解冻 classifier（任务头）</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="s2">"classifier"</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">classifier</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">True</span>
+
+
+<span class="c1"># --------- 训练循环（只更新 adapter 和 head）---------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="c1"># 1. 构造基模型与带 adapter 的封装</span>
+    <span class="n">base_transformer</span> <span class="o">=</span> <span class="n">load_pretrained_transformer</span><span class="p">()</span>  <span class="c1"># 伪函数</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">ModelWithAdapters</span><span class="p">(</span><span class="n">base_transformer</span><span class="p">,</span> <span class="n">adapter_cfg</span><span class="o">=</span><span class="p">{</span><span class="s2">"bottleneck"</span><span class="p">:</span><span class="mi">64</span><span class="p">,</span> <span class="s2">"position"</span><span class="p">:</span><span class="s2">"after_ff"</span><span class="p">})</span>
+
+    <span class="c1"># 2. 冻结基模型（必须在创建 optimizer 之前）</span>
+    <span class="n">freeze_base_model_params</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+
+    <span class="c1"># 3. 创建优化器，只包含 requires_grad=True 的参数</span>
+    <span class="n">trainable_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">]</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">AdamW</span><span class="p">(</span><span class="n">trainable_params</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">)</span>
+
+    <span class="c1"># 4. 训练（train 函数内部使用同一逻辑也可以）</span>
+    <span class="n">loss_fn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="p">:</span>
+            <span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">batch</span><span class="p">[</span><span class="s1">'input_ids'</span><span class="p">],</span> <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'attention_mask'</span><span class="p">))</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">batch</span><span class="p">[</span><span class="s1">'labels'</span><span class="p">])</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+            <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+
+<span class="c1"># --------- 保存 / 加载 adapter 权重（常用做法）---------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">save_adapter</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="c1"># 仅保存 adapter 和 task head 的 state_dict（便于共享与切换）</span>
+    <span class="n">adapter_state</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">():</span>
+        <span class="k">if</span> <span class="s1">'adapter'</span> <span class="ow">in</span> <span class="n">name</span> <span class="ow">or</span> <span class="s1">'classifier'</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+            <span class="n">adapter_state</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">adapter_state</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">load_adapter</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="n">adapter_state</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="s1">'cpu'</span><span class="p">)</span>
+    <span class="n">model_state</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">adapter_state</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">model_state</span><span class="p">:</span>
+            <span class="n">model_state</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">copy_</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">model_state</span><span class="p">)</span>
+
+
+<span class="c1"># --------- 推理（Inference）---------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">inference</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">[</span><span class="s1">'input_ids'</span><span class="p">],</span> <span class="n">inputs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'attention_mask'</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+        <span class="n">preds</span> <span class="o">=</span> <span class="n">logits</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">preds</span>
+</pre></div>
+</div>
+<hr/>
+<p><strong>Adapter Tuning的特点</strong>：</p>
+<ul>
+<li>优点：<ul>
+<li>只训练少量 adapter 参数，相对全量微调的存储和训练成本低。</li>
+<li>可以为多个任务保存不同的 adapter，而共享一个大模型。</li>
+<li>多个任务的 adapters 可以在推理时进行切换或融合，提升迁移和泛化能力。</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>因为大部分参数被冻结，adapter 的容量有限，对复杂任务或需要大规模参数调整的任务可能效果不如全量微调。</li>
+<li>Adapter 的维度大小（瓶颈层大小）、插入位置等超参数对性能影响较大，调参复杂度较高。</li>
+<li>PLM 基础上添加适配器层会引入额外的计算，带来推理延迟问题</li>
+</ul>
+</li>
+</ul>
+<h3 id="sec-5">3. LoRA</h3>
+<p>上述Adapter Tuning 方法在 PLM 基础上添加适配器层会引入额外的计算，带来推理延迟问题；而 Prefix Tuning 方法难以优化，其性能随可训练参数规模非单调变化，更根本的是，为前缀保留部分序列长度必然会减少用于处理下游任务的序列长度。因此微软推出了LoRA方法。</p>
+<hr/>
+<p><strong>LORA的实现方式</strong></p>
+<p>我们先思考两个问题：为何用数千的样本就能将一个数十亿参数的模型微调得比较好？为何大模型表现出很好的few-shot能力？</p>
+<p>Aghajanyan的研究（《Intrinsic Dimensionality Explains the Effectiveness of Language Model Fine-Tuning》）表明：预训练模型拥有极小的内在维度(instrisic dimension)，即存在一个极低维度的参数，微调它和在全参数空间中微调能起到相同的效果【大模型在预训练阶段已经学到了更多的“通用特征”，所以在微调时，只需要在一个更小的方向空间中“对齐”或“修正”即可】。</p>
+<p>同时Aghajanyan发现在预训练后，越大的模型有越小的内在维度，这也解释了为何大模型都拥有很好的few-shot能力【因为它们已经覆盖了大部分语言知识，少量参数更新（甚至几条示例 in-context）就能把输出方向调整到目标任务】。</p>
+<p>受instrisic dimension工作的启发，作者认为参数更新过程中也存在一个‘内在秩’。对于预训练权重矩阵 $ W_0$ ，我们可以用一个低秩分解 $ \Delta W $ 来表示参数更新，即：</p>
+<div align="center"><img alt="课程配图" decoding="async" loading="lazy" src="../assets/img/lesson50/figure-81d392c50184.png"/></div>
+<p>训练过程中冻结参数 $ W_0$ ，仅训练A和B中的参数。如上图所示，前向传播过程变为</p>
+<div align="center"><img alt="课程配图" decoding="async" loading="lazy" src="../assets/img/lesson50/figure-7af8cdf93788.png"/></div>
+<p>这种方式则称为低秩适应（Low-Rank Adaptation），其核心思想是对大型模型的权重矩阵进行隐式的低秩转换，也就是：<strong>通过一个较低维度的表示来近似表示一个高维矩阵或数据集</strong>。</p>
+<div align="center"><img alt="课程配图" decoding="async" loading="lazy" src="../assets/img/lesson50/figure-3d7e556d82cc.png"/></div>
+<p>基本原理：LoRA技术冻结预训练模型的权重，并在每个Transformer块中注入可训练层（称为秩分解矩阵），即在模型的Linear层的旁边增加一个“旁支”A和B。其中，A将数据从d维降到r维，这个r是LoRA的秩，是一个重要的超参数；B将数据从r维升到d维，B部分的参数初始为0。模型训练结束后，需要将A+B部分的参数与原大模型的参数合并在一起使用。</p>
+<hr/>
+<p>示例代码：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># -------------------------</span>
+<span class="c1"># 配置与超参数</span>
+<span class="c1"># -------------------------</span>
+<span class="n">RANK</span> <span class="o">=</span> <span class="mi">8</span>             <span class="c1"># r，LoRA 的秩（通常很小，如 4, 8, 16）</span>
+<span class="n">ALPHA</span> <span class="o">=</span> <span class="mi">16</span>           <span class="c1"># 缩放系数 alpha（常见做法：alpha ≈ r 或者更大）</span>
+<span class="n">LORA_DROPOUT</span> <span class="o">=</span> <span class="mf">0.1</span>   <span class="c1"># 可选：对 LoRA 下采样结果使用 dropout</span>
+<span class="n">LEARNING_RATE</span> <span class="o">=</span> <span class="mf">3e-4</span>
+
+<span class="c1"># -------------------------</span>
+<span class="c1"># 简单的 LoRA 模块（伪实现）</span>
+<span class="c1"># -------------------------</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">LoRALinear</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    将 LoRA 嵌入到一个线性层的替代模块中（用于说明）。</span>
+<span class="sd">    设原始线性层为 y = W x（W: out x in）。</span>
+<span class="sd">    我们将输出改为 y = W x + (alpha/r) * B (A x)。</span>
+<span class="sd">    """</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orig_linear</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">RANK</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">ALPHA</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">LORA_DROPOUT</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">orig</span> <span class="o">=</span> <span class="n">orig_linear</span>         <span class="c1"># 原始线性层（预训练权重 W），保持不训练（冻结）</span>
+        <span class="n">out</span><span class="p">,</span> <span class="n">inp</span> <span class="o">=</span> <span class="n">orig_linear</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">shape</span>  <span class="c1"># 假设形状 (out, in)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">r</span> <span class="o">=</span> <span class="n">r</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scaling</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">/</span> <span class="n">r</span>
+
+        <span class="c1"># 初始化 LoRA 参数：A (r x in), B (out x r)</span>
+        <span class="c1"># 常见初始化：A 用小方差正态，B 用零（或小方差）</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">A</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">inp</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">B</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">r</span><span class="p">),</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">"normal"</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+        <span class="n">initialize</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">B</span><span class="p">,</span> <span class="n">method</span><span class="o">=</span><span class="s2">"zeros"</span><span class="p">)</span>  <span class="c1"># 将 B 初始化为零可稳定训练</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span> <span class="o">=</span> <span class="n">Dropout</span><span class="p">(</span><span class="n">dropout</span><span class="p">)</span> <span class="k">if</span> <span class="n">dropout</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="c1"># x: shape (batch, in)</span>
+        <span class="n">base_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">orig</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># 原始权重输出 (batch, out)</span>
+
+        <span class="c1"># LoRA 增量部分</span>
+        <span class="n">down</span> <span class="o">=</span> <span class="n">x</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">T</span>      <span class="c1"># (batch, in) @ (in, r) -&gt; (batch, r)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">:</span>
+            <span class="n">down</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dropout</span><span class="p">(</span><span class="n">down</span><span class="p">)</span>  <span class="c1"># 仍然 (batch, r)</span>
+        <span class="n">up</span> <span class="o">=</span> <span class="n">down</span> <span class="o">@</span> <span class="bp">self</span><span class="o">.</span><span class="n">B</span><span class="o">.</span><span class="n">T</span>     <span class="c1"># (batch, r) @ (r, out) -&gt; (batch, out)</span>
+
+        <span class="n">lora_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">scaling</span> <span class="o">*</span> <span class="n">up</span>
+        <span class="k">return</span> <span class="n">base_out</span> <span class="o">+</span> <span class="n">lora_out</span>
+
+<span class="c1"># -------------------------</span>
+<span class="c1"># 将 LoRA 插入到 Transformer 的注意力层（示例）</span>
+<span class="c1"># -------------------------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">replace_module</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">target_name</span><span class="p">,</span> <span class="n">new_module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    在 model 中找到名字为 target_name 的子模块，</span>
+<span class="sd">    用 new_module 替换掉它。</span>
+<span class="sd">    """</span>
+    <span class="n">parent</span> <span class="o">=</span> <span class="n">model</span>
+    <span class="n">name_parts</span> <span class="o">=</span> <span class="n">target_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"."</span><span class="p">)</span>
+
+    <span class="c1"># 找到最后一级的父模块</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">name_parts</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+
+    <span class="c1"># 替换子模块</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">name_parts</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">new_module</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">inject_lora_into_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">target_modules</span><span class="o">=</span><span class="p">[</span><span class="s2">"q_proj"</span><span class="p">,</span> <span class="s2">"v_proj"</span><span class="p">,</span> <span class="s2">"o_proj"</span><span class="p">],</span> <span class="n">r</span><span class="o">=</span><span class="n">RANK</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">ALPHA</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    遍历模型的模块，把指定名字的线性层替换为 LoRA 版本。</span>
+<span class="sd">    target_modules 例子：在某些实现中 query/key/value projection 名称可能是 "q", "k", "v" 或 "q_proj" 等。</span>
+<span class="sd">    """</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">named_modules</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">is_linear_layer</span><span class="p">(</span><span class="n">module</span><span class="p">)</span> <span class="ow">and</span> <span class="n">match_name</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">target_modules</span><span class="p">):</span>
+            <span class="c1"># 用 LoRA 包装原始线性层（保留原始权重以便可选合并）</span>
+            <span class="n">lora_wrapped</span> <span class="o">=</span> <span class="n">LoRALinear</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="n">r</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">LORA_DROPOUT</span><span class="p">)</span>
+            <span class="n">replace_module</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">lora_wrapped</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span>
+
+<span class="c1"># -------------------------</span>
+<span class="c1"># 冻结基模型，只训练 LoRA 参数</span>
+<span class="c1"># -------------------------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">freeze_base_model_except_lora</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="c1"># 只把 LoRA 参数设置为需要梯度</span>
+    <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">modules</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">LoRALinear</span><span class="p">):</span>
+            <span class="n">module</span><span class="o">.</span><span class="n">A</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">module</span><span class="o">.</span><span class="n">B</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="c1"># 如果 LoRA 有 bias 或其他可训练项，也打开它们</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="s2">"lora_bias"</span><span class="p">):</span>
+                <span class="n">module</span><span class="o">.</span><span class="n">lora_bias</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">True</span>
+
+<span class="c1"># -------------------------</span>
+<span class="c1"># 训练示例主循环（伪代码）</span>
+<span class="c1"># -------------------------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">():</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">load_pretrained_model</span><span class="p">(</span><span class="s2">"..."</span><span class="p">)</span>        <span class="c1"># 加载预训练 Transformer</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">inject_lora_into_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>      <span class="c1"># 注入 LoRA</span>
+    <span class="n">freeze_base_model_except_lora</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>       <span class="c1"># 冻结基模型参数</span>
+
+    <span class="c1"># 只把 LoRA 参数传入优化器</span>
+    <span class="n">lora_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">]</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">AdamW</span><span class="p">(</span><span class="n">lora_params</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="n">LEARNING_RATE</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="p">:</span>
+            <span class="n">inputs</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">batch</span>
+            <span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>                 <span class="c1"># 前向（会自动计算 LoRA 增量）</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+            <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+
+<span class="c1"># -------------------------</span>
+<span class="c1"># 合并（merge）LoRA 到基模型权重（可选）</span>
+<span class="c1"># -------------------------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">merge_lora_into_base</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    把 LoRA 学到的低秩增量合并到原始权重 W 中，之后可以丢弃 A,B，</span>
+<span class="sd">    使模型成为单个常规模型（便于导出/部署）。</span>
+<span class="sd">    对每个 LoRALinear：</span>
+<span class="sd">      W_merged = W + (alpha/r) * (B @ A)</span>
+<span class="sd">    """</span>
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">named_modules</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">LoRALinear</span><span class="p">):</span>
+            <span class="n">W</span> <span class="o">=</span> <span class="n">module</span><span class="o">.</span><span class="n">orig</span><span class="o">.</span><span class="n">weight</span>  <span class="c1"># 原始权重矩阵 (out, in)</span>
+            <span class="c1"># 计算增量：B @ A -&gt; shape (out, in)</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="n">matmul</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">B</span><span class="p">,</span> <span class="n">module</span><span class="o">.</span><span class="n">A</span><span class="p">)</span>   <span class="c1"># (out, r) @ (r, in)</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="n">delta</span> <span class="o">*</span> <span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">scaling</span><span class="p">)</span>     <span class="c1"># 缩放 alpha/r</span>
+            <span class="n">W</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">W</span><span class="o">.</span><span class="n">data</span> <span class="o">+</span> <span class="n">delta</span>              <span class="c1"># 原地合并（视实现而定）</span>
+            <span class="c1"># 用合并后的权重替换回一个普通的线性层（移除 LoRA 参数以节省资源）</span>
+            <span class="n">new_linear</span> <span class="o">=</span> <span class="n">make_linear_layer_from_weight</span><span class="p">(</span><span class="n">W</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="n">module</span><span class="o">.</span><span class="n">orig</span><span class="o">.</span><span class="n">bias</span><span class="p">)</span>
+            <span class="n">replace_module</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">new_linear</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span>
+
+<span class="c1"># -------------------------</span>
+<span class="c1"># 保存/加载策略</span>
+<span class="c1"># -------------------------</span>
+<span class="c1"># 1) 保存仅 LoRA 参数（小文件），便于在不同 base model 上快速重用：</span>
+<span class="c1">#    save_state = { "lora_A": module.A.state_dict(), "lora_B": module.B.state_dict(), ... }</span>
+<span class="c1"># 2) 合并后保存整个模型权重（与标准保存一样）：</span>
+<span class="c1">#    merged_model = merge_lora_into_base(model)</span>
+<span class="c1">#    save_model(merged_model)</span>
+<span class="c1">#</span>
+<span class="c1"># 加载时：</span>
+<span class="c1"># - 若加载到相同 base model：先加载 base model 权重，再加载 LoRA 参数并注入。</span>
+<span class="c1"># - 若加载合并模型：直接加载合并后的权重文件即可。</span>
+</pre></div>
+</div>
+<p>LoRA方法是目前最通用、同时也是效果最好的微调方法之一。</p>
+<hr/>
+<p><strong>LoRA的特点</strong>：</p>
+<ul>
+<li>优点：<ul>
+<li>只训练极少参数，相对全量微调的存储和训练成本低。</li>
+<li>效果接近全参数微调，且保留原模型能力。</li>
+<li>不同任务的 LoRA 模块可插拔，便于多任务部署。</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>LoRA 本质是用低秩分解逼近权重更新矩阵，这对参数空间的表达能力有限制，可能无法拟合某些复杂任务所需的高秩变化。</li>
+<li>LoRA 通常加在 attention 的投影矩阵（Wq/Wv）上，但不同任务可能对位置敏感，选择不好会影响性能。</li>
+</ul>
+</li>
+</ul>
+<h3 id="sec-6">4. QLoRA</h3>
+<p><strong>QLoRA出现的背景和动机:</strong></p>
+<p>尽管LoRA已经大大降低了微调的参数量和存储需求，但对于GPT-3 (175B)、LLaMA-65B (65B)、Falcon-40B (40B) 这样参数量巨大的模型，即使是加载模型本身（即使冻结）也需要巨大的GPU内存。例如，加载一个65B参数的16-bit模型就需要大约130GB 的 VRAM，这超出了大多数消费级GPU的能力。</p>
+<p>于是Dettmers et al. 于 2023 年在论文 <em>QLoRA: Efficient Finetuning of Quantized LLMs</em> 中提出**QLoRA (Quantized LoRA)** 。</p>
+<p>它的核心思想是：<strong>通过对预训练语言模型（PLM）进行量化（通常是 4-bit NormalFloat），并结合 LoRA 技术进行微调，从而在极低的内存消耗下，仍然能够高效地微调巨型语言模型，同时保持甚至超越全量 16-bit LoRA 的性能。</strong></p>
+<p>QLoRA极大地降低了微调大型模型的硬件门槛，使得在消费级 GPU 上微调数十亿甚至千亿参数的模型成为可能。</p>
+<hr/>
+<p>QLoRA的核心在于引入了两个关键的创新点：</p>
+<ol>
+<li><strong>4-bit NormalFloat (NF4) 量化：</strong><ul>
+<li>传统的量化方法（如 int8）可能导致精度损失。QLoRA 提出了一种**新的4-bit 数据类型NormalFloat (NF4)**，它是一种信息理论最优的量化方案，专为正态分布的数据设计，能够更有效地保留模型的精度。</li>
+<li><strong>双量化 (Double Quantization)</strong>：这是 QLoRA 的一个重要细节。它对第一次量化得到的量化常数（即块量化中每个块的比例因子）再次进行量化。这能进一步减少内存占用，因为它减少了存储量化常数所需的位数。</li>
+<li><strong>分页优化器 (Paged Optimizers)</strong>：QLoRA 利用 NVIDIA 的统一内存功能，在 GPU 内存不足时，将优化器状态（optimizer states）分页到 CPU RAM，从而避免了 GPU 内存溢出（OOM）错误。</li>
+</ul>
+</li>
+<li><strong>LoRA 微调机制保持不变：</strong><ul>
+<li>在量化后的冻结PLM上，<strong>LoRA的微调机制保持不变</strong>。这意味着我们仍然只训练和更新少量的低秩 A 和 B 矩阵。</li>
+<li><strong>16-bit LoRA 权重</strong> ：尽管基础模型是 4-bit 量化的，但 LoRA 权重本身（A 和 B 矩阵）以及优化器状态**仍然保持 16-bit 精度**（通常是 float16 或 bfloat16）。这是 QLoRA 能够保持高性能的关键。这是因为只训练少量的 LoRA 权重，将其保持高精度不会显著增加内存负担，但对梯度计算和优化过程的稳定性至关重要。</li>
+</ul>
+</li>
+</ol>
+<hr/>
+<p><strong>工作原理:</strong></p>
+<ol>
+<li><strong>加载和 4-bit 量化基础 PLM：</strong><ul>
+<li>使用<code>bitsandbytes</code>库加载预训练模型。在加载时，模型的大部分权重会被立即量化为 4-bit NormalFloat (NF4)。这个量化过程通常包含双量化。</li>
+<li>模型的参数被设置为不可训练（<code>requires_grad=False</code>）。</li>
+</ul>
+</li>
+<li><strong>在量化模型上注入 LoRA 模块：</strong><ul>
+<li>像标准 LoRA 一样，选择模型中的目标线性层（如 Attention 的 Q、K、V 投影层和 FFN），并在它们旁边并行地注入可训练的低秩 A 和 B 矩阵。</li>
+<li>这些 A 和 B 矩阵以及它们的优化器状态保持 16-bit 精度。</li>
+</ul>
+</li>
+<li><strong>前向传播：</strong><ul>
+<li>当进行前向传播时，量化后的 4-bit 权重会被**即时反量化 (dequantize)** 到 16-bit 精度，然后与输入相乘。</li>
+<li>LoRA 模块的 16-bit 权重 BA 也会与输入相乘。</li>
+<li>两个结果（来自基础模型的和来自 LoRA 模块的）相加。</li>
+</ul>
+</li>
+<li><strong>反向传播：</strong><ul>
+<li>梯度会流向 LoRA 模块的 A 和 B 矩阵。</li>
+<li>由于基础模型是冻结且量化的，<strong>梯度不会流向其 4-bit 权重</strong>。</li>
+</ul>
+</li>
+<li><strong>分页优化器：</strong><ul>
+<li>优化器（如 AdamW）的状态通常会占用大量内存。QLoRA 使用分页优化器，在 GPU 内存不足时，将优化器状态在 GPU 和 CPU RAM 之间进行分页，以避免 OOM 错误。</li>
+</ul>
+</li>
+</ol>
+<hr/>
+<p><strong>QLoRA的特点</strong>：</p>
+<ul>
+<li>优点：<ul>
+<li>极低的内存消耗。这是 QLoRA 最显著的优势。可以将训练巨型模型的内存需求降低 3-4 倍，使得在单张消费级 GPU 上（如 24GB VRAM 的 RTX 3090/4090）微调 65B 甚至 70B 参数的模型成为可能。</li>
+<li>性能优异：尽管进行了 4-bit 量化，但由于 16-bit 的 LoRA 权重和优化器状态，QLoRA 在许多任务上能够保持与 16-bit LoRA 甚至全量微调相媲美的性能。</li>
+<li>训练速度快：由于只训练少量参数且内存效率高，训练速度非常快。</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>虽然 NF4 优化了精度，但极端任务或敏感任务可能仍受 4-bit 量化影响。</li>
+<li>由于量化和分页机制的存在，训练和问题调试会比标准 LoRA 更复杂。</li>
+</ul>
+</li>
+</ul>
+<h3 id="sec-7">小结总结</h3>
+<ul>
+<li>本小节主要介绍了目前主流的PEFT方式的原理。</li>
+</ul>
+<hr/>
+<div class="done-bar"><button class="mark-done-btn" data-key="lesson50" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson49.html"><div class="dir">← 上一篇</div><div class="name">🪄 Prompt-Tuning：从 NLP 四范式到 PET 与软提示</div></a><a class="disabled next"></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">学习目标</a><a class="lv2" href="#sec-2">PEFT(大模型参数高效微调)</a><a class="lv3" href="#sec-3">1. Prefix Tuning</a><a class="lv3" href="#sec-4">2. Adapter Tuning</a><a class="lv3" href="#sec-5">3. LoRA</a><a class="lv3" href="#sec-6">4. QLoRA</a><a class="lv3" href="#sec-7">小结总结</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

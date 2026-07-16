@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LoRA 微调 ChatGLM 的实现、训练与预测 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#projects" class="active">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">32</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">33</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">34</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">35</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">39</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">40</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">42</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">49</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">50</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">21</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">22</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">23</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">24</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">25</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">26</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">27</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">28</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">29</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">30</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">31</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">32</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project active" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="project06.html">ChatGLM 多任务微调：LoRA 信息抽取与分类</a> / 第 3 章</div>
+<h1>🔧 LoRA 微调 ChatGLM 的实现、训练与预测</h1>
+<div class="chips"><span class="chip green">🏷️ peft / LoRA</span><span class="chip green">🏷️ 训练验证</span><span class="chip green">🏷️ 推理预测</span><a class="chip" href="project06.html">🚀 返回项目总览</a></div>
+</div>
+<nav class="project-chapter-nav" aria-label="项目章节"><div class="project-nav-label">项目进度 · 共 3 章</div><div class="project-steps"><a class="project-step" href="project06-01.html"><span>01</span>项目简介、ChatGLM-6B 架构与环境配置</a><a class="project-step" href="project06-02.html"><span>02</span>信息抽取与分类的混合数据预处理</a><a class="project-step active" href="project06-03.html"><span>03</span>LoRA 微调 ChatGLM 的实现、训练与预测</a></div></nav><div class="callout tip course-note"><span class="ico">🧭</span><p><strong>工程实践提示：</strong>示例中的模型地址、数据库账号和密钥均应通过环境变量或独立配置文件注入；部署前还需补充权限控制、输入校验、超时重试、日志脱敏、来源引用与离线评估。</p></div>
+
+
+
+<h2 id="sec-1">学习目标</h2>
+<ul>
+<li>掌握基于ChatGLM+LoRA方式模型搭建代码的实现.</li>
+<li>掌握模型的训练,验证及相关工具代码的实现.</li>
+<li>掌握使用模型预测代码的实现.</li>
+</ul>
+<hr/>
+<h2 id="sec-2">模型搭建</h2>
+<p>本项目中完成ChatGLM+LoRA模型搭建、训练及应用的步骤如下（注意：因为本项目中使用的是ChatGLM预训练模型，所以直接加载即可，无需重复搭建模型架构）:
+- 1.实现模型工具类函数
+- 2.实现模型训练函数,验证函数
+- 3.实现模型预测函数</p>
+<hr/>
+<h3 id="sec-3">1. 实现模型工具类函数</h3>
+<ul>
+<li>目的：模型在训练、验证、预测时需要的函数</li>
+<li>代码路径：llm_tuning/ptune_chatglm/utils</li>
+<li>utils文件夹共包含1个py脚本：common_utils.py</li>
+</ul>
+<hr/>
+<h4>1.1 common_utils.py</h4>
+<ul>
+<li>
+<p>目的：定义数据类型转换类、分秒时之间转换以及模型保存函数。</p>
+</li>
+<li>
+<p>脚本里面包含一个类以及两个函数：CastOutputToFloat、second2time()以及save_model()</p>
+<ul>
+<li>定义CastOutputToFloat类</li>
+<li>定义second2time()函数</li>
+<li>定义save_model()</li>
+</ul>
+</li>
+<li>
+<p>代码路径：llm_tuning/ptune_chatglm/utils/common_utils.py</p>
+<p>代码如下：</p>
+</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">ptune_chatglm.glm_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectConfig</span>
+
+<span class="n">pc</span> <span class="o">=</span> <span class="n">ProjectConfig</span><span class="p">()</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CastOutputToFloat</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    继承自nn.Sequential的类，用于将模型的输出转换为浮点类型。</span>
+
+<span class="sd">    该类重写了forward方法，以确保模型输出被转换为torch.float32类型。</span>
+<span class="sd">    主要用途是在模型定义中作为最后一层，以确保输出类型符合预期。</span>
+<span class="sd">    """</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">'''</span>
+<span class="sd">        定义模型的前向传播过程，并将输出转换为浮点类型。</span>
+<span class="sd">        :param x: (Tensor): 输入张量，类型不受限。</span>
+<span class="sd">        :return: Tensor: 经过模型前向传播后的输出张量，转换为torch.float32类型。</span>
+<span class="sd">        '''</span>
+        <span class="c1"># 调用父类的forward方法进行前向传播，然后将输出转换为torch.float32类型</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">second2time</span><span class="p">(</span><span class="n">seconds</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">'''</span>
+<span class="sd">    将秒转换成时分秒。</span>
+<span class="sd">    :param seconds: (int): 需要转换的秒数。</span>
+<span class="sd">    :return: str: 转换后的小时、分钟和秒，以字符串形式返回。</span>
+<span class="sd">    '''</span>
+    <span class="c1"># 将秒数转换为分钟和秒</span>
+    <span class="n">m</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="c1"># 打印中间结果，分钟数和秒数</span>
+    <span class="c1"># print(f'm--&gt;{m}')</span>
+    <span class="c1"># print(f's--&gt;{s}')</span>
+    <span class="c1"># 将分钟数转换为小时和分钟</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">m</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="c1"># 打印中间结果，小时数和分钟数</span>
+    <span class="c1"># print(f'h--&gt;{h}')</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'m--&gt;</span><span class="si">{</span><span class="n">m</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+    <span class="c1"># 返回格式化的小时、分钟和秒</span>
+    <span class="k">return</span> <span class="s2">"</span><span class="si">%02d</span><span class="s2">:</span><span class="si">%02d</span><span class="s2">:</span><span class="si">%02d</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">save_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">cur_save_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">'''</span>
+<span class="sd">    存储当前模型。</span>
+<span class="sd">    该函数根据条件判断，要么将模型直接保存，要么在保存前将LoRA（Low-Rank Adaptation）参数与原始模型合并后再保存。</span>
+<span class="sd">    这样做是为了确保无论是原始模型还是使用LoRA训练的模型，都可以被正确地保存和后续使用。</span>
+<span class="sd">    :param model: 待保存的模型。这可以是任何已经训练好的transformers模型。</span>
+<span class="sd">    :param cur_save_dir: (str): 存储路径。表示模型将被保存到的目录路径。</span>
+<span class="sd">    :return: </span>
+<span class="sd">    '''</span>
+    <span class="c1"># 检查是否使用了LoRA（低秩适应）技术</span>
+    <span class="k">if</span> <span class="n">pc</span><span class="o">.</span><span class="n">use_lora</span><span class="p">:</span>  <span class="c1"># merge lora params with origin model</span>
+        <span class="c1"># 如果使用了LoRA，首先创建模型的深拷贝，以避免修改原始模型</span>
+        <span class="n">merged_model</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+        <span class="c1"># 直接保存的话，只会保存adapter即LoRA模型的参数，因此需要合并后再保存</span>
+        <span class="n">merged_model</span> <span class="o">=</span> <span class="n">merged_model</span><span class="o">.</span><span class="n">merge_and_unload</span><span class="p">()</span>
+        <span class="c1"># 保存合并后的模型到指定路径</span>
+        <span class="n">merged_model</span><span class="o">.</span><span class="n">save_pretrained</span><span class="p">(</span><span class="n">cur_save_dir</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># 如果没有使用LoRA，直接保存模型到指定路径</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">save_pretrained</span><span class="p">(</span><span class="n">cur_save_dir</span><span class="p">)</span>
+</pre></div>
+</div>
+<hr/>
+<h3 id="sec-4">2. 实现模型训练函数,验证函数</h3>
+<ul>
+<li>
+<p>目的：实现模型的训练和验证</p>
+</li>
+<li>
+<p>代码路径：llm_tuning/ptune_chatglm/train.py</p>
+</li>
+<li>
+<p>脚本里面包含两个函数：model2train()和evaluate_model()</p>
+<p>代码如下：</p>
+</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="n">project_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s1">'../'</span><span class="p">)</span>
+<span class="c1"># print(f'project_root--&gt;{project_root}')</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">project_root</span><span class="p">)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">peft</span>
+<span class="c1"># autocast是PyTorch中一种混合精度的技术，可在保持数值精度的情况下提高训练速度和减少显存占用。</span>
+<span class="c1"># 该方法混合精度训练，如果在CPU环境中不起任何作用</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch.cuda.amp</span><span class="w"> </span><span class="kn">import</span> <span class="n">autocast</span> <span class="k">as</span> <span class="n">autocast</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoConfig</span><span class="p">,</span> <span class="n">AutoModel</span><span class="p">,</span> <span class="n">get_scheduler</span><span class="p">,</span> <span class="n">AutoTokenizer</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">ptune_chatglm.data_handle.data_loader</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_data</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ptune_chatglm.glm_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectConfig</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ptune_chatglm.utils.common_utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">CastOutputToFloat</span><span class="p">,</span> <span class="n">second2time</span><span class="p">,</span> <span class="n">save_model</span>
+
+<span class="n">pc</span> <span class="o">=</span> <span class="n">ProjectConfig</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">model2train</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    训练模型的主要函数。本函数完成从模型配置、数据加载到训练和评估的全过程。</span>
+<span class="sd">    """</span>
+    <span class="c1"># 1.获取训练和验证数据加载器</span>
+    <span class="n">train_dataloader</span><span class="p">,</span> <span class="n">dev_dataloader</span> <span class="o">=</span> <span class="n">get_data</span><span class="p">()</span>
+
+    <span class="c1"># 2.加载模型</span>
+    <span class="c1"># 加载预训练的tokenizer</span>
+    <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">pre_model</span><span class="p">,</span> <span class="n">trust_remote_code</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># 加载预训练模型的配置</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">AutoConfig</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">pre_model</span><span class="p">,</span> <span class="n">trust_remote_code</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="c1"># print(f'config--&gt;{config}')</span>
+
+    <span class="c1"># 如果使用ptuning微调手段</span>
+    <span class="k">if</span> <span class="n">pc</span><span class="o">.</span><span class="n">use_ptuning</span><span class="p">:</span>
+        <span class="c1"># 设置前缀序列长度</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">pre_seq_len</span> <span class="o">=</span> <span class="n">pc</span><span class="o">.</span><span class="n">pre_seq_len</span>
+        <span class="c1"># 可以指定是P-tuning-V1或者V2</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">prefix_projection</span> <span class="o">=</span> <span class="n">pc</span><span class="o">.</span><span class="n">prefix_projection</span>
+
+    <span class="c1"># 加载预训练模型ChatGLM-6B</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">AutoModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">pre_model</span><span class="p">,</span>
+                                      <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+                                      <span class="n">trust_remote_code</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'model--&gt;</span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">'</span><span class="p">)</span>
+    <span class="c1"># for name, prameters in model.named_parameters():</span>
+    <span class="c1">#     print(f'prameters类型--》{prameters.dtype}')</span>
+
+    <span class="c1"># model.half()将模型数据类型从默认的float32精度转换为更低的float16精度，减少内存</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">half</span><span class="p">()</span>
+    <span class="c1"># print(model)</span>
+
+    <span class="c1"># 不进行缓存，减少内存</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">use_cache</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="c1"># 梯度检查点是一种优化技术，用于在反向传播过程中降低内存使用，保存部分激活值，未保存的反向传播时重新计算</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">gradient_checkpointing_enable</span><span class="p">()</span>
+    <span class="c1"># 对输入层进行require_grads（进行参数更新，即微调）</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">enable_input_require_grads</span><span class="p">()</span>
+
+
+    <span class="c1"># print(f'model.transformer.prefix_encoder--&gt;{model.transformer.prefix_encoder}')</span>
+    <span class="c1"># 如果pc对象的use_ptuning属性为真，则执行以下操作</span>
+    <span class="k">if</span> <span class="n">pc</span><span class="o">.</span><span class="n">use_ptuning</span><span class="p">:</span>
+        <span class="c1"># 将模型的transformer部分的prefix_encoder组件转换为float精度</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">transformer</span><span class="o">.</span><span class="n">prefix_encoder</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+
+    <span class="c1"># 如果使用lora方法微调</span>
+    <span class="k">if</span> <span class="n">pc</span><span class="o">.</span><span class="n">use_lora</span><span class="p">:</span>
+        <span class="c1"># 将模型的输出头：数据类型转换为float32(确保)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">lm_head</span> <span class="o">=</span> <span class="n">CastOutputToFloat</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">lm_head</span><span class="p">)</span>
+        <span class="c1"># 定义LoRA配置</span>
+        <span class="n">peft_config</span> <span class="o">=</span> <span class="n">peft</span><span class="o">.</span><span class="n">LoraConfig</span><span class="p">(</span>
+            <span class="n">task_type</span><span class="o">=</span><span class="n">peft</span><span class="o">.</span><span class="n">TaskType</span><span class="o">.</span><span class="n">CAUSAL_LM</span><span class="p">,</span>  <span class="c1"># 传统的语言模型</span>
+            <span class="n">inference_mode</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>  <span class="c1"># 推理时为True，比如决定是否使用dropout</span>
+            <span class="n">r</span><span class="o">=</span><span class="n">pc</span><span class="o">.</span><span class="n">lora_rank</span><span class="p">,</span>  <span class="c1"># 低秩矩阵维度</span>
+            <span class="n">lora_alpha</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>  <span class="c1"># 缩放系数</span>
+            <span class="n">lora_dropout</span><span class="o">=</span><span class="mf">0.1</span>
+        <span class="p">)</span>
+        <span class="c1"># print(f'peft_config--》{peft_config}')</span>
+        <span class="c1"># 根据LoRA配置获取LoRA模型</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">peft</span><span class="o">.</span><span class="n">get_peft_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">peft_config</span><span class="p">)</span>
+
+    <span class="c1"># print('*'*80)</span>
+    <span class="c1"># 将模型移动到指定设备</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="c1"># 打印模型中所有可训练参数的信息</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">print_trainable_parameters</span><span class="p">()</span>
+
+    <span class="c1"># 定义不需要权重衰减的参数名称列表</span>
+    <span class="n">no_decay</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"bias"</span><span class="p">,</span> <span class="s2">"LayerNorm.weight"</span><span class="p">]</span>
+    <span class="c1"># 初始化优化器参数分组，对模型中的参数进行精细控制的优化处理</span>
+    <span class="n">optimizer_grouped_parameters</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="c1"># 分组1：包含所有适用权重衰减的参数</span>
+            <span class="s2">"params"</span><span class="p">:</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span><span class="n">nd</span> <span class="ow">in</span> <span class="n">n</span> <span class="k">for</span> <span class="n">nd</span> <span class="ow">in</span> <span class="n">no_decay</span><span class="p">)],</span>
+            <span class="s2">"weight_decay"</span><span class="p">:</span> <span class="n">pc</span><span class="o">.</span><span class="n">weight_decay</span><span class="p">,</span>  <span class="c1"># 适用预设的权重衰减率</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="c1"># 分组2：包含所有不适用权重衰减的参数</span>
+            <span class="s2">"params"</span><span class="p">:</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">()</span> <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">nd</span> <span class="ow">in</span> <span class="n">n</span> <span class="k">for</span> <span class="n">nd</span> <span class="ow">in</span> <span class="n">no_decay</span><span class="p">)],</span>
+            <span class="s2">"weight_decay"</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span>  <span class="c1"># 不适用权重衰减</span>
+        <span class="p">},</span>
+    <span class="p">]</span>
+    <span class="c1"># 初始化AdamW优化器</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">AdamW</span><span class="p">(</span><span class="n">optimizer_grouped_parameters</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="n">pc</span><span class="o">.</span><span class="n">learning_rate</span><span class="p">)</span>
+
+    <span class="c1"># 根据训练轮数计算最大训练步数，以便于scheduler动态调整lr</span>
+    <span class="n">num_update_steps_per_epoch</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">train_dataloader</span><span class="p">)</span>
+    <span class="c1"># 指定总的训练步数，它会被学习率调度器用来确定学习率的变化规律，确保学习率在整个训练过程中得以合理地调节</span>
+    <span class="n">max_train_steps</span> <span class="o">=</span> <span class="n">pc</span><span class="o">.</span><span class="n">epochs</span> <span class="o">*</span> <span class="n">num_update_steps_per_epoch</span>
+    <span class="c1"># 预热阶段的训练步数</span>
+    <span class="n">warm_steps</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">warmup_ratio</span> <span class="o">*</span> <span class="n">max_train_steps</span><span class="p">)</span>
+    <span class="c1"># 初始化学习率调度器</span>
+    <span class="n">lr_scheduler</span> <span class="o">=</span> <span class="n">get_scheduler</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s1">'linear'</span><span class="p">,</span>
+        <span class="n">optimizer</span><span class="o">=</span><span class="n">optimizer</span><span class="p">,</span>
+        <span class="n">num_warmup_steps</span><span class="o">=</span><span class="n">warm_steps</span><span class="p">,</span>
+        <span class="n">num_training_steps</span><span class="o">=</span><span class="n">max_train_steps</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c1"># 3.定义训练的一些参数变量</span>
+    <span class="n">loss_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">tic_train</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="n">global_step</span><span class="p">,</span> <span class="n">best_eval_loss</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="s1">'inf'</span><span class="p">)</span>
+    <span class="c1"># 4.开始训练循环</span>
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">pc</span><span class="o">.</span><span class="n">epochs</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"开始训练"</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">train_dataloader</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">pc</span><span class="o">.</span><span class="n">use_lora</span><span class="p">:</span>
+<span class="w">                </span><span class="sd">"""</span>
+<span class="sd">                torch.cuda.amp.autocast是PyTorch中一种混合精度的技术（仅在GPU上训练时可使用）</span>
+<span class="sd">                混合精度训练主要涉及16位浮点数（FP16）和32位浮点数（FP32）的组合使用：</span>
+<span class="sd">                FP16：提供更高的计算速度和更低的内存使用，但是由于其表示范围较小，可能会导致数值不稳定或溢出。</span>
+<span class="sd">                FP32：用于保持数值稳定性，尤其是在权重更新阶段。</span>
+<span class="sd">                """</span>
+                <span class="k">with</span> <span class="n">autocast</span><span class="p">():</span>
+                    <span class="n">loss</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span>
+                        <span class="n">input_ids</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="s1">'input_ids'</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">pc</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
+                        <span class="n">labels</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="s1">'labels'</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">pc</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">loss</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span>
+                    <span class="n">input_ids</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="s1">'input_ids'</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">pc</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
+                    <span class="n">labels</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="s1">'labels'</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">pc</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">loss</span>
+
+            <span class="c1"># 梯度清零</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+            <span class="c1"># 反向传播</span>
+            <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+            <span class="c1"># 梯度更新</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+            <span class="c1"># 更新学习率</span>
+            <span class="n">lr_scheduler</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+
+            <span class="n">loss_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()))</span>
+            <span class="n">global_step</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">global_step</span> <span class="o">%</span> <span class="n">pc</span><span class="o">.</span><span class="n">logging_steps</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">time_diff</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">tic_train</span>
+                <span class="n">loss_avg</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">loss_list</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">loss_list</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">"全局步骤 </span><span class="si">%d</span><span class="s2"> ( </span><span class="si">%02.2f%%</span><span class="s2"> ) , 轮次: </span><span class="si">%d</span><span class="s2">, 损失: </span><span class="si">%.5f</span><span class="s2">, 速度: </span><span class="si">%.2f</span><span class="s2"> step/s, ETA: </span><span class="si">%s</span><span class="s2">"</span>
+                      <span class="o">%</span> <span class="p">(</span>
+                          <span class="n">global_step</span><span class="p">,</span>
+                          <span class="n">global_step</span> <span class="o">/</span> <span class="n">max_train_steps</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span>
+                          <span class="n">epoch</span><span class="p">,</span>
+                          <span class="n">loss_avg</span><span class="p">,</span>
+                          <span class="n">pc</span><span class="o">.</span><span class="n">logging_steps</span> <span class="o">/</span> <span class="n">time_diff</span><span class="p">,</span>
+                          <span class="n">second2time</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">max_train_steps</span> <span class="o">-</span> <span class="n">global_step</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">logging_steps</span> <span class="o">/</span> <span class="n">time_diff</span><span class="p">))</span>
+                      <span class="p">))</span>
+                <span class="n">tic_train</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="c1"># cur_save_dir = os.path.join(pc.save_dir, "model_%d" % global_step)</span>
+        <span class="c1"># save_model(model, cur_save_dir)</span>
+        <span class="c1"># print(f'Model has saved at {cur_save_dir}.')</span>
+        <span class="c1"># 5.评估模型</span>
+        <span class="n">eval_loss</span> <span class="o">=</span> <span class="n">evaluate_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dev_dataloader</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"评估集的损失为: </span><span class="si">%.5f</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="n">eval_loss</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">eval_loss</span> <span class="o">&lt;</span> <span class="n">best_eval_loss</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">"最小的损失已经更新：: </span><span class="si">{</span><span class="n">best_eval_loss</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2"> --&gt; </span><span class="si">{</span><span class="n">eval_loss</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2">"</span>
+            <span class="p">)</span>
+            <span class="n">best_eval_loss</span> <span class="o">=</span> <span class="n">eval_loss</span>
+            <span class="n">cur_save_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">save_dir</span><span class="p">,</span> <span class="s2">"model_best"</span><span class="p">)</span>
+            <span class="n">save_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">cur_save_dir</span><span class="p">)</span>
+            <span class="n">tokenizer</span><span class="o">.</span><span class="n">save_pretrained</span><span class="p">(</span><span class="n">cur_save_dir</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'最好的模型已经保存在： </span><span class="si">{</span><span class="n">cur_save_dir</span><span class="si">}</span><span class="s1">.'</span><span class="p">)</span>
+        <span class="n">tic_train</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">evaluate_model</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">dev_dataloader</span><span class="p">):</span>
+    <span class="c1"># 将模型设置为评估模式，以便在验证时不进行梯度更新</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+    <span class="c1"># 初始化一个空列表来存储每个batch的loss值</span>
+    <span class="n">loss_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># 在torch.no_grad()上下文中禁用梯度计算，以减少内存消耗和加快计算速度</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="c1"># 遍历验证数据加载器中的每个batch</span>
+        <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">dev_dataloader</span><span class="p">:</span>
+            <span class="c1"># 如果使用了LoRA（Low-Rank Adaptation）技术</span>
+            <span class="k">if</span> <span class="n">pc</span><span class="o">.</span><span class="n">use_lora</span><span class="p">:</span>
+                <span class="c1"># 使用autocast()自动混合精度训练，以提高效率和减少内存消耗</span>
+                <span class="k">with</span> <span class="n">autocast</span><span class="p">():</span>
+                    <span class="c1"># 进行模型前向传播并计算loss</span>
+                    <span class="n">loss</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span>
+                        <span class="n">input_ids</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="s1">'input_ids'</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">pc</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
+                        <span class="n">labels</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="s1">'labels'</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">pc</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                    <span class="p">)</span><span class="o">.</span><span class="n">loss</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># 如果不使用LoRA，直接进行模型前向传播并计算loss</span>
+                <span class="n">loss</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span>
+                    <span class="n">input_ids</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="s1">'input_ids'</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">pc</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
+                    <span class="n">labels</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="s1">'labels'</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">pc</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">loss</span>
+
+            <span class="c1"># 将计算得到的loss值从GPU转移到CPU，并 detach 以释放计算图，防止内存泄漏</span>
+            <span class="c1"># 然后将其作为浮点数添加到loss列表中</span>
+            <span class="n">loss_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">cpu</span><span class="p">()</span><span class="o">.</span><span class="n">detach</span><span class="p">()))</span>
+
+    <span class="c1"># 返回平均loss值，即loss列表的总和除以loss的数量</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">loss_list</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">loss_list</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="n">model2train</span><span class="p">()</span>
+</pre></div>
+</div>
+<hr/>
+<ul>
+<li>输出结果:</li>
+</ul>
+<div align="center"><img alt="LoRA 微调 ChatGLM 的实现、训练与预测项目配图" decoding="async" loading="lazy" src="../assets/img/project06-03/figure-e1756ba620cc.png"/></div>
+<hr/>
+<h3 id="sec-5">3. 实现模型预测函数</h3>
+<ul>
+<li>目的：加载训练好的模型并测试效果</li>
+<li>代码路径：llm_tuning/prompt_tasks/ptune_chatglm/inference.py</li>
+</ul>
+<p>​      具体代码：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="n">project_root</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)),</span> <span class="s1">'../'</span><span class="p">)</span>
+<span class="c1"># print(f'project_root--&gt;{project_root}')</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">project_root</span><span class="p">)</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoTokenizer</span><span class="p">,</span> <span class="n">AutoModel</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">ptune_chatglm.glm_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectConfig</span>
+
+<span class="n">pc</span> <span class="o">=</span> <span class="n">ProjectConfig</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">inference</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">instuction</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sentence</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+        <span class="n">input_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">"Instruction: </span><span class="si">{</span><span class="n">instuction</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="k">if</span> <span class="n">sentence</span><span class="p">:</span>
+            <span class="n">input_text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"Input: </span><span class="si">{</span><span class="n">sentence</span><span class="si">}</span><span class="se">\n</span><span class="s2">"</span>
+        <span class="n">input_text</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">"Answer: "</span>
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">input_text</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">"pt"</span><span class="p">)</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span>
+            <span class="n">input_ids</span><span class="o">=</span><span class="n">batch</span><span class="p">[</span><span class="s2">"input_ids"</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">max_new_tokens</span><span class="o">=</span><span class="n">max_new_tokens</span><span class="p">,</span>
+            <span class="n">temperature</span><span class="o">=</span><span class="mi">0</span>
+        <span class="p">)</span>
+        <span class="n">out_text</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">answer</span> <span class="o">=</span> <span class="n">out_text</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'Answer: '</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">answer</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="n">max_new_tokens</span> <span class="o">=</span> <span class="mi">300</span>
+    <span class="n">model_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">save_dir</span><span class="p">,</span> <span class="s1">'model_best'</span><span class="p">)</span>
+    <span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span>
+        <span class="n">model_path</span><span class="p">,</span>
+        <span class="n">trust_remote_code</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="n">AutoModel</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span>
+        <span class="n">model_path</span><span class="p">,</span>
+        <span class="n">trust_remote_code</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">half</span><span class="p">()</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">pc</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+
+    <span class="n">samples</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s1">'instruction'</span><span class="p">:</span> <span class="s2">"现在你是一个非常厉害的SPO抽取器。"</span><span class="p">,</span>
+            <span class="s2">"input"</span><span class="p">:</span> <span class="s2">"下面这句中包含了哪些三元组，用json列表的形式回答，不要输出除json外的其他答案。</span><span class="se">\n\n</span><span class="s2">73获奖记录人物评价：黄磊是一个特别幸运的演员，拍第一部戏就碰到了导演陈凯歌，而且在他的下一部电影《夜半歌声》中演对手戏的张国荣、吴倩莲、黎明等都是著名的港台演员。"</span><span class="p">,</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s1">'instruction'</span><span class="p">:</span> <span class="s2">"你现在是一个很厉害的阅读理解器，严格按照人类指令进行回答。"</span><span class="p">,</span>
+            <span class="s2">"input"</span><span class="p">:</span> <span class="s2">"下面子中的主语是什么类别，输出成列表形式。</span><span class="se">\n\n</span><span class="s2">第N次入住了，就是方便去客户那里哈哈。还有啥说的"</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+
+    <span class="n">start</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">sample</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">samples</span><span class="p">):</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">inference</span><span class="p">(</span>
+            <span class="n">model</span><span class="p">,</span>
+            <span class="n">tokenizer</span><span class="p">,</span>
+            <span class="n">sample</span><span class="p">[</span><span class="s1">'instruction'</span><span class="p">],</span>
+            <span class="n">sample</span><span class="p">[</span><span class="s1">'input'</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'res </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">: '</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">'Used </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s1">s.'</span><span class="p">)</span>
+</pre></div>
+</div>
+<ul>
+<li>结果展示</li>
+</ul>
+<div align="center"><img alt="LoRA 微调 ChatGLM 的实现、训练与预测项目配图" decoding="async" loading="lazy" src="../assets/img/project06-03/figure-9d671502fd49.png"/></div>
+<h2 id="sec-6">小节总结</h2>
+<ul>
+<li>本小节实现了基于ChatGLM+LoRA模型的构建, 并完成了训练和测试评估。</li>
+</ul>
+<hr/>
+<hr/>
+<div class="done-bar"><button class="mark-done-btn" data-key="project06-03" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="project06-02.html"><div class="dir">← 上一篇</div><div class="name">🗂️ 信息抽取与分类的混合数据预处理</div></a><a class="disabled next"></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">学习目标</a><a class="lv2" href="#sec-2">模型搭建</a><a class="lv3" href="#sec-3">1. 实现模型工具类函数</a><a class="lv3" href="#sec-4">2. 实现模型训练函数,验证函数</a><a class="lv3" href="#sec-5">3. 实现模型预测函数</a><a class="lv2" href="#sec-6">小节总结</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

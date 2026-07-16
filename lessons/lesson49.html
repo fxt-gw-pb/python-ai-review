@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompt-Tuning：从 NLP 四范式到 PET 与软提示 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#projects">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">32</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">33</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">34</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">35</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">39</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">40</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">42</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item active" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">49</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">50</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">21</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">22</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">23</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">24</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">25</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">26</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">27</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">28</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">29</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">30</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">31</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">32</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 49 讲</div>
+<h1>🪄 Prompt-Tuning：从 NLP 四范式到 PET 与软提示</h1>
+<div class="chips"><span class="chip">🏷️ NLP 四范式</span><span class="chip">🏷️ ICL / CoT</span><span class="chip">🏷️ PET / Soft Prompt</span></div>
+</div>
+<div class="callout tip course-note"><span class="ico">📝</span><p><strong>课堂笔记提要：</strong>先看懂四种范式如何一步步减少对标注数据的依赖，再把 Prompt-Tuning 拆成模板构建与标签词映射两个动作，最后区分面向超大模型的 ICL、指令微调、思维链与面向小模型的 PET、软提示两条路线。</p></div>
+
+<hr/>
+<h2 id="sec-1">学习目标</h2>
+<ul>
+<li>了解LLM进阶历程四种范式</li>
+<li>掌握Fine-Tuning模型微调的基本原理</li>
+<li>掌握Prompt_Tuning模型微调的基本原理</li>
+</ul>
+<h2 id="sec-2">1 NLP任务四种范式</h2>
+<p>目前学术界一般将NLP任务的发展分为四个阶段，即NLP四范式：</p>
+<ul>
+<li>第一范式：基于「传统机器学习模型」的范式，如TF-IDF特征+朴素贝叶斯等机器算法；</li>
+<li>第二范式：基于「深度学习模型」的范式，如word2vec特征+LSTM等深度学习算法，相比于第一范式，模型准确有所提高，特征工程的工作也有所减少；</li>
+<li>第三范式：基于「预训练模型+fine-tuning」的范式，如Bert+fine-tuning的NLP任务，相比于第二范式，模型准确度显著提高，模型也随之变得更大，但小数据集就可训练出好模型；</li>
+<li>第四范式：基于「预训练模型+Prompt+预测」的范式，如Bert+Prompt的范式相比于第三范式，模型训练所需的训练数据显著减少。</li>
+</ul>
+<p>在整个NLP领域，整个发展历程是朝着精度更高、少监督，甚至无监督的方向发展的。而 Prompt-Tuning 是目前学术界向这个方向进军最新也是最火的研究成果。</p>
+<h2 id="sec-3">2 Fine-Tuning(微调)</h2>
+<p>Fine-Tuning属于一种迁移学习方式，在自然语言处理（NLP）中，Fine-Tuning是用于将预训练的语言模型适应于特定任务或领域。<strong>Fine-Tuning的基本思想是采用已经在大量文本上进行训练的预训练语言模型，然后在小规模的特定任务文本上继续训练它。</strong></p>
+<div align="center"><img alt="课程配图" decoding="async" loading="lazy" src="../assets/img/lesson49/figure-af7ac25dfd86.png"/></div>
+<p>经典的Fine-Tuning方法包括将预训练模型与少量特定任务数据一起继续训练。在这个过程中，预训练模型的权重被更新，以更好地适应任务。所需的Fine-Tuning量取决于预训练语料库和任务特定语料库之间的相似性。如果两者相似，可能只需要少量的Fine-Tuning，如果两者不相似，则可能需要更多的Fine-Tuning。</p>
+<p>但是，在大多数下游任务微调时，下游任务的目标和预训练的目标差距过大导致提升效果不明显，微调过程中需要依赖大量的监督语料等等。至此，以GPT3、PET等为首的模型提出一种基于预训练语言模型的新的微调范式——Prompt-Tuning。该方法的目的是通过添加模板的方法将任务目标转化为与预训练目标相似的形式（如MLM），避免引入额外的参数的同时，最大化利用模型的预训练知识。</p>
+<p>Prompt-Tuning主要解决传统Fine-Tuning方式的两个痛点：</p>
+<ul>
+<li><strong>参数规模过大、计算与存储成本高</strong>：在全量微调中，模型的所有参数都会更新。对于大模型，这意味着显存占用大、训练速度慢，而且每个下游任务都要保存一份完整的模型权重，存储开销巨大。</li>
+<li><strong>迁移与多任务场景下的效率低</strong>：Fine-Tuning 每个任务都要训练一份新模型，不能很好地在多个任务之间共享大模型参数。导致一个任务一份大模型，难以高效适配多任务、多场景。。 </li>
+</ul>
+<hr/>
+<h2 id="sec-4">3 Prompt-Tuning(提示微调)</h2>
+<h3 id="sec-5">3.1 什么是Prompt?</h3>
+<p>prompt顾名思义就是“提示”的意思，应该有人玩过你画我猜这个游戏吧，对方根据一个词语画一幅画，我们来猜他画的是什么，因为有太多灵魂画手了，画风清奇，或者你们没有心有灵犀，根本就不好猜啊！这时候屏幕上会出现一些提示词比如3个字，水果，那岂不是好猜一点了嘛，毕竟3个字的水果也不多呀。看到了吧，这就是prompt的魅力.</p>
+<div align="center"><img alt="课程配图" decoding="async" loading="lazy" src="../assets/img/lesson49/figure-95799d814044.png"/></div>
+<p>简单来说，<strong>Prompt就是你给大型语言模型（LLM）的所有输入，目的是引导它生成你想要的输出</strong>。它就像你和AI助手之间的“对话启动器”或“指令”。</p>
+<p>你可以把它想象成：</p>
+<ul>
+<li>给一个非常聪明的学生出考题：你的Prompt就是那个题目，LLM就是学生。题目出得好，学生才能理解你的意图，给出准确的答案。</li>
+<li>和一位知识渊博但需要引导的专家交流：你的Prompt就是你提问的方式、具体问题和表达方式，LLM就是专家。正确引导专家，才能获得更好的答案。</li>
+</ul>
+<h3 id="sec-6">3.2 Prompt-Tuning定义</h3>
+<p>基于Fine-Tuning的方法是让预训练模型去迁就下游任务，而基于Prompt-Tuning的方法可以让下游任务去迁就预训练模型，其目的是将Fine-tuning的下游任务目标转换为Pre-training的任务。</p>
+<p>那么具体如何工作呢？我们以一个二分类的情感分析为例子，进行简单理解：</p>
+<ul>
+<li>eg:  定一个句子<code>[CLS] I like the Disney films very much. [SEP]</code> </li>
+<li>传统的Fine-tuning方法: 将其通过BERT的Transformer获得 <code>[CLS]</code>表征之后再喂入新增加的MLP分类器进行二分类，预测该句子是积极的（positive）还是消极的（negative），因此需要一定量的训练数据来训练。</li>
+<li>Prompt-Tuning执行步骤：<ul>
+<li>1.构建模板（Template Construction）:  通过人工定义、自动搜索、文本生成等方法，生成与给定句子相关的一个含有<code>[MASK]</code>标记的模板。例如<code>It was [MASK].</code>，并拼接到原始的文本中，获得Prompt-Tuning的输入：<code>[CLS] I like the Disney films very much. [SEP] It was [MASK]. [SEP]</code>。将其喂入BERT模型中，并复用预训练好的MLM分类器（在huggingface中为BertForMaskedLM），即可直接得到<code>[MASK]</code>预测的各个token的概率分布。</li>
+<li>2.标签词映射（Label Word Verbalizer） ：因为<code>[MASK]</code>部分我们只对部分词感兴趣，因此需要建立一个映射关系。例如如果<code>[MASK]</code>预测的词是“great”，则认为是positive类，如果是“terrible”，则认为是negative类。</li>
+<li>3.训练：根据Verbalizer，则可以获得指定label word的预测概率分布，并采用交叉信息熵进行训练。这种方法比传统微调的方式需要的数据量少，效果也不错。</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>注意思考：不同的句子应该有不同的template和label word，没错，因为每个句子可能期望预测出来的label word都不同，因此如何最大化的寻找当前任务更加合适的template和label word是Prompt-tuning非常重要的挑战。</p>
+</blockquote>
+<p>其实我们可以理解，引入的模板和标签词本质上属于一种数据增强，通过添加提示的方式引入先验知识。</p>
+<hr/>
+<h2 id="sec-7">4 Prompt-Tuning技术发展历程</h2>
+<div align="center"><img alt="课程配图" decoding="async" loading="lazy" src="../assets/img/lesson49/figure-16e60b28c118.png"/></div>
+<hr/>
+<p>Prompt-Tuning自GPT-3被提出以来，从传统的离散、连续的Prompt构建、走向面向超大规模模型的In-Context Learning、Instruction-tuning和Chain_of_Thought，其发展历程可以概括为以下几个关键点：</p>
+<ul>
+<li>从 In-Context Learning 到 Prompt Tuning： Prompt Tuning 的灵感来自于 In-Context Learning，但它通过训练 Prompt Tokens，实现了更好的性能和参数效率。</li>
+<li>从 Hard Prompt 到 Soft Prompt：Prompt Tuning 使用可学习的向量作为 Prompt，而不是自然语言文本，从而避免了人工设计 Prompt 的困难。</li>
+<li>从单层 Prompt 到多层 Prompt：Prefix-Tuning 在预训练模型的每一层都添加 Prompt Tokens，从而更好地控制模型的行为。</li>
+<li>从手工设计到自动化搜索：研究人员开始探索如何自动化 Prompt Engineering，以进一步提高 Prompt Tuning 的效率和效果。</li>
+</ul>
+<h2 id="sec-8">5 面向超大规模语言模型的Prompt-Tuning</h2>
+<p>近两年来，随之Prompt-Tuning技术的发展，有诸多工作发现，对于超过10亿参数量的模型来说，Prompt-Tuning所带来的增益远远高于标准的Fine-tuning，小样本甚至是零样本的性能也能够极大地被激发出来，得益于这些模型的 <strong>参数量足够大</strong>，训练过程中使用了**足够多的语料**，同时设计的**预训练任务足够有效**。最为经典的大规模语言模型则是2020年提出的GPT-3，其拥有大约1750亿的参数，且发现只需要设计合适的模板或指令即可以**实现免参数训练的零样本学习** 。</p>
+<p>本文默认以GPT-3为例，介绍几个面向超大规模的Prompt-Tuning方法，分别为：</p>
+<ul>
+<li><strong>上下文学习 In-Context Learning（ICL）</strong>：直接挑选少量的训练样本作为该任务的提示；</li>
+<li><strong>指令学习 Instruction-Tuning</strong>：构建任务指令集，促使模型根据任务指令做出反馈；</li>
+<li><strong>思维链 Chain-of-Thought（CoT）</strong>：给予或激发模型具有推理和解释的信息，通过线性链式的模式指导模型生成合理的结果。</li>
+</ul>
+<hr/>
+<h3 id="sec-9">5.1 In-Context Learning（上下文学习）</h3>
+<p>ICL的核心思想是**通过上下文示例（demonstrations）让模型理解任务，而无需显式训练**。这一思路在早期 few-shot 学习中已有体现，但这些方法通常依赖训练阶段更新模型参数；GPT-3（2020）首次将其完全置于推理阶段，并明确命名为"In-Context Learning"。</p>
+<hr/>
+<p>常用的In-context learning方法包括：</p>
+<ul>
+<li>zero-shot learning<ul>
+<li>定义: 给出任务的描述, 然后提供测试数据对其进行预测, 直接让预训练好的模型去进行任务测试. </li>
+<li>示例: 向模型输入“这个任务要求将中文翻译为英文. 销售-&gt;”, 然后要求模型预测下一个输出应该是什么, 正确答案应为“sell”.</li>
+</ul>
+</li>
+<li>one-shot learning<ul>
+<li>定义: 在预训练和真正翻译的样本之间, 插入一个样本做指导. 相当于在预训练好的结果和所要执行的任务之间, 给一个例子, 告诉模型英语翻译为法语, 应该这么翻译. </li>
+<li>示例: 向模型输入“这个任务要求将中文翻译为英文. 你好-&gt;hello, 销售-&gt;”, 然后要求模型预测下一个输出应该是什么, 正确答案应为“sell”. </li>
+</ul>
+</li>
+<li>few-shot learning<ul>
+<li>定义: 在预训练和真正翻译的样本之间, 插入多个样本（一般10-100条）做指导. 相当于在预训练好的结果和所要执行的任务之间, 给多个例子, 告诉模型应该如何工作. </li>
+<li>示例: 向模型输入“这个任务要求将中文翻译为英文. 你好-&gt;hello, 再见-&gt;goodbye, 购买-&gt;purchase, 销售-&gt;”, 然后要求模型预测下一个输出应该是什么, 正确答案应为“sell”. </li>
+</ul>
+</li>
+</ul>
+<p>目前In-context Learning依然与普通的fine-tuning有一定差距，且预测的结果方差很大，同时也需要花费时间考虑template的构建。</p>
+<h3 id="sec-10">5.2 Instruction-Tuning（指令微调）</h3>
+<p>面向超大规模模型第二个Prompt技术是指令学习。其实Prompt-Tuning本质上是对下游任务的指令，简单的来说：就是告诉模型需要做什么任务，输出什么内容。在对大规模模型进行微调时，可以使用各种类型的任务定义指令进行训练，来提高模型对不同任务的泛化能力。</p>
+<hr/>
+<p>什么是Instruction-Tuning？让我们先抛开脑子里的一切概念，把自己当成一个模型。我给你两个任务：</p>
+<ul>
+<li>1.带女朋友去了一家餐厅，她吃的很开心，这家餐厅太__了！</li>
+<li>
+<p>2.判断这句话的情感，回答是积极还是消极：带女朋友去了一家餐厅，她吃的很开心。</p>
+</li>
+<li>
+<p>这两个任务一个是补全任务，一个是判别任务。<strong>Prompt就是第一种模式，Instruction就是第二种。</strong></p>
+</li>
+</ul>
+<p>Instruction-Tuning和Prompt-Tuning的核心一样，就是去 <strong>发掘语言模型本身具备的知识</strong> 。而他们的不同点就在于:</p>
+<ul>
+<li>Prompt是去激发语言模型的 <strong>补全能力</strong> ，比如给出上半句生成下半句、或者做完形填空。</li>
+<li>Instruction-Tuning则是激发语言模型的 <strong>理解能力</strong> ，通过给出更明显的指令/指示，让模型去理解并做出正确的action. </li>
+<li>Prompt-Tuning在 <strong>没有精调</strong> 的模型上也能有一定效果，但是Instruct-Tuning则 <strong>必须对模型精调</strong> ，让模型知道这种指令模式。</li>
+</ul>
+<hr/>
+<p><strong>如何实现Instruction-Tuning？</strong></p>
+<p>通常是在一个预训练大模型的基础上，收集大规模指令-响应对，并将这些指令转化为自然语言提示（prompt）输入模型，通过监督微调（Supervised Fine-Tuning, SFT）让模型学会按照指令生成符合预期的输出；训练时将指令与上下文拼接成输入序列，目标是最大化模型对正确响应的生成概率，从而让模型在推理时对未见过的新指令也能进行符合意图的生成。</p>
+<div align="center"><img alt="课程配图" decoding="async" loading="lazy" src="../assets/img/lesson49/figure-e857e117e0b0.png"/></div>
+<p>为每个任务设计多个指令模版，测试时看平均和最好的表现。</p>
+<h3 id="sec-11">5.3 Chain-of-Thought（思维链）</h3>
+<p>思维链 (Chain-of-thought，CoT) 的概念是在 Google 的论文 "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models" 中被首次提出。思维链（CoT）是一种改进的提示策略，用于提高 LLM 在复杂推理任务中的性能，如算术推理、常识推理和符号推理。</p>
+<p>CoT 没有像 ICL 那样简单地用输入输出对构建提示，而是结合了中间推理步骤，这些步骤可以作为大模型的输入。简单来说，<strong>思维链是一种离散式提示学习</strong>，更具体地，相比于之前的上下文学习（即不进行训练，将例子添加到当前样本输入的前面，让模型一次输入这些文本进行输出完成任务），思维链多了中间的推导过程提示。</p>
+<hr/>
+<p>以一个数学题为例：</p>
+<div align="center"><img alt="课程配图" decoding="async" loading="lazy" src="../assets/img/lesson49/figure-6455fe0933cd.png"/></div>
+<ul>
+<li>可以看到模型无法做出正确的回答。但如果说，我们给模型一些关于解题的思路，就像我们数学考试，都会把解题过程写出来再最终得出答案，不然无法得分。CoT 做的就是这件事，示例如下：</li>
+</ul>
+<div align="center"><img alt="课程配图" decoding="async" loading="lazy" src="../assets/img/lesson49/figure-34322cb00f9c.png"/></div>
+<ul>
+<li>
+<p>可以看到，类似的算术题，思维链提示会在给出答案之前，还会自动给出推理步骤：</p>
+<blockquote>
+<p>“罗杰先有5个球，2盒3个网球等于6个，5 + 6 = 11”
+“食堂原来有23个苹果，用了20个，23-20=3；又买了6个苹果，3+6=9</p>
+</blockquote>
+</li>
+</ul>
+<p>上述例子证明了思维链提示给出了正确答案，而直接给出答案的传统提示学习，结果是错的，连很基本的数学计算都做不好。简单来说，语言模型很难将所有的语义直接转化为一个方程，因为这是一个更加复杂的思考过程，但可以通过中间步骤，来更好地推理问题的每个部分。</p>
+<p>CoT分类：</p>
+<ul>
+<li>Few-shot CoT ：是 ICL 的一种特殊情况，它通过融合 CoT 推理步骤，将每个演示〈input，output〉扩充为〈input，CoT，output〉。</li>
+<li>Zero-shot CoT：与 Few-shot CoT 不同 在 prompt 中不包括人工标注的任务演示。相反，它直接生成推理步骤，然后使用生成的 CoT 来导出答案。（其中 LLM 首先由 “Let's think step by step” 提示生成推理步骤，然后由 “Therefore, the answer is” 提示得出最终答案。他们发现，当模型规模超过一定规模时，这种策略会大大提高性能，但对小规模模型无效，显示出显著的涌现能力模式）。  </li>
+</ul>
+<hr/>
+<p>一个有效的思维链应该具有以下特点：</p>
+<ul>
+<li>
+<p><strong>逻辑性</strong>：思维链中的每个思考步骤都应该是有逻辑关系的，它们应该相互连接，从而形成一个完整的思考过程。</p>
+</li>
+<li>
+<p><strong>全面性</strong>：思维链应该尽可能地全面和细致地考虑问题，以确保不会忽略任何可能的因素和影响。</p>
+</li>
+<li>
+<p><strong>可行性</strong>：思维链中的每个思考步骤都应该是可行的，也就是说，它们应该可以被实际操作和实施。</p>
+</li>
+<li>
+<p><strong>可验证性</strong>：思维链中的每个思考步骤都应该是可以验证的，也就是说，它们应该可以通过实际的数据和事实来验证其正确性和有效性。</p>
+</li>
+</ul>
+<h2 id="sec-12">6 面向小规模语言模型的Prompt-Tuning</h2>
+<p>对于超大规模语言模型上的Prompt-Tuning虽然有效，但是毕竟需要建立在超大规模的预训练语言模型上，这些模型的参数数量通常超过100亿，在真实场景中很难应用。因此众多研究者开始探索GPT-3这套思路在小规模的语言模型（如Bert）上还是否适用？事实上，这套方法在小规模的语言模型上是可行的，但是需要注意：</p>
+<ul>
+<li>大模型在 few-shot/zero-shot 学习上表现强大，而小模型的泛化能力远不如 GPT-3。</li>
+<li>小模型在面对少量训练数据时更容易过拟合，prompt 的微小改动可能导致性能剧烈波动。</li>
+</ul>
+<p>因此，面向小规模语言模型的Prompt-Tuning研究同样重要。</p>
+<hr/>
+<h3 id="sec-13">6.1 Prompt-Tuning的鼻祖—PET模型</h3>
+<p>PET模型（Pattern-Exploiting Training）出自《Exploiting Cloze Questions for Few Shot Text Classification and Natural Language Inference》（EACL2021），它是一种 <strong>结合了提示学习和少量标注样本监督学习</strong> （Few-shot Supervised Learning）的训练方法，主要用于将下游任务（如文本分类）转化为类似预训练任务（如掩码语言建模）的形式。它通过设计自然语言模式（pattern）和标签词（verbalizer），将输入句子转换为带有[MASK]位置的文本，例如“这个电影很[MASK]。”，然后用预训练语言模型（如BERT）预测[MASK]位置的词，再通过verbalizer转换来完成分类任务。</p>
+<hr/>
+<p>PET模型提出两个很重要的组件：</p>
+<ul>
+<li><strong>Pattern（Template）</strong> ：记作T, 即上文提到的Template，其为额外添加的带有<code>[mask]</code>标记的短文本，通常一个样本只有一个Pattern（因为我们希望只有1个让模型预测的<code>[mask]</code>标记）。由于不同的任务、不同的样本可能会有其更加合适的pattern，<strong>因此如何构建合适的pattern是Prompt-Tuning的研究点之一</strong>；</li>
+<li><strong>Verbalizer</strong> ：记作V, 即标签词的映射，对于具体的分类任务，需要选择指定的标签词（label word）。例如情感分析中，我们期望Verbalizer可能是 （positive和negative是类标签）。同样，不同的任务有其相应的label word，但需要注意的是，Verbalizer的构建需要取决于对应的Pattern。因此 <strong>如何构建Verbalizer是另一个研究挑战</strong> 。</li>
+</ul>
+<hr/>
+<p>上述两个组件被称为Pattern-Verbalizer-Pair（PVP），在后续的大多数研究中均采用这种PVP组件。基于PVP的训练目标可以定义为下面形式：给定一个句子和它对应的标签，通过预先定义的 PVP 组件，首先将句子按照模板进行加工，把原本的任务转化为填空（Masked Language Modeling）的形式，然后让模型预测模板中占位符的位置应该出现的词。通过将模型预测的词与标签映射对应起来，计算损失并优化模型参数。后续模型在看到类似句子时，能够通过模板正确地预测对应的标签。</p>
+<p><img alt="image-20240805183630239" decoding="async" loading="lazy" src="../assets/img/lesson49/figure-c1c9e58b005e.png"/></p>
+<p>目前基于PVP框架，当前最需要关注的问题是如何选择或构建合适的Pattern和Verbalizer 。一种简单的方法是根据特定任务的性质和先验知识人工设计模板。例如上文例子中通常会选择<code>It was [mask].</code> 作为情感分析类的模板。人工构建方法虽然直观简单，但是致命问题也很突出。有相关工作在实验中发现，在同样的数据集和训练条件下， <strong>选择不同的Pattern和Verbalizer会产生差异很大的结果</strong> ，如下图所示（一般情况下，Template等同于Pattern，Verbalizer等同于Label word）：</p>
+<div align="center"><img alt="课程配图" decoding="async" loading="lazy" src="../assets/img/lesson49/figure-63594a4d12fa.png"/></div>
+<p>从上图结果可发现，在相同Pattern时，选择不同的label word对结果影响很大，同理，不同的Pattern对结果影响也很明显，在真正应用中，调参者需要尝试多个不同的模板和标签词以穷举出最好的结果，并不能充分发挥Prompt简单快捷的优势。因此我们总结人工设计方法的缺陷：</p>
+<ul>
+<li>采用人工构建的方法成本高，需要与领域任务相关的先验知识；</li>
+<li>人工设计的Pattern和Verbalizer不能保证获得最优解，训练不稳定，不同的PVP对结果产生的差异明显，方差大；</li>
+<li>在预训练阶段MLM任务并非完全按照PVP的模式进行训练的（比如MLM训练通常都是长文本，mask的数量也并非只有1个，预测的概率分布也并非是有限的），因此人工构建的Pattern和Verbalizer使得Prompt-Tuning与MLM在语义和分布上依然存在差异。</li>
+</ul>
+<hr/>
+<p>【<strong>拓展：PET模型的实现步骤</strong>】</p>
+<p><strong>1）准备数据</strong></p>
+<ul>
+<li>有一份标注数据集 L（few-shot），和一份未标注数据集 U。</li>
+</ul>
+<p><strong>2）设计 pattern（模板）和 verbalizer（映射词）</strong></p>
+<ul>
+<li><em>Pattern</em>：把原始输入变为 cloze/填空形式（包含一个 [MASK]），例如情感分类：<ul>
+<li>输入句子 <code>X = "这部电影太棒了"</code> → pattern: <code>"[X]。这条评论是 [MASK] 。"</code></li>
+</ul>
+</li>
+<li><em>Verbalizer</em>：把类别映射到一个或多个词（label words），例如：<ul>
+<li>positive → <code>"好"</code></li>
+<li>negative → <code>"差"</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>3）为多个 pattern 分别微调（训练 PET 子模型）</strong></p>
+<ul>
+<li>选择 k个不同的 pattern（不同风格的提示），对每个 pattern：<ul>
+<li>把 L中的样本转换为 cloze 格式；</li>
+<li>用 Masked LM 的目标训练（只关注 [MASK] 位置预测是否为 verbalizer 指定的词），得到模型 Mp。</li>
+</ul>
+</li>
+<li>损失计算通常是针对 [MASK] 位置上预测到 label words 的交叉熵。</li>
+</ul>
+<p><strong>4）用子模型集合（ensemble）对未标注数据做软标注</strong></p>
+<ul>
+<li>对每个 x∈U，用每个子模型预测 [MASK] 的词表分布，通过 verbalizer 把词表概率聚合成类别概率；</li>
+<li>对所有 k个模型平均/加权，得到 <strong>软标签（soft labels）</strong> P(y∣x)。</li>
+</ul>
+<p><strong>5）蒸馏 / 训练最终分类器（distillation）</strong></p>
+<ul>
+<li>用 L（真实标签）和 U（软标签）合并训练一个最终的判别式分类器C（通常是同一预训练 LM 加 classifier head，使用交叉熵对标签进行知识蒸馏）。</li>
+<li>这样得到的最终模型比单个 PET 子模型更稳定、性能更好。</li>
+</ul>
+<p><img alt="image-20250813175302573" decoding="async" loading="lazy" src="../assets/img/lesson49/figure-165e9f166a67.png"/></p>
+<h3 id="sec-14">6.2 Prompt-Oriented Fine-Tuning</h3>
+<p>在PET模型中，对MLM进行微调时，使用的方式为Prompt-Oriented Fine-Tuning。 </p>
+<p>Prompt-Oriented Fine-Tuning的 <strong>本质是将目标任务转换为适应预训练模型的预训练任务，以适应预训练模型的学习体系</strong> 。</p>
+<hr/>
+<p>根据提示的类型不同，POFT方法主要分成三种类型：</p>
+<ul>
+<li>离散提示：也叫硬模版，其提示是由真实的自然语言单词或符号组成，直接拼接到输入中。</li>
+<li>连续提示：提示不是实际的单词，而是**可训练的向量**，插入到输入 embedding 序列中。</li>
+<li>混合提示：同时使用**人工可读的离散 token**和**可训练的连续向量**。</li>
+</ul>
+<p>按照训练时参数更新的范围不同，POFT方法主要分成三种类型：</p>
+<ul>
+<li>全量微调（Full Fine-Tuning）：模型所有参数都参与更新，包括预训练模型参数和下游任务层参数。如PET模型。</li>
+<li>部分参数微调（Partial Fine-Tuning）：只更新预训练模型中的一部分参数，比如高层 transformer block、某些 attention 层或特定模块，其余参数冻结。如Adapter Tuning。</li>
+<li>仅提示参数微调（Prompt-Only Tuning）：冻结原始预训练模型参数，只训练 prompt 参数。如P-tuning、Prompt Tuning等。</li>
+</ul>
+<hr/>
+<p>具体来说，PET中使用的方法为： 基于硬模板+ 全量微调</p>
+<p>在PET方法中，使用的方式是Prompt-Tuning+Fine-Tuning的结合体，所以预训练模型参数是会变的。所以PET中使用微调方法，实际上是一种Fine-Tuning的升级版。<strong>虽然 PET 也是在优化整个模型的参数</strong>，但是相比于传统的 Finetuning 方法，<strong>对数据量需求更少</strong>。</p>
+<p>全量微调方法在BERT类相对较小的模型上表现较好，但是随着模型越来越大，如果每次针对下游任务都需要更新预训练模型的参数，资源成本及时间成本都会很高。因此后续陆续提出了不更新预训练模型参数，单纯只针对prompt进行调优的方法，即基于Soft Prompt的微调方法，如 Prompt Tuning、P-tuning 和 Prefix Tuning 等，显著降低了任务迁移成本</p>
+<hr/>
+<p>另外，在PET方法中使用的硬模版，同样存在很多问题。</p>
+<p>Hard Prompt (离散提示)：是一种固定的提示模板，通过将特定的关键词或短语(真实的文本字符串)直接嵌入到文本中，引导模型生成符合要求的文本。一般根据经验的人工设计或自动化搜索产生的。</p>
+<p>这种提示方法的特点在于，提示模板是固定的，不能根据不同的任务和需求进行调整。另外，从PVP的介绍中可以看出使用硬模板时 改变prompt或改变prompt中的单个单词 会给实验结果带来巨大的差异。</p>
+<p>下面是常见下游任务的Prompt设计：</p>
+<div align="center"><img alt="课程配图" decoding="async" loading="lazy" src="../assets/img/lesson49/figure-0a17a1fcf548.png"/></div>
+<p>正因为硬模版的问题，后续研究对它进行了很多优化，后来索性直接放弃硬模板，优化 prompt token embedding，即使用Soft Prompt。</p>
+<h3 id="sec-15">6.3 Soft Prompt及微调方法</h3>
+<h4>6.3.1 连续提示模板</h4>
+<p>Soft Prompt (连续提示) ：是指通过给模型输入一个可参数化的提示模板，从而引导模型生成符合特定要求的文本。这种提示方法的特点在于，提示模板中的参数可以根据具体任务和需求进行调整，以达到最佳的生成效果。</p>
+<p>Soft Prompt目的其 <strong>将模板转换为可以进行优化的连续向量</strong> ，换句话说，我们不需要显式地指定这些模板中各个token具体是什么，而只需要在语义空间中表示一个向量即可。</p>
+<hr/>
+<p>这样，不同的任务、数据可以自适应地在语义空间中寻找若干合适的向量，来代表模板中的每一个词，相较于显式的token，这类token称为 <strong>伪标记（Pseudo Token）</strong> 。下面给出基于连续提示的模板定义：</p>
+<blockquote>
+<p>假设针对分类任务，给定一个输入句子<span class="math-inline">\(x\)</span>，连续提示的模板可以定义为<span class="math-inline">\(T=[x],[v1],[v2],...,[vn][MASK]\)</span>：其中[v1]则是伪标记，其仅代表一个抽象的token，并没有实际的含义，本质上是一个向量。</p>
+<p>总结来说：Soft Prompt方法，是将模板变为可训练的参数，不同的样本可以在连续的向量空间中寻找合适的伪标记，同时也增加模型的泛化能力。因此，连续法需要引入少量的参数并在训练时进行参数更新，但预训练模型参数是不变的，变的是prompt token对应的词向量（Word Embedding）表征及其他引入的少量参数。</p>
+</blockquote>
+<hr/>
+<p>目前基于连续提示的Prompt-Tuning的实现方法，以下列三篇论文为代表，分别作简要介绍：</p>
+<ul>
+<li>《The Power of Scale for Parameter-Efficient Prompt Tuning》：代表方法为Prompt Tuning</li>
+<li>《GPT Understands, Too》：代表方法为P-tuning</li>
+<li>《PPT: Pre-trained Prompt Tuning for Few-shot Learning》：代表方法PPT</li>
+</ul>
+<hr/>
+<h4>6.3.2 Prompt Tuning（NLG任务）</h4>
+<p>Prompt Tuning（基于T5模型来做的）方法为每一个输入文本假设一个固定前缀提示，该提示表由神经网络参数化，并在下游任务微调时进行更新，整个过程中预训练的大模型参数被冻结。</p>
+<div align="center"><img alt="课程配图" decoding="async" loading="lazy" src="../assets/img/lesson49/figure-34f05ebbce1d.png"/></div>
+<hr/>
+<p>形式化的描述如下：</p>
+<blockquote>
+<p>给定 <span class="math-inline">\(n\)</span>个tokens，记作<span class="math-inline">\(x1, ...,xn\)</span> ，通过一个预训练模型对应的embedding table，可以将<span class="math-inline">\(n\)</span>个token表示为一个向量矩阵<span class="math-inline">\((X_e-&gt;R^{n*e})\)</span>，其中<span class="math-inline">\(e\)</span>是向量的维度（其与预训练模型的配置有关，例如BERT-base是768）。连续模板中的每个伪标记<span class="math-inline">\(v_i\)</span>可以视为参数，也可以视为一个token，因此，可以通过另一个embedding table获得<span class="math-inline">\(p\)</span>个伪标记token标记为向量矩阵<span class="math-inline">\((P_e-&gt;R^{p*e})\)</span>，然后将文本和Prompt拼接获得新的输入<span class="math-inline">\([P_e:X_e]-&gt;R^{(p+n)*e}\)</span>.这个新的输入将会送入预训练模型中进行训练。注意，只有prompt对应的向量表征参数P<span class="math-inline">\((P_e-&gt;R^{p*e})\)</span>会随着训练进行更新。
+</p>
+</blockquote>
+<hr/>
+<p>每个伪标记的初始化可以有下列几种情况：</p>
+<ul>
+<li>最简单的是随机初始化：即随机初始化一个面向所有伪标记的embedding table，可采用正态分布或者均匀分布等；</li>
+<li>每个token使用预训练模型已有的embedding table进行初始化，此时，每一个伪标记先随机指定词表中的一个词，并取对应词的embedding作为这个伪标记的初始化；</li>
+<li>在分类任务上，使用label word（verbalizer）对应的embedding作为初始化，可以有效限制模型输出的是预设的输出类对应的word。</li>
+</ul>
+<p>因此，在训练过程中，每个伪标记对应的参数都可以得到训练，对于不同的输入句子 ，这些伪标记对应的embedding也各不相同，达到了预期的目的。</p>
+<hr/>
+<p>示例代码：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 假设输入文本：x1, x2, ..., xn</span>
+<span class="c1"># 预训练模型 embedding 维度 = e</span>
+<span class="c1"># prompt token 数量 = p</span>
+
+<span class="c1"># 1. 定义预训练模型 (冻结参数)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PretrainedModel</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding_table</span> <span class="o">=</span> <span class="n">load_pretrained_embedding</span><span class="p">()</span>  <span class="c1"># 词表 -&gt; 向量</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">load_pretrained_encoder</span><span class="p">()</span>            <span class="c1"># BERT, GPT 等 Transformer</span>
+        <span class="n">freeze</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding_table</span><span class="p">)</span>                        <span class="c1"># 冻结</span>
+        <span class="n">freeze</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">)</span>                                <span class="c1"># 冻结</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_embeddings</span><span class="p">):</span>
+        <span class="c1"># 输入拼接后的向量 (p+n, e)，送入模型</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">input_embeddings</span><span class="p">)</span>
+
+
+<span class="c1"># 2. 定义可训练的 Prompt 参数 (虚拟 token embedding)</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PromptEmbedding</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_prompt_tokens</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">):</span>
+        <span class="c1"># 随机初始化 p 个 prompt 向量</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prompt_table</span> <span class="o">=</span> <span class="n">Parameter</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">num_prompt_tokens</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_table</span>  <span class="c1"># (p, e)</span>
+
+
+<span class="c1"># 3. 构造输入</span>
+<span class="c1"># prompt_module参数为 PromptEmbedding 的对象</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">build_input</span><span class="p">(</span><span class="n">text_tokens</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">prompt_module</span><span class="p">):</span>
+    <span class="c1"># (n, e) 文本 token 的嵌入表示</span>
+    <span class="n">X_e</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">embedding_table</span><span class="p">(</span><span class="n">text_tokens</span><span class="p">)</span>
+
+    <span class="c1"># (p, e) prompt token 的嵌入表示</span>
+    <span class="n">P_e</span> <span class="o">=</span> <span class="n">prompt_module</span><span class="o">.</span><span class="n">forward</span><span class="p">()</span>
+
+    <span class="c1"># 拼接得到新的输入 (p+n, e)</span>
+    <span class="n">input_embeddings</span> <span class="o">=</span> <span class="n">concat</span><span class="p">(</span><span class="n">P_e</span><span class="p">,</span> <span class="n">X_e</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">input_embeddings</span>
+
+
+<span class="c1"># 4. 训练流程</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">train</span><span class="p">(</span><span class="n">prompt_module</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">loss_fn</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">dataloader</span><span class="p">:</span>
+        <span class="n">text_tokens</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">batch</span>
+
+        <span class="c1"># 构建输入</span>
+        <span class="n">input_embeddings</span> <span class="o">=</span> <span class="n">build_input</span><span class="p">(</span><span class="n">text_tokens</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">prompt_module</span><span class="p">)</span>
+
+        <span class="c1"># 前向传播</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">input_embeddings</span><span class="p">)</span>
+
+        <span class="c1"># 计算任务损失 (例如分类 / MLM)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+
+        <span class="c1"># 反向传播 (只更新 prompt 参数)</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+        <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+        <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+
+<span class="c1"># ===============================</span>
+<span class="c1"># 使用示例</span>
+<span class="c1"># ===============================</span>
+<span class="n">embedding_dim</span> <span class="o">=</span> <span class="mi">768</span>
+<span class="n">p</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># prompt token 数</span>
+
+<span class="c1"># 加载预训练模型 (冻结参数)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">PretrainedModel</span><span class="p">(</span><span class="n">embedding_dim</span><span class="p">)</span>
+
+<span class="c1"># 初始化 Prompt 模块 (可训练参数)</span>
+<span class="n">prompt_module</span> <span class="o">=</span> <span class="n">PromptEmbedding</span><span class="p">(</span><span class="n">num_prompt_tokens</span><span class="o">=</span><span class="n">p</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="o">=</span><span class="n">embedding_dim</span><span class="p">)</span>
+
+<span class="c1"># 优化器 (只更新 prompt 参数)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">Adam</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="n">prompt_module</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+
+<span class="c1"># 开始训练</span>
+<span class="n">train</span><span class="p">(</span><span class="n">prompt_module</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">dataloader</span><span class="p">,</span> <span class="n">loss_fn</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">)</span>
+
+<span class="c1"># ===============================</span>
+<span class="c1"># 核心要点：</span>
+<span class="c1"># - 文本 token -&gt; embedding (冻结)</span>
+<span class="c1"># - prompt token -&gt; embedding (可训练)</span>
+<span class="c1"># - 拼接后输入模型</span>
+<span class="c1"># - 反向传播时只更新 prompt embedding</span>
+<span class="c1"># ===============================</span>
+</pre></div>
+</div>
+<hr/>
+<p><strong>Prompt Tuning特点</strong>：</p>
+<ul>
+<li>优点：<ul>
+<li>大模型的微调新范式</li>
+<li>模型参数规模大了之后，可以将大模型参数固定，指定附加参数来适配下游任务，而且适配性能基本和全参数微调相当。</li>
+</ul>
+</li>
+<li>缺点：<ul>
+<li>在小样本学习场景上表现不太行</li>
+<li>收敛速度比较慢</li>
+<li>调参比较复杂（prompt 长度、初始化方式、学习率等都需要调整）</li>
+</ul>
+</li>
+</ul>
+<h4>6.3.3 P-tuning（NLU任务）</h4>
+<blockquote>
+<p>P-tuning的详细内容请参考论文解读：GPT Understands, Too。</p>
+</blockquote>
+<p>P-tuning是另一个具有代表性的连续提示方法，主要针对的是NLU任务，方法图如下所示（图中的<span class="math-inline">\(P_i\)</span>等价于上文的<span class="math-inline">\(v_i\)</span> ，表示伪标记）, 谷歌于2021年发表。</p>
+<p>P-tuning 的核心思想是：用一个小的可训练模块把一组“连续提示向量”生成并插入到原始输入 embedding 中，令 <strong>冻结的预训练模型</strong> 在下游任务上产生正确输出，训练时仅更新 prompt encoder（或提示向量），从而实现低成本高效的调优。</p>
+<div align="center"><img alt="课程配图" decoding="async" loading="lazy" src="../assets/img/lesson49/figure-ee5375cfa87c.png"/></div>
+<hr/>
+<p>P-Tuning方法中四个技巧点：</p>
+<ul>
+<li><strong>考虑到这些伪标记的相互依赖关系</strong> ：P-Tuning v1提出**将 Prompt 转换为可以学习的 Embedding 层**，它认为<span class="math-inline">\([P_1]\)</span> 与 <span class="math-inline">\([P_2]\)</span>是有先后关系的，因此引入Prompt Encoder，实际过程中采用Bi-LSTM+前馈神经网络组成，编码之后与其他向量进行拼接之后正常输入 LLM。</li>
+<li><strong>指定上下文词</strong> ：如果模板全部是伪标记，在训练时无法很好地控制这些模板朝着与对应句子相似的语义上优化，因此选定部分具有与当前句子语义代表性的一些词作为一些伪标记的初始化（例如上图中“capital”）；</li>
+<li><strong>重参数（Reparameterization）</strong> ：具体到代码实现上，P-tuning先通过一个Prompt Encoder表征这些伪标记后，直接将这些新的表征覆盖到对应的embedding table上，换句话说，Prompt Encoder只在训练时候会使用到，而在推理阶段则不再使用。</li>
+<li><strong>混合提示（Hydride Prompt）</strong> ：将连续提示与离散token进行混合，例如<span class="math-inline">\([x1][Britain][x2][mask]\)</span></li>
+</ul>
+<hr/>
+<p>示例代码：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 要点：P-Tuning v1 使用可训练的连续 prompt embedding（软提示），可选地通过一个小的 prompt-encoder（如 LSTM/MLP）对其进行编码；</span>
+<span class="c1"># 通常冻结预训练模型参数，仅训练 prompt 相关参数，从而实现参数高效微调。</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.optim</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">optim</span>
+
+<span class="c1"># ---------------------------</span>
+<span class="c1"># 超参数 / 配置</span>
+<span class="c1"># ---------------------------</span>
+<span class="n">PROMPT_LENGTH</span> <span class="o">=</span> <span class="mi">30</span>        <span class="c1"># 软 prompt 的 token 数量</span>
+<span class="n">EMBED_DIM</span> <span class="o">=</span> <span class="mi">768</span>           <span class="c1"># 与预训练模型的 embedding 维度保持一致</span>
+<span class="n">USE_PROMPT_ENCODER</span> <span class="o">=</span> <span class="kc">True</span> <span class="c1"># 是否使用 prompt-encoder（P-Tuning v1 常见配置）</span>
+<span class="n">LR</span> <span class="o">=</span> <span class="mf">1e-3</span>
+<span class="n">DEVICE</span> <span class="o">=</span> <span class="s2">"cuda"</span>
+
+<span class="c1"># ---------------------------</span>
+<span class="c1"># 软提示模块</span>
+<span class="c1"># ---------------------------</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">SoftPrompt</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""</span>
+<span class="sd">    保存一组连续的 prompt embedding（可训练）。</span>
+<span class="sd">    可选地通过一个小的 encoder（例如双向 LSTM 或 MLP）对这些 embedding 建模，</span>
+<span class="sd">    以捕捉 prompt token 之间的依赖关系（这是 P-Tuning v1 的做法之一）。</span>
+<span class="sd">    """</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prompt_length</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">,</span> <span class="n">use_encoder</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prompt_length</span> <span class="o">=</span> <span class="n">prompt_length</span>
+        <span class="c1"># 原始的 prompt embedding（可训练参数）</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prompt_embeddings</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">prompt_length</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.02</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">use_encoder</span> <span class="o">=</span> <span class="n">use_encoder</span>
+        <span class="k">if</span> <span class="n">use_encoder</span><span class="p">:</span>
+            <span class="c1"># 示例：一个小的双向 LSTM 作为 prompt-encoder（也可以替换为 MLP）</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="n">input_size</span><span class="o">=</span><span class="n">embed_dim</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="n">embed_dim</span><span class="o">//</span><span class="mi">2</span><span class="p">,</span>
+                                   <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bidirectional</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="c1"># 如果 encoder 的输出维度不同，投影回 embed_dim</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">proj</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">embed_dim</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+        <span class="c1"># 将 prompt_embeddings 扩展到 batch 维度</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_embeddings</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (B, P, D)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">use_encoder</span><span class="p">:</span>
+            <span class="n">out</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoder</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>           <span class="c1"># (B, P, 2*H) 如果是双向 LSTM</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">proj</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>               <span class="c1"># (B, P, D)</span>
+            <span class="k">return</span> <span class="n">out</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">p</span>  <span class="c1"># (B, P, D)</span>
+
+<span class="c1"># ---------------------------</span>
+<span class="c1"># P-Tuning 高层封装模型</span>
+<span class="c1"># ---------------------------</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PTuningModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">soft_prompt</span><span class="p">:</span> <span class="n">SoftPrompt</span><span class="p">,</span>
+                 <span class="n">prompt_position</span><span class="o">=</span><span class="s2">"prepend"</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        base_model: 已加载的预训练 language model（例如 GPT-2 / BERT 等）</span>
+<span class="sd">        tokenizer: 用于分词的 tokenizer（示例中仅用于演示）</span>
+<span class="sd">        soft_prompt: SoftPrompt 实例</span>
+<span class="sd">        prompt_position: 'prepend'（在输入前拼接）或其它插入位置</span>
+<span class="sd">        """</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base</span> <span class="o">=</span> <span class="n">base_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">tokenizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">soft_prompt</span> <span class="o">=</span> <span class="n">soft_prompt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prompt_position</span> <span class="o">=</span> <span class="n">prompt_position</span>
+
+        <span class="c1"># 通常在 P-Tuning v1 中冻结预训练模型参数，仅训练 prompt 相关的参数</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+            <span class="n">param</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># 如果是分类任务，可以在这里加一个小的 task head（示例可选）</span>
+        <span class="c1"># self.classifier = nn.Linear(EMBED_DIM, num_labels)  # 可选</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        input_ids: (B, L)</span>
+<span class="sd">        返回 logits 和（可选）loss</span>
+<span class="sd">        """</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">input_ids</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># 1) 获取基础模型的 token embedding（不同模型接口略有差别）</span>
+        <span class="c1"># 假设 base 模型有 get_input_embeddings() 方法</span>
+        <span class="n">token_emb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">get_input_embeddings</span><span class="p">()(</span><span class="n">input_ids</span><span class="p">)</span>  <span class="c1"># (B, L, D)</span>
+
+        <span class="c1"># 2) 获取软提示 embedding： (B, P, D)</span>
+        <span class="n">prompt_emb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">soft_prompt</span><span class="p">(</span><span class="n">batch_size</span><span class="p">)</span>
+
+        <span class="c1"># 3) 根据位置拼接 prompt（此处演示 prepend）</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt_position</span> <span class="o">==</span> <span class="s2">"prepend"</span><span class="p">:</span>
+            <span class="c1"># 新序列为：[P soft tokens] + [L 原始 tokens]</span>
+            <span class="n">new_emb</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">prompt_emb</span><span class="p">,</span> <span class="n">token_emb</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (B, P+L, D)</span>
+            <span class="c1"># 如果提供了 attention_mask，需要相应扩展</span>
+            <span class="k">if</span> <span class="n">attention_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">prompt_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">prompt_emb</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="n">input_ids</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+                <span class="n">new_attention_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">prompt_mask</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_attention_mask</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="c1"># 注意：有些模型需要调整位置编码或为 prompt 指定特定的位置索引，</span>
+            <span class="c1"># 具体实现依赖于 base 模型的细节。</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">"此伪代码仅展示 'prepend' 的情况"</span><span class="p">)</span>
+
+        <span class="c1"># 4) 将 embeddings 直接传入基础模型（若模型支持 inputs_embeds 参数）</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">(</span><span class="n">inputs_embeds</span><span class="o">=</span><span class="n">new_emb</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="n">new_attention_mask</span><span class="p">,</span> <span class="n">return_dict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">logits</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">logits</span>  <span class="c1"># 具体 shape 取决于模型与任务</span>
+
+        <span class="c1"># 5) 若提供 labels 则计算损失（任务相关，例如语言建模或分类）</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># 以语言建模为例：需要对 logits/labels 进行 shift</span>
+            <span class="n">shift_logits</span> <span class="o">=</span> <span class="n">logits</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+            <span class="n">shift_labels</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+            <span class="n">loss_fct</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fct</span><span class="p">(</span><span class="n">shift_logits</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">shift_logits</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">shift_labels</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"logits"</span><span class="p">:</span> <span class="n">logits</span><span class="p">,</span> <span class="s2">"loss"</span><span class="p">:</span> <span class="n">loss</span><span class="p">}</span>
+
+<span class="c1"># ---------------------------</span>
+<span class="c1"># 训练主循环</span>
+<span class="c1"># ---------------------------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">train_ptuning</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">PTuningModel</span><span class="p">,</span> <span class="n">train_dataloader</span><span class="p">,</span> <span class="n">num_epochs</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="c1"># 仅优化需要梯度的参数（即 soft prompt、encoder、以及可选的 task head）</span>
+    <span class="n">prompt_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">]</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">AdamW</span><span class="p">(</span><span class="n">prompt_params</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="n">LR</span><span class="p">)</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">DEVICE</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>  <span class="c1"># base 模型虽然被冻结，但 soft prompt 模块可能需处于训练模式</span>
+
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">train_dataloader</span><span class="p">:</span>
+            <span class="n">input_ids</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">"input_ids"</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">DEVICE</span><span class="p">)</span>      <span class="c1"># (B, L)</span>
+            <span class="n">attention_mask</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"attention_mask"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"labels"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+            <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="n">attention_mask</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s2">"loss"</span><span class="p">]</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+            <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2"> loss: </span><span class="si">{</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="c1"># 训练结束后通常只保存 prompt 参数（体积很小）</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">soft_prompt</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="s2">"soft_prompt.pt"</span><span class="p">)</span>
+
+<span class="c1"># ---------------------------</span>
+<span class="c1"># 推理：加载 prompt 并运行</span>
+<span class="c1"># ---------------------------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_prompt_and_infer</span><span class="p">(</span><span class="n">base_model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">prompt_path</span><span class="p">,</span> <span class="n">input_text</span><span class="p">):</span>
+    <span class="n">soft_prompt</span> <span class="o">=</span> <span class="n">SoftPrompt</span><span class="p">(</span><span class="n">PROMPT_LENGTH</span><span class="p">,</span> <span class="n">EMBED_DIM</span><span class="p">,</span> <span class="n">use_encoder</span><span class="o">=</span><span class="n">USE_PROMPT_ENCODER</span><span class="p">)</span>
+    <span class="n">soft_prompt</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">prompt_path</span><span class="p">))</span>
+    <span class="n">pt_model</span> <span class="o">=</span> <span class="n">PTuningModel</span><span class="p">(</span><span class="n">base_model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">soft_prompt</span><span class="p">)</span>
+    <span class="n">pt_model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">DEVICE</span><span class="p">)</span>
+    <span class="n">pt_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+    <span class="c1"># 将输入文本 tokenize -&gt; input_ids</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">input_text</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">"pt"</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">DEVICE</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">pt_model</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="s2">"input_ids"</span><span class="p">],</span> <span class="n">attention_mask</span><span class="o">=</span><span class="n">tokens</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"attention_mask"</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+    <span class="c1"># 根据任务把 logits 解码为文本或标签</span>
+    <span class="c1"># ...</span>
+    <span class="k">return</span> <span class="n">out</span>
+</pre></div>
+</div>
+<hr/>
+<p><strong>P-tuning的特点</strong>：</p>
+<ul>
+<li>优点：<ul>
+<li>引入了一个 LSTM +MLP模块对 soft prompt 进行建模，能捕捉 token 之间的顺序和语义关系</li>
+<li>改进了离散 prompt的不稳定性问题，收敛速度更快</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>仅放在输入层时，对模型内部深层表征的影响有限，面对一些需要深层表示调整的 NLU/序列标注任务表现并不稳定或不足</li>
+<li>在中小模型（100M–1B）表现较差</li>
+</ul>
+</li>
+</ul>
+<hr/>
+<p>P-Tuning v2是升级版本，主要解决**P-Tuning v1 在小参数量模型上表现差的问题**。 详细信息可参考《[P-Tuning v2: Prompt Tuning Can Be Comparable to Fine-tuning Universally Across Scales and Tasks》。</p>
+<p>P-Tuning v2 的目标就是要让 Prompt Tuning 能够在不同参数规模的预训练模型、针对不同下游任务的结果上都达到匹敌 Fine-tuning 的结果。 该方法**在模型的每一层都应用连续的 prompts 并对 prompts 参数进行更新优化**。</p>
+<div align="center"><img alt="课程配图" decoding="async" loading="lazy" src="../assets/img/lesson49/figure-d76356ad3308.png"/></div>
+<hr/>
+<p>示例代码：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.optim</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">optim</span>
+
+<span class="c1"># ---------------------------</span>
+<span class="c1"># 超参数 / 配置</span>
+<span class="c1"># ---------------------------</span>
+<span class="n">PREFIX_LENGTH</span> <span class="o">=</span> <span class="mi">20</span>       <span class="c1"># 每层 prefix token 数量（可视为每层的 "soft tokens"）</span>
+<span class="n">EMBED_DIM</span> <span class="o">=</span> <span class="mi">768</span>          <span class="c1"># 模型 embedding 维度（与 base model 保持一致）</span>
+<span class="n">NUM_LAYERS</span> <span class="o">=</span> <span class="mi">12</span>          <span class="c1"># base transformer 层数（例如 GPT-2 small = 12）</span>
+<span class="n">NUM_HEADS</span> <span class="o">=</span> <span class="mi">12</span>           <span class="c1"># 注意力头数</span>
+<span class="n">HEAD_DIM</span> <span class="o">=</span> <span class="n">EMBED_DIM</span> <span class="o">//</span> <span class="n">NUM_HEADS</span>
+<span class="n">LR</span> <span class="o">=</span> <span class="mf">1e-3</span>
+<span class="n">DEVICE</span> <span class="o">=</span> <span class="s2">"cuda"</span>
+
+<span class="c1"># ---------------------------</span>
+<span class="c1"># 小工具：把向量 reshape 成 attention 所需的 (B, num_prefix, n_head, head_dim)</span>
+<span class="c1"># 并转置成某些框架期望的格式 (B, n_head, num_prefix, head_dim)</span>
+<span class="c1"># ---------------------------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">reshape_to_kv</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">num_prefix</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">head_dim</span><span class="p">):</span>
+    <span class="c1"># x: (B, num_prefix, num_heads * head_dim)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">num_prefix</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">head_dim</span><span class="p">)</span>  <span class="c1"># (B, P, H, D_h)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>                  <span class="c1"># (B, H, P, D_h)</span>
+    <span class="k">return</span> <span class="n">x</span>
+
+<span class="c1"># ---------------------------</span>
+<span class="c1"># Prompt Encoder（支持有/无 MLP 两种模式）</span>
+<span class="c1"># ---------------------------</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PrefixEncoder</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">prefix_len</span><span class="p">,</span>
+                 <span class="n">embed_dim</span><span class="p">,</span>
+                 <span class="n">num_layers</span><span class="p">,</span>
+                 <span class="n">num_heads</span><span class="p">,</span>
+                 <span class="n">head_dim</span><span class="p">,</span>
+                 <span class="n">prefix_projection</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+                 <span class="n">prefix_hidden_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        prefix_projection=True:</span>
+<span class="sd">            embedding: (prefix_len, embed_dim)</span>
+<span class="sd">            trans (MLP): embed_dim -&gt; prefix_hidden_size -&gt; out_dim</span>
+<span class="sd">        prefix_projection=False:</span>
+<span class="sd">            embedding: (prefix_len, out_dim)  # 直接输出最终所需的扁平向量</span>
+<span class="sd">        """</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix_len</span> <span class="o">=</span> <span class="n">prefix_len</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span> <span class="o">=</span> <span class="n">num_layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span> <span class="o">=</span> <span class="n">num_heads</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span> <span class="o">=</span> <span class="n">head_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix_projection</span> <span class="o">=</span> <span class="n">prefix_projection</span>
+
+        <span class="n">out_dim</span> <span class="o">=</span> <span class="n">num_layers</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">num_heads</span> <span class="o">*</span> <span class="n">head_dim</span>  <span class="c1"># 每个 token 的输出 dim（扁平化 k&amp;v）</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix_projection</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">prefix_hidden_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># 如果没有给出 hidden_size，默认用 embed_dim</span>
+                <span class="n">prefix_hidden_size</span> <span class="o">=</span> <span class="n">embed_dim</span>
+            <span class="c1"># 原始 P-Tuning v2 常用结构：Embedding（D） + 两层 MLP（D -&gt; hidden -&gt; out_dim）</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">prefix_len</span><span class="p">,</span> <span class="n">embed_dim</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">embed_dim</span><span class="p">,</span> <span class="n">prefix_hidden_size</span><span class="p">),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Tanh</span><span class="p">(),</span>
+                <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">prefix_hidden_size</span><span class="p">,</span> <span class="n">out_dim</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># 直接把 embedding 的输出维度做成最终需要的 out_dim（与原始 snippet 保持一致）</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">prefix_len</span><span class="p">,</span> <span class="n">out_dim</span><span class="p">)</span>
+            <span class="c1"># 没有 mlp</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">trans</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">"""</span>
+<span class="sd">        返回：list of length num_layers，每个元素为 (k, v)，</span>
+<span class="sd">        其中 k/v 形状为 (B, n_head, P, head_dim)</span>
+<span class="sd">        """</span>
+        <span class="c1"># device/dtype 兼容：优先使用 embedding 的 device/dtype</span>
+        <span class="n">emb_device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">device</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">,</span> <span class="s2">"weight"</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">device</span> <span class="ow">or</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s2">"cpu"</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">device</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">device</span> <span class="o">=</span> <span class="n">emb_device</span>
+        <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">dtype</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">,</span> <span class="s2">"weight"</span><span class="p">)</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">float</span>
+
+        <span class="c1"># 获取 prefix token 的 embedding（B, P, dim)</span>
+        <span class="c1"># 方法：先取出 embedding.weight -&gt; (P, dim) -&gt; unsqueeze(0).expand(B, P, dim)</span>
+        <span class="n">token_emb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>  <span class="c1"># (B, P, dim)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix_projection</span><span class="p">:</span>
+            <span class="c1"># 通过 MLP 映射到 out_dim</span>
+            <span class="n">encoded</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">trans</span><span class="p">(</span><span class="n">token_emb</span><span class="p">)</span>  <span class="c1"># (B, P, out_dim)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># embedding 已经是 out_dim</span>
+            <span class="n">encoded</span> <span class="o">=</span> <span class="n">token_emb</span>  <span class="c1"># (B, P, out_dim)</span>
+
+        <span class="c1"># encoded -&gt; (B, P, num_layers, 2, n_head * head_dim)</span>
+        <span class="n">encoded</span> <span class="o">=</span> <span class="n">encoded</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">)</span>
+        <span class="n">outs_per_layer</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">layer</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_layers</span><span class="p">):</span>
+            <span class="n">k_flat</span> <span class="o">=</span> <span class="n">encoded</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">layer</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>  <span class="c1"># (B, P, n_head*head_dim)</span>
+            <span class="n">v_flat</span> <span class="o">=</span> <span class="n">encoded</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">layer</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+            <span class="n">k</span> <span class="o">=</span> <span class="n">reshape_to_kv</span><span class="p">(</span><span class="n">k_flat</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">)</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">reshape_to_kv</span><span class="p">(</span><span class="n">v_flat</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix_len</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">head_dim</span><span class="p">)</span>
+            <span class="n">outs_per_layer</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">outs_per_layer</span>
+
+<span class="c1"># ---------------------------</span>
+<span class="c1"># P-Tuning-V2 高层封装模型</span>
+<span class="c1"># ---------------------------</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PTuningV2Model</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">prefix_encoder</span><span class="p">:</span> <span class="n">PrefixEncoder</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base</span> <span class="o">=</span> <span class="n">base_model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokenizer</span> <span class="o">=</span> <span class="n">tokenizer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix_encoder</span> <span class="o">=</span> <span class="n">prefix_encoder</span>
+
+        <span class="c1"># 冻结基础模型参数（仅训练 prefix_encoder）</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">parameters</span><span class="p">():</span>
+            <span class="n">p</span><span class="o">.</span><span class="n">requires_grad</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build_past_key_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+        <span class="c1"># 让 prefix encoder 在相同 device/dtype 上产生 KV</span>
+        <span class="n">prefix_kv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix_encoder</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">prefix_kv</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">input_ids</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">device</span> <span class="o">=</span> <span class="n">input_ids</span><span class="o">.</span><span class="n">device</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">input_ids</span><span class="o">.</span><span class="n">dtype</span>
+
+        <span class="c1"># 1) 构造 prefix past_key_values</span>
+        <span class="n">prefix_kv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_past_key_values</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float</span><span class="p">)</span>  <span class="c1"># KV 通常为浮点</span>
+
+        <span class="c1"># 2) 构造扩展 attention_mask</span>
+        <span class="n">prefix_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix_encoder</span><span class="o">.</span><span class="n">prefix_len</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">attention_mask</span><span class="o">.</span><span class="n">dtype</span> <span class="k">if</span> <span class="n">attention_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">attention_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">new_attention_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">prefix_mask</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># (B, P + L)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">new_attention_mask</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># 3) 调用 base model（保持与原来接口一致）</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">(</span><span class="n">input_ids</span><span class="o">=</span><span class="n">input_ids</span><span class="p">,</span>
+                            <span class="n">attention_mask</span><span class="o">=</span><span class="n">new_attention_mask</span><span class="p">,</span>
+                            <span class="n">past_key_values</span><span class="o">=</span><span class="n">prefix_kv</span><span class="p">,</span>
+                            <span class="n">return_dict</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">logits</span> <span class="o">=</span> <span class="n">outputs</span><span class="o">.</span><span class="n">logits</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">shift_logits</span> <span class="o">=</span> <span class="n">logits</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+            <span class="n">shift_labels</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span>
+            <span class="n">loss_fct</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fct</span><span class="p">(</span><span class="n">shift_logits</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">shift_logits</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">shift_labels</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"logits"</span><span class="p">:</span> <span class="n">logits</span><span class="p">,</span> <span class="s2">"loss"</span><span class="p">:</span> <span class="n">loss</span><span class="p">}</span>
+
+<span class="c1"># ---------------------------</span>
+<span class="c1"># 训练循环</span>
+<span class="c1"># ---------------------------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">train_ptuning_v2</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">PTuningV2Model</span><span class="p">,</span> <span class="n">train_dataloader</span><span class="p">,</span> <span class="n">num_epochs</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">trainable_params</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">prefix_encoder</span><span class="o">.</span><span class="n">parameters</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">]</span>
+    <span class="n">optimizer</span> <span class="o">=</span> <span class="n">optim</span><span class="o">.</span><span class="n">AdamW</span><span class="p">(</span><span class="n">trainable_params</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="n">LR</span><span class="p">)</span>
+
+    <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">DEVICE</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_epochs</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">batch</span> <span class="ow">in</span> <span class="n">train_dataloader</span><span class="p">:</span>
+            <span class="n">input_ids</span> <span class="o">=</span> <span class="n">batch</span><span class="p">[</span><span class="s2">"input_ids"</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">DEVICE</span><span class="p">)</span>
+            <span class="n">attention_mask</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"attention_mask"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">attention_mask</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">attention_mask</span> <span class="o">=</span> <span class="n">attention_mask</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">DEVICE</span><span class="p">)</span>
+            <span class="n">labels</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"labels"</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">DEVICE</span><span class="p">)</span>
+
+            <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">input_ids</span><span class="o">=</span><span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span><span class="o">=</span><span class="n">attention_mask</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+            <span class="n">loss</span> <span class="o">=</span> <span class="n">out</span><span class="p">[</span><span class="s2">"loss"</span><span class="p">]</span>
+
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+            <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+            <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="si">}</span><span class="s2"> loss: </span><span class="si">{</span><span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+    <span class="c1"># 保存 prompt encoder（参数量小）</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">prefix_encoder</span><span class="o">.</span><span class="n">state_dict</span><span class="p">(),</span> <span class="s2">"prefix_encoder.pt"</span><span class="p">)</span>
+
+<span class="c1"># ---------------------------</span>
+<span class="c1"># 推理：加载 prefix encoder 并进行推理（示例）</span>
+<span class="c1"># ---------------------------</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_prefix_and_infer</span><span class="p">(</span><span class="n">base_model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">prefix_path</span><span class="p">,</span> <span class="n">input_text</span><span class="p">,</span>
+                          <span class="n">prefix_projection</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prefix_hidden_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">prefix_encoder</span> <span class="o">=</span> <span class="n">PrefixEncoder</span><span class="p">(</span><span class="n">PREFIX_LENGTH</span><span class="p">,</span> <span class="n">EMBED_DIM</span><span class="p">,</span> <span class="n">NUM_LAYERS</span><span class="p">,</span> <span class="n">NUM_HEADS</span><span class="p">,</span> <span class="n">HEAD_DIM</span><span class="p">,</span>
+                                   <span class="n">prefix_projection</span><span class="o">=</span><span class="n">prefix_projection</span><span class="p">,</span>
+                                   <span class="n">prefix_hidden_size</span><span class="o">=</span><span class="n">prefix_hidden_size</span><span class="p">)</span>
+    <span class="n">prefix_encoder</span><span class="o">.</span><span class="n">load_state_dict</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">prefix_path</span><span class="p">,</span> <span class="n">map_location</span><span class="o">=</span><span class="n">DEVICE</span><span class="p">))</span>
+    <span class="n">pt_model</span> <span class="o">=</span> <span class="n">PTuningV2Model</span><span class="p">(</span><span class="n">base_model</span><span class="p">,</span> <span class="n">tokenizer</span><span class="p">,</span> <span class="n">prefix_encoder</span><span class="p">)</span>
+    <span class="n">pt_model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">DEVICE</span><span class="p">)</span>
+    <span class="n">pt_model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">tokenizer</span><span class="p">(</span><span class="n">input_text</span><span class="p">,</span> <span class="n">return_tensors</span><span class="o">=</span><span class="s2">"pt"</span><span class="p">)</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">DEVICE</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">pt_model</span><span class="p">(</span><span class="n">tokens</span><span class="p">[</span><span class="s2">"input_ids"</span><span class="p">],</span> <span class="n">attention_mask</span><span class="o">=</span><span class="n">tokens</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"attention_mask"</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">out</span>
+</pre></div>
+</div>
+<p><strong>P-tuning v2的特点</strong>：</p>
+<ul>
+<li>优点：<ul>
+<li>把 soft prompts 注入每层，能在多种规模与任务上接近全量微调效果</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>深层 prompt 或长 soft prompt 会占用较多 token / 输入空间</li>
+<li>P-tuning 的 soft prompt 是针对每个下游任务独立训练的，无法直接迁移到其他任务上使用</li>
+</ul>
+</li>
+</ul>
+<h4>6.3.4 PPT（Pre-trained Prompt Tuning）</h4>
+<p>Prompt-Tuning通常适用于低资源场景，但是由于连续的模板是随机初始化的，即其存在新的参数，少量样本可能依然很难确保这些模板被很好地优化。因此简单的方法就是对这些连续的模板也进行预训练。PPT旨在通过先让这些连续提示在大量无标注的预训练语料进行预训练（注意，预训练过程中，Pre-train-model参数固定不变，只改变soft prompt），然后将其加载到对应下游任务的PLM上进行微调后使用。如下图所示（图中的<span class="math-inline">\(P\)</span>即连续的提示模板，<span class="math-inline">\(&lt;X&gt;\)</span>并表示为mask token）：</p>
+<div align="center"><img alt="课程配图" decoding="async" loading="lazy" src="../assets/img/lesson49/figure-5ee4bf077b0a.png"/></div>
+<blockquote>
+<p>首先会预训练一个soft Prompt，然后预训练后的soft Prompt可以直接运用到相似任务中</p>
+</blockquote>
+<p>具体步骤如下：</p>
+<div align="center"><img alt="课程配图" decoding="async" loading="lazy" src="../assets/img/lesson49/figure-1949f9791dcf.png"/></div>
+<div align="center"><img alt="课程配图" decoding="async" loading="lazy" src="../assets/img/lesson49/figure-b4cd75c7d0db.png"/></div>
+<hr/>
+<p><strong>PPT的特点</strong>：</p>
+<ul>
+<li>优点：<ul>
+<li>预训练soft-prompt带来了 小样本学习场景上的显著提升</li>
+<li>缓解了prompt-tuning收敛慢的问题</li>
+</ul>
+</li>
+<li>缺点<ul>
+<li>高度依赖于源任务集的覆盖度与多样性(一旦目标任务与预训练时用到的源任务在分布、格式或语义上差异较大，通用提示 𝑃就难以提供有效的初始引导，导致下游微调效果大幅下降)</li>
+</ul>
+</li>
+</ul>
+<h2 id="sec-16">小结总结</h2>
+<ul>
+<li>本小节主要介绍了NLP发展的四种范式、Fine-Tuning以及Prompt-Tuning的基本思想和原理</li>
+<li>本章节内容详细叙述了Prompt-Tuning主要代表方法</li>
+</ul>
+<div class="done-bar"><button class="mark-done-btn" data-key="lesson49" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson48.html"><div class="dir">← 上一篇</div><div class="name">💹 金融 Prompt 实战：分类、抽取与匹配</div></a><a class="next" href="lesson50.html"><div class="dir">下一篇 →</div><div class="name">🧩 PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">学习目标</a><a class="lv2" href="#sec-2">1 NLP任务四种范式</a><a class="lv2" href="#sec-3">2 Fine-Tuning(微调)</a><a class="lv2" href="#sec-4">3 Prompt-Tuning(提示微调)</a><a class="lv3" href="#sec-5">3.1 什么是Prompt?</a><a class="lv3" href="#sec-6">3.2 Prompt-Tuning定义</a><a class="lv2" href="#sec-7">4 Prompt-Tuning技术发展历程</a><a class="lv2" href="#sec-8">5 面向超大规模语言模型的Prompt-Tuning</a><a class="lv3" href="#sec-9">5.1 In-Context Learning（上下文学习）</a><a class="lv3" href="#sec-10">5.2 Instruction-Tuning（指令微调）</a><a class="lv3" href="#sec-11">5.3 Chain-of-Thought（思维链）</a><a class="lv2" href="#sec-12">6 面向小规模语言模型的Prompt-Tuning</a><a class="lv3" href="#sec-13">6.1 Prompt-Tuning的鼻祖—PET模型</a><a class="lv3" href="#sec-14">6.2 Prompt-Oriented Fine-Tuning</a><a class="lv3" href="#sec-15">6.3 Soft Prompt及微调方法</a><a class="lv2" href="#sec-16">小结总结</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
