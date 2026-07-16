@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NumPy 统计计算与科学分析 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#projects">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="lesson58" href="../lessons/lesson58.html"><span class="no">19</span><span>NumPy 统计计算与科学分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">20</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">21</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">22</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">23</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">24</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">25</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">26</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">27</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">28</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">29</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">30</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">31</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">32</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">33</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">34</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">35</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">36</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">37</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">38</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">39</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">40</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">41</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">42</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">43</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">44</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">45</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">46</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">47</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">48</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">49</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">50</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">51</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">📘 医学知识图谱</div><a class="item" data-page-key="lesson51" href="../lessons/lesson51.html"><span class="no">52</span><span>知识图谱基础与医学图谱架构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson52" href="../lessons/lesson52.html"><span class="no">53</span><span>数据标注、查询语言与 Neo4j 工具链</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson53" href="../lessons/lesson53.html"><span class="no">54</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson54" href="../lessons/lesson54.html"><span class="no">55</span><span>关系抽取：规则、Pipeline 与 CasRel</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson55" href="../lessons/lesson55.html"><span class="no">56</span><span>知识融合：实体统一、链接与消歧</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson56" href="../lessons/lesson56.html"><span class="no">57</span><span>Neo4j 医学图谱搭建与质量验证</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson57" href="../lessons/lesson57.html"><span class="no">58</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">21</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">22</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">24</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">25</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">27</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">28</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">29</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">30</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">31</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">32</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw33" href="../homework/hw33.html"><span class="no">33</span><span>卷积神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw34" href="../homework/hw34.html"><span class="no">34</span><span>循环神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw35" href="../homework/hw35.html"><span class="no">35</span><span>自然语言处理入门与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw36" href="../homework/hw36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw37" href="../homework/hw37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw38" href="../homework/hw38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw39" href="../homework/hw39.html"><span class="no">39</span><span>Transformer 架构与工程实现综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw40" href="../homework/hw40.html"><span class="no">40</span><span>Transformer 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw41" href="../homework/hw41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw42" href="../homework/hw42.html"><span class="no">42</span><span>FastText：文本分类与词向量综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project07" href="../projects/project07.html"><span class="no">07</span><span>医学知识图谱：从信息抽取到 KBQA</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 19 讲</div>
+<h1>📐 NumPy 统计计算与科学分析</h1>
+<div class="chips"><span class="chip">🏷️ 描述与推断统计</span><span class="chip">🏷️ 时间序列 / 线性代数</span><span class="chip">🏷️ 随机模拟 / 假设检验</span><a class="chip amber" href="../homework/hw31.html">✏️ 配套练习：NumPy 综合训练</a></div>
+</div>
+<p>这一讲把 NumPy 从“会操作数组”推进到“能完成一轮科学分析”。主线是：先用向量化完成数值计算，再用描述统计理解分布，用协方差和相关系数理解变量关系，随后进入时间序列指标、线性代数、随机模拟和假设检验。示例会在需要时结合 Pandas、Matplotlib、SciPy 与 scikit-learn。</p>
+<blockquote>
+<p>统计量必须和问题背景一起解释。一个均值、相关系数或 P 值本身不是结论，更不能替代数据质量检查和业务判断。</p>
+</blockquote>
+<h2 id="sec-1">一、从描述到推断：统计分析地图</h2>
+<p>统计学研究如何收集、处理、分析、解释和呈现数据，通常分成两条主线：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>分支</th>
+<th>回答的问题</th>
+<th>常见工具</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>描述统计</td>
+<td>这批数据长什么样？中心、波动、分布形状如何？</td>
+<td>均值、中位数、众数、方差、分位数、偏度、峰度、图表</td>
+</tr>
+<tr>
+<td>推断统计</td>
+<td>能否从样本推断总体？观察到的差异是否可能只是抽样波动？</td>
+<td>点估计、区间估计、假设检验、回归</td>
+</tr>
+</tbody>
+</table></div>
+<p>还要先分清四组概念：</p>
+<ul>
+<li><strong>总体与样本</strong>：总体是全部研究对象，样本是从总体中抽取的一部分；</li>
+<li><strong>参数与统计量</strong>：参数描述总体，统计量由样本计算并用于估计参数；</li>
+<li><strong>点估计与区间估计</strong>：前者给出单个估计值，后者给出带置信水平的范围；</li>
+<li><strong>相关与回归</strong>：相关度量线性关系的方向和强度，回归进一步建立解释或预测模型；相关不等于因果。</li>
+</ul>
+<p>Python 的统计分析工具链各有分工：NumPy 负责数组与基础统计，Pandas 负责表格和时序数据，SciPy 提供概率分布与统计检验，Statsmodels 偏重可解释统计模型，scikit-learn 偏重预测建模，Matplotlib/Seaborn 负责可视化；超大规模数据可转向 PySpark 等分布式框架。</p>
+<h2 id="sec-2">二、向量化数学与条件逻辑</h2>
+<h3 id="sec-3">1. 通用函数与批量运算</h3>
+<p>NumPy 的通用函数（ufunc）把同一运算应用到整个数组，避免 Python 层循环。除四则运算和幂运算外，还应熟悉：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">2.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">])</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>             <span class="c1"># 绝对值</span>
+<span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">x</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">])</span>    <span class="c1"># 平方根：先筛掉负数</span>
+<span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>             <span class="c1"># e 的幂</span>
+<span class="n">np</span><span class="o">.</span><span class="n">log1p</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>   <span class="c1"># log(1+x)，小 x 时比 log(1+x) 更稳定</span>
+<span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>             <span class="c1"># 三角函数</span>
+<span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>      <span class="c1"># 与标量逐元素取较大值</span>
+<span class="n">np</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>     <span class="c1"># 截断到指定区间</span>
+</pre></div>
+</div>
+<p>聚合函数会把一批数据压缩为统计量；通过 <code>axis</code> 指定沿哪个轴聚合，通过 <code>keepdims=True</code> 保留被聚合的轴，便于后续广播：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">scores</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">80</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">75</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mi">88</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">91</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mi">70</span><span class="p">,</span> <span class="mi">79</span><span class="p">,</span> <span class="mi">84</span><span class="p">]])</span>
+
+<span class="n">scores</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>                 <span class="c1"># 每一科的均值</span>
+<span class="n">scores</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>                 <span class="c1"># 每个学生的均值</span>
+<span class="n">center</span> <span class="o">=</span> <span class="n">scores</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">centered</span> <span class="o">=</span> <span class="n">scores</span> <span class="o">-</span> <span class="n">center</span>          <span class="c1"># 借助广播完成按列中心化</span>
+</pre></div>
+</div>
+<h3 id="sec-4">2. 条件选择不写循环</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">revenue</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">120</span><span class="p">,</span> <span class="mi">280</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">450</span><span class="p">,</span> <span class="mi">310</span><span class="p">])</span>
+
+<span class="c1"># 两分支：满足条件取第二个参数，否则取第三个参数</span>
+<span class="n">level</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">revenue</span> <span class="o">&gt;=</span> <span class="mi">300</span><span class="p">,</span> <span class="s2">&quot;高&quot;</span><span class="p">,</span> <span class="s2">&quot;普通&quot;</span><span class="p">)</span>
+
+<span class="c1"># 多分支：按顺序匹配，第一个为 True 的条件生效</span>
+<span class="n">level3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+    <span class="p">[</span><span class="n">revenue</span> <span class="o">&gt;=</span> <span class="mi">300</span><span class="p">,</span> <span class="n">revenue</span> <span class="o">&gt;=</span> <span class="mi">150</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;高&quot;</span><span class="p">,</span> <span class="s2">&quot;中&quot;</span><span class="p">],</span>
+    <span class="n">default</span><span class="o">=</span><span class="s2">&quot;低&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="c1"># 复合条件必须逐项比较并用 &amp; / | / ~；每个条件加括号</span>
+<span class="n">selected</span> <span class="o">=</span> <span class="n">revenue</span><span class="p">[(</span><span class="n">revenue</span> <span class="o">&gt;=</span> <span class="mi">100</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">revenue</span> <span class="o">&lt;</span> <span class="mi">400</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>向量化通常更快也更短，但中间数组也会占内存。处理超大数组时要关注 <code>dtype</code>、切片视图、分块计算与原地操作，不能只看运行时间。</p>
+<h2 id="sec-5">三、描述统计：中心、离散与分布形状</h2>
+<h3 id="sec-6">1. 中心趋势：均值、中位数、众数</h3>
+<p>均值为 $\bar{x}=\frac{1}{n}\sum_{i=1}^{n}x_i$，适合概括相对对称且没有强异常值的数据；中位数是排序后的中间位置，对极端值更稳健；众数是出现最频繁的值，可能不存在，也可能有多个，尤其适合类别数据。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats</span>
+
+<span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">75</span><span class="p">,</span> <span class="mi">82</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">65</span><span class="p">,</span> <span class="mi">88</span><span class="p">,</span> <span class="mi">78</span><span class="p">,</span> <span class="mi">94</span><span class="p">,</span> <span class="mi">70</span><span class="p">])</span>
+
+<span class="n">mean</span> <span class="o">=</span> <span class="n">values</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">median</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+<span class="n">modes</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">mode</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>  <span class="c1"># 连续数据通常不适合机械求众数</span>
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="气温分布与均值位置" src="../assets/img/lesson58/img_074.png" /></p>
+<p><img loading="lazy" decoding="async" alt="考试成绩箱线图与中位数" src="../assets/img/lesson58/img_075.png" /></p>
+<p><img loading="lazy" decoding="async" alt="销售额分布与众数" src="../assets/img/lesson58/img_076.png" /></p>
+<h3 id="sec-7">2. 离散程度：极差、方差与标准差</h3>
+<p>方差度量数据相对均值的平方偏离：</p>
+<p>$$
+\sigma^2=\frac{1}{N}\sum_{i=1}^{N}(x_i-\mu)^2,\qquad
+s^2=\frac{1}{n-1}\sum_{i=1}^{n}(x_i-\bar{x})^2
+$$</p>
+<p>总体方差使用分母 $N$，样本方差常用贝塞尔校正后的 $n-1$。NumPy 通过 <code>ddof</code> 控制：<code>ddof=0</code> 是总体口径，<code>ddof=1</code> 是常见样本口径。标准差是方差的平方根，单位与原变量一致，因此更直观；二者都对极端值敏感。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">spread</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;range&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ptp</span><span class="p">(</span><span class="n">values</span><span class="p">),</span>          <span class="c1"># max - min</span>
+    <span class="s2">&quot;population_var&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">values</span><span class="p">),</span>
+    <span class="s2">&quot;sample_var&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">var</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="s2">&quot;population_std&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">values</span><span class="p">),</span>
+    <span class="s2">&quot;sample_std&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="成绩分布与方差" src="../assets/img/lesson58/img_077.png" /></p>
+<p><img loading="lazy" decoding="async" alt="成绩分布与标准差" src="../assets/img/lesson58/img_078.png" /></p>
+<h3 id="sec-8">3. 分位数与箱线图</h3>
+<p>分位数用位置描述分布。$Q_1$、$Q_2$、$Q_3$ 分别是 25%、50%、75% 分位数，四分位距 $IQR=Q_3-Q_1$。常见的离群值经验规则是低于 $Q_1-1.5IQR$ 或高于 $Q_3+1.5IQR$；它是筛查规则，不是自动删除依据。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">q1</span><span class="p">,</span> <span class="n">median</span><span class="p">,</span> <span class="n">q3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">])</span>
+<span class="n">iqr</span> <span class="o">=</span> <span class="n">q3</span> <span class="o">-</span> <span class="n">q1</span>
+<span class="n">lower</span><span class="p">,</span> <span class="n">upper</span> <span class="o">=</span> <span class="n">q1</span> <span class="o">-</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">iqr</span><span class="p">,</span> <span class="n">q3</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">iqr</span>
+<span class="n">outliers</span> <span class="o">=</span> <span class="n">values</span><span class="p">[(</span><span class="n">values</span> <span class="o">&lt;</span> <span class="n">lower</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">values</span> <span class="o">&gt;</span> <span class="n">upper</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="成绩的中位数与四分位数" src="../assets/img/lesson58/img_080.png" /></p>
+<h3 id="sec-9">4. 偏度与峰度</h3>
+<p>偏度描述分布的不对称程度：右侧长尾通常为正偏，左侧长尾通常为负偏。正偏分布中均值常被右尾拉高，因而常见 <code>均值 &gt; 中位数</code>；这只是经验现象，不是判定定理。</p>
+<p>峰度描述尾部厚度和极端值倾向。必须说明口径：Pearson 峰度中正态分布为 3；Fisher 超额峰度中正态分布为 0。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">income</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3500</span><span class="p">,</span> <span class="mi">4200</span><span class="p">,</span> <span class="mi">4500</span><span class="p">,</span> <span class="mi">5000</span><span class="p">,</span> <span class="mi">5200</span><span class="p">,</span> <span class="mi">6000</span><span class="p">,</span> <span class="mi">8000</span><span class="p">,</span> <span class="mi">12000</span><span class="p">,</span> <span class="mi">16000</span><span class="p">])</span>
+
+<span class="n">skewness</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">income</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">pearson_kurtosis</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">kurtosis</span><span class="p">(</span><span class="n">income</span><span class="p">,</span> <span class="n">fisher</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">excess_kurtosis</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">kurtosis</span><span class="p">(</span><span class="n">income</span><span class="p">,</span> <span class="n">fisher</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="成绩分布与峰度" src="../assets/img/lesson58/img_079.png" /></p>
+<p><img loading="lazy" decoding="async" alt="收入数据的正偏分布" src="../assets/img/lesson58/img_081.png" /></p>
+<p><img loading="lazy" decoding="async" alt="正偏与负偏的判断示例" src="../assets/img/lesson58/img_082.png" /></p>
+<h3 id="sec-10">5. 一次完成描述性分析</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">summary</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="n">values</span><span class="o">.</span><span class="n">size</span><span class="p">,</span>
+    <span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="n">values</span><span class="o">.</span><span class="n">mean</span><span class="p">(),</span>
+    <span class="s2">&quot;median&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">values</span><span class="p">),</span>
+    <span class="s2">&quot;std_sample&quot;</span><span class="p">:</span> <span class="n">values</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="s2">&quot;min&quot;</span><span class="p">:</span> <span class="n">values</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span>
+    <span class="s2">&quot;q1&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">),</span>
+    <span class="s2">&quot;q3&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">),</span>
+    <span class="s2">&quot;max&quot;</span><span class="p">:</span> <span class="n">values</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span>
+    <span class="s2">&quot;skew&quot;</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">skew</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="s2">&quot;excess_kurtosis&quot;</span><span class="p">:</span> <span class="n">stats</span><span class="o">.</span><span class="n">kurtosis</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="描述统计与直方图综合呈现" src="../assets/img/lesson58/img_083.png" /></p>
+<p>遇到 NaN 时可使用 <code>np.nanmean</code>、<code>np.nanmedian</code>、<code>np.nanstd</code> 等忽略缺失值的版本，但要先解释缺失机制；“忽略”不等于“问题已解决”。</p>
+<h2 id="sec-11">四、多元数据：协方差、相关系数与 PCA</h2>
+<p>协方差反映两个变量共同变化的方向，但数值受量纲影响；Pearson 相关系数把协方差标准化到 $[-1,1]$，便于比较线性关系。接近 0 只表示“线性关系弱”，不代表不存在非线性关系。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.preprocessing</span><span class="w"> </span><span class="kn">import</span> <span class="n">StandardScaler</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">&quot;math&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">82</span><span class="p">,</span> <span class="mi">90</span><span class="p">,</span> <span class="mi">75</span><span class="p">,</span> <span class="mi">88</span><span class="p">,</span> <span class="mi">95</span><span class="p">,</span> <span class="mi">70</span><span class="p">],</span>
+    <span class="s2">&quot;english&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">78</span><span class="p">,</span> <span class="mi">92</span><span class="p">,</span> <span class="mi">72</span><span class="p">,</span> <span class="mi">85</span><span class="p">,</span> <span class="mi">91</span><span class="p">,</span> <span class="mi">68</span><span class="p">],</span>
+    <span class="s2">&quot;physics&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">80</span><span class="p">,</span> <span class="mi">94</span><span class="p">,</span> <span class="mi">70</span><span class="p">,</span> <span class="mi">86</span><span class="p">,</span> <span class="mi">96</span><span class="p">,</span> <span class="mi">65</span><span class="p">],</span>
+<span class="p">})</span>
+
+<span class="n">cov_matrix</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">cov</span><span class="p">()</span>     <span class="c1"># 样本协方差，默认 ddof=1</span>
+<span class="n">corr_matrix</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span>   <span class="c1"># Pearson 相关矩阵</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">scores_2d</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">explained</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span>
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="多元成绩数据的相关矩阵热力图与 PCA" src="../assets/img/lesson58/img_084.png" /></p>
+<p>PCA 会寻找方差最大的正交方向以降维；各特征量纲不一致时通常先标准化。PCA 是无监督的线性变换，主成分不一定具有直接业务含义。</p>
+<h2 id="sec-12">五、时间序列与技术指标</h2>
+<h3 id="sec-13">1. SMA 与 EMA</h3>
+<p>简单移动平均（SMA）对窗口内观测给予相同权重，能平滑短期波动但存在滞后；指数移动平均（EMA）让近期数据权重更高，响应更快，也更容易受短期噪声影响。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">close</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">([</span><span class="mi">100</span><span class="p">,</span> <span class="mi">102</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">105</span><span class="p">,</span> <span class="mi">107</span><span class="p">,</span> <span class="mi">106</span><span class="p">,</span> <span class="mi">110</span><span class="p">,</span> <span class="mi">111</span><span class="p">])</span>
+<span class="n">sma3</span> <span class="o">=</span> <span class="n">close</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">window</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">min_periods</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">ema3</span> <span class="o">=</span> <span class="n">close</span><span class="o">.</span><span class="n">ewm</span><span class="p">(</span><span class="n">span</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">adjust</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+<span class="c1"># 纯 NumPy 的 valid 口径：前 window-1 个位置没有结果</span>
+<span class="n">sma3_np</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">convolve</span><span class="p">(</span><span class="n">close</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;valid&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<h3 id="sec-14">2. ATR：波动强度，不是方向信号</h3>
+<p>真实波幅 $TR$ 取以下三者最大值：当日高低差、当日最高价与前收盘价之差的绝对值、当日最低价与前收盘价之差的绝对值。ATR 是 TR 的滚动平均，衡量波动性，不直接判断涨跌方向。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">ohlc</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">&quot;High&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">120</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">130</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">134</span><span class="p">],</span>
+    <span class="s2">&quot;Low&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">115</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">125</span><span class="p">,</span> <span class="mi">126</span><span class="p">,</span> <span class="mi">129</span><span class="p">],</span>
+    <span class="s2">&quot;Close&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">118</span><span class="p">,</span> <span class="mi">124</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">133</span><span class="p">],</span>
+<span class="p">})</span>
+
+<span class="n">previous_close</span> <span class="o">=</span> <span class="n">ohlc</span><span class="p">[</span><span class="s2">&quot;Close&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">tr</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span>
+    <span class="n">ohlc</span><span class="p">[</span><span class="s2">&quot;High&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">ohlc</span><span class="p">[</span><span class="s2">&quot;Low&quot;</span><span class="p">],</span>
+    <span class="p">(</span><span class="n">ohlc</span><span class="p">[</span><span class="s2">&quot;High&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">previous_close</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">(),</span>
+    <span class="p">(</span><span class="n">ohlc</span><span class="p">[</span><span class="s2">&quot;Low&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">previous_close</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">(),</span>
+<span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ohlc</span><span class="p">[</span><span class="s2">&quot;ATR_3&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tr</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+<h3 id="sec-15">3. 布林带</h3>
+<p>布林带通常由窗口均线和其上下若干倍标准差组成。带宽收窄表示近期波动降低，带宽扩张表示波动增加；价格接近上/下轨不能单独作为交易结论。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">window</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">middle</span> <span class="o">=</span> <span class="n">close</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">window</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">rolling_std</span> <span class="o">=</span> <span class="n">close</span><span class="o">.</span><span class="n">rolling</span><span class="p">(</span><span class="n">window</span><span class="p">)</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">ddof</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">upper</span> <span class="o">=</span> <span class="n">middle</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">rolling_std</span>
+<span class="n">lower</span> <span class="o">=</span> <span class="n">middle</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">rolling_std</span>
+</pre></div>
+</div>
+<h3 id="sec-16">4. 趋势线与线性模型</h3>
+<p><code>np.polyfit(x, y, 1)</code> 用最小二乘拟合一次多项式，返回斜率和截距；<code>np.poly1d</code> 可把系数包装成可调用多项式。趋势线依赖模型假设和所选时间区间，外推尤其需要谨慎。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+<span class="n">slope</span><span class="p">,</span> <span class="n">intercept</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">polyfit</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">trend</span> <span class="o">=</span> <span class="n">slope</span> <span class="o">*</span> <span class="n">x</span> <span class="o">+</span> <span class="n">intercept</span>
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="NumPy 一次多项式拟合的趋势线" src="../assets/img/lesson58/img_005.png" /></p>
+<p><img loading="lazy" decoding="async" alt="线性回归模型与拟合直线" src="../assets/img/lesson58/img_006.png" /></p>
+<h2 id="sec-17">六、排序、集合逻辑与线性代数</h2>
+<h3 id="sec-18">1. 排序与集合逻辑</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">9</span><span class="p">])</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>                       <span class="c1"># 返回排序副本</span>
+<span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>            <span class="c1"># 返回排序后的原位置</span>
+<span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># 唯一值及频数</span>
+<span class="n">np</span><span class="o">.</span><span class="n">intersect1d</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>             <span class="c1"># 交集</span>
+<span class="n">np</span><span class="o">.</span><span class="n">union1d</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>                 <span class="c1"># 并集</span>
+<span class="n">np</span><span class="o">.</span><span class="n">setdiff1d</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>               <span class="c1"># a - b</span>
+<span class="n">np</span><span class="o">.</span><span class="n">setxor1d</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>                <span class="c1"># 对称差</span>
+<span class="n">np</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>                    <span class="c1"># a 的每个元素是否出现在 b 中</span>
+</pre></div>
+</div>
+<p>NumPy 的一维集合函数默认去重并排序；若要保留原顺序或处理整行唯一值，需要结合 <code>return_index=True</code> 或 <code>axis</code> 参数。</p>
+<h3 id="sec-19">2. 线性代数</h3>
+<p>矩阵乘法要求前一个矩阵的最后一维与后一个矩阵的倒数第二维一致。求解 $Ax=b$ 时优先 <code>solve</code>，不应先显式求逆再相乘；奇异矩阵没有普通逆矩阵。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]])</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">9.0</span><span class="p">,</span> <span class="mf">8.0</span><span class="p">])</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span>
+<span class="n">A</span> <span class="o">@</span> <span class="n">x</span>                              <span class="c1"># 验证是否接近 b</span>
+<span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">det</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>                   <span class="c1"># 行列式</span>
+<span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">matrix_rank</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>           <span class="c1"># 秩</span>
+<span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>                  <span class="c1"># Frobenius 范数</span>
+<span class="n">eigenvalues</span><span class="p">,</span> <span class="n">eigenvectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">eig</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+
+<span class="n">u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">])</span>
+<span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>                       <span class="c1"># 内积，标量 32</span>
+<span class="n">np</span><span class="o">.</span><span class="n">outer</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>                     <span class="c1"># 外积，3×3 矩阵</span>
+<span class="n">np</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>                     <span class="c1"># 三维向量叉积</span>
+</pre></div>
+</div>
+<h2 id="sec-20">七、随机数与模拟</h2>
+<p>随机数生成器产生的是可复现的伪随机序列。推荐创建独立的 <code>Generator</code>，避免全局随机状态互相干扰：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="n">rng</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>                         <span class="c1"># [0, 1) 均匀分布</span>
+<span class="n">rng</span><span class="o">.</span><span class="n">integers</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>      <span class="c1"># 随机整数</span>
+<span class="n">rng</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="n">loc</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span> <span class="c1"># 正态分布</span>
+<span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">])</span>
+<span class="n">rng</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>                    <span class="c1"># 随机排列</span>
+</pre></div>
+</div>
+<h3 id="sec-21">1. 单条与多条随机漫步</h3>
+<p>随机漫步的每一步随机取 $-1$ 或 $+1$，位置是步长的累计和。把“模拟编号”和“时间步”放在两个轴上，就能一次向量化生成多条路径。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">rng</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">default_rng</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">steps</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">path</span> <span class="o">=</span> <span class="n">steps</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+
+<span class="n">many_steps</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
+<span class="n">many_paths</span> <span class="o">=</span> <span class="n">many_steps</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="一条随机漫步路径" src="../assets/img/lesson58/img_007.png" /></p>
+<p><img loading="lazy" decoding="async" alt="多条随机漫步路径" src="../assets/img/lesson58/img_008.png" /></p>
+<h3 id="sec-22">2. 股价路径模拟</h3>
+<p>若把每日收益率记为 $r_t$，价格路径可写成 $P_t=P_0\prod_{i=1}^{t}(1+r_i)$。这只是帮助理解不确定性的模拟，不代表真实市场模型或投资建议。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">n_days</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">n_simulations</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">initial_price</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="n">returns</span> <span class="o">=</span> <span class="n">rng</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">n_simulations</span><span class="p">,</span> <span class="n">n_days</span><span class="p">))</span>
+<span class="n">price_paths</span> <span class="o">=</span> <span class="n">initial_price</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cumprod</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">returns</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="单次股价随机路径模拟" src="../assets/img/lesson58/img_009.png" /></p>
+<p><img loading="lazy" decoding="async" alt="多次股价随机路径模拟" src="../assets/img/lesson58/img_010.png" /></p>
+<h2 id="sec-23">八、气象数据综合分析</h2>
+<p>一轮可靠的分析通常按“读取 → 质量检查 → 清洗 → 描述 → 时序聚合 → 关系分析 → 建模评估”推进：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+
+<span class="n">weather</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">&quot;weather_data.csv&quot;</span><span class="p">,</span> <span class="n">parse_dates</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;Date&quot;</span><span class="p">])</span>
+
+<span class="c1"># 先检查，再决定处理方式</span>
+<span class="n">quality</span> <span class="o">=</span> <span class="n">weather</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">weather</span> <span class="o">=</span> <span class="n">weather</span><span class="o">.</span><span class="n">drop_duplicates</span><span class="p">()</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s2">&quot;Date&quot;</span><span class="p">)</span>
+<span class="n">weather</span><span class="p">[[</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;Rainfall&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">weather</span><span class="p">[</span>
+    <span class="p">[</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;Rainfall&quot;</span><span class="p">]</span>
+<span class="p">]</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span><span class="n">limit_direction</span><span class="o">=</span><span class="s2">&quot;both&quot;</span><span class="p">)</span>
+
+<span class="c1"># 业务阈值应有依据，不能照抄示例</span>
+<span class="n">weather</span> <span class="o">=</span> <span class="n">weather</span><span class="p">[</span><span class="n">weather</span><span class="p">[</span><span class="s2">&quot;Temperature&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">between</span><span class="p">(</span><span class="o">-</span><span class="mi">50</span><span class="p">,</span> <span class="mi">60</span><span class="p">)]</span>
+<span class="n">weather</span> <span class="o">=</span> <span class="n">weather</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;Date&quot;</span><span class="p">)</span>
+
+<span class="n">monthly</span> <span class="o">=</span> <span class="n">weather</span><span class="p">[[</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;Rainfall&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">resample</span><span class="p">(</span><span class="s2">&quot;ME&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+<span class="n">corr</span> <span class="o">=</span> <span class="n">weather</span><span class="p">[[</span><span class="s2">&quot;Temperature&quot;</span><span class="p">,</span> <span class="s2">&quot;Rainfall&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">corr</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img loading="lazy" decoding="async" alt="每日气温时间序列" src="../assets/img/lesson58/img_011.png" /></p>
+<p><img loading="lazy" decoding="async" alt="每日降雨量时间序列" src="../assets/img/lesson58/img_012.png" /></p>
+<p><img loading="lazy" decoding="async" alt="气温与降雨量相关矩阵" src="../assets/img/lesson58/img_013.png" /></p>
+<p><img loading="lazy" decoding="async" alt="月平均气温时间序列" src="../assets/img/lesson58/img_014.png" /></p>
+<p>若用日期序号预测气温，需按时间先后划分训练集和测试集，不能随机打乱造成“未来信息泄漏”；均方误差要与基准模型和业务容忍度对比，单独一个数值无法说明模型是否可用。</p>
+<h2 id="sec-24">九、假设检验：从问题到决定</h2>
+<h3 id="sec-25">1. 六步工作流</h3>
+<ol>
+<li>明确总体、抽样方式和要检验的参数；</li>
+<li>写出零假设 $H_0$ 与备择假设 $H_1$；</li>
+<li>在看结果前设定显著性水平 $\alpha$，并决定单侧或双侧检验；</li>
+<li>检查独立性、分布、方差等适用条件，选择 Z、t、卡方或非参数检验；</li>
+<li>计算检验统计量、P 值和效应量，最好同时报告置信区间；</li>
+<li>若 $p&lt;\alpha$，拒绝 $H_0$；否则只能说“未能拒绝”，不能说“证明 $H_0$ 正确”。</li>
+</ol>
+<p>P 值是在 $H_0$ 成立的前提下，观察到当前或更极端数据的概率；它不是“$H_0$ 为真的概率”，也不表示实际差异有多大。</p>
+<h3 id="sec-26">2. 比例的 Z 检验</h3>
+<p>比较两个大样本转化率时，可在 $H_0:p_1=p_2$ 下使用合并比例计算标准误：</p>
+<p>$$
+z=\frac{\hat p_1-\hat p_2}{\sqrt{\hat p(1-\hat p)(1/n_1+1/n_2)}}
+$$</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">scipy</span><span class="w"> </span><span class="kn">import</span> <span class="n">stats</span>
+
+<span class="n">converted_old</span><span class="p">,</span> <span class="n">n_old</span> <span class="o">=</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">1000</span>
+<span class="n">converted_new</span><span class="p">,</span> <span class="n">n_new</span> <span class="o">=</span> <span class="mi">150</span><span class="p">,</span> <span class="mi">1000</span>
+<span class="n">p_old</span> <span class="o">=</span> <span class="n">converted_old</span> <span class="o">/</span> <span class="n">n_old</span>
+<span class="n">p_new</span> <span class="o">=</span> <span class="n">converted_new</span> <span class="o">/</span> <span class="n">n_new</span>
+<span class="n">p_pool</span> <span class="o">=</span> <span class="p">(</span><span class="n">converted_old</span> <span class="o">+</span> <span class="n">converted_new</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_old</span> <span class="o">+</span> <span class="n">n_new</span><span class="p">)</span>
+<span class="n">se</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">p_pool</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">p_pool</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">n_old</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">n_new</span><span class="p">))</span>
+<span class="n">z</span> <span class="o">=</span> <span class="p">(</span><span class="n">p_new</span> <span class="o">-</span> <span class="n">p_old</span><span class="p">)</span> <span class="o">/</span> <span class="n">se</span>
+<span class="n">p_value</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">stats</span><span class="o">.</span><span class="n">norm</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+</pre></div>
+</div>
+<h3 id="sec-27">3. 两独立样本均值的 t 检验</h3>
+<p>小样本且总体方差未知时常用 t 检验。Welch t 检验不要求两组方差相等，是稳妥的默认选择；若是同一对象前后测量，应改用配对检验。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">strategy_a</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.08</span><span class="p">,</span> <span class="mf">0.09</span><span class="p">,</span> <span class="mf">0.07</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.11</span><span class="p">,</span> <span class="mf">0.09</span><span class="p">,</span> <span class="mf">0.08</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">])</span>
+<span class="n">strategy_b</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.12</span><span class="p">,</span> <span class="mf">0.14</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">,</span> <span class="mf">0.13</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.11</span><span class="p">,</span> <span class="mf">0.13</span><span class="p">,</span> <span class="mf">0.12</span><span class="p">])</span>
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">stats</span><span class="o">.</span><span class="n">ttest_ind</span><span class="p">(</span><span class="n">strategy_a</span><span class="p">,</span> <span class="n">strategy_b</span><span class="p">,</span> <span class="n">equal_var</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.05</span>
+<span class="n">decision</span> <span class="o">=</span> <span class="s2">&quot;拒绝 H0&quot;</span> <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">pvalue</span> <span class="o">&lt;</span> <span class="n">alpha</span> <span class="k">else</span> <span class="s2">&quot;未能拒绝 H0&quot;</span>
+
+<span class="c1"># 除显著性外，报告差异大小</span>
+<span class="n">mean_difference</span> <span class="o">=</span> <span class="n">strategy_b</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">-</span> <span class="n">strategy_a</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>单侧检验只在方向性假设事先明确时使用，不能看到数据后再从双侧改成单侧。拒绝域是检验统计量在 $H_0$ 下足够极端的区域；双侧检验把 $\alpha$ 分配到分布两端。</p>
+<p><img loading="lazy" decoding="async" alt="t 分布、检验统计量与拒绝域" src="../assets/img/lesson58/img_085.png" /></p>
+<h3 id="sec-28">4. 第一类错误、第二类错误与功效</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>真实情况 / 决策</th>
+<th>拒绝 $H_0$</th>
+<th>未拒绝 $H_0$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>$H_0$ 为真</td>
+<td>第一类错误，概率上限由 $\alpha$ 控制</td>
+<td>正确</td>
+</tr>
+<tr>
+<td>$H_0$ 为假</td>
+<td>正确，概率为功效 $1-\beta$</td>
+<td>第二类错误，概率为 $\beta$</td>
+</tr>
+</tbody>
+</table></div>
+<p>降低 $\alpha$ 会减少假阳性，但在样本量不变时往往增加假阴性。提升功效通常依靠更大样本、更低噪声、更强效应或更合适的设计。检验前做功效分析、检验后报告效应量与置信区间，比只盯着 <code>p &lt; 0.05</code> 更完整。</p>
+<h2 id="sec-29">十、本讲小结</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>主题</th>
+<th>必须掌握</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>向量化</td>
+<td>ufunc、axis、keepdims、where/select、布尔条件与内存权衡</td>
+</tr>
+<tr>
+<td>描述统计</td>
+<td>均值/中位数/众数、总体与样本方差、分位数、偏度、两种峰度口径</td>
+</tr>
+<tr>
+<td>多元数据</td>
+<td>协方差受量纲影响；相关只度量关联；PCA 前通常先标准化</td>
+</tr>
+<tr>
+<td>时序分析</td>
+<td>SMA/EMA、ATR、布林带、趋势线的含义与局限</td>
+</tr>
+<tr>
+<td>数学工具</td>
+<td>排序与集合函数、矩阵乘法、solve、特征分解与范数</td>
+</tr>
+<tr>
+<td>随机模拟</td>
+<td>Generator、随机种子、cumsum/cumprod、多路径向量化</td>
+</tr>
+<tr>
+<td>假设检验</td>
+<td>H0/H1、alpha、P 值、单/双侧、拒绝域、I/II 类错误、功效</td>
+</tr>
+</tbody>
+</table></div>
+<p>把整讲串成一句话：<strong>先检查数据，用统计量和图表描述样本，再在明确假设与错误代价的前提下做推断，最后把效应大小、不确定性和业务语境一起写进结论。</strong></p><div class="done-bar"><button class="mark-done-btn" data-key="lesson58" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson18.html"><div class="dir">← 上一篇</div><div class="name">🧮 数据分析环境与 NumPy</div></a><a class="next" href="lesson19.html"><div class="dir">下一篇 →</div><div class="name">🐼 Pandas 基础：Series 与 DataFrame</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、从描述到推断：统计分析地图</a><a class="lv2" href="#sec-2">二、向量化数学与条件逻辑</a><a class="lv3" href="#sec-3">1. 通用函数与批量运算</a><a class="lv3" href="#sec-4">2. 条件选择不写循环</a><a class="lv2" href="#sec-5">三、描述统计：中心、离散与分布形状</a><a class="lv3" href="#sec-6">1. 中心趋势：均值、中位数、众数</a><a class="lv3" href="#sec-7">2. 离散程度：极差、方差与标准差</a><a class="lv3" href="#sec-8">3. 分位数与箱线图</a><a class="lv3" href="#sec-9">4. 偏度与峰度</a><a class="lv3" href="#sec-10">5. 一次完成描述性分析</a><a class="lv2" href="#sec-11">四、多元数据：协方差、相关系数与 PCA</a><a class="lv2" href="#sec-12">五、时间序列与技术指标</a><a class="lv3" href="#sec-13">1. SMA 与 EMA</a><a class="lv3" href="#sec-14">2. ATR：波动强度，不是方向信号</a><a class="lv3" href="#sec-15">3. 布林带</a><a class="lv3" href="#sec-16">4. 趋势线与线性模型</a><a class="lv2" href="#sec-17">六、排序、集合逻辑与线性代数</a><a class="lv3" href="#sec-18">1. 排序与集合逻辑</a><a class="lv3" href="#sec-19">2. 线性代数</a><a class="lv2" href="#sec-20">七、随机数与模拟</a><a class="lv3" href="#sec-21">1. 单条与多条随机漫步</a><a class="lv3" href="#sec-22">2. 股价路径模拟</a><a class="lv2" href="#sec-23">八、气象数据综合分析</a><a class="lv2" href="#sec-24">九、假设检验：从问题到决定</a><a class="lv3" href="#sec-25">1. 六步工作流</a><a class="lv3" href="#sec-26">2. 比例的 Z 检验</a><a class="lv3" href="#sec-27">3. 两独立样本均值的 t 检验</a><a class="lv3" href="#sec-28">4. 第一类错误、第二类错误与功效</a><a class="lv2" href="#sec-29">十、本讲小结</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
