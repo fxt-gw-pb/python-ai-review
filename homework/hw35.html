@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>自然语言处理入门与词向量综合训练 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons">课程讲义</a>
+    <a href="../index.html#homework" class="active">课后练习</a>
+    <a href="../index.html#projects">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">32</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">33</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">34</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">35</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">39</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">40</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">42</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">49</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">50</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">📘 医学知识图谱</div><a class="item" data-page-key="lesson51" href="../lessons/lesson51.html"><span class="no">51</span><span>知识图谱基础与医学图谱架构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson52" href="../lessons/lesson52.html"><span class="no">52</span><span>数据标注、查询语言与 Neo4j 工具链</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson53" href="../lessons/lesson53.html"><span class="no">53</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson54" href="../lessons/lesson54.html"><span class="no">54</span><span>关系抽取：规则、Pipeline 与 CasRel</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson55" href="../lessons/lesson55.html"><span class="no">55</span><span>知识融合：实体统一、链接与消歧</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson56" href="../lessons/lesson56.html"><span class="no">56</span><span>Neo4j 医学图谱搭建与质量验证</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson57" href="../lessons/lesson57.html"><span class="no">57</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">21</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">22</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">24</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">25</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">27</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">28</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">29</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">30</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">31</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">32</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw33" href="../homework/hw33.html"><span class="no">33</span><span>卷积神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw34" href="../homework/hw34.html"><span class="no">34</span><span>循环神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw active" data-page-key="hw35" href="../homework/hw35.html"><span class="no">35</span><span>自然语言处理入门与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw36" href="../homework/hw36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project07" href="../projects/project07.html"><span class="no">07</span><span>医学知识图谱：从信息抽取到 KBQA</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课后练习 / 练习 35</div>
+<h1>🗣️ 自然语言处理入门与词向量综合训练</h1>
+<div class="chips"><span class="chip amber">🏷️ 选择 + 简答 + 代码</span><span class="chip amber">🏷️ 55 题</span><a class="chip" href="../lessons/lesson35.html">📖 相关讲义：自然语言处理入门与词向量</a></div>
+</div>
+<p>55 道练习，按“任务边界 → 文本切分 → 语言学标注 → 数值化 → 分布式词向量 → 下游应用”的数据流组织。代码题尽量使用小语料与断言完成自校验，无需下载大型预训练模型。</p>
+<blockquote>
+<p>建议先完成题目，再展开参考答案。对代码题，请同时观察输出形状、边界条件与失败案例。</p>
+</blockquote>
+<h2 id="sec-1">一、选择题（30 题）</h2>
+<div class="q-card"><h3 id="sec-2">1. 下列哪一项最准确地描述了自然语言处理（NLP）？</h3>
+<p>A. 只把文本保存到数据库<br />
+B. 让计算机理解、生成并与人类语言交互<br />
+C. 只将语音转换成文字<br />
+D. 只统计每个字符出现的次数</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> NLP 覆盖理解、生成和交互等多类语言任务；语音识别、文本存储或字符统计只是可能用到的局部环节。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-3">2. 把“张三明天去上海出差”中的“张三”和“上海”分别标为人名与地名，属于哪项任务？</h3>
+<p>A. 机器翻译<br />
+B. 文本摘要<br />
+C. 命名实体识别<br />
+D. 语言模型</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 命名实体识别（NER）的目标是找出人名、地名、机构名等实体，并标注实体类型。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-4">3. 哪项现象最能说明系统具有语义稳健性？</h3>
+<p>A. 训练集上得分很高<br />
+B. 输入换成同义改写或带有少量错别字时，结论仍然合理<br />
+C. 每次都输出最长的答案<br />
+D. 能记住所有训练样本</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 稳健性强调对改写、噪声和输入扰动的抵抗能力；记住训练样本反而可能是过拟合。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-5">4. 对一批中文句子建立神经网络输入时，下列顺序最合理的是？</h3>
+<p>A. Embedding → 分词 → 词表索引 → 清洗<br />
+B. 清洗规范化 → 分词 → 词表索引 → Embedding<br />
+C. 词表索引 → 分词 → Embedding → 清洗<br />
+D. 分词 → 训练模型 → 再建词表</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 文本需先清洗并切分为 token，再通过词表转成整数 ID，最后由 Embedding 查表得到稠密向量。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-6">5. 中文分词通常比英文按词切分更难，主要原因是？</h3>
+<p>A. 中文没有语法<br />
+B. 中文的词之间通常没有显式空格边界<br />
+C. 中文只能按单字处理<br />
+D. 英文分词永远不会有歧义</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 中文的词边界通常需要模型推断。D 也不成立：英文还有标点、缩写、复合词和子词切分等问题。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-7">6. 为商品搜索建立倒排索引，希望长词能被进一步切分以提高召回率，更适合使用 jieba 的哪种模式？</h3>
+<p>A. 精确模式<br />
+B. 全模式<br />
+C. 搜索引擎模式<br />
+D. 随机模式</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 搜索引擎模式会在精确分词的基础上对长词再切分，用更多候选 token 换取更高召回率。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-8">7. 关于 <code>jieba.cut(text)</code> 与 <code>jieba.lcut(text)</code>，哪项正确？</h3>
+<p>A. 两者都返回字符串<br />
+B. <code>cut</code> 返回生成器，<code>lcut</code> 返回列表<br />
+C. <code>cut</code> 只支持英文<br />
+D. <code>lcut</code> 不能使用精确模式</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 生成器适合惰性遍历；需要多次访问、索引或直接查看全部结果时，<code>lcut</code> 的列表更方便。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-9">8. jieba 用户词典中一行的常用格式是？</h3>
+<p>A. <code>词语,词频,词性</code><br />
+B. <code>词语 词频 词性</code>，其中词频和词性可省略<br />
+C. <code>词性:词语:词频</code>，三项都不能省略<br />
+D. 只能写一个单字</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 常见格式是空格分隔的 <code>token frequency tag</code>；用户词典适合补充领域术语和专有名词。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-10">9. 词性标注（POS）的直接输出是什么？</h3>
+<p>A. 每个 token 的语法类别，如名词、动词、形容词<br />
+B. 每个句子的情感分数<br />
+C. 每个词的稠密向量<br />
+D. 整篇文档的摘要</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> POS 以分词结果为基础，为 token 分配词性标签，为句法分析和语义理解提供语法线索。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-11">10. 在 jieba 常用词性标记中，<code>nr</code> 通常表示？</h3>
+<p>A. 人名<br />
+B. 地名<br />
+C. 机构名<br />
+D. 时间</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 常见的还有 <code>ns</code> 表示地名、<code>nt</code> 表示机构团体名、<code>nz</code> 表示其他专名。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-12">11. 直接把 POS 结果中的 <code>nr/ns/nt</code> 词抽出当作 NER，最准确的评价是？</h3>
+<p>A. 这是完整且无误的 NER 方案<br />
+B. 这是一种可解释的简化基线，但可能错过多 token 实体和上下文歧义<br />
+C. 这与 NER 没有任何关系<br />
+D. 这一方法不需要先分词</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> POS 规则可快速得到基线，但无法完整建模实体边界和语境，也容易被上游分词或词性错误传递。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-13">12. 词表大小为 $V=50{,}000$ 时，每个 token 的 One-hot 向量维度是？</h3>
+<p>A. 1<br />
+B. 50<br />
+C. 50,000<br />
+D. 由句子长度决定</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> One-hot 的维度等于词表大小，只有 token 对应索引处为 1，其余为 0，因此大词表下非常稀疏。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-14">13. 在不考虑自身的情况下，任意两个不同 token 的 One-hot 向量余弦相似度是？</h3>
+<p>A. $-1$<br />
+B. $0$<br />
+C. $0.5$<br />
+D. 取决于它们在语料中的语义</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 两个不同 One-hot 向量正交，点积为 0。这也说明 One-hot 本身不表达“猫”与“狗”比“猫”与“数据库”更相似。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-15">14. 词表大小为 $V$、嵌入维度为 $D$ 时，<code>nn.Embedding(V, D).weight</code> 的形状是？</h3>
+<p>A. <code>[D, V]</code><br />
+B. <code>[V, D]</code><br />
+C. <code>[V, V]</code><br />
+D. <code>[D, D]</code></p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 词表中每个 token 对应一行 $D$ 维向量，所以参数矩阵是 $V\times D$。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-16">15. 词表中“猫”的 ID 为 10、“狗”的 ID 为 11，正确解读是？</h3>
+<p>A. 狗的语义比猫大 1<br />
+B. 两个 ID 是查表地址，大小差不表示语义距离<br />
+C. 它们天然比 ID 为 1000 的词更相似<br />
+D. 可直接用 ID 的欧式距离表达语义</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> token ID 是离散索引，不是连续特征。语义相似性应在学习得到的词向量空间中比较。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-17">16. 形状为 <code>[B, T]</code> 的 token ID 张量输入 <code>nn.Embedding(V, D)</code> 后，输出形状是？</h3>
+<p>A. <code>[B, T, D]</code><br />
+B. <code>[B, D]</code><br />
+C. <code>[B, T, V]</code><br />
+D. <code>[V, D]</code></p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 每个整数 ID 都被替换成一个 $D$ 维向量，因而在原形状末尾新增嵌入维。输入通常应为 <code>torch.long</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-18">17. 关于“预训练 Word2Vec”与“下游任务中的 Embedding 层”，哪项最准确？</h3>
+<p>A. Word2Vec 向量加载后绝对不能再更新<br />
+B. Embedding 层只能随机初始化<br />
+C. Word2Vec 先从通用语料学表示；下游 Embedding 可从随机或预训练向量开始，并选择冻结或微调<br />
+D. 两者都不需要词表</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 关键区别是表示在哪个训练阶段、由什么目标学到；预训练向量并不等于“永久固定”。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-19">18. Word2Vec 能学到语义相似性的核心直觉是？</h3>
+<p>A. 拼写长度相同的词语义必然相同<br />
+B. 出现在相似上下文中的词，往往具有相关的用法或语义<br />
+C. 词频越高，词义越接近 0<br />
+D. 每个词的向量由人工逐维命名</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 这是分布式假设的核心：词的用法可从其上下文分布中学习。它是统计关系，不保证完整理解真实世界语义。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-20">19. CBOW 的训练目标是？</h3>
+<p>A. 用中心词预测上下文词<br />
+B. 用上下文词预测中心词<br />
+C. 用前一句预测文档标签<br />
+D. 用词性预测实体类别</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> CBOW 会聚合中心词周围的上下文向量，再预测被遮在中间的目标词。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-21">20. Skip-gram 的训练目标是？</h3>
+<p>A. 用中心词预测周围的上下文词<br />
+B. 用所有上下文预测文档长度<br />
+C. 用下一句预测上一句<br />
+D. 用 One-hot 向量还原字符串</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Skip-gram 从一个中心词出发，为窗口内的多个上下文词构造监督信号。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-22">21. 对序列 <code>Hope can set you free</code>，以 <code>can</code> 为中心、左右窗口半径为 1，正确的 Skip-gram 样本是？</h3>
+<p>A. 输入 <code>[Hope, set]</code>，目标 <code>can</code><br />
+B. 输入 <code>can</code>，目标分别为 <code>Hope</code> 和 <code>set</code><br />
+C. 输入 <code>Hope</code>，目标 <code>free</code><br />
+D. 输入全句，目标是句子长度</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> Skip-gram 会将一个窗口展开成 <code>(can, Hope)</code> 和 <code>(can, set)</code> 两个中心词—上下文词对。A 是 CBOW 的样本形式。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-23">22. 语料充足且更关心低频词表示时，通常优先尝试？</h3>
+<p>A. CBOW<br />
+B. Skip-gram<br />
+C. One-hot<br />
+D. 随机向量且永不训练</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> Skip-gram 为每个中心词产生多个上下文目标，对低频词通常更友好；CBOW 训练更快，适合资源受限或追求快速基线的场景。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-24">23. 将 Word2Vec 的上下文窗口显著增大，最可能带来什么变化？</h3>
+<p>A. 每个样本可覆盖更远的关联，但也可引入更多弱相关噪声并增加计算量<br />
+B. 词表会自动缩小到 2<br />
+C. 嵌入维度必然变成窗口大小<br />
+D. 模型不再需要语料</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 窗口控制“上下文”的局部范围。小窗口更偏局部语法和近邻关系，大窗口可学到更宽泛的主题关联，但会产生更多词对。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-25">24. Word2Vec 浅层网络训练后，通常用作词向量表的是？</h3>
+<p>A. 输入嵌入矩阵中与 token 对应的行<br />
+B. 原始字符串的 ASCII 编码<br />
+C. 每个词的词频单值<br />
+D. 一个不保存参数的 Softmax 层</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 训练过程会更新嵌入参数；给定 token ID $i$ 时，取嵌入矩阵的第 $i$ 行作为该 token 的向量。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-26">25. 两个非零词向量的余弦相似度接近 1，表示？</h3>
+<p>A. 向量模长必然相等<br />
+B. 两个向量方向接近，在该表示空间中高度相似<br />
+C. 两个 token 的拼写完全相同<br />
+D. 两个词在现实世界中绝对同义</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 余弦相似度关注方向而非模长。高相似度只是模型在特定语料与训练目标下学到的统计关系，不是绝对同义证明。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-27">26. 使用单一静态词向量表示“苹果”时，主要局限是？</h3>
+<p>A. 无法将 token 转成数字<br />
+B. 不同上下文中的“苹果”通常共用同一向量，难以区分水果与公司等词义<br />
+C. 向量维度只能是 1<br />
+D. 完全不能计算相似度</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 传统静态词向量是“一词一向量”，不随句子上下文变化，因此难以处理多义词。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-28">27. 与只为完整词存储向量的传统 Word2Vec 相比，FastText 对未登录词更稳健的主要原因是？</h3>
+<p>A. 它把所有词都编成同一向量<br />
+B. 它利用字符 n-gram 子词表示组合词向量<br />
+C. 它不需要任何训练数据<br />
+D. 它只适用于数值表格</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 即使完整词没在词表中，FastText 仍可借助已学过的字符 n-gram 构造近似向量，对形态变化、低频词和错拼更友好。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-29">28. 把预训练词向量加载到 <code>nn.Embedding</code> 时，最关键的一致性要求是？</h3>
+<p>A. 词表 ID 必须与向量矩阵的行号一一对齐<br />
+B. 每个词的字符长度相同<br />
+C. 所有向量的每个元素都大于 0<br />
+D. 词表必须按拼音排序</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> ID 是嵌入查表的行地址。如果词表与向量行号错位，模型会把“猫”查成其他词的向量，且通常不会立即报错。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-30">29. 通用语料上训练的词向量用到医疗问答时，大量专业术语表示较差，最有针对性的改进是？</h3>
+<p>A. 删除所有专业术语<br />
+B. 收集领域语料，统一分词与词表，在领域语料上继续训练或重新训练并做下游验证<br />
+C. 把词向量维度固定为 2<br />
+D. 只保留词频最高的一个词</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 词向量反映训练语料的用词分布。领域适配应从语料、分词、词表和训练目标整体考虑，最后以真实下游任务检验价值。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-31">30. 评估词向量时，下列做法最完整的是？</h3>
+<p>A. 只看一个词的最近邻，觉得合理就结束<br />
+B. 只比较训练时长<br />
+C. 结合近邻/类比等内在评估、OOV 与偏见分析，再检验在真实下游任务中的提升<br />
+D. 只要维度越高就一定越好</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 内在评估便于快速诊断语义空间，外在评估才能回答“这组向量是否真的改善了目标任务”。</p></div></div>
+
+
+</div><h2 id="sec-32">二、简答题（15 题）</h2>
+<div class="q-card"><h3 id="sec-33">31. 为客服工单构建“投诉类别判定 + 人名、产品名与日期抽取”系统，请列出从原始文本到模型输出的基本数据流。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>可按以下顺序设计：</p>
+<ol>
+<li>明确分类标签与实体 Schema，并制定标注规范。</li>
+<li>对工单做脱敏、编码统一、异常字符处理与必要的文本规范化。</li>
+<li>分词或子词切分，并保留 token 到原文的位置映射，以便还原实体边界。</li>
+<li>构建词表、处理 OOV，转成 ID 并做 padding/mask。</li>
+<li>用预训练词向量、可训练 Embedding 或上下文编码器得到数值表示。</li>
+<li>分类头输出工单类别，序列标注头输出实体边界与类型。</li>
+<li>使用独立验证/测试集分别评估分类指标与实体级 Precision、Recall、F1，再做错误分析。</li>
+</ol></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-34">32. 以“研究生命起源”为例，说明中文分词歧义为什么会影响下游任务，并给出两种改进方法。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>该字符串可能被切为“研究 / 生命 / 起源”，也可能在特定语境中出现“研究生 / 命 / 起源”等错误边界。边界不同会改变词表 ID、POS 标签、实体边界和最终特征，上游错误因此会级联到分类、检索或 NER。</p>
+<p>改进方法例如：</p>
+<ul>
+<li>加入领域用户词典、调整词频，并用人工标注的边界集合评估。</li>
+<li>使用能利用上下文的统计/神经分词模型，或在下游任务中改用字/子词建模减少对固定词边界的依赖。</li>
+</ul></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-35">33. 用户词典能解决什么问题？为什么不能无限加词？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>用户词典能让分词器优先识别品牌、产品型号、医学名词等领域 token，减少专有词被过度切开的情况。但如果加入过多长串、模糊词或过高词频，可能导致过度合并，在其他语境中产生错误边界。应使用领域验证集比较加词前后的边界 Precision/Recall 和下游效果。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-36">34. 说明 POS 与 NER 的区别，并对“李雷在北京大学学习自然语言处理”给出合理的标注示例。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>POS 回答“这个 token 在句子中是什么词性”，NER 回答“哪些连续 token 构成什么类型的实体”。例如：</p>
+<ul>
+<li>POS：李雷/人名，在/介词，北京大学/机构名，学习/动词，自然语言处理/名词。</li>
+<li>NER：<code>[李雷]PERSON</code>、<code>[北京大学]ORGANIZATION</code>；若业务 Schema 定义了学科实体，还可标注 <code>[自然语言处理]FIELD</code>。</li>
+</ul>
+<p>实体类别取决于任务 Schema，不是唯一不变的标签集。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-37">35. 基于 <code>jieba.posseg</code> 的规则 NER 基线容易出现哪些错误？如何评估？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>常见错误包括：</p>
+<ul>
+<li>分词边界错误导致实体被拆分或合并。</li>
+<li>POS 误标导致类型错误或漏检。</li>
+<li>难以拼接“北京 / 大学”这类多 token 实体。</li>
+<li>同一词在不同上下文中类型不同时，固定词性规则无法消歧。</li>
+<li>业务实体类型往往超出 <code>nr/ns/nt</code> 的范围。</li>
+</ul>
+<p>评估应在人工标注的测试集上做严格实体级匹配，统计每个类型及宏平均/微平均 Precision、Recall、F1，并按边界错误、类型错误和漏检做分层分析。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-38">36. 对比 One-hot 与稠密词向量，至少从维度、存储、语义相似性和学习方式四个角度说明。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="table-wrap"><table>
+<thead>
+<tr>
+<th>角度</th>
+<th>One-hot</th>
+<th>稠密词向量</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>维度</td>
+<td>等于词表大小 $V$</td>
+<td>通常为人工选定的 $D$ 且 $D\ll V$</td>
+</tr>
+<tr>
+<td>存储</td>
+<td>高维稀疏；显式存储很浪费</td>
+<td>低维稠密，更适合数值计算</td>
+</tr>
+<tr>
+<td>相似性</td>
+<td>不同 token 两两正交，不含语义远近</td>
+<td>可通过方向、距离表达统计相似性</td>
+</tr>
+<tr>
+<td>学习</td>
+<td>由词表 ID 直接确定，不需训练</td>
+<td>从 Word2Vec 目标或下游任务目标中学习</td>
+</tr>
+</tbody>
+</table></div>
+<p>工程上不必显式构造 One-hot；使用 token ID 查嵌入表与 One-hot 乘嵌入矩阵数学等价，但更高效。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-39">37. 为什么 token ID 不能直接当作连续数值特征？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>ID 是人为分配的类别地址，排列方式可以随意更换。如果直接当连续值，模型会被迫接受“ID 20 比 ID 10 大一倍”或“ID 相邻就语义相近”的虚假度量关系。正确做法是将 ID 作为查表索引，再转成 One-hot、嵌入或其他类别表示。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-40">38. 传统静态词向量为什么难以处理“我去银行办业务”与“我在河的银行散步”中的多义词？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>在传统 Word2Vec 中，词表内的每个 token 通常只对应一个固定向量。不同词义的上下文信号被混合到同一向量中，无法根据当前句子生成不同表示。可使用多原型词向量，或改用会随句子上下文变化的上下文化表示。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-41">39. 请解释分布式假设，并指出只依赖共现统计的两个局限。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>分布式假设认为：经常出现在相似语境中的词，往往具有相关的语法功能或语义。Word2Vec 通过预测局部上下文把这种统计结构压缩进向量。</p>
+<p>局限包括但不限于：</p>
+<ul>
+<li>反义词可能共享相似语境，因而在向量空间中也很接近。</li>
+<li>稀有词、新词和 OOV 统计不足。</li>
+<li>训练语料中的社会偏见会被向量吸收和放大。</li>
+<li>静态表示无法根据当前上下文消解多义词。</li>
+</ul></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-42">40. 对 token 序列 <code>[我, 喜欢, 学习, NLP]</code>，窗口半径为 1 时，写出以“学习”为中心的 CBOW 样本和 Skip-gram 样本。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><ul>
+<li>CBOW：输入上下文 <code>[喜欢, NLP]</code>，目标中心词 <code>学习</code>。</li>
+<li>Skip-gram：输入中心词 <code>学习</code>，展开为两个目标对 <code>(学习, 喜欢)</code> 和 <code>(学习, NLP)</code>。</li>
+</ul>
+<p>序列首尾的中心词只有一侧上下文，样本构造函数必须做边界截断，不应越界或用负索引绕回序列尾部。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-43">41. 从训练目标、速度、低频词效果与使用场景对比 CBOW 和 Skip-gram。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>CBOW 聚合多个上下文词预测一个中心词，单窗口目标较少、训练快，高频词上通常很稳定，适合资源有限或需要快速基线的场景。Skip-gram 用一个中心词预测多个上下文词，产生的词对更多、计算更慢，但对低频和长尾词往往更友好。最终选择应通过领域验证而非只靠经验结论。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-44">42. 说明窗口大小、嵌入维度、最小词频和训练轮数分别可能带来什么影响。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><ul>
+<li><strong>窗口大小</strong>：小窗口强调局部语法/功能相似，大窗口更容易捕捉宽泛主题关联，但词对与噪声增加。</li>
+<li><strong>嵌入维度</strong>：过小可能容量不足，过大则增加存储、计算与过拟合风险，不保证更好。</li>
+<li><strong>最小词频</strong>：提高阈值能缩小词表并过滤噪声，但可丢失领域稀有词；降低阈值则相反。</li>
+<li><strong>训练轮数</strong>：太少会欠拟合，过多则花费更大，小语料上还可能过拟合。</li>
+</ul>
+<p>这些参数互相影响，应保持评估协议不变做对照实验。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-45">43. 给定 $a=(1,2)$、$b=(2,4)$、$c=(-2,1)$，分别计算 $\cos(a,b)$ 与 $\cos(a,c)$，并解释。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>$$
+\cos(a,b)=\frac{1\times2+2\times4}{\sqrt{1^2+2^2}\sqrt{2^2+4^2}}
+=\frac{10}{\sqrt5\sqrt{20}}=1.
+$$</p>
+<p>$b=2a$，两向量方向完全相同。</p>
+<p>$$
+\cos(a,c)=\frac{1\times(-2)+2\times1}{\sqrt5\sqrt5}=0.
+$$</p>
+<p>$a$ 与 $c$ 正交。余弦相似度比较方向，所以 $b$ 的模长是 $a$ 的两倍不影响结果。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-46">44. 小样本文本分类任务中，如何在“随机 Embedding”、“预训练向量冻结”和“预训练向量微调”之间选择？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>可建立三组只改变嵌入策略的对照实验：</p>
+<ul>
+<li><strong>随机 Embedding</strong>：不依赖外部语料，但小样本下往往学不充分，可作基线。</li>
+<li><strong>预训练 + 冻结</strong>：参数少、稳定且不易破坏通用结构，但无法适应领域语义。</li>
+<li><strong>预训练 + 微调</strong>：可适配任务，但小数据上需要更小的嵌入层学习率、正则化和早停。</li>
+</ul>
+<p>三组必须使用同一数据划分、主模型与评估指标，同时检查预训练词表覆盖率。当领域差异大时，还可先在领域无标注语料上继续训练。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-47">45. 设计一份词向量评估报告的结构，要求同时关注效果、覆盖率、稳健性与风险。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>一份可用的报告至少包含：</p>
+<ol>
+<li><strong>数据与版本</strong>：语料来源、时间范围、清洗规则、分词器/词典版本、随机种子和超参数。</li>
+<li><strong>覆盖率</strong>：总体及关键领域子集的 token/type OOV 率，以及低频词表现。</li>
+<li><strong>内在评估</strong>：人工相似度集、近邻质检、类比任务，并展示成功与失败样例。</li>
+<li><strong>外在评估</strong>：在分类、检索或 NER 等目标任务中与随机向量/旧版向量做公平对比，报告置信区间或多种子结果。</li>
+<li><strong>稳健性</strong>：错别字、同义改写、词典更新、新时间切片与不同人群/领域上的表现。</li>
+<li><strong>风险</strong>：性别、地域、职业等偏见测试，隐私和训练语料合规性，已知失败边界与上线监控方案。</li>
+</ol></div></div>
+
+
+</div><h2 id="sec-48">三、代码题（10 题）</h2>
+<div class="q-card"><h3 id="sec-49">46. 实现“清洗、分词、稳定词表和 ID 映射”管线</h3>
+<p>对三条中文短句做简单规范化和 jieba 分词，过滤空白与纯标点；按“词频降序、同频时按首次出现顺序”建词表，预留 <code>&lt;pad&gt;</code> 和 <code>&lt;unk&gt;</code>，并将新句子转成 ID。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">jieba</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\s+&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+    <span class="k">return</span> <span class="p">[</span>
+        <span class="n">token</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">jieba</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">token</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[^\w]+&quot;</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
+    <span class="p">]</span>
+
+
+<span class="n">texts</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;自然语言处理，让机器理解语言。&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;词向量把语言转成稠密向量。&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;机器学习可以学到词向量。&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">tokenized</span> <span class="o">=</span> <span class="p">[</span><span class="n">tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">]</span>
+<span class="n">all_tokens</span> <span class="o">=</span> <span class="p">[</span><span class="n">token</span> <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">tokenized</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">sentence</span><span class="p">]</span>
+
+<span class="n">counts</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">all_tokens</span><span class="p">)</span>
+<span class="n">first_position</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">position</span><span class="p">,</span> <span class="n">token</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">all_tokens</span><span class="p">):</span>
+    <span class="n">first_position</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">position</span><span class="p">)</span>
+
+<span class="n">ordered_tokens</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+    <span class="n">counts</span><span class="p">,</span>
+    <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">token</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">counts</span><span class="p">[</span><span class="n">token</span><span class="p">],</span> <span class="n">first_position</span><span class="p">[</span><span class="n">token</span><span class="p">]),</span>
+<span class="p">)</span>
+<span class="n">itos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;unk&gt;&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">ordered_tokens</span>
+<span class="n">stoi</span> <span class="o">=</span> <span class="p">{</span><span class="n">token</span><span class="p">:</span> <span class="n">index</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">token</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">itos</span><span class="p">)}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">encode</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">stoi</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">stoi</span><span class="p">[</span><span class="s2">&quot;&lt;unk&gt;&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokenize</span><span class="p">(</span><span class="n">text</span><span class="p">)]</span>
+
+
+<span class="n">ids</span> <span class="o">=</span> <span class="n">encode</span><span class="p">(</span><span class="s2">&quot;机器理解未知术语&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">stoi</span><span class="p">[</span><span class="s2">&quot;&lt;pad&gt;&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">stoi</span><span class="p">[</span><span class="s2">&quot;&lt;unk&gt;&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">stoi</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">stoi</span><span class="p">))</span>
+<span class="k">assert</span> <span class="n">stoi</span><span class="p">[</span><span class="s2">&quot;&lt;unk&gt;&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">ids</span>                 <span class="c1"># “未知术语”不在训练词表时能兜底</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tokenized</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">stoi</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>评分点是“可复现”：不要用 <code>list(set(tokens))</code> 直接建立带有已持久化 ID 的词表，否则顺序可在不同环境中改变。生产环境还应把清洗规则、分词器和用户词典版本与词表一起保存。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-50">47. 对比加入领域词前后的分词结果</h3>
+<p>使用独立 <code>jieba.Tokenizer</code> 处理“这家企业正在研发超导量子芯片平台”，再添加领域词“超导量子芯片”，验证自定义词作为完整 token 出现。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jieba</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;这家企业正在研发超导量子芯片平台&quot;</span>
+<span class="n">domain_term</span> <span class="o">=</span> <span class="s2">&quot;超导量子芯片&quot;</span>
+
+<span class="c1"># 使用两个独立分词器，避免全局状态干扰对照实验</span>
+<span class="n">baseline_tokenizer</span> <span class="o">=</span> <span class="n">jieba</span><span class="o">.</span><span class="n">Tokenizer</span><span class="p">()</span>
+<span class="n">domain_tokenizer</span> <span class="o">=</span> <span class="n">jieba</span><span class="o">.</span><span class="n">Tokenizer</span><span class="p">()</span>
+<span class="n">domain_tokenizer</span><span class="o">.</span><span class="n">add_word</span><span class="p">(</span><span class="n">domain_term</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mi">1_000_000</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">&quot;nz&quot;</span><span class="p">)</span>
+
+<span class="n">before</span> <span class="o">=</span> <span class="n">baseline_tokenizer</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+<span class="n">after</span> <span class="o">=</span> <span class="n">domain_tokenizer</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;before:&quot;</span><span class="p">,</span> <span class="n">before</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;after: &quot;</span><span class="p">,</span> <span class="n">after</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">domain_term</span> <span class="ow">in</span> <span class="n">after</span>
+<span class="k">assert</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">before</span><span class="p">)</span> <span class="o">==</span> <span class="n">text</span> <span class="ow">and</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">after</span><span class="p">)</span> <span class="o">==</span> <span class="n">text</span>
+</pre></div>
+</div>
+<p>不要只凭这一个样例宣布词典有效；还应在包含正例与“不应合并”反例的数据集上检查边界 Precision 和 Recall。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-51">48. 实现 POS 标注与基于词性的简化 NER 基线</h3>
+<p>对“李雷于2026年加入北大荒集团，并在哈尔滨工作”做 POS，将人名、地名、机构名和时间抽取为结构化列表。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">jieba</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">jieba.posseg</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pseg</span>
+
+<span class="c1"># 用显式词典让这个可重复的小实验不依赖默认词典版本</span>
+<span class="n">jieba</span><span class="o">.</span><span class="n">add_word</span><span class="p">(</span><span class="s2">&quot;李雷&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mi">1_000_000</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">&quot;nr&quot;</span><span class="p">)</span>
+<span class="n">jieba</span><span class="o">.</span><span class="n">add_word</span><span class="p">(</span><span class="s2">&quot;北大荒集团&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mi">1_000_000</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">&quot;nt&quot;</span><span class="p">)</span>
+<span class="n">jieba</span><span class="o">.</span><span class="n">add_word</span><span class="p">(</span><span class="s2">&quot;哈尔滨&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mi">1_000_000</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">&quot;ns&quot;</span><span class="p">)</span>
+<span class="n">jieba</span><span class="o">.</span><span class="n">add_word</span><span class="p">(</span><span class="s2">&quot;2026年&quot;</span><span class="p">,</span> <span class="n">freq</span><span class="o">=</span><span class="mi">1_000_000</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="s2">&quot;t&quot;</span><span class="p">)</span>
+
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;李雷于2026年加入北大荒集团，并在哈尔滨工作&quot;</span>
+<span class="n">tagged</span> <span class="o">=</span> <span class="p">[(</span><span class="n">word</span><span class="p">,</span> <span class="n">flag</span><span class="p">)</span> <span class="k">for</span> <span class="n">word</span><span class="p">,</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">pseg</span><span class="o">.</span><span class="n">lcut</span><span class="p">(</span><span class="n">text</span><span class="p">)]</span>
+
+<span class="n">flag_to_entity</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;nr&quot;</span><span class="p">:</span> <span class="s2">&quot;PERSON&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ns&quot;</span><span class="p">:</span> <span class="s2">&quot;LOCATION&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;nt&quot;</span><span class="p">:</span> <span class="s2">&quot;ORGANIZATION&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;t&quot;</span><span class="p">:</span> <span class="s2">&quot;TIME&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">entities</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">word</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">flag_to_entity</span><span class="p">[</span><span class="n">flag</span><span class="p">]}</span>
+    <span class="k">for</span> <span class="n">word</span><span class="p">,</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">tagged</span>
+    <span class="k">if</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">flag_to_entity</span>
+<span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">tagged</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span>
+<span class="k">assert</span> <span class="p">{</span><span class="n">entity</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">}</span> <span class="o">==</span> <span class="p">{</span>
+    <span class="s2">&quot;PERSON&quot;</span><span class="p">,</span> <span class="s2">&quot;LOCATION&quot;</span><span class="p">,</span> <span class="s2">&quot;ORGANIZATION&quot;</span><span class="p">,</span> <span class="s2">&quot;TIME&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>这只是基线：真实 NER 还需要处理多 token 实体、上下文歧义、边界标注和领域自定义类型。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-52">49. 实现带 <code>&lt;unk&gt;</code> 的批量 One-hot 编码器</h3>
+<p>对一批 token 转换为 One-hot 矩阵，要求未知词不报错，并用断言验证形状、每行和与未知词位置。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+
+<span class="n">itos</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&lt;unk&gt;&quot;</span><span class="p">,</span> <span class="s2">&quot;自然语言&quot;</span><span class="p">,</span> <span class="s2">&quot;处理&quot;</span><span class="p">,</span> <span class="s2">&quot;词向量&quot;</span><span class="p">]</span>
+<span class="n">stoi</span> <span class="o">=</span> <span class="p">{</span><span class="n">token</span><span class="p">:</span> <span class="n">index</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">token</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">itos</span><span class="p">)}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">one_hot_encode</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">vocabulary</span><span class="p">):</span>
+    <span class="n">unk_id</span> <span class="o">=</span> <span class="n">vocabulary</span><span class="p">[</span><span class="s2">&quot;&lt;unk&gt;&quot;</span><span class="p">]</span>
+    <span class="n">ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+        <span class="p">[</span><span class="n">vocabulary</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">token</span><span class="p">,</span> <span class="n">unk_id</span><span class="p">)</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">tokens</span><span class="p">],</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">vectors</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">vocabulary</span><span class="p">))</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ids</span><span class="p">,</span> <span class="n">vectors</span>
+
+
+<span class="n">tokens</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;自然语言&quot;</span><span class="p">,</span> <span class="s2">&quot;未登录词&quot;</span><span class="p">,</span> <span class="s2">&quot;词向量&quot;</span><span class="p">]</span>
+<span class="n">ids</span><span class="p">,</span> <span class="n">vectors</span> <span class="o">=</span> <span class="n">one_hot_encode</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">stoi</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">ids</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">vectors</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">vectors</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+<span class="k">assert</span> <span class="n">vectors</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">stoi</span><span class="p">[</span><span class="s2">&quot;&lt;unk&gt;&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">==</span> <span class="mf">1.0</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">vectors</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-53">50. 用 mask 完成变长句子的 Embedding 与平均池化</h3>
+<p>给定两个已 padding 的 ID 序列，生成 <code>[B,T,D]</code> 词向量并计算忽略 <code>&lt;pad&gt;</code> 的句向量。验证在真实 token 后多加一个 padding 不会改变平均结果。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">PAD_ID</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">num_embeddings</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">padding_idx</span><span class="o">=</span><span class="n">PAD_ID</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">masked_mean_pool</span><span class="p">(</span><span class="n">ids</span><span class="p">):</span>
+    <span class="n">vectors</span> <span class="o">=</span> <span class="n">embedding</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>                         <span class="c1"># [B, T, D]</span>
+    <span class="n">mask</span> <span class="o">=</span> <span class="n">ids</span><span class="o">.</span><span class="n">ne</span><span class="p">(</span><span class="n">PAD_ID</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>              <span class="c1"># [B, T, 1]</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="p">(</span><span class="n">vectors</span> <span class="o">*</span> <span class="n">mask</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>              <span class="c1"># [B, D]</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">clamp_min</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>             <span class="c1"># 避免全 padding 时除零</span>
+    <span class="k">return</span> <span class="n">vectors</span><span class="p">,</span> <span class="n">total</span> <span class="o">/</span> <span class="n">count</span>
+
+
+<span class="n">ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+<span class="n">vectors</span><span class="p">,</span> <span class="n">sentence_vectors</span> <span class="o">=</span> <span class="n">masked_mean_pool</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+
+<span class="n">extended_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+    <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span>
+<span class="p">)</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">extended_sentence_vectors</span> <span class="o">=</span> <span class="n">masked_mean_pool</span><span class="p">(</span><span class="n">extended_ids</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">vectors</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">sentence_vectors</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">sentence_vectors</span><span class="p">,</span> <span class="n">extended_sentence_vectors</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">embedding</span><span class="o">.</span><span class="n">weight</span><span class="p">[</span><span class="n">PAD_ID</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">6</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sentence_vectors</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-54">51. 实现 CBOW 滑动窗口样本生成器</h3>
+<p>输入 token 序列和窗口半径，返回 <code>(上下文词列表, 中心词)</code>；正确处理序列两端，上下文不得包含中心词位置。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">make_cbow_samples</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">window_radius</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">window_radius</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;window_radius must be at least 1&quot;</span><span class="p">)</span>
+
+    <span class="n">samples</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">center_index</span><span class="p">,</span> <span class="n">center_token</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tokens</span><span class="p">):</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_index</span> <span class="o">-</span> <span class="n">window_radius</span><span class="p">)</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">),</span> <span class="n">center_index</span> <span class="o">+</span> <span class="n">window_radius</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">context</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">tokens</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">!=</span> <span class="n">center_index</span>
+        <span class="p">]</span>
+        <span class="k">if</span> <span class="n">context</span><span class="p">:</span>
+            <span class="n">samples</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">context</span><span class="p">,</span> <span class="n">center_token</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">samples</span>
+
+
+<span class="n">tokens</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Hope&quot;</span><span class="p">,</span> <span class="s2">&quot;can&quot;</span><span class="p">,</span> <span class="s2">&quot;set&quot;</span><span class="p">,</span> <span class="s2">&quot;you&quot;</span><span class="p">,</span> <span class="s2">&quot;free&quot;</span><span class="p">]</span>
+<span class="n">samples</span> <span class="o">=</span> <span class="n">make_cbow_samples</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">window_radius</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">samples</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="p">([</span><span class="s2">&quot;can&quot;</span><span class="p">],</span> <span class="s2">&quot;Hope&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">samples</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="p">([</span><span class="s2">&quot;Hope&quot;</span><span class="p">,</span> <span class="s2">&quot;set&quot;</span><span class="p">],</span> <span class="s2">&quot;can&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">samples</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="p">([</span><span class="s2">&quot;can&quot;</span><span class="p">,</span> <span class="s2">&quot;you&quot;</span><span class="p">],</span> <span class="s2">&quot;set&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">samples</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="p">([</span><span class="s2">&quot;you&quot;</span><span class="p">],</span> <span class="s2">&quot;free&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>注意：如果句子内同一 token 重复出现，上下文中完全可以出现与中心 token 相同的字符串；应排除的是中心<strong>位置</strong>，不是所有同值 token。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-55">52. 实现 Skip-gram 词对生成器</h3>
+<p>将每个窗口展开为 <code>(中心词, 上下文词)</code> 词对，验证序列长度为 4、窗口半径为 1 时共产生 6 个有向词对。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">make_skipgram_pairs</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">window_radius</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">window_radius</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;window_radius must be at least 1&quot;</span><span class="p">)</span>
+
+    <span class="n">pairs</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">center_index</span><span class="p">,</span> <span class="n">center_token</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tokens</span><span class="p">):</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_index</span> <span class="o">-</span> <span class="n">window_radius</span><span class="p">)</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">),</span> <span class="n">center_index</span> <span class="o">+</span> <span class="n">window_radius</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">context_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">context_index</span> <span class="o">!=</span> <span class="n">center_index</span><span class="p">:</span>
+                <span class="n">pairs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">center_token</span><span class="p">,</span> <span class="n">tokens</span><span class="p">[</span><span class="n">context_index</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">pairs</span>
+
+
+<span class="n">tokens</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;我&quot;</span><span class="p">,</span> <span class="s2">&quot;喜欢&quot;</span><span class="p">,</span> <span class="s2">&quot;学习&quot;</span><span class="p">,</span> <span class="s2">&quot;NLP&quot;</span><span class="p">]</span>
+<span class="n">pairs</span> <span class="o">=</span> <span class="n">make_skipgram_pairs</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">window_radius</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">pairs</span> <span class="o">==</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s2">&quot;我&quot;</span><span class="p">,</span> <span class="s2">&quot;喜欢&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;喜欢&quot;</span><span class="p">,</span> <span class="s2">&quot;我&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;喜欢&quot;</span><span class="p">,</span> <span class="s2">&quot;学习&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;学习&quot;</span><span class="p">,</span> <span class="s2">&quot;喜欢&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;学习&quot;</span><span class="p">,</span> <span class="s2">&quot;NLP&quot;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s2">&quot;NLP&quot;</span><span class="p">,</span> <span class="s2">&quot;学习&quot;</span><span class="p">),</span>
+<span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pairs</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-56">53. 实现基于余弦相似度的最近邻检索</h3>
+<p>给定一个小型词向量表，返回查询词之外的 Top-k 最相似词，并对零向量做安全处理。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+
+<span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;猫&quot;</span><span class="p">,</span> <span class="s2">&quot;狗&quot;</span><span class="p">,</span> <span class="s2">&quot;宠物&quot;</span><span class="p">,</span> <span class="s2">&quot;汽车&quot;</span><span class="p">,</span> <span class="s2">&quot;零向量&quot;</span><span class="p">]</span>
+<span class="n">vectors</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span>
+    <span class="p">[</span><span class="mf">1.00</span><span class="p">,</span> <span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.90</span><span class="p">,</span> <span class="mf">0.85</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.10</span><span class="p">,</span> <span class="mf">1.00</span><span class="p">],</span>
+    <span class="p">[</span><span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">,</span> <span class="mf">0.00</span><span class="p">],</span>
+<span class="p">])</span>
+<span class="n">stoi</span> <span class="o">=</span> <span class="p">{</span><span class="n">word</span><span class="p">:</span> <span class="n">index</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">words</span><span class="p">)}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">nearest_neighbors</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="n">query_index</span> <span class="o">=</span> <span class="n">stoi</span><span class="p">[</span><span class="n">query</span><span class="p">]</span>
+    <span class="n">normalized</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">vectors</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">)</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="n">normalized</span> <span class="o">@</span> <span class="n">normalized</span><span class="p">[</span><span class="n">query_index</span><span class="p">]</span>
+    <span class="n">scores</span><span class="p">[</span><span class="n">query_index</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">torch</span><span class="o">.</span><span class="n">inf</span>             <span class="c1"># 排除查询词自身</span>
+    <span class="n">values</span><span class="p">,</span> <span class="n">indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="nb">min</span><span class="p">(</span><span class="n">top_k</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">[(</span><span class="n">words</span><span class="p">[</span><span class="n">index</span><span class="p">],</span> <span class="n">score</span><span class="o">.</span><span class="n">item</span><span class="p">())</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">values</span><span class="p">)]</span>
+
+
+<span class="n">result</span> <span class="o">=</span> <span class="n">nearest_neighbors</span><span class="p">(</span><span class="s2">&quot;猫&quot;</span><span class="p">,</span> <span class="n">top_k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;狗&quot;</span><span class="p">,</span> <span class="s2">&quot;宠物&quot;</span><span class="p">}</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code>eps</code> 避免零向量归一化时除零。真实系统还应对查询词 OOV、<code>top_k</code> 越界和并列分数制定明确策略。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-57">54. 验证“Embedding 查表”与“One-hot 乘权重矩阵”等价</h3>
+<p>用已知词向量矩阵创建 <code>nn.Embedding</code>，对一批 ID 分别使用查表和矩阵乘法取向量，比较结果；再展示冻结与可微调两种设置。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">weights</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span>
+    <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># &lt;pad&gt;</span>
+    <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>   <span class="c1"># 猫</span>
+    <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>   <span class="c1"># 狗</span>
+    <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>   <span class="c1"># 汽车</span>
+<span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+
+<span class="n">frozen_embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span>
+    <span class="n">weights</span><span class="p">,</span> <span class="n">freeze</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">padding_idx</span><span class="o">=</span><span class="mi">0</span>
+<span class="p">)</span>
+<span class="n">lookup_result</span> <span class="o">=</span> <span class="n">frozen_embedding</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span>
+
+<span class="n">one_hot</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">matrix_result</span> <span class="o">=</span> <span class="n">one_hot</span> <span class="o">@</span> <span class="n">weights</span>
+
+<span class="k">assert</span> <span class="n">lookup_result</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">lookup_result</span><span class="p">,</span> <span class="n">matrix_result</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">frozen_embedding</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">requires_grad</span> <span class="ow">is</span> <span class="kc">False</span>
+
+<span class="n">trainable_embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span>
+    <span class="n">weights</span><span class="o">.</span><span class="n">clone</span><span class="p">(),</span> <span class="n">freeze</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">padding_idx</span><span class="o">=</span><span class="mi">0</span>
+<span class="p">)</span>
+<span class="k">assert</span> <span class="n">trainable_embedding</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">requires_grad</span> <span class="ow">is</span> <span class="kc">True</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">lookup_result</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>显式 One-hot 乘法需构造末维为 $V$ 的稀疏张量；Embedding 直接按 ID 取行，结果等价但更节省存储和计算。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-58">55. 用小语料训练一个最小 Skip-gram 模型</h3>
+<p>在无需下载外部数据的小型英文语料上，生成 Skip-gram 词对，用 <code>Embedding + Linear</code> 预测上下文词，验证损失下降并查看近邻词。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+
+<span class="n">sentences</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;cat kitten pet animal&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+    <span class="s2">&quot;dog puppy pet animal&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+    <span class="s2">&quot;cat dog pet animal&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+    <span class="s2">&quot;kitten puppy pet animal&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+    <span class="s2">&quot;car bus vehicle road&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+    <span class="s2">&quot;truck car vehicle road&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+    <span class="s2">&quot;bus truck vehicle road&quot;</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span>
+<span class="p">]</span>
+<span class="n">itos</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">({</span><span class="n">token</span> <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">sentences</span> <span class="k">for</span> <span class="n">token</span> <span class="ow">in</span> <span class="n">sentence</span><span class="p">})</span>
+<span class="n">stoi</span> <span class="o">=</span> <span class="p">{</span><span class="n">token</span><span class="p">:</span> <span class="n">index</span> <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">token</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">itos</span><span class="p">)}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">make_pairs</span><span class="p">(</span><span class="n">sentence</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">center_index</span><span class="p">,</span> <span class="n">center</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sentence</span><span class="p">):</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">center_index</span> <span class="o">-</span> <span class="n">radius</span><span class="p">)</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sentence</span><span class="p">),</span> <span class="n">center_index</span> <span class="o">+</span> <span class="n">radius</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">context_index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">left</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">context_index</span> <span class="o">!=</span> <span class="n">center_index</span><span class="p">:</span>
+                <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">stoi</span><span class="p">[</span><span class="n">center</span><span class="p">],</span> <span class="n">stoi</span><span class="p">[</span><span class="n">sentence</span><span class="p">[</span><span class="n">context_index</span><span class="p">]]))</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+
+<span class="n">pairs</span> <span class="o">=</span> <span class="p">[</span><span class="n">pair</span> <span class="k">for</span> <span class="n">sentence</span> <span class="ow">in</span> <span class="n">sentences</span> <span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">make_pairs</span><span class="p">(</span><span class="n">sentence</span><span class="p">)]</span>
+<span class="n">centers</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">center</span> <span class="k">for</span> <span class="n">center</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+<span class="n">contexts</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">context</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">context</span> <span class="ow">in</span> <span class="n">pairs</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TinySkipGram</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">embedding_dim</span><span class="p">,</span> <span class="n">vocab_size</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">center_ids</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">center_ids</span><span class="p">))</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">TinySkipGram</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">itos</span><span class="p">),</span> <span class="n">embedding_dim</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.05</span><span class="p">)</span>
+<span class="n">initial_loss</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">401</span><span class="p">):</span>
+    <span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">centers</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">contexts</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">step</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">initial_loss</span> <span class="o">=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+<span class="n">final_loss</span> <span class="o">=</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">final_loss</span> <span class="o">&lt;</span> <span class="n">initial_loss</span> <span class="o">*</span> <span class="mf">0.8</span>
+
+<span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+    <span class="n">normalized</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">embedding</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">query_index</span> <span class="o">=</span> <span class="n">stoi</span><span class="p">[</span><span class="s2">&quot;cat&quot;</span><span class="p">]</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="n">normalized</span> <span class="o">@</span> <span class="n">normalized</span><span class="p">[</span><span class="n">query_index</span><span class="p">]</span>
+    <span class="n">scores</span><span class="p">[</span><span class="n">query_index</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">torch</span><span class="o">.</span><span class="n">inf</span>
+    <span class="n">neighbor_indices</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="n">scores</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">indices</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;loss: </span><span class="si">{</span><span class="n">initial_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">final_loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;neighbors of cat:&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">itos</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">neighbor_indices</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>这个实验只用来验证数据流和优化闭环。语料过小，近邻结果会受随机初始化和少量共现强烈影响，不应当作通用语义模型。大词表训练时还需要负采样或层次 Softmax 等效率优化。</p></div></div>
+
+
+</div><div class="done-bar"><button class="mark-done-btn" data-key="hw35" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="hw34.html"><div class="dir">← 上一篇</div><div class="name">🔄 循环神经网络综合训练</div></a><a class="next" href="hw36.html"><div class="dir">下一篇 →</div><div class="name">🧹 文本预处理、特征分析与数据增强综合训练</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、选择题（30 题）</a><a class="lv3" href="#sec-2">1. 下列哪一项最准确地描述了自然语言处理（NLP）？</a><a class="lv3" href="#sec-3">2. 把“张三明天去上海出差”中的“张三”和“上海”分别标为人名与地名，属于哪项任务？</a><a class="lv3" href="#sec-4">3. 哪项现象最能说明系统具有语义稳健性？</a><a class="lv3" href="#sec-5">4. 对一批中文句子建立神经网络输入时，下列顺序最合理的是？</a><a class="lv3" href="#sec-6">5. 中文分词通常比英文按词切分更难，主要原因是？</a><a class="lv3" href="#sec-7">6. 为商品搜索建立倒排索引，希望长词能被进一步切分以提高召回率，更适合使用 jieba 的哪种模式？</a><a class="lv3" href="#sec-8">7. 关于 jieba.cut(text) 与 jieba.lcut(text)，哪项正确？</a><a class="lv3" href="#sec-9">8. jieba 用户词典中一行的常用格式是？</a><a class="lv3" href="#sec-10">9. 词性标注（POS）的直接输出是什么？</a><a class="lv3" href="#sec-11">10. 在 jieba 常用词性标记中，nr 通常表示？</a><a class="lv3" href="#sec-12">11. 直接把 POS 结果中的 nr/ns/nt 词抽出当作 NER，最准确的评价是？</a><a class="lv3" href="#sec-13">12. 词表大小为 $V=50{,}000$ 时，每个 token 的 One-hot 向量维度是？</a><a class="lv3" href="#sec-14">13. 在不考虑自身的情况下，任意两个不同 token 的 One-hot 向量余弦相似度是？</a><a class="lv3" href="#sec-15">14. 词表大小为 $V$、嵌入维度为 $D$ 时，nn.Embedding(V, D).weight 的形状是？</a><a class="lv3" href="#sec-16">15. 词表中“猫”的 ID 为 10、“狗”的 ID 为 11，正确解读是？</a><a class="lv3" href="#sec-17">16. 形状为 [B, T] 的 token ID 张量输入 nn.Embedding(V, D) 后，输出形状是？</a><a class="lv3" href="#sec-18">17. 关于“预训练 Word2Vec”与“下游任务中的 Embedding 层”，哪项最准确？</a><a class="lv3" href="#sec-19">18. Word2Vec 能学到语义相似性的核心直觉是？</a><a class="lv3" href="#sec-20">19. CBOW 的训练目标是？</a><a class="lv3" href="#sec-21">20. Skip-gram 的训练目标是？</a><a class="lv3" href="#sec-22">21. 对序列 Hope can set you free，以 can 为中心、左右窗口半径为 1，正确的 Skip-gram 样本是？</a><a class="lv3" href="#sec-23">22. 语料充足且更关心低频词表示时，通常优先尝试？</a><a class="lv3" href="#sec-24">23. 将 Word2Vec 的上下文窗口显著增大，最可能带来什么变化？</a><a class="lv3" href="#sec-25">24. Word2Vec 浅层网络训练后，通常用作词向量表的是？</a><a class="lv3" href="#sec-26">25. 两个非零词向量的余弦相似度接近 1，表示？</a><a class="lv3" href="#sec-27">26. 使用单一静态词向量表示“苹果”时，主要局限是？</a><a class="lv3" href="#sec-28">27. 与只为完整词存储向量的传统 Word2Vec 相比，FastText 对未登录词更稳健的主要原因是？</a><a class="lv3" href="#sec-29">28. 把预训练词向量加载到 nn.Embedding 时，最关键的一致性要求是？</a><a class="lv3" href="#sec-30">29. 通用语料上训练的词向量用到医疗问答时，大量专业术语表示较差，最有针对性的改进是？</a><a class="lv3" href="#sec-31">30. 评估词向量时，下列做法最完整的是？</a><a class="lv2" href="#sec-32">二、简答题（15 题）</a><a class="lv3" href="#sec-33">31. 为客服工单构建“投诉类别判定 + 人名、产品名与日期抽取”系统，请列出从原始文本到模型输出的基本数据流。</a><a class="lv3" href="#sec-34">32. 以“研究生命起源”为例，说明中文分词歧义为什么会影响下游任务，并给出两种改进方法。</a><a class="lv3" href="#sec-35">33. 用户词典能解决什么问题？为什么不能无限加词？</a><a class="lv3" href="#sec-36">34. 说明 POS 与 NER 的区别，并对“李雷在北京大学学习自然语言处理”给出合理的标注示例。</a><a class="lv3" href="#sec-37">35. 基于 jieba.posseg 的规则 NER 基线容易出现哪些错误？如何评估？</a><a class="lv3" href="#sec-38">36. 对比 One-hot 与稠密词向量，至少从维度、存储、语义相似性和学习方式四个角度说明。</a><a class="lv3" href="#sec-39">37. 为什么 token ID 不能直接当作连续数值特征？</a><a class="lv3" href="#sec-40">38. 传统静态词向量为什么难以处理“我去银行办业务”与“我在河的银行散步”中的多义词？</a><a class="lv3" href="#sec-41">39. 请解释分布式假设，并指出只依赖共现统计的两个局限。</a><a class="lv3" href="#sec-42">40. 对 token 序列 [我, 喜欢, 学习, NLP]，窗口半径为 1 时，写出以“学习”为中心的 CBOW 样本和 Skip-gram 样本。</a><a class="lv3" href="#sec-43">41. 从训练目标、速度、低频词效果与使用场景对比 CBOW 和 Skip-gram。</a><a class="lv3" href="#sec-44">42. 说明窗口大小、嵌入维度、最小词频和训练轮数分别可能带来什么影响。</a><a class="lv3" href="#sec-45">43. 给定 $a=(1,2)$、$b=(2,4)$、$c=(-2,1)$，分别计算 $\cos(a,b)$ 与 $\cos(a,c)$，并解释。</a><a class="lv3" href="#sec-46">44. 小样本文本分类任务中，如何在“随机 Embedding”、“预训练向量冻结”和“预训练向量微调”之间选择？</a><a class="lv3" href="#sec-47">45. 设计一份词向量评估报告的结构，要求同时关注效果、覆盖率、稳健性与风险。</a><a class="lv2" href="#sec-48">三、代码题（10 题）</a><a class="lv3" href="#sec-49">46. 实现“清洗、分词、稳定词表和 ID 映射”管线</a><a class="lv3" href="#sec-50">47. 对比加入领域词前后的分词结果</a><a class="lv3" href="#sec-51">48. 实现 POS 标注与基于词性的简化 NER 基线</a><a class="lv3" href="#sec-52">49. 实现带 &lt;unk&gt; 的批量 One-hot 编码器</a><a class="lv3" href="#sec-53">50. 用 mask 完成变长句子的 Embedding 与平均池化</a><a class="lv3" href="#sec-54">51. 实现 CBOW 滑动窗口样本生成器</a><a class="lv3" href="#sec-55">52. 实现 Skip-gram 词对生成器</a><a class="lv3" href="#sec-56">53. 实现基于余弦相似度的最近邻检索</a><a class="lv3" href="#sec-57">54. 验证“Embedding 查表”与“One-hot 乘权重矩阵”等价</a><a class="lv3" href="#sec-58">55. 用小语料训练一个最小 Skip-gram 模型</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

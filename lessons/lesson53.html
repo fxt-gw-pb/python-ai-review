@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons" class="active">课程讲义</a>
+    <a href="../index.html#homework">课后练习</a>
+    <a href="../index.html#projects">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">32</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">33</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">34</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">35</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">39</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">40</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">42</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">49</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">50</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">📘 医学知识图谱</div><a class="item" data-page-key="lesson51" href="../lessons/lesson51.html"><span class="no">51</span><span>知识图谱基础与医学图谱架构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson52" href="../lessons/lesson52.html"><span class="no">52</span><span>数据标注、查询语言与 Neo4j 工具链</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="lesson53" href="../lessons/lesson53.html"><span class="no">53</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson54" href="../lessons/lesson54.html"><span class="no">54</span><span>关系抽取：规则、Pipeline 与 CasRel</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson55" href="../lessons/lesson55.html"><span class="no">55</span><span>知识融合：实体统一、链接与消歧</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson56" href="../lessons/lesson56.html"><span class="no">56</span><span>Neo4j 医学图谱搭建与质量验证</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson57" href="../lessons/lesson57.html"><span class="no">57</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">21</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">22</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">24</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">25</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">27</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">28</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">29</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">30</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">31</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">32</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw33" href="../homework/hw33.html"><span class="no">33</span><span>卷积神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw34" href="../homework/hw34.html"><span class="no">34</span><span>循环神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw35" href="../homework/hw35.html"><span class="no">35</span><span>自然语言处理入门与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw36" href="../homework/hw36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project07" href="../projects/project07.html"><span class="no">07</span><span>医学知识图谱：从信息抽取到 KBQA</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课程讲义 / 第 53 讲</div>
+<h1>🧬 医学实体抽取：规则、BiLSTM-CRF 与 Viterbi</h1>
+<div class="chips"><span class="chip">🏷️ NER</span><span class="chip">🏷️ BiLSTM-CRF</span><span class="chip">🏷️ Viterbi</span><a class="chip green" href="../projects/project07.html">🚀 配套项目：医学知识图谱：从信息抽取到 KBQA</a></div>
+</div>
+<h2 id="sec-1">医学实体抽取：规则、BiLSTM-CRF 与 Viterbi</h2>
+<blockquote>
+<p>本讲对应原课件第三章：实体识别基础、规则 NER、BiLSTM-CRF 和 Viterbi 扩展资料。</p>
+</blockquote>
+<h3 id="sec-2">学习目标</h3>
+<ul>
+<li>把医学 NER 定义为序列标注任务；</li>
+<li>区分词典 / 正则基线、统计学习与深度学习方法；</li>
+<li>理解 BiLSTM 的发射分数、CRF 的转移分数与训练目标；</li>
+<li>手工推演 Viterbi 的动态规划过程；</li>
+<li>用实体级 P/R/F1 而非 Token Accuracy 验收。</li>
+</ul>
+<h3 id="sec-3">任务定义</h3>
+<p>输入是文本序列 $x=(x_1,\ldots,x_n)$，输出是与之对齐的标签序列 $y=(y_1,\ldots,y_n)$。在字级 BIOES 标注中：</p>
+<ul>
+<li><code>B-X</code>：X 类实体的开始；</li>
+<li><code>I-X</code>：X 类实体的内部；</li>
+<li><code>E-X</code>：X 类实体的结束；</li>
+<li><code>S-X</code>：单字 / 单 Token 实体；</li>
+<li><code>O</code>：不属于目标实体。</li>
+</ul>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>文本：慢  性  支  气  管  炎  常  见  咳  嗽
+标签：B-D I-D I-D I-D I-D E-D O   O   B-S E-S
+</pre></div>
+</div>
+<p>边界和类型必须同时正确才算一个正确实体。“慢性支气管”和“慢性支气管炎”不是部分得分的同一个结果。</p>
+<h3 id="sec-4">三类方法</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>代表</th>
+<th>优势</th>
+<th>局限</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>规则</td>
+<td>词典、正则、词性模式</td>
+<td>可解释、冷启动快、精确控制</td>
+<td>召回有限，维护成本高，语境判断弱</td>
+</tr>
+<tr>
+<td>传统序列模型</td>
+<td>HMM、CRF</td>
+<td>能显式学习标签依赖</td>
+<td>特征工程重，表示能力受限</td>
+</tr>
+<tr>
+<td>神经网络</td>
+<td>BiLSTM-CRF、Transformer-CRF</td>
+<td>能学习上下文表示，上限更高</td>
+<td>需要标注数据、训练算力与版本化管理</td>
+</tr>
+</tbody>
+</table></div>
+<p>规则基线应保留为可回归的比较组，而不是在训出模型后删除。在高风险或语料很少的区域，规则还可作为高精度保护层。</p>
+<h3 id="sec-5">规则 NER 的基本流程</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>领域词典 / 后缀词典 / 正则
+  → 候选匹配
+  → 边界扩展或裁剪
+  → 重叠冲突处理
+  → 否定、假设、家族史等语境过滤
+  → 统一输出实体 span
+</pre></div>
+</div>
+<p>一个统一的输出合同：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">JSON</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;text&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;慢性支气管炎&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Disease&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;start&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;end&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;confidence&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">0.99</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;method&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dictionary&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><code>end</code> 是否为开区间必须在数据合同中统一，否则模型、标注和评估会产生系统性的差一位错误。</p>
+<h3 id="sec-6">BiLSTM-CRF 数据流</h3>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Text</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span>Token IDs
+  → Embedding
+  → BiLSTM 上下文编码
+  → Linear 产生每个位置对每个标签的发射分数
+  → CRF 结合转移分数计算序列分数
+  → Viterbi 找最优合法标签路径
+</pre></div>
+</div>
+<p>BiLSTM 同时编码左侧与右侧上下文。线性层产生发射分数 $P_{i,y_i}$，CRF 学习标签 $y_{i-1}$ 到 $y_i$ 的转移分数 $A_{y_{i-1},y_i}$。</p>
+<p>一条路径的总分：</p>
+<p>$$
+s(x,y)=\sum_{i=1}^{n} P_{i,y_i}+\sum_{i=1}^{n} A_{y_{i-1},y_i}
+$$</p>
+<p>条件概率用全部可能路径归一：</p>
+<p>$$
+p(y\mid x)=\frac{\exp s(x,y)}{\sum_{y'\in\mathcal Y(x)}\exp s(x,y')}
+$$</p>
+<p>训练最小化负对数似然：</p>
+<p>$$
+\mathcal L=-\log p(y^{gold}\mid x)
+=\log\sum_{y'}\exp s(x,y')-s(x,y^{gold})
+$$</p>
+<p>分母不能枚举 $K^n$ 条路径，它通过前向动态规划与 log-sum-exp 稳定计算。</p>
+<h3 id="sec-7">Viterbi 解码</h3>
+<p>Viterbi 与前向算法使用同样的状态转移结构，但聚合操作不同：</p>
+<ul>
+<li>前向算法用 <code>logsumexp</code>，汇总所有路径；</li>
+<li>Viterbi 用 <code>max</code>，并保留最优前驱用于回溯。</li>
+</ul>
+<p>递推式：</p>
+<p>$$
+\delta_i(t)=P_{i,t}+\max_s\left[\delta_{i-1}(s)+A_{s,t}\right]
+$$</p>
+<p>每个位置还要保存使最大值成立的前驱标签 $s$ 。到达终止状态后，沿回指针反向得到整条最优路径。</p>
+<h3 id="sec-8">Mask 与合法转移</h3>
+<p>批处理中的 padding 位置必须被 mask，不应进入发射、转移或损失统计。还可将不可能转移设为极小分数，例如：</p>
+<ul>
+<li><code>O -&gt; I-Disease</code> 不合法；</li>
+<li><code>B-Disease -&gt; I-Symptom</code> 类型不一致；</li>
+<li>START 不应直接转移到 <code>I-*</code> 或 <code>E-*</code>。</li>
+</ul>
+<h3 id="sec-9">评估与错误分析</h3>
+<p>对每个类型和 micro 总体计算：</p>
+<p>$$
+P=\frac{TP}{TP+FP},\qquad
+R=\frac{TP}{TP+FN},\qquad
+F_1=\frac{2PR}{P+R}
+$$</p>
+<p>Token Accuracy 会被大量 <code>O</code> 标签主导，不能代替实体级指标。验收报告至少要包含：</p>
+<ul>
+<li>边界过短 / 过长；</li>
+<li>类型混淆；</li>
+<li>整个实体漏检；</li>
+<li>虚假实体；</li>
+<li>否定、假设、家族史或时间语境错误；</li>
+<li>长实体、缩写、中英文混合和未登录词子集。</li>
+</ul>
+<h3 id="sec-10">实现检查清单</h3>
+<ol>
+<li>分词 / 字级序列与原文偏移能互相转换；</li>
+<li>标签 ID 与标签名的映射被保存在模型产物中；</li>
+<li>分组切分防止同一患者或同一文档泄漏；</li>
+<li>损失与解码都正确应用 mask；</li>
+<li>每个 checkpoint 同时保存词表、标签表、配置和阈值；</li>
+<li>测试包含空句、超长句、无实体句和不合法输入。</li>
+</ol>
+<h3 id="sec-11">本讲小结</h3>
+<ol>
+<li>BiLSTM 负责上下文表示，CRF 负责整体标签序列的一致性。</li>
+<li>前向算法用于训练时汇总全部路径，Viterbi 用于推理时找最优路径。</li>
+<li>NER 的主指标是严格实体级 P/R/F1，规则基线与错误分析应长期保留。</li>
+</ol><div class="done-bar"><button class="mark-done-btn" data-key="lesson53" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="lesson52.html"><div class="dir">← 上一篇</div><div class="name">🏷️ 数据标注、查询语言与 Neo4j 工具链</div></a><a class="next" href="lesson54.html"><div class="dir">下一篇 →</div><div class="name">🔗 关系抽取：规则、Pipeline 与 CasRel</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">医学实体抽取：规则、BiLSTM-CRF 与 Viterbi</a><a class="lv3" href="#sec-2">学习目标</a><a class="lv3" href="#sec-3">任务定义</a><a class="lv3" href="#sec-4">三类方法</a><a class="lv3" href="#sec-5">规则 NER 的基本流程</a><a class="lv3" href="#sec-6">BiLSTM-CRF 数据流</a><a class="lv3" href="#sec-7">Viterbi 解码</a><a class="lv3" href="#sec-8">Mask 与合法转移</a><a class="lv3" href="#sec-9">评估与错误分析</a><a class="lv3" href="#sec-10">实现检查清单</a><a class="lv3" href="#sec-11">本讲小结</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
