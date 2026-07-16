@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transformer 架构与工程实现综合训练 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons">课程讲义</a>
+    <a href="../index.html#homework" class="active">课后练习</a>
+    <a href="../index.html#projects">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">32</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">33</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">34</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">35</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">39</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">40</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">42</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">49</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">50</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">📘 医学知识图谱</div><a class="item" data-page-key="lesson51" href="../lessons/lesson51.html"><span class="no">51</span><span>知识图谱基础与医学图谱架构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson52" href="../lessons/lesson52.html"><span class="no">52</span><span>数据标注、查询语言与 Neo4j 工具链</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson53" href="../lessons/lesson53.html"><span class="no">53</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson54" href="../lessons/lesson54.html"><span class="no">54</span><span>关系抽取：规则、Pipeline 与 CasRel</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson55" href="../lessons/lesson55.html"><span class="no">55</span><span>知识融合：实体统一、链接与消歧</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson56" href="../lessons/lesson56.html"><span class="no">56</span><span>Neo4j 医学图谱搭建与质量验证</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson57" href="../lessons/lesson57.html"><span class="no">57</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">21</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">22</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">24</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">25</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">27</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">28</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">29</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">30</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">31</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">32</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw33" href="../homework/hw33.html"><span class="no">33</span><span>卷积神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw34" href="../homework/hw34.html"><span class="no">34</span><span>循环神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw35" href="../homework/hw35.html"><span class="no">35</span><span>自然语言处理入门与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw36" href="../homework/hw36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw37" href="../homework/hw37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw38" href="../homework/hw38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积综合训练</span><span class="done-flag">✅</span></a><a class="item hw active" data-page-key="hw39" href="../homework/hw39.html"><span class="no">39</span><span>Transformer 架构与工程实现综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project07" href="../projects/project07.html"><span class="no">07</span><span>医学知识图谱：从信息抽取到 KBQA</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课后练习 / 练习 39</div>
+<h1>🏗️ Transformer 架构与工程实现综合训练</h1>
+<div class="chips"><span class="chip amber">🏷️ 选择 + 简答 + 代码</span><span class="chip amber">🏷️ 55 题</span><a class="chip" href="../lessons/lesson39.html">📖 相关讲义：Transformer 架构与工程实现</a></div>
+</div>
+<p>55 道练习，按“输入表示 → 多头注意力 → Add &amp; Norm → FFN → Encoder → Decoder → 输出与训练”组织。重点是从数据流、张量形状和 Mask 语义理解 Transformer，而不是只背架构图。</p>
+<blockquote>
+<p>建议先独立作答，再展开参考答案。代码题统一采用 <code>batch_first=True</code>，布尔 Mask 遵循 PyTorch 高层模块常用约定：<code>True</code> 表示该位置被屏蔽。</p>
+</blockquote>
+<h2 id="sec-1">一、选择题（30 题）</h2>
+<div class="q-card"><h3 id="sec-2">1. Transformer 相比传统 RNN 最核心的序列建模变化是？</h3>
+<p>A. 删除所有非线性函数<br />
+B. 以注意力为主建立位置间依赖，不再依靠隐藏状态逐时间步递归<br />
+C. 只能处理固定长度输入<br />
+D. 不再需要训练数据</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> Transformer 用自注意力让各位置直接交互，训练时可并行处理时间步；但自回归推理仍需逐 token 生成。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-3">2. 原始 Encoder–Decoder Transformer 的四个宏观部分是？</h3>
+<p>A. 卷积、池化、循环、聚类<br />
+B. 分词、词云、翻译、部署<br />
+C. 输入表示、编码器、解码器、词表输出<br />
+D. Query、Key、Value、标签</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 输入表示包含 token embedding 与位置编码；编码器产生 memory，解码器结合目标前缀与 memory，输出层映射到目标词表 logits。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-4">3. 一个标准 Transformer Encoder 层通常包含哪两个主要子层？</h3>
+<p>A. 多头自注意力与位置前馈网络<br />
+B. 掩码自注意力与交叉注意力<br />
+C. Embedding 与 Softmax<br />
+D. 卷积与循环层</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 每个子层还配有残差连接、LayerNorm 和 Dropout；Encoder 不需要标准的因果 Mask，除非任务特意要求因果编码。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-5">4. 一个标准 Transformer Decoder 层比 Encoder 层多出的核心子层是？</h3>
+<p>A. 第二个 Embedding<br />
+B. BatchNorm<br />
+C. 最大池化<br />
+D. 对 Encoder memory 的交叉注意力</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> Decoder 通常依次包含带因果约束的目标自注意力、对 Encoder memory 的 Cross-Attention，以及位置前馈网络。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-6">5. Token Embedding 后加入位置编码的主要原因是？</h3>
+<p>A. 注意力无法处理浮点数<br />
+B. 纯自注意力本身不携带序列顺序，需要显式注入位置<br />
+C. 位置编码负责输出类别<br />
+D. 可自动删除 PAD</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 没有位置相关信号时，自注意力对输入排列具有置换等变性，难以区分相同 token 集合的不同顺序。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-7">6. 原始 Transformer 常将 token embedding 乘以什么尺度？</h3>
+<p>A. $d_{model}$<br />
+B. $1/d_{model}$<br />
+C. $\sqrt{d_{model}}$<br />
+D. 序列长度</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 该缩放使 embedding 与位置编码的尺度更匹配。它与注意力分数除以 $\sqrt{d_k}$ 是两个不同位置、不同目的的缩放。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-8">7. 正弦—余弦位置编码的一个重要性质是？</h3>
+<p>A. 不含可训练参数，并可为训练长度之外的位置按公式计算<br />
+B. 每个位置都必须通过标签学习<br />
+C. 所有位置向量完全相同<br />
+D. 只能用于 Decoder</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 固定位置编码用不同频率的正弦和余弦表达位置，可外推计算；但模型是否真正泛化到更长序列仍需验证。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-9">8. 可学习绝对位置 Embedding 的直接限制是？</h3>
+<p>A. 无法反向传播<br />
+B. 不能与 token embedding 相加<br />
+C. 不占用参数<br />
+D. 需要预设最大位置数，超出表范围不能直接查表</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> 工程中要校验 <code>seq_len &lt;= max_len</code>；扩展上下文时可能需要插值、重新训练或改用其他位置方案。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-10">9. 使用 <code>d_model=510</code>、<code>nhead=8</code> 的标准均匀多头注意力，主要问题是？</h3>
+<p>A. 序列长度太短<br />
+B. <code>d_model</code> 不能被头数整除，无法均匀拆成整数维子空间<br />
+C. 不能使用 Softmax<br />
+D. Value 维度必须是 8</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 常规实现要求 $d_{head}=d_{model}/nhead$ 为整数，框架会直接报错或要求更改配置。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-11">10. <code>d_model=768</code>、<code>nhead=12</code> 时，每个头的维度通常是？</h3>
+<p>A. 12<br />
+B. 32<br />
+C. 64<br />
+D. 9216</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> $768/12=64$。头数增加并不必然增加注意力投影总参数量，因为总模型维度仍为 768。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-12">11. 标准多头注意力中，四个主要线性投影通常是？</h3>
+<p>A. $W_Q,W_K,W_V,W_O$<br />
+B. $W_x,W_h,W_c,W_y$<br />
+C. 卷积核、池化核、偏置、标签<br />
+D. 只有一个 $W$</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 前三个生成各头的 Q/K/V，拼接各头后由 $W_O$ 融合回 <code>d_model</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-13">12. 输入与输出均采用 <code>d_model</code> 时，多头注意力层输出形状通常是？</h3>
+<p>A. <code>[B,H,T,d_model]</code><br />
+B. <code>[B,T,nhead]</code><br />
+C. <code>[T,T]</code><br />
+D. <code>[B,T,d_model]</code></p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> 头维在内部拆分和合并，对外接口恢复模型维度，才能与输入做残差相加。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-14">13. 残差连接 <code>x + Sublayer(x)</code> 对形状的基本要求是？</h3>
+<p>A. 两个张量必须可对齐相加，通常保持相同的 <code>d_model</code><br />
+B. 子层输出必须是标量<br />
+C. batch size 必须为 1<br />
+D. 序列长度必须等于词表大小</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 注意力输出投影和 FFN 第二层都会回到 <code>d_model</code>，部分原因就是要维持残差路径的形状。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-15">14. Transformer 中 LayerNorm 通常沿哪个维度归一化？</h3>
+<p>A. 整个数据集<br />
+B. batch 维<br />
+C. 每个 token 表示的最后一个特征维 <code>d_model</code><br />
+D. 词表维</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 对 <code>[B,T,D]</code> 使用 <code>LayerNorm(D)</code> 时，每个样本每个位置独立按 D 个特征归一化，不依赖其他 batch 样本。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-16">15. LayerNorm 相比 BatchNorm 更适合变长序列建模的一个原因是？</h3>
+<p>A. 不依赖 batch 统计量，小 batch 与变长输入下行为更稳定<br />
+B. LayerNorm 没有参数<br />
+C. BatchNorm 不能反向传播<br />
+D. LayerNorm 会自动生成位置编码</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> BatchNorm 依赖同一特征在 batch/空间上的统计，容易受 batch 大小和 padding 影响；LayerNorm 在单个 token 特征内部计算。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-17">16. Transformer 的位置前馈网络（FFN）如何作用？</h3>
+<p>A. 在序列维做全局平均<br />
+B. 每个位置使用不同参数<br />
+C. 把所有位置拼成一个向量<br />
+D. 对每个位置独立应用同一组两层 MLP 参数</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> 注意力负责位置间混合，FFN 负责每个位置内部的通道变换；同一层中所有时间步共享 FFN 权重。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-18">17. 标准 FFN 的常见形式是？</h3>
+<p>A. $\operatorname{softmax}(X)$<br />
+B. $W_2\,\sigma(W_1X+b_1)+b_2$<br />
+C. $QK^T$<br />
+D. $XW_1W_1^T$</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 第一层从 <code>d_model</code> 扩展到 <code>d_ff</code>，激活后第二层投影回 <code>d_model</code>；现代模型也常用 GELU、SwiGLU 等变体。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-19">18. 输入 <code>[B,T,d_model]</code> 经过标准 FFN 后，输出形状是？</h3>
+<p>A. <code>[B,T,d_ff]</code><br />
+B. <code>[B,d_model]</code><br />
+C. <code>[B,T,d_model]</code><br />
+D. <code>[T,T]</code></p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 中间层是 <code>d_ff</code>，最终必须回到 <code>d_model</code> 以便残差相加和层堆叠。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-20">19. 双向 Encoder Self-Attention 通常需要哪种 Mask？</h3>
+<p>A. 需要源序列 Padding Mask，通常不需要 Causal Mask<br />
+B. 只需要 Causal Mask<br />
+C. 完全不允许 Mask<br />
+D. 必须屏蔽过去位置</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Encoder 通常允许每个真实 token 看完整源序列，但不能关注 PAD；若做因果编码等特殊任务，才另加结构化 Mask。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-21">20. Decoder Self-Attention 通常需要？</h3>
+<p>A. 只需要源序列 Padding Mask<br />
+B. 只需要 Encoder 输出<br />
+C. 不允许任何 Mask<br />
+D. 目标 Padding Mask 与 Causal Mask</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> 前者屏蔽目标 PAD，后者屏蔽未来目标位置；训练中两者常需同时存在。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-22">21. Decoder Cross-Attention 中 Q、K、V 的来源是？</h3>
+<p>A. Q/K/V 都来自 Encoder<br />
+B. Q 来自 Decoder 当前表示，K/V 来自 Encoder memory<br />
+C. Q 来自标签，K/V 来自位置编码<br />
+D. Q/K/V 都来自目标词表</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> Decoder 用当前目标侧表示查询源侧编码结果，从而将生成位置与相关源 token 对齐。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-23">22. <code>memory_key_padding_mask</code> 应对应什么？</h3>
+<p>A. 目标序列未来位置<br />
+B. 目标序列标签<br />
+C. Encoder memory 中源序列的 PAD 位置<br />
+D. 模型参数中的零值</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> memory 与源序列位置一一对应，因此 Cross-Attention 要复用源侧 padding mask，避免 Decoder 关注源 PAD。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-24">23. Teacher Forcing 训练中，目标完整序列为 <code>[BOS, y1, y2, EOS]</code>，合理的输入—标签移位是？</h3>
+<p>A. Decoder 输入 <code>[BOS,y1,y2]</code>，标签 <code>[y1,y2,EOS]</code><br />
+B. 输入与标签完全相同且不加 Mask<br />
+C. Decoder 输入只含 EOS<br />
+D. 标签向右再补一个 BOS</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 每个位置根据目标前缀预测下一个 token；Causal Mask 防止训练时并行输入的后续 token 泄漏。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-25">24. Decoder 输出经线性层得到词表 logits，配合 <code>CrossEntropyLoss</code> 时应该？</h3>
+<p>A. 先 Argmax 再计算损失<br />
+B. 先转成字符串<br />
+C. 对每个 batch 求和后再分类<br />
+D. 直接传原始 logits，不在模型中提前 Softmax</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> 交叉熵内部使用数值稳定的 LogSoftmax；提前 Softmax 会改变接口语义并降低数值稳定性。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-26">25. “权重绑定（weight tying）”在语言模型输出中常指？</h3>
+<p>A. 所有层共享一个 LayerNorm<br />
+B. 输出投影矩阵与 token embedding 权重共享或转置共享<br />
+C. Q/K/V 完全使用同一矩阵<br />
+D. 冻结所有参数</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 当输入/输出词表与维度兼容时，权重绑定可减少参数并利用输入输出语义结构；仍需正确处理偏置和缩放约定。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-27">26. Pre-LN 与原始 Post-LN 的正确对比是？</h3>
+<p>A. 两者都没有残差<br />
+B. Pre-LN 是 <code>LN(x + F(x))</code><br />
+C. Pre-LN 常写 <code>x + F(LN(x))</code>，Post-LN 常写 <code>LN(x + F(x))</code><br />
+D. Post-LN 不使用 LayerNorm</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> Pre-LN 往往让深层优化更稳定；原始论文使用 Post-LN。实际完整堆栈还可能在末尾放一个最终 LayerNorm。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-28">27. Dropout 在 <code>model.eval()</code> 后应如何表现？</h3>
+<p>A. 停止随机丢弃，使同一输入输出确定<br />
+B. 丢弃比例翻倍<br />
+C. 只丢弃 PAD<br />
+D. 自动删除残差连接</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 训练阶段 Dropout 随机正则化；验证和推理必须切换到 eval，否则指标和输出会带随机波动。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-29">28. 若 <code>d_ff</code> 与 <code>d_model</code> 成固定比例，<code>d_model</code> 翻倍时单层主要线性参数量通常如何变化？</h3>
+<p>A. 不变<br />
+B. 约翻倍<br />
+C. 约增加 $\sqrt2$ 倍<br />
+D. 约增加 4 倍</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> 注意力投影与 FFN 权重都主要是维度乘维度，参数量近似按 $d_{model}^2$ 增长。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-30">29. Transformer 训练可并行处理目标时间步，但自回归推理仍逐 token，原因是？</h3>
+<p>A. 推理时没有矩阵乘法<br />
+B. 下一个 token 的输入依赖前面已经生成的 token<br />
+C. Encoder 不能并行<br />
+D. Softmax 只能处理一个类别</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 训练已知完整目标，可借助 Causal Mask 并行；推理时未来目标未知，只能循环生成，通常用 KV Cache 避免重复计算历史 K/V。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-31">30. 验证一个工程 Transformer 实现，哪项最完整？</h3>
+<p>A. 只检查模型能实例化<br />
+B. 只看训练集 loss 下降<br />
+C. 检查形状、Mask、目标移位、padding loss、梯度、eval 确定性、保存加载及小数据过拟合<br />
+D. 只统计代码行数</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> Transformer 很多错误不会立即报错，例如 Mask 方向反了或标签未移位；结构化断言和微型过拟合测试能尽早发现问题。</p></div></div>
+
+
+</div><h2 id="sec-32">二、简答题（15 题）</h2>
+<div class="q-card"><h3 id="sec-33">31. 按数据流描述一个完整 Encoder–Decoder Transformer 的前向过程。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>源 token ID 经源 Embedding、尺度调整与位置编码后进入 N 层 Encoder，得到与源长度对齐的 memory。目标前缀经目标 Embedding 和位置编码进入 Decoder：先做带 Causal/目标 Padding Mask 的自注意力，再以 Decoder 表示为 Q、memory 为 K/V 做交叉注意力，最后经 FFN；三个子层都有残差、归一化和 Dropout。Decoder 输出经线性层映射到目标词表 logits，训练时与右移一位的目标标签计算忽略 PAD 的交叉熵。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-34">32. 写出正弦—余弦位置编码公式，并说明偶数/奇数通道的分工。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>$$
+PE(pos,2i)=\sin\left(pos/10000^{2i/d_{model}}\right),
+$$</p>
+<p>$$
+PE(pos,2i+1)=\cos\left(pos/10000^{2i/d_{model}}\right).
+$$</p>
+<p>相邻偶/奇通道共享频率，分别使用 sin/cos；不同 i 对应不同波长。位置 0 的 sin 通道为 0、cos 通道为 1。该编码无训练参数，可按公式生成任意位置，但超长外推效果仍取决于训练分布。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-35">33. 区分 Embedding 乘 $\sqrt{d_{model}}$ 与注意力分数除以 $\sqrt{d_k}$。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>前者发生在输入端，用于放大初始化较小的 token embedding，使其与位置编码和残差流尺度更匹配；后者发生在每个注意力头内部，用于抑制高维 Q·K 点积方差随 $d_k$ 增大，防止 Softmax 过度饱和。二者公式相似但作用对象、方向和目的完全不同，不能互相抵消或省略。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-36">34. 描述多头自注意力从 <code>[B,T,D]</code> 到 <code>[B,T,D]</code> 的完整形状变化。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>输入分别经 $W_Q/W_K/W_V$ 得到三个 <code>[B,T,D]</code>，再 reshape/transpose 为 <code>[B,H,T,D/H]</code>。每头分数为 <code>[B,H,T,T]</code>，Softmax 后乘 V 得 <code>[B,H,T,D/H]</code>。将头轴转回并沿特征拼接为 <code>[B,T,D]</code>，最后经 $W_O$ 仍为 <code>[B,T,D]</code>，从而可与输入残差相加。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-37">35. 忽略偏置时，<code>d_model=D</code> 的标准多头注意力投影参数量是多少？头数会改变它吗？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>$W_Q,W_K,W_V,W_O$ 通常都是 $D\times D$，总计约 $4D^2$；若四个线性层都有偏置，再加约 $4D$。在总维度 D 固定且各头均匀切分时，改变头数只改变内部 reshape 与每头维度，不改变这四个大矩阵的总参数量，但会影响计算调度、注意力模式和单头容量。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-38">36. Attention 与 FFN 在 Transformer 层中分别承担什么作用？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>Attention 在序列位置之间混合信息，让一个 token 从其他位置读取内容；FFN 对每个位置独立使用同一 MLP，在特征通道内部做非线性变换与扩展压缩。前者解决“和谁交互”，后者解决“交互后的表示如何变换”。两者缺一会显著限制表达能力。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-39">37. 残差连接、LayerNorm 与 Dropout 各自解决什么问题？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>残差为信息与梯度提供直接路径，便于堆叠深层网络；LayerNorm 稳定每个 token 的特征尺度，降低优化敏感性；Dropout 在训练时随机丢弃部分激活或注意力权重以正则化。三者协同但不可互相替代，且 Dropout 在 <code>eval()</code> 时必须关闭。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-40">38. 精确比较 Pre-LN 与 Post-LN，并说明工程取舍。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>原始 Post-LN 子层常写为 $LN(x+Dropout(F(x)))$；Pre-LN 常写为 $x+Dropout(F(LN(x)))$，整堆层后通常还有最终 LN。Pre-LN 的残差主路径更直接，深层训练往往更稳定；Post-LN 与原论文一致，有时最终效果或表示尺度不同。选择需与初始化、学习率和模型深度共同验证，不能把两者混成“前后各一次 LN”。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-41">39. 列出 Encoder Self-Attention、Decoder Self-Attention、Decoder Cross-Attention 所需 Mask。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>Encoder Self-Attention 使用源 <code>src_key_padding_mask</code>；Decoder Self-Attention 使用目标 <code>tgt_key_padding_mask</code> 与目标 <code>tgt_mask</code>（Causal Mask）；Decoder Cross-Attention 使用源侧 <code>memory_key_padding_mask</code>，通常就是源 Padding Mask。若任务本身有局部窗口或块状约束，还可叠加结构 Mask。必须确认 API 中布尔值 True 的语义。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-42">40. 为什么 Teacher Forcing 同时需要目标移位与 Causal Mask？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>移位定义监督目标：输入 <code>[BOS,y1,y2]</code> 分别预测 <code>[y1,y2,EOS]</code>。训练为了并行把整个目标输入一次送入 Decoder，若没有 Causal Mask，早期位置可直接看到后续真值 token，造成未来泄漏。只有 Mask 没有移位则学习目标错位；只有移位没有 Mask 仍可看到更远未来，因此两者都需要。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-43">41. Encoder memory 是什么？为什么 Cross-Attention 的 K/V 可缓存？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>memory 是 Encoder 对每个源位置生成的上下文化表示 <code>[B,Ts,D]</code>。在一次自回归翻译中源句固定，因此 memory 及其 K/V 投影对所有解码步都不变，可预先计算并复用；Decoder 自注意力历史 K/V 也可随生成增量缓存。缓存减少重复计算，但要正确管理 batch、beam 和序列位置。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-44">42. 输出层、Softmax 与训练损失应怎样衔接？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>Decoder 隐状态经 <code>Linear(D, vocab_size)</code> 得到 logits <code>[B,T,V]</code>。训练时将其与目标标签展平或保持框架支持的布局，直接交给 <code>CrossEntropyLoss(ignore_index=pad_id)</code>，不提前 Softmax；推理展示概率或采样时才用 Softmax。还应确认 BOS/PAD 不作为不合理的生成候选，并按有效 token 数统计损失。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-45">43. Transformer 一层的主要计算与参数复杂度来自哪里？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>Self-Attention 的分数与加权计算约为 $O(T^2D)$，长序列时 $T^2$ 注意力矩阵成为瓶颈；Q/K/V/O 投影约 $O(TD^2)$。FFN 约 $O(TD\,d_{ff})$，且参数主要是 $2D\,d_{ff}$。短序列大模型常受投影/FFN 主导，长序列则注意力二次项更突出，需结合具体 T、D 分析。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-46">44. Encoder-only、Decoder-only 与 Encoder–Decoder 架构分别适合什么任务？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>Encoder-only 使用双向自注意力，适合理解、分类、检索和序列标注；Decoder-only 使用因果自注意力，适合自回归生成并可通过提示统一任务；Encoder–Decoder 先编码完整输入、再条件生成，适合翻译、摘要和结构化变换。任务并非只能由某一类完成，选择还取决于预训练目标、数据与部署成本。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-47">45. 给出完整 Transformer 的最小工程验收方案。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>用微型固定 batch 检查所有中间/输出形状、Mask 的 True/False 语义和未来权重为 0；验证目标移位、PAD loss 忽略与词表范围；前向/反向无 NaN，所有应训练参数有有限梯度；关闭 Dropout 后输出确定；保存加载后输出一致；尝试过拟合几十条样本；最后测试不同源/目标长度、全 PAD 异常输入、最大位置边界、CPU/GPU 与混合精度。</p></div></div>
+
+
+</div><h2 id="sec-48">三、代码题（10 题）</h2>
+<div class="q-card"><h3 id="sec-49">46. 实现正弦—余弦位置编码模块，并验证位置 0、形状和 buffer 行为。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>位置编码不是参数，但应注册为 buffer，使其进入 <code>state_dict</code> 并随模型移动设备。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SinusoidalPositionalEncoding</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="mi">128</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">max_len</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">frequencies</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+            <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">10000.0</span><span class="p">)</span> <span class="o">/</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">pe</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">max_len</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="n">pe</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">position</span> <span class="o">*</span> <span class="n">frequencies</span><span class="p">)</span>
+        <span class="n">pe</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">position</span> <span class="o">*</span> <span class="n">frequencies</span><span class="p">[:</span><span class="n">pe</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_buffer</span><span class="p">(</span><span class="s2">&quot;pe&quot;</span><span class="p">,</span> <span class="n">pe</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">pe</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;sequence exceeds max_len&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">pe</span><span class="p">[:,</span> <span class="p">:</span><span class="n">x</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+<span class="n">module</span> <span class="o">=</span> <span class="n">SinusoidalPositionalEncoding</span><span class="p">(</span><span class="n">d_model</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">module</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">::</span><span class="mi">2</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">2</span><span class="p">],</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+<span class="k">assert</span> <span class="s2">&quot;pe&quot;</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">state_dict</span><span class="p">()</span>
+<span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;pe&quot;</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-50">47. 组合缩放 Token Embedding 与位置编码，并观察 PAD 位置为何仍需 Mask。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><code>padding_idx=0</code> 只让 PAD 的 token embedding 为零；加上位置编码后该位置仍非零，因此注意力 Mask 不能省略。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">vocab_size</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">max_len</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span>
+<span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">padding_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">position</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">max_len</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+<span class="n">token_ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+
+<span class="n">positions</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">token_ids</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">token_only</span> <span class="o">=</span> <span class="n">embedding</span><span class="p">(</span><span class="n">token_ids</span><span class="p">)</span> <span class="o">*</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d_model</span><span class="p">)</span>
+<span class="n">combined</span> <span class="o">=</span> <span class="n">token_only</span> <span class="o">+</span> <span class="n">position</span><span class="p">(</span><span class="n">positions</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">combined</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">token_only</span><span class="o">.</span><span class="n">masked_select</span><span class="p">(</span><span class="n">token_ids</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">24</span><span class="p">))</span>
+<span class="k">assert</span> <span class="n">combined</span><span class="o">.</span><span class="n">masked_select</span><span class="p">(</span><span class="n">token_ids</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="n">padding_mask</span> <span class="o">=</span> <span class="n">token_ids</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">padding_mask</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="p">[[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">],</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">]]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">combined</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">padding_mask</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-51">48. 从源 ID 和目标输入 ID 生成 Transformer 所需的三类布尔 Mask。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>PyTorch 高层 Transformer API 中，这些布尔 Mask 通常以 <code>True=屏蔽</code> 解释。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">make_masks</span><span class="p">(</span><span class="n">src_ids</span><span class="p">,</span> <span class="n">tgt_input_ids</span><span class="p">,</span> <span class="n">pad_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="n">src_key_padding_mask</span> <span class="o">=</span> <span class="n">src_ids</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">pad_id</span><span class="p">)</span>
+    <span class="n">tgt_key_padding_mask</span> <span class="o">=</span> <span class="n">tgt_input_ids</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="n">pad_id</span><span class="p">)</span>
+    <span class="n">target_length</span> <span class="o">=</span> <span class="n">tgt_input_ids</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">tgt_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span>
+        <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">target_length</span><span class="p">,</span> <span class="n">target_length</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">),</span>
+        <span class="n">diagonal</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">src_key_padding_mask</span><span class="p">,</span> <span class="n">tgt_key_padding_mask</span><span class="p">,</span> <span class="n">tgt_mask</span>
+
+<span class="n">src</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="n">tgt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]])</span>
+<span class="n">src_pad</span><span class="p">,</span> <span class="n">tgt_pad</span><span class="p">,</span> <span class="n">causal</span> <span class="o">=</span> <span class="n">make_masks</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tgt</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">src_pad</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">tgt_pad</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">causal</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">causal</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">]</span>
+<span class="k">assert</span> <span class="ow">not</span> <span class="n">causal</span><span class="o">.</span><span class="n">diagonal</span><span class="p">()</span><span class="o">.</span><span class="n">any</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">src_pad</span><span class="p">,</span> <span class="n">src</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">src_pad</span><span class="p">,</span> <span class="n">tgt_pad</span><span class="p">,</span> <span class="n">causal</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-52">49. 使用 <code>nn.MultiheadAttention</code> 同时应用 Causal Mask 与 Key Padding Mask，并检查每头权重。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><code>average_attn_weights=False</code> 保留 head 轴，便于精确验证广播后的屏蔽位置。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">B</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">H</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">2</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+<span class="n">mha</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MultiheadAttention</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">causal</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">),</span> <span class="n">diagonal</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">key_padding</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span>
+    <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span>
+    <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">],</span>
+<span class="p">])</span>
+
+<span class="n">output</span><span class="p">,</span> <span class="n">weights</span> <span class="o">=</span> <span class="n">mha</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span>
+    <span class="n">attn_mask</span><span class="o">=</span><span class="n">causal</span><span class="p">,</span>
+    <span class="n">key_padding_mask</span><span class="o">=</span><span class="n">key_padding</span><span class="p">,</span>
+    <span class="n">need_weights</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">average_attn_weights</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">future</span> <span class="o">=</span> <span class="n">causal</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+<span class="n">padded_keys</span> <span class="o">=</span> <span class="n">key_padding</span><span class="p">[:,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">expand_as</span><span class="p">(</span><span class="n">weights</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">output</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">weights</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">weights</span><span class="o">.</span><span class="n">masked_select</span><span class="p">(</span><span class="n">future</span><span class="p">)</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">weights</span><span class="o">.</span><span class="n">masked_select</span><span class="p">(</span><span class="n">padded_keys</span><span class="p">)</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">weights</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">T</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">weights</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-53">50. 实现位置 FFN 与 Pre-LN 残差子层，并验证形状、梯度和恒等路径。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>当 FFN 参数全为零时，Pre-LN 残差块应退化为恒等映射 <code>output=x</code>。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PreNormFFNBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">norm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LayerNorm</span><span class="p">(</span><span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ffn</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">d_ff</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">GELU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_ff</span><span class="p">,</span> <span class="n">d_model</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">ffn</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">block</span> <span class="o">=</span> <span class="n">PreNormFFNBlock</span><span class="p">(</span><span class="n">d_model</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">d_ff</span><span class="o">=</span><span class="mi">32</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">block</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+<span class="n">y</span><span class="o">.</span><span class="n">square</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+
+<span class="k">assert</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+<span class="k">assert</span> <span class="n">x</span><span class="o">.</span><span class="n">grad</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">torch</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">block</span><span class="o">.</span><span class="n">ffn</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">):</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">zeros_</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">weight</span><span class="p">)</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">zeros_</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">bias</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">block</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">detach</span><span class="p">()),</span> <span class="n">x</span><span class="o">.</span><span class="n">detach</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-54">51. 验证 Encoder Key Padding Mask 会让真实位置不受 PAD 内容变化影响。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>Padding Query 的输出本身可能仍有数值；关键是所有真实 Query 都不能读取 PAD Key。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">TransformerEncoderLayer</span><span class="p">(</span>
+    <span class="n">d_model</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
+    <span class="n">nhead</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">dim_feedforward</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+    <span class="n">dropout</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">norm_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">layer</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">x1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">x2</span> <span class="o">=</span> <span class="n">x1</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+<span class="n">x2</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:]</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span>  <span class="c1"># 只改变 PAD 位置内容</span>
+<span class="n">padding_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span>
+    <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span>
+    <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">],</span>
+<span class="p">])</span>
+
+<span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+    <span class="n">y1</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">src_key_padding_mask</span><span class="o">=</span><span class="n">padding_mask</span><span class="p">)</span>
+    <span class="n">y2</span> <span class="o">=</span> <span class="n">layer</span><span class="p">(</span><span class="n">x2</span><span class="p">,</span> <span class="n">src_key_padding_mask</span><span class="o">=</span><span class="n">padding_mask</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">y1</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">y2</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">y1</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">y2</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:</span><span class="mi">2</span><span class="p">],</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">)</span>
+<span class="k">assert</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">y1</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:],</span> <span class="n">y2</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">:])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;real token outputs are padding-content invariant&quot;</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-55">52. 构造一个 Decoder 层，传入目标因果 Mask、目标 Padding Mask 与 memory Padding Mask。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>目标长度与源 memory 长度可以不同；输出始终与目标序列对齐。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">B</span><span class="p">,</span> <span class="n">TT</span><span class="p">,</span> <span class="n">TS</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span>
+<span class="n">decoder</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">TransformerDecoderLayer</span><span class="p">(</span>
+    <span class="n">d_model</span><span class="o">=</span><span class="n">D</span><span class="p">,</span>
+    <span class="n">nhead</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">dim_feedforward</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
+    <span class="n">dropout</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+    <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">norm_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">tgt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">TT</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">memory</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">TS</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">causal</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">TT</span><span class="p">,</span> <span class="n">TT</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">),</span> <span class="n">diagonal</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">tgt_padding</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">]])</span>
+<span class="n">memory_padding</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span>
+    <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">],</span>
+    <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">],</span>
+<span class="p">])</span>
+
+<span class="n">output</span> <span class="o">=</span> <span class="n">decoder</span><span class="p">(</span>
+    <span class="n">tgt</span><span class="p">,</span>
+    <span class="n">memory</span><span class="p">,</span>
+    <span class="n">tgt_mask</span><span class="o">=</span><span class="n">causal</span><span class="p">,</span>
+    <span class="n">tgt_key_padding_mask</span><span class="o">=</span><span class="n">tgt_padding</span><span class="p">,</span>
+    <span class="n">memory_key_padding_mask</span><span class="o">=</span><span class="n">memory_padding</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">output</span><span class="o">.</span><span class="n">square</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+
+<span class="k">assert</span> <span class="n">output</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">TT</span><span class="p">,</span> <span class="n">D</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">output</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">tgt</span><span class="o">.</span><span class="n">grad</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">memory</span><span class="o">.</span><span class="n">grad</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-56">53. 使用 <code>nn.Transformer</code> 搭建一个最小 Encoder–Decoder 前向模型。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><code>nn.Transformer</code> 只负责 Encoder/Decoder 主体，Embedding、位置表示与词表输出层仍需自行提供。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TinyTransformer</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src_vocab</span><span class="p">,</span> <span class="n">tgt_vocab</span><span class="p">,</span> <span class="n">d_model</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span> <span class="n">max_len</span><span class="o">=</span><span class="mi">20</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">src_embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">src_vocab</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">padding_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tgt_embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">tgt_vocab</span><span class="p">,</span> <span class="n">d_model</span><span class="p">,</span> <span class="n">padding_idx</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">src_position</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">max_len</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tgt_position</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">max_len</span><span class="p">,</span> <span class="n">d_model</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Transformer</span><span class="p">(</span>
+            <span class="n">d_model</span><span class="o">=</span><span class="n">d_model</span><span class="p">,</span>
+            <span class="n">nhead</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">num_encoder_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">num_decoder_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">dim_feedforward</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span>
+            <span class="n">dropout</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+            <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">norm_first</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">tgt_vocab</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">src</span><span class="p">,</span> <span class="n">tgt</span><span class="p">):</span>
+        <span class="n">src_pos</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">src</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="n">src</span><span class="o">.</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">tgt_pos</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">tgt</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">device</span><span class="o">=</span><span class="n">tgt</span><span class="o">.</span><span class="n">device</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">src_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">src_embedding</span><span class="p">(</span><span class="n">src</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">src_position</span><span class="p">(</span><span class="n">src_pos</span><span class="p">)</span>
+        <span class="n">tgt_x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tgt_embedding</span><span class="p">(</span><span class="n">tgt</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">tgt_position</span><span class="p">(</span><span class="n">tgt_pos</span><span class="p">)</span>
+        <span class="n">src_pad</span> <span class="o">=</span> <span class="n">src</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">tgt_pad</span> <span class="o">=</span> <span class="n">tgt</span><span class="o">.</span><span class="n">eq</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">causal</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span>
+            <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">tgt</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">tgt</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">tgt</span><span class="o">.</span><span class="n">device</span><span class="p">),</span>
+            <span class="n">diagonal</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">transformer</span><span class="p">(</span>
+            <span class="n">src_x</span><span class="p">,</span>
+            <span class="n">tgt_x</span><span class="p">,</span>
+            <span class="n">tgt_mask</span><span class="o">=</span><span class="n">causal</span><span class="p">,</span>
+            <span class="n">src_key_padding_mask</span><span class="o">=</span><span class="n">src_pad</span><span class="p">,</span>
+            <span class="n">tgt_key_padding_mask</span><span class="o">=</span><span class="n">tgt_pad</span><span class="p">,</span>
+            <span class="n">memory_key_padding_mask</span><span class="o">=</span><span class="n">src_pad</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">hidden</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">TinyTransformer</span><span class="p">(</span><span class="n">src_vocab</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">tgt_vocab</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+<span class="n">src</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="n">tgt</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">tgt</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">logits</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">40</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logits</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">logits</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-57">54. 实现 Teacher Forcing 目标移位、Causal Mask 与忽略 PAD 的交叉熵。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>完整目标应含 BOS 和 EOS；Decoder 输入去掉末 token，监督标签去掉首 token。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">PAD</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">full_target</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+<span class="p">])</span>
+<span class="n">decoder_input</span> <span class="o">=</span> <span class="n">full_target</span><span class="p">[:,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="n">full_target</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span>
+<span class="n">length</span> <span class="o">=</span> <span class="n">decoder_input</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">causal_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">triu</span><span class="p">(</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">bool</span><span class="p">),</span> <span class="n">diagonal</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">logits</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">(</span><span class="n">ignore_index</span><span class="o">=</span><span class="n">PAD</span><span class="p">)(</span>
+    <span class="n">logits</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">12</span><span class="p">),</span> <span class="n">labels</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="p">)</span>
+<span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+
+<span class="k">assert</span> <span class="n">decoder_input</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<span class="k">assert</span> <span class="n">labels</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="p">[[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]</span>
+<span class="k">assert</span> <span class="n">causal_mask</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">labels</span><span class="o">.</span><span class="n">ne</span><span class="p">(</span><span class="n">PAD</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">==</span> <span class="mi">5</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span> <span class="ow">and</span> <span class="n">torch</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">logits</span><span class="o">.</span><span class="n">grad</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">detach</span><span class="p">()))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-58">55. 统计两组 Transformer Encoder 参数量，验证 <code>d_model</code> 翻倍时约增长 4 倍。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>保持 <code>d_ff=4*d_model</code>、层数不变，主要矩阵参数随 $d_model^2$ 增长。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">make_encoder</span><span class="p">(</span><span class="n">d_model</span><span class="p">,</span> <span class="n">nhead</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="n">layer</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">TransformerEncoderLayer</span><span class="p">(</span>
+        <span class="n">d_model</span><span class="o">=</span><span class="n">d_model</span><span class="p">,</span>
+        <span class="n">nhead</span><span class="o">=</span><span class="n">nhead</span><span class="p">,</span>
+        <span class="n">dim_feedforward</span><span class="o">=</span><span class="mi">4</span> <span class="o">*</span> <span class="n">d_model</span><span class="p">,</span>
+        <span class="n">dropout</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+        <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">TransformerEncoder</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="n">layers</span><span class="p">)</span>
+
+<span class="n">small</span> <span class="o">=</span> <span class="n">make_encoder</span><span class="p">(</span><span class="n">d_model</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">nhead</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">large</span> <span class="o">=</span> <span class="n">make_encoder</span><span class="p">(</span><span class="n">d_model</span><span class="o">=</span><span class="mi">64</span><span class="p">,</span> <span class="n">nhead</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">small_params</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">small</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+<span class="n">large_params</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">large</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+<span class="n">ratio</span> <span class="o">=</span> <span class="n">large_params</span> <span class="o">/</span> <span class="n">small_params</span>
+
+<span class="n">small_output</span> <span class="o">=</span> <span class="n">small</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">32</span><span class="p">))</span>
+<span class="n">large_output</span> <span class="o">=</span> <span class="n">large</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">64</span><span class="p">))</span>
+<span class="k">assert</span> <span class="n">small_output</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">large_output</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+<span class="k">assert</span> <span class="mf">3.8</span> <span class="o">&lt;</span> <span class="n">ratio</span> <span class="o">&lt;</span> <span class="mf">4.2</span>
+<span class="nb">print</span><span class="p">({</span><span class="s2">&quot;small&quot;</span><span class="p">:</span> <span class="n">small_params</span><span class="p">,</span> <span class="s2">&quot;large&quot;</span><span class="p">:</span> <span class="n">large_params</span><span class="p">,</span> <span class="s2">&quot;ratio&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">ratio</span><span class="p">,</span> <span class="mi">3</span><span class="p">)})</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="done-bar"><button class="mark-done-btn" data-key="hw39" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="hw38.html"><div class="dir">← 上一篇</div><div class="name">🎯 注意力机制：Q、K、V 与缩放点积综合训练</div></a><a class="disabled next"></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、选择题（30 题）</a><a class="lv3" href="#sec-2">1. Transformer 相比传统 RNN 最核心的序列建模变化是？</a><a class="lv3" href="#sec-3">2. 原始 Encoder–Decoder Transformer 的四个宏观部分是？</a><a class="lv3" href="#sec-4">3. 一个标准 Transformer Encoder 层通常包含哪两个主要子层？</a><a class="lv3" href="#sec-5">4. 一个标准 Transformer Decoder 层比 Encoder 层多出的核心子层是？</a><a class="lv3" href="#sec-6">5. Token Embedding 后加入位置编码的主要原因是？</a><a class="lv3" href="#sec-7">6. 原始 Transformer 常将 token embedding 乘以什么尺度？</a><a class="lv3" href="#sec-8">7. 正弦—余弦位置编码的一个重要性质是？</a><a class="lv3" href="#sec-9">8. 可学习绝对位置 Embedding 的直接限制是？</a><a class="lv3" href="#sec-10">9. 使用 d_model=510、nhead=8 的标准均匀多头注意力，主要问题是？</a><a class="lv3" href="#sec-11">10. d_model=768、nhead=12 时，每个头的维度通常是？</a><a class="lv3" href="#sec-12">11. 标准多头注意力中，四个主要线性投影通常是？</a><a class="lv3" href="#sec-13">12. 输入与输出均采用 d_model 时，多头注意力层输出形状通常是？</a><a class="lv3" href="#sec-14">13. 残差连接 x + Sublayer(x) 对形状的基本要求是？</a><a class="lv3" href="#sec-15">14. Transformer 中 LayerNorm 通常沿哪个维度归一化？</a><a class="lv3" href="#sec-16">15. LayerNorm 相比 BatchNorm 更适合变长序列建模的一个原因是？</a><a class="lv3" href="#sec-17">16. Transformer 的位置前馈网络（FFN）如何作用？</a><a class="lv3" href="#sec-18">17. 标准 FFN 的常见形式是？</a><a class="lv3" href="#sec-19">18. 输入 [B,T,d_model] 经过标准 FFN 后，输出形状是？</a><a class="lv3" href="#sec-20">19. 双向 Encoder Self-Attention 通常需要哪种 Mask？</a><a class="lv3" href="#sec-21">20. Decoder Self-Attention 通常需要？</a><a class="lv3" href="#sec-22">21. Decoder Cross-Attention 中 Q、K、V 的来源是？</a><a class="lv3" href="#sec-23">22. memory_key_padding_mask 应对应什么？</a><a class="lv3" href="#sec-24">23. Teacher Forcing 训练中，目标完整序列为 [BOS, y1, y2, EOS]，合理的输入—标签移位是？</a><a class="lv3" href="#sec-25">24. Decoder 输出经线性层得到词表 logits，配合 CrossEntropyLoss 时应该？</a><a class="lv3" href="#sec-26">25. “权重绑定（weight tying）”在语言模型输出中常指？</a><a class="lv3" href="#sec-27">26. Pre-LN 与原始 Post-LN 的正确对比是？</a><a class="lv3" href="#sec-28">27. Dropout 在 model.eval() 后应如何表现？</a><a class="lv3" href="#sec-29">28. 若 d_ff 与 d_model 成固定比例，d_model 翻倍时单层主要线性参数量通常如何变化？</a><a class="lv3" href="#sec-30">29. Transformer 训练可并行处理目标时间步，但自回归推理仍逐 token，原因是？</a><a class="lv3" href="#sec-31">30. 验证一个工程 Transformer 实现，哪项最完整？</a><a class="lv2" href="#sec-32">二、简答题（15 题）</a><a class="lv3" href="#sec-33">31. 按数据流描述一个完整 Encoder–Decoder Transformer 的前向过程。</a><a class="lv3" href="#sec-34">32. 写出正弦—余弦位置编码公式，并说明偶数/奇数通道的分工。</a><a class="lv3" href="#sec-35">33. 区分 Embedding 乘 $\sqrt{d_{model}}$ 与注意力分数除以 $\sqrt{d_k}$。</a><a class="lv3" href="#sec-36">34. 描述多头自注意力从 [B,T,D] 到 [B,T,D] 的完整形状变化。</a><a class="lv3" href="#sec-37">35. 忽略偏置时，d_model=D 的标准多头注意力投影参数量是多少？头数会改变它吗？</a><a class="lv3" href="#sec-38">36. Attention 与 FFN 在 Transformer 层中分别承担什么作用？</a><a class="lv3" href="#sec-39">37. 残差连接、LayerNorm 与 Dropout 各自解决什么问题？</a><a class="lv3" href="#sec-40">38. 精确比较 Pre-LN 与 Post-LN，并说明工程取舍。</a><a class="lv3" href="#sec-41">39. 列出 Encoder Self-Attention、Decoder Self-Attention、Decoder Cross-Attention 所需 Mask。</a><a class="lv3" href="#sec-42">40. 为什么 Teacher Forcing 同时需要目标移位与 Causal Mask？</a><a class="lv3" href="#sec-43">41. Encoder memory 是什么？为什么 Cross-Attention 的 K/V 可缓存？</a><a class="lv3" href="#sec-44">42. 输出层、Softmax 与训练损失应怎样衔接？</a><a class="lv3" href="#sec-45">43. Transformer 一层的主要计算与参数复杂度来自哪里？</a><a class="lv3" href="#sec-46">44. Encoder-only、Decoder-only 与 Encoder–Decoder 架构分别适合什么任务？</a><a class="lv3" href="#sec-47">45. 给出完整 Transformer 的最小工程验收方案。</a><a class="lv2" href="#sec-48">三、代码题（10 题）</a><a class="lv3" href="#sec-49">46. 实现正弦—余弦位置编码模块，并验证位置 0、形状和 buffer 行为。</a><a class="lv3" href="#sec-50">47. 组合缩放 Token Embedding 与位置编码，并观察 PAD 位置为何仍需 Mask。</a><a class="lv3" href="#sec-51">48. 从源 ID 和目标输入 ID 生成 Transformer 所需的三类布尔 Mask。</a><a class="lv3" href="#sec-52">49. 使用 nn.MultiheadAttention 同时应用 Causal Mask 与 Key Padding Mask，并检查每头权重。</a><a class="lv3" href="#sec-53">50. 实现位置 FFN 与 Pre-LN 残差子层，并验证形状、梯度和恒等路径。</a><a class="lv3" href="#sec-54">51. 验证 Encoder Key Padding Mask 会让真实位置不受 PAD 内容变化影响。</a><a class="lv3" href="#sec-55">52. 构造一个 Decoder 层，传入目标因果 Mask、目标 Padding Mask 与 memory Padding Mask。</a><a class="lv3" href="#sec-56">53. 使用 nn.Transformer 搭建一个最小 Encoder–Decoder 前向模型。</a><a class="lv3" href="#sec-57">54. 实现 Teacher Forcing 目标移位、Causal Mask 与忽略 PAD 的交叉熵。</a><a class="lv3" href="#sec-58">55. 统计两组 Transformer Encoder 参数量，验证 d_model 翻倍时约增长 4 倍。</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
