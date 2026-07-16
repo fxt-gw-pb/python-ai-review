@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prompt-Tuning：PET、软提示与 P-tuning 综合训练 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons">课程讲义</a>
+    <a href="../index.html#homework" class="active">课后练习</a>
+    <a href="../index.html#projects">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson58" href="../lessons/lesson58.html"><span class="no">19</span><span>NumPy 统计计算与科学分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">20</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">21</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">22</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">23</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">24</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">25</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">26</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">27</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">28</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">29</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">30</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">31</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">32</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">33</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">34</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">35</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">36</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">37</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">38</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">39</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">40</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">41</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">42</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">43</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">44</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">45</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">46</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">47</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">48</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">49</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">50</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">51</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">📘 医学知识图谱</div><a class="item" data-page-key="lesson51" href="../lessons/lesson51.html"><span class="no">52</span><span>知识图谱基础与医学图谱架构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson52" href="../lessons/lesson52.html"><span class="no">53</span><span>数据标注、查询语言与 Neo4j 工具链</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson53" href="../lessons/lesson53.html"><span class="no">54</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson54" href="../lessons/lesson54.html"><span class="no">55</span><span>关系抽取：规则、Pipeline 与 CasRel</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson55" href="../lessons/lesson55.html"><span class="no">56</span><span>知识融合：实体统一、链接与消歧</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson56" href="../lessons/lesson56.html"><span class="no">57</span><span>Neo4j 医学图谱搭建与质量验证</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson57" href="../lessons/lesson57.html"><span class="no">58</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">21</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">22</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">24</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">25</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">27</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">28</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">29</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">30</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">31</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">32</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw33" href="../homework/hw33.html"><span class="no">33</span><span>卷积神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw34" href="../homework/hw34.html"><span class="no">34</span><span>循环神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw35" href="../homework/hw35.html"><span class="no">35</span><span>自然语言处理入门与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw36" href="../homework/hw36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw37" href="../homework/hw37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw38" href="../homework/hw38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw39" href="../homework/hw39.html"><span class="no">39</span><span>Transformer 架构与工程实现综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw40" href="../homework/hw40.html"><span class="no">40</span><span>Transformer 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw41" href="../homework/hw41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw42" href="../homework/hw42.html"><span class="no">42</span><span>FastText：文本分类与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw43" href="../homework/hw43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw44" href="../homework/hw44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw45" href="../homework/hw45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw46" href="../homework/hw46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw47" href="../homework/hw47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw48" href="../homework/hw48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配综合训练</span><span class="done-flag">✅</span></a><a class="item hw active" data-page-key="hw49" href="../homework/hw49.html"><span class="no">49</span><span>Prompt-Tuning：PET、软提示与 P-tuning 综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project07" href="../projects/project07.html"><span class="no">07</span><span>医学知识图谱：从信息抽取到 KBQA</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课后练习 / 练习 49</div>
+<h1>🪄 Prompt-Tuning：PET、软提示与 P-tuning 综合训练</h1>
+<div class="chips"><span class="chip amber">🏷️ 选择 + 简答 + 代码</span><span class="chip amber">🏷️ 55 题</span><a class="chip" href="../lessons/lesson49.html">📖 相关讲义：Prompt-Tuning：从 NLP 四范式到 PET 与软提示</a></div>
+</div>
+<p>55 道练习，按“NLP 四范式与术语边界 → ICL、Instruction Tuning 与 CoT → PET/PVP → Verbalizer 与校准 → Soft Prompt 与 P-tuning → 冻结参数、梯度流、评测和部署”组织。重点不是背方法名，而是能从<strong>输入构造、训练参数、目标函数和推理工件</strong>四个维度准确判断一种方法。</p>
+<blockquote>
+<p>建议先独立作答，再展开参考答案。本练习依据 <a href="https://arxiv.org/abs/2001.07676">PET 原始论文</a>、<a href="https://arxiv.org/abs/2104.08691">Prompt Tuning 原始论文</a>、<a href="https://arxiv.org/abs/2103.10385">P-tuning 原始论文</a>、<a href="https://arxiv.org/abs/2110.07602">P-tuning v2 论文</a> 与 <a href="https://huggingface.co/docs/peft/package_reference/prompt_tuning">Hugging Face PEFT Prompt Tuning 文档</a>校准。注意：课程中的“四范式”适合作为理解技术演进的教学框架，并非互斥的正式分类；Instruction Tuning 会进行监督式参数更新；“提示微调可媲美全量微调”是依赖模型规模、任务和实验设置的经验结论，不是无条件保证。10 道代码题均可离线运行，不下载预训练权重。</p>
+</blockquote>
+<h2 id="sec-1">一、选择题（30 题）</h2>
+<div class="q-card"><h3 id="sec-2">1. 将 NLP 演进概括为“传统机器学习 → 深度学习 → 预训练后微调 → 预训练后提示”的正确理解是？</h3>
+<p>A. 便于比较表示、监督信号和任务接口的教学框架，不代表旧范式已经消失或四类严格互斥<br />
+B. 所有 NLP 系统都必须依次执行四个阶段<br />
+C. Prompt 出现后不再需要训练数据<br />
+D. 每个阶段只能使用一种模型架构</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 实际系统可以混合使用规则、检索、全量微调、参数高效微调和上下文示例。所谓“四范式”帮助理解任务知识如何注入模型，但不能代替对具体训练流程的判断。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-3">2. 预训练目标与下游分类目标之间的“任务形式差距”是指？</h3>
+<p>A. 模型预训练可能学习预测 token，而下游直接新增分类头并预测类别 ID<br />
+B. 训练集和验证集文件名不同<br />
+C. CPU 与 GPU 的品牌不同<br />
+D. 类别名称必须使用英文</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Prompt 方法常把分类改写成填空或文本生成，使下游输入输出形式更接近 MLM、因果语言建模或 Seq2Seq 预训练目标；但“形式对齐”不等于自动解决数据偏差和标签歧义。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-4">3. 下列哪项最准确地区分 Prompt Engineering 与 Prompt Tuning？</h3>
+<p>A. 前者通常人工或程序选择离散文本且不做梯度更新，后者通常用梯度学习连续提示参数<br />
+B. 二者都必须更新全部模型权重<br />
+C. 前者只能用于分类，后者只能用于翻译<br />
+D. 二者完全同义</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> “Prompt-Tuning”在宽泛材料中有时泛指提示方法，但在参数高效微调语境里，通常特指学习 soft prompt。判断时应明确提示是否可训练、是否为连续向量、基座是否冻结。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-5">4. GPT 类模型的 Few-Shot In-Context Learning（ICL）在一次普通推理中会？</h3>
+<p>A. 把示例放入上下文，但不通过反向传播更新模型权重<br />
+B. 自动训练一个新分类头<br />
+C. 永久修改模型参数<br />
+D. 必须生成 <code>[MASK]</code></p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> ICL 的“学习”发生在当前上下文条件下，不是优化器意义上的参数学习。示例会占用上下文窗口，换一个请求若不再次提供示例，模型不会保留这次上下文。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-6">5. Instruction Tuning 最典型的训练行为是？</h3>
+<p>A. 用“指令—输入—目标输出”监督数据更新模型或适配参数<br />
+B. 只改一段系统提示，完全不训练<br />
+C. 只在推理时加入三个示例<br />
+D. 只调整 temperature</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 指令微调是一种训练过程，可以全量更新，也可以结合 LoRA 等 PEFT。它与推理时写指令 Prompt 有联系，但不能归为“完全无参数更新”的 ICL。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-7">6. Chain-of-Thought（CoT）最适合被描述为？</h3>
+<p>A. 诱导或训练模型产生中间推理步骤的一类策略，单独使用 CoT Prompt 不必更新权重<br />
+B. 一种固定的优化器<br />
+C. 一种 tokenizer<br />
+D. 一定只训练输入 embedding</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Zero-Shot/Few-Shot CoT 可以纯推理使用，也可以与带推理数据的训练结合。看到“CoT”不能直接推断参数是否更新，要看完整流程。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-8">7. PET（Pattern-Exploiting Training）的核心任务改写是？</h3>
+<p>A. 用 Pattern 把样本变成完形填空，再用 Verbalizer 把类别映射到标签词<br />
+B. 删除标签并随机聚类<br />
+C. 把所有 token 平均后做 KNN<br />
+D. 只增加模型层数</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Pattern 与 Verbalizer 合称 PVP。原始 PET 还包含多个 PVP 模型、在无标注数据上生成软标签以及最终分类器训练等半监督流程，因此“一个 <code>[MASK]</code> 模板”只是 PET 思想的重要部件，不是全部流程。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-9">8. 在情感任务模板“这家餐厅的味道很棒。总体来说，它很 <code>[MASK]</code>。”中，Pattern 是？</h3>
+<p>A. 将原文本嵌入带 <code>[MASK]</code> 的完整输入形式<br />
+B. <code>positive -&gt; 好</code> 的标签映射<br />
+C. 交叉熵优化器<br />
+D. 模型预测的概率</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Pattern 决定模型看到的上下文；<code>positive -&gt; 好</code>、<code>negative -&gt; 差</code> 属于 Verbalizer。二者应分别设计和消融。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-10">9. Verbalizer 的作用是？</h3>
+<p>A. 建立任务标签与词表 token（标签词）之间的映射<br />
+B. 把所有词切成字符<br />
+C. 冻结优化器<br />
+D. 计算位置编码</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 例如 <code>positive -&gt; 好</code>、<code>negative -&gt; 差</code>。分类时可从 <code>[MASK]</code> 位置的词表 logits 取出标签词得分，再在类别维度归一化。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-11">10. 一个单 <code>[MASK]</code> 模板把类别映射为“非常满意”时，首先要检查？</h3>
+<p>A. tokenizer 是否把标签词切成多个 token，模板的预测位数与打分规则是否匹配<br />
+B. 字符串是否超过一个汉字<br />
+C. GPU 是否有两个风扇<br />
+D. 标签是否按字母排序</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> “一个词”在自然语言中可能对应多个子词 token。单 mask 的 MLM 不能直接一次预测任意长度短语，需要多 mask、改用单 token 标签词，或明确定义自回归/多 token 聚合方案。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-12">11. 两个类别使用同一个标签词，最直接的问题是？</h3>
+<p>A. 从该词的得分无法唯一还原类别<br />
+B. 参数量会自动翻倍<br />
+C. 输入长度会变为零<br />
+D. 模型会自动创建新 token</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Verbalizer 通常应保证类别映射可区分。若每类有多个标签词，还需规定类内聚合方式，并检查不同类标签词是否语义重叠。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-13">12. 下列哪项更可能造成 Verbalizer 的先验偏差？</h3>
+<p>A. 某个标签词在预训练语料中极常见或与模板天然搭配，即使输入信息很弱也得到高分<br />
+B. 训练集文件使用 UTF-8<br />
+C. 类别 ID 从 0 开始<br />
+D. 使用了 Python 列表</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 应在内容为空、无意义或类别平衡的校准输入上检查标签词先验，并比较多个标签词、模板或做 contextual calibration，而不是把原始词表概率直接当作无偏类别概率。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-14">13. Hard Prompt 的典型特征是？</h3>
+<p>A. 由词表中的离散 token 构成，通常可直接读成人类语言<br />
+B. 必定是不可解释的浮点向量<br />
+C. 必定更新全部 Transformer 层<br />
+D. 只能放在输出末尾</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Hard Prompt 可以人工编写，也可以通过搜索得到。它可读但对措辞敏感；“hard”描述离散性，不表示训练一定困难或参数一定全量更新。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-15">14. Soft Prompt 的典型特征是？</h3>
+<p>A. 若干可训练的连续 embedding，未必对应词表中的真实 token<br />
+B. 一段不可修改的自然语言说明<br />
+C. 一组测试集标签<br />
+D. 模型输出的概率表</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Soft Prompt 位于模型 embedding 空间，可通过反向传播优化。虚拟 token 的编号只是索引这些向量，不意味着能逐个解码成有意义的自然语言词。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-16">15. 基座模型冻结后，Soft Prompt 还能学习的原因是？</h3>
+<p>A. 损失梯度仍可穿过基座计算图传回 Prompt，只是基座参数不接收或不应用更新<br />
+B. 冻结会阻止一切梯度传播<br />
+C. Prompt 不需要损失函数<br />
+D. 优化器会随机修改测试标签</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> <code>requires_grad=False</code> 表示不为基座参数累积梯度，通常不会切断对输入 embedding 的梯度。不要把“冻结参数”误解为在基座前后执行 <code>detach()</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-17">16. 朴素 Prompt Tuning 使用 (m) 个虚拟 token、隐藏维度 (d)，仅提示表的参数量是？</h3>
+<p>A. (m\times d)<br />
+B. (m+d)<br />
+C. (m^d)<br />
+D. 与 (m,d) 都无关</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 若使用 P-tuning 的 MLP/LSTM Prompt Encoder，还要加上编码器参数；若在多层注入深提示，参数量也会随层数和具体实现变化。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-18">17. 增大 Soft Prompt 长度最准确的判断是？</h3>
+<p>A. 表达容量和训练参数增加，但会占用序列预算、增加计算，效果不保证单调提升<br />
+B. 越长必然越准确<br />
+C. 不影响显存与上下文<br />
+D. 参数量反而减少</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Prompt 长度是超参数，应在开发集比较，并同时报告截断率、吞吐和显存。长 Prompt 可能挤掉原始文本或目标 token。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-19">18. 关于 Soft Prompt 初始化，哪项最合理？</h3>
+<p>A. 随机、从词表采样或用任务文本 embedding 初始化都可作为候选，应通过多随机种子实验比较<br />
+B. 只有全零初始化永远最优<br />
+C. 初始化不可能影响优化<br />
+D. 必须从测试集答案初始化</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 官方 PEFT 实现支持 RANDOM、SAMPLE_VOCAB 和 TEXT 等初始化。初始化可能影响小数据训练的收敛与方差，不能用测试集选最优方案。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-20">19. Prompt Tuning 原始论文中“规模的力量”主要说明？</h3>
+<p>A. 在其 T5 实验设置中，模型变大后 Prompt Tuning 与全量 Model Tuning 的差距缩小<br />
+B. 任意小模型、任意任务上都严格优于全量微调<br />
+C. Prompt 长度必须等于模型层数<br />
+D. Soft Prompt 不需要训练数据</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 这是特定模型族、任务和设置下的经验发现。复现或迁移到中文、小模型、序列标注等场景时仍需与全量微调及其他 PEFT 基线公平比较。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-21">20. P-tuning v1 相比直接学习一张 Soft Prompt 表，常见的额外结构是？</h3>
+<p>A. 用 MLP 或 LSTM Prompt Encoder 对连续提示进行重参数化<br />
+B. 删除所有输入 token<br />
+C. 固定每个标签的概率<br />
+D. 只训练输出 tokenizer</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Prompt Encoder 生成或变换虚拟 token embedding，可增强提示之间的依赖建模；训练后是否保留编码器或导出其生成的提示取决于实现。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-22">21. P-tuning v2 的“Deep Prompt Tuning”主要变化是？</h3>
+<p>A. 在 Transformer 多层注入可训练提示，而不只在输入层加入虚拟 token<br />
+B. 只把输入文本重复两遍<br />
+C. 取消所有可训练参数<br />
+D. 把分类改为 KMeans</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 深层提示为各层提供更多任务特定容量。其论文报告了跨规模与 NLU 任务的强结果，但“universally comparable”仍应按论文实验范围理解和独立验证。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-23">22. PPT（Pre-trained Prompt Tuning）试图缓解什么问题？</h3>
+<p>A. 小样本下从随机 Prompt 开始可能不稳定，因此先在相关数据或任务上预训练提示再迁移<br />
+B. tokenizer 无法读取任何文本<br />
+C. 全量模型不能保存<br />
+D. 所有类别都必须改成数字</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 提示预训练能否迁移取决于源任务、目标任务和数据分布相似性。预训练 Prompt 也可能带来负迁移，所以仍需随机/文本初始化基线。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-24">23. 对 MLM 分类，设 <code>[MASK]</code> 位置词表 logits 为 (z)，正负标签词 token 分别为 (v_+,v_-)。类别概率更合理的计算是？</h3>
+<p>A. 对 ([z_{v_+},z_{v_-}]) 在类别维度做 softmax<br />
+B. 对输入字符长度做 softmax<br />
+C. 只比较标签词的 token ID 大小<br />
+D. 对整个词表概率求和后作为两个类别共同概率</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 训练时可在标签词子集上使用交叉熵。若每类包含多个词，需要先规定类内 log-sum-exp、均值等聚合，再在类别间归一化。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-25">24. 多标签词 Verbalizer 中，用某类所有标签词 logits 的简单最大值作为类得分有什么风险？</h3>
+<p>A. 极端高频词可能支配结果，且训练时梯度只集中到少数词<br />
+B. 一定会让所有类别同分<br />
+C. 不能进行任何反向传播<br />
+D. 参数量必为零</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 可以比较 mean、log-sum-exp、带权聚合和校准后的分数。聚合规则属于模型定义，训练、验证和推理必须一致。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-26">25. 只训练 Soft Prompt 时，优化器最应该接收？</h3>
+<p>A. <code>requires_grad=True</code> 的提示参数，以及明确选择的其他可训练模块<br />
+B. 所有基座参数，无论是否冻结<br />
+C. 测试集标签<br />
+D. tokenizer 的字符串词表文件</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 创建优化器前应打印参数名、数量与比例。即使冻结参数放入优化器通常不会被更新，也会让审计含糊；误把 LM head 或 LayerNorm 留为可训练则会改变方法定义。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-27">26. 在输入前拼接 (m) 个虚拟 token 后，原序列第 (i) 个 token 的新位置通常是？</h3>
+<p>A. (i+m)<br />
+B. (i-m)<br />
+C. (i\times m)<br />
+D. 不发生任何变化</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 因此 token-level labels、<code>[MASK]</code> 索引、因果 LM 的 labels 以及 position IDs 都要按实现检查。虚拟 token 对应的监督标签通常设为 ignore index（如 <code>-100</code>）。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-28">27. 保存 Prompt-Tuning 检查点时，只保存 prompt 权重还不够，至少还应记录？</h3>
+<p>A. 基座模型标识与 revision、tokenizer、提示方法/长度/初始化、任务类型和代码依赖版本<br />
+B. 训练者桌面壁纸<br />
+C. 浏览器历史<br />
+D. 任意一个同尺寸模型名称</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Soft Prompt 与隐藏维度、层结构和输入模板耦合。加载到错误基座或 tokenizer 上，即使张量形状碰巧相同，语义也可能完全错误。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-29">28. 公平比较 Full Fine-Tuning、Prompt Tuning 与 P-tuning v2，应至少统一？</h3>
+<p>A. 数据切分、预处理、训练预算/调参规则、评测指标和随机种子，并报告可训练参数与资源开销<br />
+B. 只统一图表颜色<br />
+C. 只选择每种方法最好的一次测试结果<br />
+D. 给 Prompt 方法额外查看测试标签</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 还应报告均值与标准差、模板/标签词、截断率、峰值显存、吞吐和检查点大小。不同方法可使用合理的独立学习率搜索，但搜索空间和预算应透明。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-30">29. Soft Prompt 在三个随机种子上结果差异很大，正确处理是？</h3>
+<p>A. 报告均值、标准差和各次结果，检查初始化、样本顺序、学习率及小数据敏感性<br />
+B. 只发布最高分且隐藏其他运行<br />
+C. 在测试集上继续挑种子<br />
+D. 宣称模型完全确定</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 低样本提示学习可能存在较大方差。模型选择应基于开发集，测试集保持隔离；必要时增加重复实验和稳定性分析。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-31">30. 下列哪个场景更支持优先尝试 Prompt Tuning？</h3>
+<p>A. 同一个大基座需服务很多任务，希望每个任务只存少量参数，并能接受单独验证效果<br />
+B. 基座不可用且无法加载<br />
+C. 任务要求修改 tokenizer 却禁止任何配置变更<br />
+D. 没有训练数据、没有评测集且必须保证准确</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Prompt Tuning 的价值在于共享冻结基座、降低每任务存储和训练参数量。若模型很小、任务复杂或延迟/序列预算敏感，LoRA、Adapter、全量微调或纯 ICL 也可能更合适，必须实测。</p></div></div>
+
+
+</div><h2 id="sec-32">二、简答题（15 题）</h2>
+<div class="q-card"><h3 id="sec-33">31. 用“输入、训练、保存、推理”四列区分 Prompt Engineering、ICL、Instruction Tuning 与 Prompt Tuning。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>Prompt Engineering 输入离散指令，通常不训练，只保存模板，推理时每次携带；ICL 还在输入中放演示，同样无梯度更新，保存示例选择策略；Instruction Tuning 用指令—输出监督数据更新全量或 PEFT 参数，保存新模型或适配器，推理时可只给新指令；Prompt Tuning 学习连续虚拟 token，通常冻结基座，保存 prompt 权重与配置，推理时系统在 embedding 层自动拼接。四者可以组合，例如先做指令微调，再在特定任务上训练 Soft Prompt。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-34">32. 把二分类情感任务改写为一个 PVP，并指出潜在缺陷。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>Pattern 可写为“评论：<code>{text}</code>。总的来说，这次体验很 <code>[MASK]</code>。”；Verbalizer 为 positive→“好”、negative→“差”。需检查“好/差”在当前 tokenizer 中均为单 token，模板语法自然且不提前泄漏答案；再测试替代模板和标签词，观察顺序与先验偏差。若中性样本存在，二分类标签体系本身也需修订。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-35">33. 为什么 PVP 的 Pattern 和 Verbalizer 要分别做消融？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>Pattern 决定上下文及 <code>[MASK]</code> 与原文的关系，Verbalizer 决定词表概率如何映射为类别。只替换其中一项才能判断误差来自模板措辞还是标签词先验。建议构造多个 Pattern×Verbalizer 组合，在相同切分、种子和预算下报告均值、方差、每类指标及空内容校准结果。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-36">34. 如何处理类别名称需要多个 token 的情况？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>不要假设自然语言“一个词”等于 tokenizer 的一个 token。可选择语义合适的单 token 标签词；为每个 token 放置对应数量的 mask 并定义联合概率；改为自回归/Seq2Seq 生成标签字符串；或给每类配置多个单 token verbalizer 并聚合。所有方案都需保证训练与推理打分一致，并测试长度偏置。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-37">35. 设计一个 Verbalizer 质量诊断流程。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>先验证 tokenization、类别间不冲突、词义与模板搭配自然；再用无信息输入测标签词先验，在训练集看类内覆盖和每类召回；比较多个标签词与聚合规则，加入否定、反事实和 hard negative；最后在独立开发集按模板、类别、长度和领域切片评估。若做校准，保存校准集和算法版本，禁止用测试集估计偏置。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-38">36. 解释“基座冻结但梯度仍穿过基座”的计算过程。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>Prompt embedding 是需要梯度的叶子参数，随后经过冻结 Transformer 的矩阵运算得到 logits 和损失。反向传播为计算 Prompt 梯度，仍使用这些冻结权重参与链式法则；只是权重本身 <code>requires_grad=False</code>，不会累积 <code>.grad</code> 或被优化器更新。如果在 Prompt 输出处错误 <code>detach()</code>，Prompt 才会失去梯度。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-39">37. 如何审计一个“只训练 Soft Prompt”的实现？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>列出所有命名参数的 <code>requires_grad</code>，断言只有 prompt 模块可训练；优化器参数 ID 必须与可训练参数 ID 集合相同；训练一步前后保存基座参数哈希或逐张量比较，确认完全不变；确认 prompt 梯度非零且权重发生变化；同时检查 dropout 模式、LM head、LayerNorm 和额外分类头是否符合预先声明的方法定义。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-40">38. Prompt 长度如何影响训练与部署？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>长度 (m) 使朴素提示参数约为 (m d)，也让有效序列变长，增加注意力计算、KV cache、显存和延迟，并减少原文本可用窗口。过短可能容量不足，过长可能更难优化或挤掉输入。应在开发集对多个长度做消融，同时报告质量、截断率、吞吐、峰值显存和 P95 延迟，而非只看准确率。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-41">39. 比较随机初始化、词表采样初始化和文本初始化。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>随机连续向量不受自然语言限制，但可能远离已有 embedding 流形；从词表采样位于已有 token embedding 上但任务语义随机；文本初始化用任务描述或标签相关词，可能更快收敛但引入措辞偏置。应固定数据与预算，用多个种子报告收敛曲线和最终指标；不能由测试集选择初始化。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-42">40. 比较 Prompt Tuning、P-tuning v1 与 P-tuning v2。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>朴素 Prompt Tuning 通常直接学习输入层的一段虚拟 token embedding；P-tuning v1 使用 MLP/LSTM Prompt Encoder 重参数化连续提示，并可与离散 anchor 组合；P-tuning v2 将提示扩展到多层的 deep prompts，以增强较小模型和复杂 NLU 任务的容量。三者在不同代码库中的命名可能不完全一致，比较时应以“注入位置、生成结构、冻结范围”描述，而非只看方法名。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-43">41. 如何验证“Prompt Tuning 可媲美全量微调”的主张？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>在同一基座、数据切分和指标上建立全量微调、线性探测、Prompt Tuning 及其他 PEFT 基线；为每种方法使用公开且合理的调参预算，运行多个种子。报告平均值、标准差、统计不确定性、可训练参数、训练时间、峰值显存、检查点大小和推理开销，并在不同数据量、任务类型和模型规模上分层。结论限定在实际实验范围内。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-44">42. 小样本 Prompt Tuning 出现训练集高分、验证集低分，如何诊断？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>检查数据泄漏、标签噪声、类别不平衡和切分；比较训练/验证损失及每类指标；降低 Prompt 长度或训练步数，尝试权重衰减、早停和更稳初始化；检查学习率与梯度范数；增加种子与交叉验证；与零样本、线性分类头和全量/LoRA 基线比较。Prompt 参数少不代表不会过拟合。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-45">43. 设计 PET 的半监督训练流程，并指出伪标签风险。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>先为标注小样本设计多个 PVP，分别训练对应 MLM；再对大量无标注样本预测并集成为软标签；用这些软标签训练最终分类器。风险包括模板共同偏差、错误自我强化、类别分布失真和无标注域偏移。应设置置信度/一致性过滤、类别配额、人工抽检，并在只用真标签的基线上比较；测试集绝不能参与伪标签生成或筛选。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-46">44. Prompt 检查点要怎样设计才能复现和多任务部署？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>每个任务保存 prompt/encoder 权重、PEFT 类型、虚拟 token 数、token_dim、注入层、初始化方式、模板与 Verbalizer、标签表、基座模型 ID 与不可变 revision、tokenizer、依赖版本和评测摘要。服务端共享只读基座，按任务加载或路由小型 Prompt 工件，并做兼容性校验、缓存、版本回滚和并发隔离。不能只凭张量形状猜兼容性。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-47">45. 给出 Prompt-Tuning 实验上线检查清单。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>包括：术语与冻结范围写清；数据去重、切分和标签审计完成；tokenizer、模板、mask 数和 Verbalizer 校验通过；Prompt 长度与截断策略固定；可训练参数、梯度和基座不变性有自动测试；多种子和强基线评测完成；质量、每类指标、校准、OOD、资源与延迟达标；检查点包含基座 revision 和配置；线上监控输入漂移、置信度、失败率及版本；具备灰度、回滚和数据隐私控制。</p></div></div>
+
+
+</div><h2 id="sec-48">三、代码题（10 题）</h2>
+<div class="q-card"><h3 id="sec-49">46. 构造并校验离散 PVP</h3>
+<p>实现二分类模板，要求原文恰好出现一次、最终输入恰好包含一个 <code>[MASK]</code>，且 Verbalizer 标签和 token ID 均不冲突。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">MASK</span> <span class="o">=</span> <span class="s2">&quot;[MASK]&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">build_pvp</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">verbalizer</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;text 必须是非空字符串&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">MASK</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;原文不得包含模板控制 token&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">verbalizer</span><span class="p">)</span> <span class="o">!=</span> <span class="p">{</span><span class="s2">&quot;positive&quot;</span><span class="p">,</span> <span class="s2">&quot;negative&quot;</span><span class="p">}:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;标签集合必须严格匹配任务&quot;</span><span class="p">)</span>
+    <span class="n">token_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">verbalizer</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">token_id</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">token_id</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">token_id</span> <span class="ow">in</span> <span class="n">token_ids</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;标签词 token ID 非法&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">token_ids</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">token_ids</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;不同类别不能映射到同一 token&quot;</span><span class="p">)</span>
+
+    <span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;评论：</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2"> 总体来说，这次体验很</span><span class="si">{</span><span class="n">MASK</span><span class="si">}</span><span class="s2">。&quot;</span>
+    <span class="k">if</span> <span class="n">pattern</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">pattern</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">MASK</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;PVP 构造失败&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">pattern</span>
+
+
+<span class="n">verbalizer</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;positive&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s2">&quot;negative&quot;</span><span class="p">:</span> <span class="mi">11</span><span class="p">}</span>
+<span class="n">prompt</span> <span class="o">=</span> <span class="n">build_pvp</span><span class="p">(</span><span class="s2">&quot;菜品新鲜，服务也很周到。&quot;</span><span class="p">,</span> <span class="n">verbalizer</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">prompt</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;[MASK]&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="k">assert</span> <span class="n">prompt</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;评论：&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-50">47. 从 <code>[MASK]</code> 位置提取 Verbalizer 类别分数</h3>
+<p>给定形状 <code>[batch, seq_len, vocab]</code> 的 logits、每条样本的 mask 位置和标签词 ID，返回 <code>[batch, num_classes]</code> 的 logits 与概率。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">verbalizer_scores</span><span class="p">(</span>
+    <span class="n">logits</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+    <span class="n">mask_positions</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+    <span class="n">label_token_ids</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">logits</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;logits 应为 [B, L, V]&quot;</span><span class="p">)</span>
+    <span class="n">batch</span><span class="p">,</span> <span class="n">seq_len</span><span class="p">,</span> <span class="n">vocab</span> <span class="o">=</span> <span class="n">logits</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">if</span> <span class="n">mask_positions</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="p">(</span><span class="n">batch</span><span class="p">,):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;每条样本必须有一个 mask 位置&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">label_token_ids</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">label_token_ids</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;至少需要两个类别&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">all</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">mask_positions</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">mask_positions</span> <span class="o">&lt;</span> <span class="n">seq_len</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;mask 位置越界&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">all</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">label_token_ids</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">label_token_ids</span> <span class="o">&lt;</span> <span class="n">vocab</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;标签词 ID 越界&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">label_token_ids</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="o">!=</span> <span class="n">label_token_ids</span><span class="o">.</span><span class="n">numel</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;标签词 ID 冲突&quot;</span><span class="p">)</span>
+
+    <span class="n">batch_index</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">logits</span><span class="o">.</span><span class="n">device</span><span class="p">)</span>
+    <span class="n">mask_logits</span> <span class="o">=</span> <span class="n">logits</span><span class="p">[</span><span class="n">batch_index</span><span class="p">,</span> <span class="n">mask_positions</span><span class="p">]</span>       <span class="c1"># [B, V]</span>
+    <span class="n">class_logits</span> <span class="o">=</span> <span class="n">mask_logits</span><span class="o">.</span><span class="n">index_select</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">label_token_ids</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">class_logits</span><span class="p">,</span> <span class="n">class_logits</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="n">logits</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="n">logits</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">logits</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">1.0</span>
+<span class="n">logits</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">logits</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span>
+<span class="n">scores</span><span class="p">,</span> <span class="n">probs</span> <span class="o">=</span> <span class="n">verbalizer_scores</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">]))</span>
+<span class="k">assert</span> <span class="n">scores</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">probs</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">probs</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">probs</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-51">48. 聚合多标签词 Verbalizer 并计算分类损失</h3>
+<p>每类有不同数量的标签词。用 <code>logsumexp - log(标签词数)</code> 作为类得分，计算交叉熵并验证梯度能回到词表 logits。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">multi_verbalizer_logits</span><span class="p">(</span><span class="n">mask_logits</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">groups</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">mask_logits</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">groups</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;输入形状或 groups 非法&quot;</span><span class="p">)</span>
+    <span class="n">vocab</span> <span class="o">=</span> <span class="n">mask_logits</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">used</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">class_scores</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">token_ids</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">token_ids</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="n">vocab</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">token_ids</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;标签词 ID 非法&quot;</span><span class="p">)</span>
+        <span class="n">used</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">token_ids</span><span class="p">)</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="n">mask_logits</span><span class="p">[:,</span> <span class="n">token_ids</span><span class="p">]</span>
+        <span class="n">class_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">logsumexp</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">token_ids</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">used</span><span class="p">))</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">used</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;类别之间的标签词不得重叠&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">class_scores</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="n">mask_logits</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span>
+    <span class="p">[[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mf">2.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">]],</span>
+    <span class="n">requires_grad</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">groups</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]]</span>
+<span class="n">targets</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">class_logits</span> <span class="o">=</span> <span class="n">multi_verbalizer_logits</span><span class="p">(</span><span class="n">mask_logits</span><span class="p">,</span> <span class="n">groups</span><span class="p">)</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">cross_entropy</span><span class="p">(</span><span class="n">class_logits</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+<span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">class_logits</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="n">targets</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">mask_logits</span><span class="o">.</span><span class="n">grad</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">mask_logits</span><span class="o">.</span><span class="n">grad</span><span class="o">.</span><span class="n">abs</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="nb">print</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">detach</span><span class="p">()),</span> <span class="n">class_logits</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-52">49. 实现输入级 Soft Prompt 拼接</h3>
+<p>冻结词 embedding，在真实 token embedding 前拼接 (m) 个可训练向量，并同步扩展 attention mask。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SoftPrompt</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_virtual_tokens</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">num_virtual_tokens</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">hidden_size</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;维度必须为正&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">num_virtual_tokens</span><span class="p">,</span> <span class="n">hidden_size</span><span class="p">))</span>
+        <span class="n">nn</span><span class="o">.</span><span class="n">init</span><span class="o">.</span><span class="n">normal_</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">,</span> <span class="n">mean</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">0.02</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">token_embeddings</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+        <span class="k">if</span> <span class="n">token_embeddings</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">3</span> <span class="ow">or</span> <span class="n">attention_mask</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">token_embeddings</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;输入形状不一致&quot;</span><span class="p">)</span>
+        <span class="n">batch</span> <span class="o">=</span> <span class="n">token_embeddings</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">prompt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">expand</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">prompt</span><span class="p">,</span> <span class="n">token_embeddings</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">prompt_mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span>
+            <span class="n">batch</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">attention_mask</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">attention_mask</span><span class="o">.</span><span class="n">device</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">prompt_mask</span><span class="p">,</span> <span class="n">attention_mask</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="n">embedding</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">module</span> <span class="o">=</span> <span class="n">SoftPrompt</span><span class="p">(</span><span class="n">num_virtual_tokens</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">hidden_size</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
+<span class="n">ids</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]])</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="n">inputs</span><span class="p">,</span> <span class="n">extended_mask</span> <span class="o">=</span> <span class="n">module</span><span class="p">(</span><span class="n">embedding</span><span class="p">(</span><span class="n">ids</span><span class="p">),</span> <span class="n">mask</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">inputs</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">extended_mask</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">extended_mask</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-53">50. 审计冻结范围、优化器与梯度流</h3>
+<p>构造一个冻结基座和可训练 Prompt，断言优化器只包含 Prompt；反向传播后 Prompt 有梯度、基座无梯度。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">FrozenPromptClassifier</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Tanh</span><span class="p">(),</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">4</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span><span class="p">)</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">FrozenPromptClassifier</span><span class="p">()</span>
+<span class="n">trainable</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">]</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">(</span><span class="n">trainable</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">optimizer_ids</span> <span class="o">=</span> <span class="p">{</span><span class="nb">id</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">param_groups</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">group</span><span class="p">[</span><span class="s2">&quot;params&quot;</span><span class="p">]}</span>
+<span class="k">assert</span> <span class="n">optimizer_ids</span> <span class="o">==</span> <span class="p">{</span><span class="nb">id</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">prompt</span><span class="p">)}</span>
+
+<span class="n">before</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">p</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">()}</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()(</span><span class="n">model</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">)),</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+<span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">prompt</span><span class="o">.</span><span class="n">grad</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">grad</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+<span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+<span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">before</span><span class="p">[</span><span class="n">name</span><span class="p">],</span> <span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">named_parameters</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;trainable=&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">prompt</span><span class="o">.</span><span class="n">numel</span><span class="p">(),</span> <span class="s2">&quot;loss=&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">detach</span><span class="p">()))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-54">51. 统计可训练参数和 FP32 检查点体积</h3>
+<p>返回总参数、可训练参数、占比和仅保存可训练参数时的理论 FP32 字节数。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">parameter_report</span><span class="p">(</span><span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+    <span class="n">trainable</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">()</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">requires_grad</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">total</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;模型没有参数&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;total&quot;</span><span class="p">:</span> <span class="n">total</span><span class="p">,</span>
+        <span class="s2">&quot;trainable&quot;</span><span class="p">:</span> <span class="n">trainable</span><span class="p">,</span>
+        <span class="s2">&quot;trainable_percent&quot;</span><span class="p">:</span> <span class="mf">100.0</span> <span class="o">*</span> <span class="n">trainable</span> <span class="o">/</span> <span class="n">total</span><span class="p">,</span>
+        <span class="s2">&quot;trainable_fp32_bytes&quot;</span><span class="p">:</span> <span class="n">trainable</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ToyModel</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prompt</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">128</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+
+<span class="n">report</span> <span class="o">=</span> <span class="n">parameter_report</span><span class="p">(</span><span class="n">ToyModel</span><span class="p">())</span>
+<span class="k">assert</span> <span class="n">report</span><span class="p">[</span><span class="s2">&quot;total&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">128</span> <span class="o">*</span> <span class="mi">128</span> <span class="o">+</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">128</span>
+<span class="k">assert</span> <span class="n">report</span><span class="p">[</span><span class="s2">&quot;trainable&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">10</span> <span class="o">*</span> <span class="mi">128</span>
+<span class="k">assert</span> <span class="n">report</span><span class="p">[</span><span class="s2">&quot;trainable_fp32_bytes&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">5120</span>
+<span class="k">assert</span> <span class="nb">round</span><span class="p">(</span><span class="n">report</span><span class="p">[</span><span class="s2">&quot;trainable_percent&quot;</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mf">7.25</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-55">52. 为 token-level 标签和因果 LM 标签补齐虚拟位置</h3>
+<p>在序列前增加 (m) 个虚拟 token 后，把原位置整体右移，并让虚拟位置的监督标签为 <code>-100</code>。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+
+<span class="n">IGNORE_INDEX</span> <span class="o">=</span> <span class="o">-</span><span class="mi">100</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">shift_for_virtual_tokens</span><span class="p">(</span>
+    <span class="n">labels</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">positions</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">num_virtual_tokens</span><span class="p">:</span> <span class="nb">int</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">,</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">labels</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">2</span> <span class="ow">or</span> <span class="n">positions</span><span class="o">.</span><span class="n">ndim</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">positions</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">!=</span> <span class="n">labels</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;输入形状非法&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">num_virtual_tokens</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;num_virtual_tokens 必须为正&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">torch</span><span class="o">.</span><span class="n">all</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">positions</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">positions</span> <span class="o">&lt;</span> <span class="n">labels</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">1</span><span class="p">))):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;positions 越界&quot;</span><span class="p">)</span>
+    <span class="n">prefix</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">full</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="n">num_virtual_tokens</span><span class="p">),</span>
+        <span class="n">IGNORE_INDEX</span><span class="p">,</span>
+        <span class="n">dtype</span><span class="o">=</span><span class="n">labels</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span>
+        <span class="n">device</span><span class="o">=</span><span class="n">labels</span><span class="o">.</span><span class="n">device</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">cat</span><span class="p">([</span><span class="n">prefix</span><span class="p">,</span> <span class="n">labels</span><span class="p">],</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">positions</span> <span class="o">+</span> <span class="n">num_virtual_tokens</span>
+
+
+<span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="o">-</span><span class="mi">100</span><span class="p">],</span> <span class="p">[</span><span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">]])</span>
+<span class="n">positions</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+<span class="n">shifted_labels</span><span class="p">,</span> <span class="n">shifted_positions</span> <span class="o">=</span> <span class="n">shift_for_virtual_tokens</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">shifted_labels</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">shifted_labels</span><span class="p">[:,</span> <span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="o">-</span><span class="mi">100</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">shifted_positions</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">shifted_labels</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">:],</span> <span class="n">labels</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">shifted_labels</span><span class="p">,</span> <span class="n">shifted_positions</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-56">53. 只保存并恢复 Prompt 权重与兼容性配置</h3>
+<p>使用内存缓冲区模拟检查点；加载时必须校验基座 revision、Prompt 形状和配置。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">io</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">save_prompt</span><span class="p">(</span><span class="n">prompt</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+    <span class="n">required</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;base_model&quot;</span><span class="p">,</span> <span class="s2">&quot;revision&quot;</span><span class="p">,</span> <span class="s2">&quot;num_virtual_tokens&quot;</span><span class="p">,</span> <span class="s2">&quot;hidden_size&quot;</span><span class="p">}</span>
+    <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">config</span><span class="p">)</span> <span class="o">!=</span> <span class="n">required</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;配置字段不完整&quot;</span><span class="p">)</span>
+    <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s2">&quot;num_virtual_tokens&quot;</span><span class="p">],</span> <span class="n">config</span><span class="p">[</span><span class="s2">&quot;hidden_size&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">prompt</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="n">expected</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Prompt 形状与配置不符&quot;</span><span class="p">)</span>
+    <span class="n">buffer</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">()</span>
+    <span class="n">torch</span><span class="o">.</span><span class="n">save</span><span class="p">({</span><span class="s2">&quot;prompt&quot;</span><span class="p">:</span> <span class="n">prompt</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">cpu</span><span class="p">(),</span> <span class="s2">&quot;config&quot;</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">config</span><span class="p">)},</span> <span class="n">buffer</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">buffer</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">load_prompt</span><span class="p">(</span><span class="n">blob</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">,</span> <span class="n">expected_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">:</span>
+    <span class="n">checkpoint</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">blob</span><span class="p">),</span> <span class="n">weights_only</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">checkpoint</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">expected_config</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;基座或 Prompt 配置不兼容&quot;</span><span class="p">)</span>
+    <span class="n">tensor</span> <span class="o">=</span> <span class="n">checkpoint</span><span class="p">[</span><span class="s2">&quot;prompt&quot;</span><span class="p">]</span>
+    <span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="n">expected_config</span><span class="p">[</span><span class="s2">&quot;num_virtual_tokens&quot;</span><span class="p">],</span> <span class="n">expected_config</span><span class="p">[</span><span class="s2">&quot;hidden_size&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">tensor</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">!=</span> <span class="n">shape</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;检查点形状损坏&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">tensor</span><span class="o">.</span><span class="n">clone</span><span class="p">())</span>
+
+
+<span class="n">config</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;base_model&quot;</span><span class="p">:</span> <span class="s2">&quot;toy-encoder&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;revision&quot;</span><span class="p">:</span> <span class="s2">&quot;commit-abc123&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;num_virtual_tokens&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="s2">&quot;hidden_size&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">original</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">24</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="n">blob</span> <span class="o">=</span> <span class="n">save_prompt</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+<span class="n">restored</span> <span class="o">=</span> <span class="n">load_prompt</span><span class="p">(</span><span class="n">blob</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">original</span><span class="p">,</span> <span class="n">restored</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">restored</span><span class="o">.</span><span class="n">requires_grad</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;checkpoint bytes:&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">blob</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-57">54. 构造带 Soft Prompt 的变长批次</h3>
+<p>原始 token 在右侧 padding；拼接虚拟 token 后，保证每条样本的有效长度增加 (m)，且序列不超过预算。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">collate_with_prompt</span><span class="p">(</span>
+    <span class="n">sequences</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">num_virtual_tokens</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">max_total_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">pad_id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">sequences</span> <span class="ow">or</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="n">seq</span> <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">sequences</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;序列不能为空&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">num_virtual_tokens</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">max_total_length</span> <span class="o">&lt;=</span> <span class="n">num_virtual_tokens</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;长度预算非法&quot;</span><span class="p">)</span>
+    <span class="n">max_text_length</span> <span class="o">=</span> <span class="n">max_total_length</span> <span class="o">-</span> <span class="n">num_virtual_tokens</span>
+    <span class="n">clipped</span> <span class="o">=</span> <span class="p">[</span><span class="n">seq</span><span class="p">[:</span><span class="n">max_text_length</span><span class="p">]</span> <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">sequences</span><span class="p">]</span>
+    <span class="n">batch_text_length</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">clipped</span><span class="p">)</span>
+    <span class="n">input_ids</span><span class="p">,</span> <span class="n">attention_mask</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">clipped</span><span class="p">:</span>
+        <span class="n">padding</span> <span class="o">=</span> <span class="n">batch_text_length</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span>
+        <span class="n">input_ids</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">seq</span> <span class="o">+</span> <span class="p">[</span><span class="n">pad_id</span><span class="p">]</span> <span class="o">*</span> <span class="n">padding</span><span class="p">)</span>
+        <span class="n">attention_mask</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_virtual_tokens</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">padding</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;input_ids&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">input_ids</span><span class="p">),</span>
+        <span class="s2">&quot;attention_mask&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">attention_mask</span><span class="p">),</span>
+        <span class="s2">&quot;effective_lengths&quot;</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="n">num_virtual_tokens</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">)</span> <span class="k">for</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">clipped</span><span class="p">]),</span>
+    <span class="p">}</span>
+
+
+<span class="n">batch</span> <span class="o">=</span> <span class="n">collate_with_prompt</span><span class="p">([[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="p">[</span><span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">]],</span> <span class="mi">2</span><span class="p">,</span> <span class="n">max_total_length</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;input_ids&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;attention_mask&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;effective_lengths&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">batch</span><span class="p">[</span><span class="s2">&quot;attention_mask&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-58">55. 完成一个最小 Soft Prompt 训练闭环</h3>
+<p>冻结一个人工构造的“基座”，只学习两个 Prompt 标量，使四个样本被正确分类；验证基座参数完全不变。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TinySoftPromptClassifier</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="c1"># 冻结基座把二维输入映射为两类 logits。</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">copy_</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">requires_grad_</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">soft_prompt</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Parameter</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">soft_prompt</span><span class="p">)</span>
+
+
+<span class="c1"># 所有样本都需要同一个任务 Prompt：第一维下调、第二维上调后应归为类别 1。</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">long</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">TinySoftPromptClassifier</span><span class="p">()</span>
+<span class="n">base_before</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">SGD</span><span class="p">([</span><span class="n">model</span><span class="o">.</span><span class="n">soft_prompt</span><span class="p">],</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">120</span><span class="p">):</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()(</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+    <span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">grad</span> <span class="ow">is</span> <span class="kc">None</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+
+<span class="n">predictions</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">predictions</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span> <span class="o">==</span> <span class="n">y</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="n">base_before</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">model</span><span class="o">.</span><span class="n">soft_prompt</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">model</span><span class="o">.</span><span class="n">soft_prompt</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">({</span><span class="s2">&quot;prompt&quot;</span><span class="p">:</span> <span class="n">model</span><span class="o">.</span><span class="n">soft_prompt</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="s2">&quot;loss&quot;</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">loss</span><span class="o">.</span><span class="n">detach</span><span class="p">()),</span> <span class="s2">&quot;pred&quot;</span><span class="p">:</span> <span class="n">predictions</span><span class="o">.</span><span class="n">tolist</span><span class="p">()})</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="done-bar"><button class="mark-done-btn" data-key="hw49" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="hw48.html"><div class="dir">← 上一篇</div><div class="name">💹 金融 Prompt 实战：分类、抽取与匹配综合训练</div></a><a class="disabled next"></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、选择题（30 题）</a><a class="lv3" href="#sec-2">1. 将 NLP 演进概括为“传统机器学习 → 深度学习 → 预训练后微调 → 预训练后提示”的正确理解是？</a><a class="lv3" href="#sec-3">2. 预训练目标与下游分类目标之间的“任务形式差距”是指？</a><a class="lv3" href="#sec-4">3. 下列哪项最准确地区分 Prompt Engineering 与 Prompt Tuning？</a><a class="lv3" href="#sec-5">4. GPT 类模型的 Few-Shot In-Context Learning（ICL）在一次普通推理中会？</a><a class="lv3" href="#sec-6">5. Instruction Tuning 最典型的训练行为是？</a><a class="lv3" href="#sec-7">6. Chain-of-Thought（CoT）最适合被描述为？</a><a class="lv3" href="#sec-8">7. PET（Pattern-Exploiting Training）的核心任务改写是？</a><a class="lv3" href="#sec-9">8. 在情感任务模板“这家餐厅的味道很棒。总体来说，它很 [MASK]。”中，Pattern 是？</a><a class="lv3" href="#sec-10">9. Verbalizer 的作用是？</a><a class="lv3" href="#sec-11">10. 一个单 [MASK] 模板把类别映射为“非常满意”时，首先要检查？</a><a class="lv3" href="#sec-12">11. 两个类别使用同一个标签词，最直接的问题是？</a><a class="lv3" href="#sec-13">12. 下列哪项更可能造成 Verbalizer 的先验偏差？</a><a class="lv3" href="#sec-14">13. Hard Prompt 的典型特征是？</a><a class="lv3" href="#sec-15">14. Soft Prompt 的典型特征是？</a><a class="lv3" href="#sec-16">15. 基座模型冻结后，Soft Prompt 还能学习的原因是？</a><a class="lv3" href="#sec-17">16. 朴素 Prompt Tuning 使用 (m) 个虚拟 token、隐藏维度 (d)，仅提示表的参数量是？</a><a class="lv3" href="#sec-18">17. 增大 Soft Prompt 长度最准确的判断是？</a><a class="lv3" href="#sec-19">18. 关于 Soft Prompt 初始化，哪项最合理？</a><a class="lv3" href="#sec-20">19. Prompt Tuning 原始论文中“规模的力量”主要说明？</a><a class="lv3" href="#sec-21">20. P-tuning v1 相比直接学习一张 Soft Prompt 表，常见的额外结构是？</a><a class="lv3" href="#sec-22">21. P-tuning v2 的“Deep Prompt Tuning”主要变化是？</a><a class="lv3" href="#sec-23">22. PPT（Pre-trained Prompt Tuning）试图缓解什么问题？</a><a class="lv3" href="#sec-24">23. 对 MLM 分类，设 [MASK] 位置词表 logits 为 (z)，正负标签词 token 分别为 (v_+,v_-)。类别概率更合理的计算是？</a><a class="lv3" href="#sec-25">24. 多标签词 Verbalizer 中，用某类所有标签词 logits 的简单最大值作为类得分有什么风险？</a><a class="lv3" href="#sec-26">25. 只训练 Soft Prompt 时，优化器最应该接收？</a><a class="lv3" href="#sec-27">26. 在输入前拼接 (m) 个虚拟 token 后，原序列第 (i) 个 token 的新位置通常是？</a><a class="lv3" href="#sec-28">27. 保存 Prompt-Tuning 检查点时，只保存 prompt 权重还不够，至少还应记录？</a><a class="lv3" href="#sec-29">28. 公平比较 Full Fine-Tuning、Prompt Tuning 与 P-tuning v2，应至少统一？</a><a class="lv3" href="#sec-30">29. Soft Prompt 在三个随机种子上结果差异很大，正确处理是？</a><a class="lv3" href="#sec-31">30. 下列哪个场景更支持优先尝试 Prompt Tuning？</a><a class="lv2" href="#sec-32">二、简答题（15 题）</a><a class="lv3" href="#sec-33">31. 用“输入、训练、保存、推理”四列区分 Prompt Engineering、ICL、Instruction Tuning 与 Prompt Tuning。</a><a class="lv3" href="#sec-34">32. 把二分类情感任务改写为一个 PVP，并指出潜在缺陷。</a><a class="lv3" href="#sec-35">33. 为什么 PVP 的 Pattern 和 Verbalizer 要分别做消融？</a><a class="lv3" href="#sec-36">34. 如何处理类别名称需要多个 token 的情况？</a><a class="lv3" href="#sec-37">35. 设计一个 Verbalizer 质量诊断流程。</a><a class="lv3" href="#sec-38">36. 解释“基座冻结但梯度仍穿过基座”的计算过程。</a><a class="lv3" href="#sec-39">37. 如何审计一个“只训练 Soft Prompt”的实现？</a><a class="lv3" href="#sec-40">38. Prompt 长度如何影响训练与部署？</a><a class="lv3" href="#sec-41">39. 比较随机初始化、词表采样初始化和文本初始化。</a><a class="lv3" href="#sec-42">40. 比较 Prompt Tuning、P-tuning v1 与 P-tuning v2。</a><a class="lv3" href="#sec-43">41. 如何验证“Prompt Tuning 可媲美全量微调”的主张？</a><a class="lv3" href="#sec-44">42. 小样本 Prompt Tuning 出现训练集高分、验证集低分，如何诊断？</a><a class="lv3" href="#sec-45">43. 设计 PET 的半监督训练流程，并指出伪标签风险。</a><a class="lv3" href="#sec-46">44. Prompt 检查点要怎样设计才能复现和多任务部署？</a><a class="lv3" href="#sec-47">45. 给出 Prompt-Tuning 实验上线检查清单。</a><a class="lv2" href="#sec-48">三、代码题（10 题）</a><a class="lv3" href="#sec-49">46. 构造并校验离散 PVP</a><a class="lv3" href="#sec-50">47. 从 [MASK] 位置提取 Verbalizer 类别分数</a><a class="lv3" href="#sec-51">48. 聚合多标签词 Verbalizer 并计算分类损失</a><a class="lv3" href="#sec-52">49. 实现输入级 Soft Prompt 拼接</a><a class="lv3" href="#sec-53">50. 审计冻结范围、优化器与梯度流</a><a class="lv3" href="#sec-54">51. 统计可训练参数和 FP32 检查点体积</a><a class="lv3" href="#sec-55">52. 为 token-level 标签和因果 LM 标签补齐虚拟位置</a><a class="lv3" href="#sec-56">53. 只保存并恢复 Prompt 权重与兼容性配置</a><a class="lv3" href="#sec-57">54. 构造带 Soft Prompt 的变长批次</a><a class="lv3" href="#sec-58">55. 完成一个最小 Soft Prompt 训练闭环</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
