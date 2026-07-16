@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>卷积神经网络综合训练 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../index.html#lessons">课程讲义</a>
+    <a href="../index.html#homework" class="active">课后练习</a>
+    <a href="../index.html#projects">实战项目</a>
+    <a href="../index.html#roadmap">学习路线</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">11</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">12</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">19</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">20</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">21</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">22</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">24</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">25</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">27</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">28</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">29</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">30</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">31</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">32</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">33</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">34</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">35</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">39</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">40</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">42</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">49</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">50</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">21</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">22</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">24</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">25</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">27</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">28</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">29</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">30</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">31</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">32</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw active" data-page-key="hw33" href="../homework/hw33.html"><span class="no">33</span><span>卷积神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw34" href="../homework/hw34.html"><span class="no">34</span><span>循环神经网络综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / 课后练习 / 练习 33</div>
+<h1>🖼️ 卷积神经网络综合训练</h1>
+<div class="chips"><span class="chip amber">🏷️ 选择 + 简答 + 代码</span><span class="chip amber">🏷️ 55 题</span><a class="chip" href="../lessons/lesson33.html">📖 相关讲义：卷积神经网络：图像表示、卷积与分类实战</a></div>
+</div>
+<p>55 道练习，覆盖图像张量与通道布局、卷积计算与输出尺寸、感受野、多通道与参数量、池化与上采样、<code>Conv2d</code> API 和 CIFAR-10 分类训练闭环。</p>
+<h2 id="sec-1">一、选择题（30 题）</h2>
+<div class="q-card"><h3 id="sec-2">1. 一张 RGB 彩色图在 NumPy/Matplotlib 中最常见的形状是什么？</h3>
+<p>A. <code>[3, H, W]</code><br />
+B. <code>[H, W]</code><br />
+C. <code>[H, W, 3]</code><br />
+D. <code>[3, W, H]</code>  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 图像库常用 HWC 布局，最后一维依次是红、绿、蓝通道；PyTorch 卷积层才使用 CHW/NCHW。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-3">2. <code>uint8</code> 图像进入训练管线时，常见的两步预处理顺序是什么？</h3>
+<p>A. 先把像素缩放到 $[0,1]$，再按通道执行 $(x-\mu)/\sigma$ 标准化<br />
+B. 先做 PCA 降维，再转成整数<br />
+C. 先标准化，再取绝对值保证非负<br />
+D. 先转成 one-hot，再展平  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 先除以 255 缩放，再用训练集统计的均值方差做通道标准化；标准化后的数值可以小于 0 或大于 1。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-4">3. 把 HWC 图像张量转成 CHW，应使用哪个操作？</h3>
+<p>A. <code>reshape(3, H, W)</code><br />
+B. <code>flatten()</code><br />
+C. <code>transpose(0, 1)</code><br />
+D. <code>permute(2, 0, 1)</code>  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> <code>permute</code> 重排维度语义；<code>reshape</code> 只按内存顺序重新划分，会把像素错位到错误通道。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-5">4. NCHW 布局中的 N 表示什么？</h3>
+<p>A. 通道数<br />
+B. 批量大小<br />
+C. 图像高度<br />
+D. 卷积核个数  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> N 是 batch 维；C、H、W 分别是通道、高、宽。卷积层输入通常是 <code>[N, C, H, W]</code> 浮点张量。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-6">5. OpenCV 的 <code>cv2.imread</code> 默认按什么通道顺序读取彩色图？</h3>
+<p>A. BGR<br />
+B. RGB<br />
+C. RGBA<br />
+D. 灰度  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> OpenCV 默认 BGR，与 Matplotlib/PIL 的 RGB 习惯不同，显示或训练前应 <code>cv2.cvtColor(img, cv2.COLOR_BGR2RGB)</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-7">6. <code>image_bgr[:, :, ::-1]</code> 之后直接 <code>torch.from_numpy</code> 可能失败，原因是什么？</h3>
+<p>A. 数据类型变成了 <code>float64</code><br />
+B. 反向切片改变了图像高度<br />
+C. NumPy 不支持三维数组<br />
+D. 反向切片产生负 stride 视图，需要 <code>.copy()</code> 得到连续内存  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> 负 stride 的 NumPy 视图不被 <code>from_numpy</code> 接受；<code>.copy()</code> 或 <code>np.ascontiguousarray</code> 可创建兼容存储。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-8">7. 通道标准化使用的均值和标准差应当来自哪里？</h3>
+<p>A. 训练集、验证集和测试集的全体像素<br />
+B. 只来自训练集<br />
+C. 只来自测试集<br />
+D. 每个 batch 现场重新统计  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 用全数据统计会把测试信息泄漏进训练过程；验证与测试应原样复用训练集统计量。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-9">8. 卷积层“权重共享”指的是什么？</h3>
+<p>A. 不同网络之间共享下载的预训练权重<br />
+B. 卷积核与全连接层共用一份参数<br />
+C. 同一卷积核在输入的所有空间位置复用同一组参数<br />
+D. 每个像素各自持有一份卷积核  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 权重共享让参数量与图像尺寸解耦，也是卷积平移等变性的来源之一。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-10">9. 关于卷积与“平移”，下列说法正确的是？</h3>
+<p>A. 卷积本身是平移等变的；近似平移不变性主要靠池化、全局聚合和数据增强获得<br />
+B. 卷积天然是严格平移不变的<br />
+C. 输入平移后特征图完全不变<br />
+D. 只有全连接层才有平移等变性  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 输入平移时特征图相应平移（等变）；“平移不变”是经过聚合后的近似性质，不是卷积自身的严格属性。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-11">10. PyTorch <code>Conv2d</code> 实际计算的运算是什么？</h3>
+<p>A. 数学卷积（先翻转核再滑动）<br />
+B. 外积<br />
+C. 傅里叶变换<br />
+D. 互相关（不翻转核的局部加权求和）  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> 深度学习框架不翻转核；因为核参数由数据学习，是否预翻转不影响表达能力，习惯上仍称“卷积”。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-12">11. 输入边长 32，<code>kernel_size=3, padding=1, stride=1, dilation=1</code>，输出边长是多少？</h3>
+<p>A. 30<br />
+B. 32<br />
+C. 31<br />
+D. 16  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 有效核 $K_{eff}=D(K-1)+1=3$，输出为 $\lfloor(32+2\times1-3)/1\rfloor+1=32$。这正是 $P=(K-1)/2$ 的 <code>same</code> 卷积，高宽保持不变。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-13">12. 输入边长 7，<code>kernel_size=3, padding=0, stride=2</code>，输出边长是多少？</h3>
+<p>A. 5<br />
+B. 4<br />
+C. 3<br />
+D. 2  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> $\lfloor(7+0-3)/2\rfloor+1=\lfloor 4/2\rfloor+1=3$。步幅为 2 时别忘了向下取整。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-14">13. stride=1、dilation=1 时，奇数核保持输入输出同尺寸的 padding 是多少？</h3>
+<p>A. $(K-1)/2$<br />
+B. $K$<br />
+C. $K/2$<br />
+D. $K+1$  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 例如 $3\times3$ 核取 $P=1$、$5\times5$ 核取 $P=2$，即所谓 <code>same</code> 卷积。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-15">14. dilation=2 的 $3\times3$ 卷积核，有效覆盖范围是多大？</h3>
+<p>A. $3\times3$<br />
+B. $4\times4$<br />
+C. $7\times7$<br />
+D. $5\times5$  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> 有效核大小 $K_{eff}=D(K-1)+1=2\times2+1=5$；空洞卷积在不增加核参数的情况下扩大视野。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-16">15. 关于偶数尺寸卷积核（如 $2\times2$、$4\times4$），正确的说法是？</h3>
+<p>A. 框架禁止使用偶数核<br />
+B. 偶数核参数量一定更大<br />
+C. 偶数核完全可以计算和使用，只是没有单一中心、对称 <code>same</code> 对齐不方便<br />
+D. 偶数核只能用于灰度图  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 正确结论是“奇数核更方便”，而不是“偶数核不能用”；部分模型确实使用过 $2\times2$、$4\times4$ 卷积。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-17">16. 两层 $3\times3$、stride 1 的卷积堆叠后，理论感受野是多大？</h3>
+<p>A. $3\times3$<br />
+B. $5\times5$<br />
+C. $9\times9$<br />
+D. $6\times6$  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 递推 $r_l=r_{l-1}+(K-1)j_{l-1}$：$1\to3\to5$；第三层继续扩大到 $7\times7$。小核堆叠既扩大感受野又增加非线性。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-18">17. 输入有 $C_{in}$ 个通道时，一个标准卷积核（groups=1）应有多少个通道？</h3>
+<p>A. 1 个<br />
+B. 由输出通道数决定<br />
+C. 任意个<br />
+D. $C_{in}$ 个，各通道结果相加得到一个输出通道  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> 标准卷积的每个输出通道都会融合全部输入通道：先逐通道做二维互相关，再沿输入通道求和并加偏置。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-19">18. <code>nn.Conv2d(3, 16, kernel_size=3)</code> 的 <code>weight</code> 形状是什么？</h3>
+<p>A. <code>[16, 3, 3, 3]</code><br />
+B. <code>[3, 16, 3, 3]</code><br />
+C. <code>[16, 16, 3, 3]</code><br />
+D. <code>[3, 3, 16]</code>  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 卷积权重形状为 <code>[C_out, C_in/groups, K_h, K_w]</code>；<code>bias</code> 形状为 <code>[16]</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-20">19. <code>nn.Conv2d(3, 6, kernel_size=3)</code>（含偏置）的参数量是多少？</h3>
+<p>A. 54<br />
+B. 162<br />
+C. 168<br />
+D. 174  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> $C_{out}(C_{in}K_hK_w+1)=6\times(3\times3\times3+1)=6\times28=168$。参数量与输入高宽无关。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-21">20. 关于标准卷积层的偏置，正确的说法是？</h3>
+<p>A. 每个输入通道一个偏置<br />
+B. 每个输出通道一个偏置<br />
+C. 每个空间位置一个偏置<br />
+D. 整层只有一个偏置  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 偏置沿输出通道计数，<code>bias</code> 形状为 <code>[C_out]</code>；“每个输入通道一个偏置”是常见误解。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-22">21. <code>1×1</code> 卷积（stride 1、padding 0）的主要作用是什么？</h3>
+<p>A. 在不改变空间尺寸的情况下对通道做线性组合，实现升降维与通道融合<br />
+B. 扩大感受野<br />
+C. 代替池化做空间下采样<br />
+D. 检测边缘方向  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 它逐位置混合通道信息，是瓶颈结构和深度可分离卷积中 pointwise 卷积的核心；不会扩大空间感受野。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-23">22. 深度可分离卷积由哪两步组成？</h3>
+<p>A. 两个全连接层<br />
+B. 最大池化 + 平均池化<br />
+C. 转置卷积 + 双线性插值<br />
+D. depthwise 的 <code>K×K</code> 逐通道卷积 + pointwise 的 <code>1×1</code> 卷积  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> depthwise（<code>groups=C_in</code>）逐通道提取空间特征但不融合通道，pointwise 再做通道融合，总计算量显著低于标准卷积。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-24">23. 关于转置卷积（<code>ConvTranspose2d</code>），正确的说法是？</h3>
+<p>A. 它是普通卷积的严格逆运算，能恢复丢失的细节<br />
+B. 它是可学习的上采样算子；核与步幅搭配不当可能产生棋盘格伪影<br />
+C. 它没有可训练参数<br />
+D. 它只能把尺寸缩小  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 转置卷积扩大空间尺寸且核可学习，但不能“逆转”卷积丢失的信息；<code>kernel_size=4, stride=2, padding=1</code> 是常见的减伪影组合。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-25">24. 池化层的输出通道数与输入通道数是什么关系？</h3>
+<p>A. 输出通道减半<br />
+B. 输出通道由池化窗口决定<br />
+C. $C_{out}=C_{in}$，池化对每个通道独立操作<br />
+D. 所有通道被合并成 1 个  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 池化只在空间窗口内聚合，不像标准卷积那样沿通道求和；空间尺寸仍按窗口、步幅、填充计算。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-26">25. 对形状 <code>[N, C, H, W]</code> 的特征图做全局平均池化（GAP），输出形状是什么？</h3>
+<p>A. <code>[N, C, 1, 1]</code><br />
+B. <code>[N, 1, H, W]</code><br />
+C. <code>[1, C, H, W]</code><br />
+D. <code>[N, C]</code> 且无法再变形  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> GAP 把每个通道整张特征图压缩为一个均值，大幅减少分类头参数，也让网络更容易接收不同输入尺寸。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-27">26. 卷积特征送入全连接分类头前，应如何展平？</h3>
+<p>A. <code>x.flatten()</code> 直接展平全部维度<br />
+B. <code>x.reshape(-1)</code><br />
+C. <code>x.squeeze()</code><br />
+D. <code>torch.flatten(x, start_dim=1)</code>，保留 batch 维  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> 从维度 1 开始展平得到 <code>[N, C×H×W]</code>；<code>x.flatten()</code> 会把多个样本压成一个长向量，破坏批量结构。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-28">27. 多分类模型输出交给 <code>CrossEntropyLoss</code> 时，正确的做法是？</h3>
+<p>A. 先做 Softmax 再传入<br />
+B. 直接传入 raw logits，损失内部包含稳定的 LogSoftmax<br />
+C. 先做 ReLU 保证非负<br />
+D. 先取 argmax  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 在模型末尾加 Softmax 再交给交叉熵会重复归一化并降低数值稳定性；标签用 <code>long</code> 型类别下标。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-29">28. 验证/测试阶段的规范写法是什么？</h3>
+<p>A. 只调用 <code>model.eval()</code> 就够了<br />
+B. 只用 <code>torch.inference_mode()</code> 就够了<br />
+C. <code>model.eval()</code> 切换层行为，<code>torch.inference_mode()</code> 关闭梯度记录，两者配合使用<br />
+D. 继续保持 <code>model.train()</code> 以获得更真实的结果  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> <code>eval()</code> 影响 Dropout/BatchNorm 的行为但不关计算图；<code>inference_mode()</code> 关闭梯度但不切换层模式，职责不同、缺一不可。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-30">29. 统计一个 epoch 的平均损失，规范做法是什么？</h3>
+<p>A. 直接平均每个 batch 的 <code>loss.item()</code><br />
+B. 只看最后一个 batch 的损失<br />
+C. 取所有 batch 损失的最大值<br />
+D. 按每个 batch 的样本数加权平均  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> 损失函数返回 batch 内平均值，而最后一个 batch 可能更小，简单平均会引入偏差；应累计 <code>loss.item() * batch_size</code> 再除以总样本数。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-31">30. 关于 CIFAR-10 数据集，正确的描述是？</h3>
+<p>A. 50,000 张训练图、10,000 张测试图，$32\times32$ RGB，10 个互斥类别<br />
+B. 10,000 张训练图、50,000 张测试图<br />
+C. 全部是 $224\times224$ 灰度图<br />
+D. 共 100 个类别  </p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 每类共 6,000 张；<code>torchvision</code> 的 <code>.data</code> 是 HWC 的 NumPy 数组，经 <code>ToTensor</code> 后变为 CHW 浮点张量。</p></div></div>
+
+
+</div><h2 id="sec-32">二、简答题（15 题）</h2>
+<div class="q-card"><h3 id="sec-33">31. 分别说明 HWC、CHW 和 NCHW 的含义，以及为什么送入 <code>Conv2d</code> 前需要转换布局。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>HWC 是“高、宽、通道”，是 NumPy/Matplotlib 等图像库的常见布局；CHW 把通道放到最前，是单张 PyTorch 图像的布局；NCHW 在最前面再加批量维，是卷积层的标准输入。<code>Conv2d</code> 按 NCHW 语义解释各维度，若直接把 HWC 数组送入，通道会被当成高度，计算完全错位，因此要用 <code>permute(2, 0, 1)</code> 调整并用 <code>unsqueeze(0)</code> 补批量维。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-34">32. 与把整张图展平后接全连接层相比，卷积层为什么更适合图像？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>两点核心优势：一是参数效率——卷积核只连接局部窗口且在所有位置共享权重，参数量与图像尺寸解耦，而全连接层参数随分辨率平方级增长；二是结构保留——卷积在二维网格上滑动，显式保留“哪些像素彼此相邻”的邻域关系，展平操作则完全破坏这种空间结构。此外局部连接与层次组合让浅层学边缘纹理、深层组合出部件和语义。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-35">33. 深度学习框架中的“卷积”与数学卷积有什么区别？为什么这种区别不影响模型能力？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>数学卷积要先把核翻转 180° 再滑动求和，而 <code>Conv2d</code> 直接用原核做局部加权求和，严格来说是互相关。因为卷积核是可学习参数、初始值随机，网络完全可以学到“翻转版”的核，预先翻转与否不改变可表达的函数集合，所以习惯上仍称卷积。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-36">34. 分别说明 padding、stride 和 dilation 的作用及其代价。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>padding 在边界外补值（常为 0），可控制输出尺寸并让边缘像素获得更多计算机会；代价是引入人工边界值。stride 决定核每次滑动的像素数，增大它可下采样、降低计算量，但容易丢失细节和产生混叠。dilation 在核元素间插入间隔，有效核大小变为 $D(K-1)+1$，不增加参数就扩大视野，常用于分割；过大可能产生栅格效应。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-37">35. 什么是感受野？推导两层 $3\times3$、stride 1 卷积的感受野为什么是 $5\times5$。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>感受野是某层一个输出单元在原始输入上能影响到它的区域大小。用递推 $r_l=r_{l-1}+(K_l^{eff}-1)j_{l-1}$、$j_l=j_{l-1}S_l$：初始 $r_0=1,j_0=1$；第一层后 $r_1=1+(3-1)\times1=3$，$j_1=1$；第二层后 $r_2=3+(3-1)\times1=5$。所以两层 $3\times3$ 覆盖 $5\times5$，等效大核视野但参数更少、非线性更多。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-38">36. 多通道输入时，一个输出通道是怎样计算出来的？该层共有多少个偏置？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>一个卷积核带 $C_{in}$ 个核面，每个核面与对应输入通道做二维互相关，把 $C_{in}$ 个结果逐位置相加，再加上这个核的偏置，得到一个输出通道。要产生 $C_{out}$ 个输出通道就需要 $C_{out}$ 组这样的核。偏置按输出通道计数，共 $C_{out}$ 个，而不是每个输入通道一个。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-39">37. <code>1×1</code> 卷积有哪些典型用途？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>它在每个空间位置对通道向量做线性组合：可以升维或降维通道（瓶颈结构）、融合通道信息、在深度可分离卷积中充当 pointwise 卷积负责通道混合，配合激活函数还能增加通道方向的非线性。stride 1、padding 0 时不改变空间尺寸，也不扩大空间感受野。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-40">38. 比较最大池化、平均池化和全局平均池化的行为与适用场景。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>最大池化保留窗口内最强响应，突出显著特征，常用于强调“有没有出现某模式”；平均池化取窗口均值，摘要更平滑；两者都无参数、逐通道独立、用于空间下采样。全局平均池化把每个通道整张图压成一个值（<code>[N,C,H,W]→[N,C,1,1]</code>），常接在骨架末尾替代大规模全连接，可大幅减参并适应不同输入尺寸，代价是丢失精确位置信息。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-41">39. 双线性插值上采样与转置卷积有什么区别？各自的注意点是什么？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>双线性插值（<code>F.interpolate(mode="bilinear")</code>）是固定规则的无参数放大，结果平滑、行为可预期，<code>align_corners=False</code> 是一般图像缩放的常用选择。转置卷积是可学习的上采样，能让网络自己决定如何填充细节，但核与步幅搭配不当会产生棋盘格伪影。两者都不能“恢复”原图中已经丢失的真实细节。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-42">40. 为什么数据增强只应作用于训练集？标准化统计量为什么只能来自训练集？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>验证和测试的目的是估计模型在真实分布上的表现，必须使用确定性变换，否则评估结果带随机性且不可比。随机裁剪、翻转等增强只在训练时引入多样性来提升泛化。标准化的均值方差若用全部数据（含测试集）统计，等于把测试分布信息泄漏进训练过程，评估会系统性偏乐观；正确做法是训练集估计、三个集合共用。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-43">41. 为什么要从训练集划分验证集？测试集应当怎样使用？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>调结构、学习率、轮数、挑选最佳 checkpoint 都是“选择”行为，若直接用测试集做这些选择，测试集就变成了训练信号的一部分，最终报告的指标会虚高。规范流程是：从训练集划出验证集用于全部调参与模型选择，测试集只在最终模型完全确定后评估一次，作为对泛化能力的无偏估计。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-44">42. <code>model.train()</code>/<code>model.eval()</code> 与 <code>torch.no_grad()</code>/<code>torch.inference_mode()</code> 各自负责什么？验证时应怎样组合？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>前一组切换层的行为模式：Dropout 在 train 下随机屏蔽、eval 下关闭；BatchNorm 在 train 下用 batch 统计并更新滑动统计、eval 下用固定的滑动统计。后一组控制是否记录计算图：<code>no_grad</code>/<code>inference_mode</code> 关闭梯度追踪，省显存提速，<code>inference_mode</code> 更彻底。两组互不替代，验证时应同时使用 <code>model.eval()</code> 和 <code>torch.inference_mode()</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-45">43. 训练损失持续下降但验证损失转头上升，说明什么？给出至少四种应对手段。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>这是典型的过拟合：模型开始记忆训练样本的细节而非学习可泛化的模式。可以：加强数据增强（随机裁剪、翻转、颜色扰动）；加入权重衰减或 Dropout；使用早停，回退到验证最优的 checkpoint；减小模型容量或增加训练数据；在卷积后加入 BatchNorm 等正则化手段。若训练验证损失都高则是欠拟合，方向相反。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-46">44. 修改卷积层通道数或池化参数后，为什么不能继续硬编码展平维数（如 576）？有哪些稳妥做法？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>展平维数等于最后一个特征图的 $C\times H\times W$，由全部卷积/池化参数共同决定；任何一处改动（通道、padding、stride、核大小）都会改变它，硬编码的 <code>Linear(576, ...)</code> 会在前向时形状不匹配报错，或更糟地静默错位。稳妥做法：开发时用一次 dummy forward 打印展平前形状再填数；或在分类头前接 <code>AdaptiveAvgPool2d</code> 把空间尺寸固定，使全连接输入只依赖通道数。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-47">45. CAM 的计算原理是什么？使用它时要注意哪些局限？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>对“末层卷积 → 全局平均池化 → 线性分类器”结构，类别 $c$ 的 CAM 是 $M_c(i,j)=\sum_k w_k^{(c)}A_k(i,j)$：用分类器中类别 $c$ 对各通道的权重加权求和末层特征图，再上采样叠加到原图，显示支持该类别判断的空间区域。局限：它按类别生成，只是空间证据可视化，不是检测框，也不证明模型真正“理解”了物体；结构不满足 GAP+线性头时需改用 Grad-CAM 等梯度加权方法。</p></div></div>
+
+
+</div><h2 id="sec-48">三、代码题（10 题）</h2>
+<div class="q-card"><h3 id="sec-49">46. 把 HWC 的 <code>uint8</code> 图像转成可送入卷积层的 NCHW 浮点张量</h3>
+<p>生成一张随机 <code>[32, 32, 3]</code> 的 <code>uint8</code> 图像，转换为 <code>[1, 3, 32, 32]</code>、取值在 $[0,1]$ 的 <code>float32</code> 张量，并验证形状与数值范围。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="n">image_hwc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+
+<span class="n">tensor_chw</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">image_hwc</span><span class="p">)</span><span class="o">.</span><span class="n">permute</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span> <span class="o">/</span> <span class="mf">255.0</span>
+<span class="n">batch_nchw</span> <span class="o">=</span> <span class="n">tensor_chw</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">batch_nchw</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">batch_nchw</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">batch_nchw</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+<span class="k">assert</span> <span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="n">batch_nchw</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="ow">and</span> <span class="n">batch_nchw</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mf">1.0</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-50">47. 实现通用卷积输出尺寸函数</h3>
+<p>实现含 dilation 的输出尺寸计算函数，并验证：<code>(32, k=3, p=1)</code> 得 32；<code>(7, k=3, s=2)</code> 得 3；<code>(9, k=3, d=2)</code> 得 5。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">math</span><span class="w"> </span><span class="kn">import</span> <span class="n">floor</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">conv_output_size</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="n">effective_kernel</span> <span class="o">=</span> <span class="n">dilation</span> <span class="o">*</span> <span class="p">(</span><span class="n">kernel</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">floor</span><span class="p">((</span><span class="n">length</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">padding</span> <span class="o">-</span> <span class="n">effective_kernel</span><span class="p">)</span> <span class="o">/</span> <span class="n">stride</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+
+<span class="k">assert</span> <span class="n">conv_output_size</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">32</span>
+<span class="k">assert</span> <span class="n">conv_output_size</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+<span class="k">assert</span> <span class="n">conv_output_size</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="n">kernel</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">dilation</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;all passed&quot;</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-51">48. 手写二维互相关并与 <code>F.conv2d</code> 对比</h3>
+<p>实现无 padding、stride 1 的二维互相关，用随机 <code>5×5</code> 输入和 <code>3×3</code> 核验证结果与 <code>torch.nn.functional.conv2d</code> 一致。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">cross_correlation_2d</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">kernel</span><span class="p">):</span>
+    <span class="n">out_h</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">kernel</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">out_w</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">kernel</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">out_h</span><span class="p">,</span> <span class="n">out_w</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">out_h</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">out_w</span><span class="p">):</span>
+            <span class="n">window</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span>
+                <span class="n">row</span> <span class="p">:</span> <span class="n">row</span> <span class="o">+</span> <span class="n">kernel</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="n">col</span> <span class="p">:</span> <span class="n">col</span> <span class="o">+</span> <span class="n">kernel</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="p">]</span>
+            <span class="n">output</span><span class="p">[</span><span class="n">row</span><span class="p">,</span> <span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">window</span> <span class="o">*</span> <span class="n">kernel</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">output</span>
+
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">image</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">kernel</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="n">manual</span> <span class="o">=</span> <span class="n">cross_correlation_2d</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">kernel</span><span class="p">)</span>
+<span class="n">reference</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">conv2d</span><span class="p">(</span>
+    <span class="n">image</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+    <span class="n">kernel</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+<span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">manual</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">manual</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-52">49. 实现感受野递推函数</h3>
+<p>按 <code>(kernel, stride, dilation)</code> 列表递推理论感受野，验证两层 <code>3×3</code> stride 1 为 5、两层 <code>3×3</code> stride 2 为 7。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">receptive_field</span><span class="p">(</span><span class="n">layers</span><span class="p">):</span>
+    <span class="n">jump</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">field</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">for</span> <span class="n">kernel</span><span class="p">,</span> <span class="n">stride</span><span class="p">,</span> <span class="n">dilation</span> <span class="ow">in</span> <span class="n">layers</span><span class="p">:</span>
+        <span class="n">effective</span> <span class="o">=</span> <span class="n">dilation</span> <span class="o">*</span> <span class="p">(</span><span class="n">kernel</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">field</span> <span class="o">+=</span> <span class="p">(</span><span class="n">effective</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">jump</span>
+        <span class="n">jump</span> <span class="o">*=</span> <span class="n">stride</span>
+    <span class="k">return</span> <span class="n">field</span><span class="p">,</span> <span class="n">jump</span>
+
+
+<span class="k">assert</span> <span class="n">receptive_field</span><span class="p">([(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span> <span class="o">==</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">receptive_field</span><span class="p">([(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span> <span class="o">==</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">receptive_field</span><span class="p">([(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)])</span> <span class="o">==</span> <span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;all passed&quot;</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-53">50. 验证 <code>Conv2d</code> 的输出形状与权重形状</h3>
+<p>构建 <code>Conv2d(3, 16, kernel_size=3, stride=2, padding=1)</code>，用 <code>[8, 3, 32, 32]</code> 输入验证输出形状，并核对 <code>weight</code>、<code>bias</code> 形状。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+
+<span class="n">conv</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">conv</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>     <span class="c1"># (32 + 2 - 3) // 2 + 1 = 16</span>
+<span class="k">assert</span> <span class="n">conv</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">conv</span><span class="o">.</span><span class="n">bias</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">16</span><span class="p">,)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">conv</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">conv</span><span class="o">.</span><span class="n">bias</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-54">51. 对比标准卷积、分组卷积与深度可分离卷积的参数量</h3>
+<p>统计三种 128→256 通道、<code>3×3</code> 卷积方案的参数量，并用公式核对标准卷积的结果。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">count_parameters</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+
+
+<span class="n">standard</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">grouped</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">separable</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">128</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">groups</span><span class="o">=</span><span class="mi">128</span><span class="p">),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">128</span><span class="p">,</span> <span class="mi">256</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="n">standard_count</span> <span class="o">=</span> <span class="n">count_parameters</span><span class="p">(</span><span class="n">standard</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">standard_count</span> <span class="o">==</span> <span class="mi">256</span> <span class="o">*</span> <span class="p">(</span><span class="mi">128</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">*</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># 295168</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;standard:&quot;</span><span class="p">,</span> <span class="n">standard_count</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;grouped:&quot;</span><span class="p">,</span> <span class="n">count_parameters</span><span class="p">(</span><span class="n">grouped</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;separable:&quot;</span><span class="p">,</span> <span class="n">count_parameters</span><span class="p">(</span><span class="n">separable</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-55">52. 验证池化的通道行为与自适应池化</h3>
+<p>对 <code>[2, 8, 6, 6]</code> 输入分别应用 <code>MaxPool2d(2)</code>、<code>AvgPool2d(2)</code> 和 <code>AdaptiveAvgPool2d(1)</code>，验证通道数不变及输出空间尺寸。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
+
+<span class="n">max_pool</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">avg_pool</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">AvgPool2d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">gap</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">AdaptiveAvgPool2d</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">max_pool</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">avg_pool</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">gap</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+<span class="n">manual_gap</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">keepdim</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">gap</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">manual_gap</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;all passed&quot;</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-56">53. 双线性插值与转置卷积上采样</h3>
+<p>把 <code>[4, 64, 16, 16]</code> 特征图分别用双线性插值放大到 <code>32×32</code>，和用 <code>ConvTranspose2d(64, 32, 4, stride=2, padding=1)</code> 上采样，验证输出形状。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="mi">16</span><span class="p">)</span>
+
+<span class="n">bilinear</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">interpolate</span><span class="p">(</span>
+    <span class="n">x</span><span class="p">,</span>
+    <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">),</span>
+    <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;bilinear&quot;</span><span class="p">,</span>
+    <span class="n">align_corners</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">transposed</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">ConvTranspose2d</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="k">assert</span> <span class="n">bilinear</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">64</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">transposed</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>   <span class="c1"># (16-1)*2 - 2 + 4 = 32</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">bilinear</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">transposed</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-57">54. 搭建自洽的 CIFAR-10 分类模型并核对参数量</h3>
+<p>按 <code>3→6→16</code>、两个 <code>3×3</code> 无填充卷积和两个 <code>2×2</code> 池化搭建分类模型，用 dummy forward 验证输出 <code>[2, 10]</code>，并核对总参数量为 81,302。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">ImageClassification</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">num_classes</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">features</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="n">kernel_size</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">classifier</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">16</span> <span class="o">*</span> <span class="mi">6</span> <span class="o">*</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">120</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">120</span><span class="p">,</span> <span class="mi">84</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">84</span><span class="p">,</span> <span class="n">num_classes</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">features</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">start_dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">classifier</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># raw logits</span>
+
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">ImageClassification</span><span class="p">()</span>
+<span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">))</span>
+<span class="n">total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">parameter</span><span class="o">.</span><span class="n">numel</span><span class="p">()</span> <span class="k">for</span> <span class="n">parameter</span> <span class="ow">in</span> <span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+
+<span class="k">assert</span> <span class="n">logits</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">total</span> <span class="o">==</span> <span class="mi">81302</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">logits</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">total</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-58">55. 用合成数据跑通训练与验证一步闭环</h3>
+<p>用随机图像和标签模拟一个 batch，完成“前向 → 交叉熵 → 清零 → 反向 → 更新”的训练步骤，再用 <code>eval()</code> + <code>inference_mode()</code> 做一次评估，验证第二次前向的损失可以计算且无梯度。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nn</span>
+
+<span class="n">torch</span><span class="o">.</span><span class="n">manual_seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Conv2d</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">16</span><span class="p">,</span> <span class="n">kernel_size</span><span class="o">=</span><span class="mi">3</span><span class="p">),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">MaxPool2d</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Flatten</span><span class="p">(</span><span class="n">start_dim</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">16</span> <span class="o">*</span> <span class="mi">6</span> <span class="o">*</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+<span class="p">)</span>
+<span class="n">criterion</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">AdamW</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
+
+<span class="n">images</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">32</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+<span class="n">targets</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="p">(</span><span class="mi">8</span><span class="p">,))</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">()</span>
+<span class="n">optimizer</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">(</span><span class="n">set_to_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+<span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
+<span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;train loss:&quot;</span><span class="p">,</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+
+<span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">inference_mode</span><span class="p">():</span>
+    <span class="n">logits</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+    <span class="n">eval_loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">logits</span><span class="p">,</span> <span class="n">targets</span><span class="p">)</span>
+    <span class="n">accuracy</span> <span class="o">=</span> <span class="p">(</span><span class="n">logits</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">targets</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+
+<span class="k">assert</span> <span class="ow">not</span> <span class="n">logits</span><span class="o">.</span><span class="n">requires_grad</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;eval loss:&quot;</span><span class="p">,</span> <span class="n">eval_loss</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="s2">&quot;acc:&quot;</span><span class="p">,</span> <span class="n">accuracy</span><span class="o">.</span><span class="n">item</span><span class="p">())</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="done-bar"><button class="mark-done-btn" data-key="hw33" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="hw30.html"><div class="dir">← 上一篇</div><div class="name">🧠 神经网络基础综合训练</div></a><a class="next" href="hw34.html"><div class="dir">下一篇 →</div><div class="name">🔄 循环神经网络综合训练</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、选择题（30 题）</a><a class="lv3" href="#sec-2">1. 一张 RGB 彩色图在 NumPy/Matplotlib 中最常见的形状是什么？</a><a class="lv3" href="#sec-3">2. uint8 图像进入训练管线时，常见的两步预处理顺序是什么？</a><a class="lv3" href="#sec-4">3. 把 HWC 图像张量转成 CHW，应使用哪个操作？</a><a class="lv3" href="#sec-5">4. NCHW 布局中的 N 表示什么？</a><a class="lv3" href="#sec-6">5. OpenCV 的 cv2.imread 默认按什么通道顺序读取彩色图？</a><a class="lv3" href="#sec-7">6. image_bgr[:, :, ::-1] 之后直接 torch.from_numpy 可能失败，原因是什么？</a><a class="lv3" href="#sec-8">7. 通道标准化使用的均值和标准差应当来自哪里？</a><a class="lv3" href="#sec-9">8. 卷积层“权重共享”指的是什么？</a><a class="lv3" href="#sec-10">9. 关于卷积与“平移”，下列说法正确的是？</a><a class="lv3" href="#sec-11">10. PyTorch Conv2d 实际计算的运算是什么？</a><a class="lv3" href="#sec-12">11. 输入边长 32，kernel_size=3, padding=1, stride=1, dilation=1，输出边长是多少？</a><a class="lv3" href="#sec-13">12. 输入边长 7，kernel_size=3, padding=0, stride=2，输出边长是多少？</a><a class="lv3" href="#sec-14">13. stride=1、dilation=1 时，奇数核保持输入输出同尺寸的 padding 是多少？</a><a class="lv3" href="#sec-15">14. dilation=2 的 $3\times3$ 卷积核，有效覆盖范围是多大？</a><a class="lv3" href="#sec-16">15. 关于偶数尺寸卷积核（如 $2\times2$、$4\times4$），正确的说法是？</a><a class="lv3" href="#sec-17">16. 两层 $3\times3$、stride 1 的卷积堆叠后，理论感受野是多大？</a><a class="lv3" href="#sec-18">17. 输入有 $C_{in}$ 个通道时，一个标准卷积核（groups=1）应有多少个通道？</a><a class="lv3" href="#sec-19">18. nn.Conv2d(3, 16, kernel_size=3) 的 weight 形状是什么？</a><a class="lv3" href="#sec-20">19. nn.Conv2d(3, 6, kernel_size=3)（含偏置）的参数量是多少？</a><a class="lv3" href="#sec-21">20. 关于标准卷积层的偏置，正确的说法是？</a><a class="lv3" href="#sec-22">21. 1×1 卷积（stride 1、padding 0）的主要作用是什么？</a><a class="lv3" href="#sec-23">22. 深度可分离卷积由哪两步组成？</a><a class="lv3" href="#sec-24">23. 关于转置卷积（ConvTranspose2d），正确的说法是？</a><a class="lv3" href="#sec-25">24. 池化层的输出通道数与输入通道数是什么关系？</a><a class="lv3" href="#sec-26">25. 对形状 [N, C, H, W] 的特征图做全局平均池化（GAP），输出形状是什么？</a><a class="lv3" href="#sec-27">26. 卷积特征送入全连接分类头前，应如何展平？</a><a class="lv3" href="#sec-28">27. 多分类模型输出交给 CrossEntropyLoss 时，正确的做法是？</a><a class="lv3" href="#sec-29">28. 验证/测试阶段的规范写法是什么？</a><a class="lv3" href="#sec-30">29. 统计一个 epoch 的平均损失，规范做法是什么？</a><a class="lv3" href="#sec-31">30. 关于 CIFAR-10 数据集，正确的描述是？</a><a class="lv2" href="#sec-32">二、简答题（15 题）</a><a class="lv3" href="#sec-33">31. 分别说明 HWC、CHW 和 NCHW 的含义，以及为什么送入 Conv2d 前需要转换布局。</a><a class="lv3" href="#sec-34">32. 与把整张图展平后接全连接层相比，卷积层为什么更适合图像？</a><a class="lv3" href="#sec-35">33. 深度学习框架中的“卷积”与数学卷积有什么区别？为什么这种区别不影响模型能力？</a><a class="lv3" href="#sec-36">34. 分别说明 padding、stride 和 dilation 的作用及其代价。</a><a class="lv3" href="#sec-37">35. 什么是感受野？推导两层 $3\times3$、stride 1 卷积的感受野为什么是 $5\times5$。</a><a class="lv3" href="#sec-38">36. 多通道输入时，一个输出通道是怎样计算出来的？该层共有多少个偏置？</a><a class="lv3" href="#sec-39">37. 1×1 卷积有哪些典型用途？</a><a class="lv3" href="#sec-40">38. 比较最大池化、平均池化和全局平均池化的行为与适用场景。</a><a class="lv3" href="#sec-41">39. 双线性插值上采样与转置卷积有什么区别？各自的注意点是什么？</a><a class="lv3" href="#sec-42">40. 为什么数据增强只应作用于训练集？标准化统计量为什么只能来自训练集？</a><a class="lv3" href="#sec-43">41. 为什么要从训练集划分验证集？测试集应当怎样使用？</a><a class="lv3" href="#sec-44">42. model.train()/model.eval() 与 torch.no_grad()/torch.inference_mode() 各自负责什么？验证时应怎样组合？</a><a class="lv3" href="#sec-45">43. 训练损失持续下降但验证损失转头上升，说明什么？给出至少四种应对手段。</a><a class="lv3" href="#sec-46">44. 修改卷积层通道数或池化参数后，为什么不能继续硬编码展平维数（如 576）？有哪些稳妥做法？</a><a class="lv3" href="#sec-47">45. CAM 的计算原理是什么？使用它时要注意哪些局限？</a><a class="lv2" href="#sec-48">三、代码题（10 题）</a><a class="lv3" href="#sec-49">46. 把 HWC 的 uint8 图像转成可送入卷积层的 NCHW 浮点张量</a><a class="lv3" href="#sec-50">47. 实现通用卷积输出尺寸函数</a><a class="lv3" href="#sec-51">48. 手写二维互相关并与 F.conv2d 对比</a><a class="lv3" href="#sec-52">49. 实现感受野递推函数</a><a class="lv3" href="#sec-53">50. 验证 Conv2d 的输出形状与权重形状</a><a class="lv3" href="#sec-54">51. 对比标准卷积、分组卷积与深度可分离卷积的参数量</a><a class="lv3" href="#sec-55">52. 验证池化的通道行为与自适应池化</a><a class="lv3" href="#sec-56">53. 双线性插值与转置卷积上采样</a><a class="lv3" href="#sec-57">54. 搭建自洽的 CIFAR-10 分类模型并核对参数量</a><a class="lv3" href="#sec-58">55. 用合成数据跑通训练与验证一步闭环</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 坚持每天进步一点点 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
