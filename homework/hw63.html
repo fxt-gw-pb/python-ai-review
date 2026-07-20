@@ -448,7 +448,7 @@ D. FC 只能跑在服务端、MCP 只能跑在浏览器</p>
     <span class="k">return</span> <span class="kc">None</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">answer</span><span class="p">(</span><span class="n">user_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">client</span><span class="p">:</span> <span class="n">MiniMCPClient</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">answer</span><span class="p">(</span><span class="n">user_text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">client</span><span class="p">):</span>
     <span class="n">decision</span> <span class="o">=</span> <span class="n">fake_llm_decide</span><span class="p">(</span><span class="n">user_text</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">decision</span><span class="p">:</span>
         <span class="k">return</span> <span class="s2">&quot;我可以直接回答，无需工具。&quot;</span>
@@ -456,7 +456,6 @@ D. FC 只能跑在服务端、MCP 只能跑在浏览器</p>
     <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;根据工具结果：</span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span>
 
 
-<span class="c1"># reuse MiniMCPClient/S from previous mental model</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">S</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tools</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tools</span> <span class="o">=</span> <span class="n">tools</span>
@@ -464,6 +463,7 @@ D. FC 只能跑在服务端、MCP 只能跑在浏览器</p>
         <span class="k">return</span> <span class="p">[{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">n</span><span class="p">,</span> <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="n">d</span><span class="p">,</span> <span class="s2">&quot;input_schema&quot;</span><span class="p">:</span> <span class="p">{}}</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tools</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tools</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="mi">1</span><span class="p">](</span><span class="o">**</span><span class="p">(</span><span class="n">args</span> <span class="ow">or</span> <span class="p">{}))</span>
+
 
 <span class="k">class</span><span class="w"> </span><span class="nc">MiniMCPClient</span><span class="p">:</span>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -473,6 +473,7 @@ D. FC 只能跑在服务端、MCP 只能跑在浏览器</p>
             <span class="bp">self</span><span class="o">.</span><span class="n">servers</span><span class="p">[</span><span class="n">item</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">server</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">call_tool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">arguments</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">servers</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">arguments</span><span class="p">)</span>
+
 
 <span class="n">client</span> <span class="o">=</span> <span class="n">MiniMCPClient</span><span class="p">()</span>
 <span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">S</span><span class="p">({</span><span class="s2">&quot;get_weather&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;查询天气&quot;</span><span class="p">,</span> <span class="k">lambda</span><span class="p">:</span> <span class="s2">&quot;北京多云&quot;</span><span class="p">)}))</span>
