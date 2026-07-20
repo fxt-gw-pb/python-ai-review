@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BM25：稀疏检索原理与实现综合训练 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../lessons.html">课程讲义</a>
+    <a href="../homework.html" class="active">课后练习</a>
+    <a href="../projects.html">实战项目</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">11</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">12</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson58" href="../lessons/lesson58.html"><span class="no">19</span><span>NumPy 统计计算与科学分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">20</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">21</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">22</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">23</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">24</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">25</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">26</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">27</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">28</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">29</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">30</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">31</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">32</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">33</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">34</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">35</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">36</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">37</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">38</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">39</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">40</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">41</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">42</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">43</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">44</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">45</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">46</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">47</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">48</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">49</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">50</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">51</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">📘 医学知识图谱</div><a class="item" data-page-key="lesson51" href="../lessons/lesson51.html"><span class="no">52</span><span>知识图谱基础与医学图谱架构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson52" href="../lessons/lesson52.html"><span class="no">53</span><span>数据标注、查询语言与 Neo4j 工具链</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson53" href="../lessons/lesson53.html"><span class="no">54</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson54" href="../lessons/lesson54.html"><span class="no">55</span><span>关系抽取：规则、Pipeline 与 CasRel</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson55" href="../lessons/lesson55.html"><span class="no">56</span><span>知识融合：实体统一、链接与消歧</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson56" href="../lessons/lesson56.html"><span class="no">57</span><span>Neo4j 医学图谱搭建与质量验证</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson57" href="../lessons/lesson57.html"><span class="no">58</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">21</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">22</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">24</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">25</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">27</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">28</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">29</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">30</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">31</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">32</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw33" href="../homework/hw33.html"><span class="no">33</span><span>卷积神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw34" href="../homework/hw34.html"><span class="no">34</span><span>循环神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw35" href="../homework/hw35.html"><span class="no">35</span><span>自然语言处理入门与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw36" href="../homework/hw36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw37" href="../homework/hw37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw38" href="../homework/hw38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw39" href="../homework/hw39.html"><span class="no">39</span><span>Transformer 架构与工程实现综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw40" href="../homework/hw40.html"><span class="no">40</span><span>Transformer 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw41" href="../homework/hw41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw42" href="../homework/hw42.html"><span class="no">42</span><span>FastText：文本分类与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw43" href="../homework/hw43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw44" href="../homework/hw44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw45" href="../homework/hw45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw46" href="../homework/hw46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw47" href="../homework/hw47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw48" href="../homework/hw48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw58" href="../homework/hw58.html"><span class="no">49</span><span>RAG 项目背景、原理与工程结构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw59" href="../homework/hw59.html"><span class="no">50</span><span>Milvus：向量数据库原理与操作综合训练</span><span class="done-flag">✅</span></a><a class="item hw active" data-page-key="hw60" href="../homework/hw60.html"><span class="no">51</span><span>BM25：稀疏检索原理与实现综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw49" href="../homework/hw49.html"><span class="no">52</span><span>Prompt-Tuning：PET、软提示与 P-tuning 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw50" href="../homework/hw50.html"><span class="no">53</span><span>PEFT：Prefix、Adapter、LoRA 与 QLoRA 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw51" href="../homework/hw51.html"><span class="no">54</span><span>知识图谱基础与医学图谱架构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw52" href="../homework/hw52.html"><span class="no">55</span><span>数据标注、查询语言与 Neo4j 工具链综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw53" href="../homework/hw53.html"><span class="no">56</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw54" href="../homework/hw54.html"><span class="no">57</span><span>关系抽取：规则、Pipeline 与 CasRel 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw55" href="../homework/hw55.html"><span class="no">58</span><span>知识融合：实体统一、链接与消歧综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw56" href="../homework/hw56.html"><span class="no">59</span><span>Neo4j 医学图谱搭建与质量验证综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw57" href="../homework/hw57.html"><span class="no">60</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project07" href="../projects/project07.html"><span class="no">07</span><span>医学知识图谱：从信息抽取到 KBQA</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="../homework.html">课后练习</a> / 练习 51</div>
+<h1>🔎 BM25：稀疏检索原理与实现综合训练</h1>
+<div class="chips"><span class="chip amber">🏷️ 选择 + 简答 + 代码</span><span class="chip amber">🏷️ 40 题</span><a class="chip" href="../projects/project02-07.html">📖 相关章节：BM25：稀疏检索原理与实现</a><a class="chip green" href="../projects/project02.html">🚀 所属项目：EduRAG：企业私有知识智能问答</a></div>
+</div>
+<p>40 道练习，覆盖 BM25 相对 TF-IDF 的改进、TF/IDF/长度归一化与 $k_1$、$b$、中文分词检索链路，以及 <code>BM25Search</code> 工程封装。重点练「稀疏关键词匹配何时够用、何时要接向量检索」。</p>
+<blockquote>
+<p>建议先独立作答，再展开参考答案。代码题用纯 Python 实现公式思想，不依赖 <code>jieba</code> / <code>rank_bm25</code>（语料已预分词）。</p>
+</blockquote>
+<h2 id="sec-1">一、选择题（20 题）</h2>
+<div class="q-card"><h3 id="sec-2">1. BM25 的全称 Best Matching 25 在信息检索中主要用于？</h3>
+<p>A. 训练深度神经网络权重<br />
+B. 计算查询与文档的相关性得分并排名<br />
+C. 压缩图片文件<br />
+D. 管理关系型事务锁</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 它是经典稀疏检索打分函数，对 query 与每篇文档给出可排序的相关分。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-3">2. 相对传统 TF-IDF，BM25 明确引入的两项改进是？</h3>
+<p>A. 卷积与池化<br />
+B. 文档长度归一化与词频饱和<br />
+C. 注意力掩码与位置编码<br />
+D. 梯度裁剪与学习率衰减</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 词频不再线性无限放大；长文档优势被长度项抑制，检索更稳。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-4">3. 公式中的 $f_i$ 表示？</h3>
+<p>A. 语料中的文档总数<br />
+B. 词项 $q_i$ 在文档 $D$ 中的出现次数（TF）<br />
+C. 平均文档长度<br />
+D. 平滑参数 $k_1$</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 课件记法：$f_i$ 是词项在文档内的频次。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-5">4. 公式中的 $N$ 与 $n_i$ 分别是？</h3>
+<p>A. $N$ 为词表大小，$n_i$ 为向量维度<br />
+B. $N$ 为文档总数，$n_i$ 为包含词项 $q_i$ 的文档数<br />
+C. 二者都是 $k_1$<br />
+D. 二者都是字符数</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> IDF 侧用「稀有词加权」：$n_i$ 越小，通常区分度越高。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-6">5. $|D|$ 与 $\mathrm{avgdl}$ 的作用是？</h3>
+<p>A. 只用于打印日志<br />
+B. 刻画当前文档长度相对语料平均长度，服务长度归一化<br />
+C. 替换所有 TF<br />
+D. 强制每篇文档等长</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 参数 $b$ 控制长度惩罚强度；$\mathrm{avgdl}$ 是语料级统计量。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-7">6. 课件给出的常用参数默认值是？</h3>
+<p>A. $k_1=0$，$b=1$<br />
+B. $k_1=1.2$，$b=0.75$<br />
+C. $k_1=100$，$b=0$<br />
+D. 两者必须相等</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 这是经典经验默认；业务上仍可用验证集微调。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-8">7. 词频饱和机制的直观含义是？</h3>
+<p>A. 词出现次数翻倍，相关分也必须严格翻倍<br />
+B. 词频升高带来的增益会逐渐变缓，避免「堆词」无限抬分<br />
+C. 禁止任何词出现超过一次<br />
+D. 只统计首字母</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> $k_1$ 越大，饱和越慢；过小则很快忽略额外重复。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-9">8. 将 $b$ 设为 0 时，长度归一化项会？</h3>
+<p>A. 仍然强制按最长文档惩罚<br />
+B. 基本关闭长度惩罚，打分不再依赖 $|D|/\mathrm{avgdl}$<br />
+C. 删除 IDF<br />
+D. 使所有文档得分为负</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> $b=0$ 时长度因子退化；$b=1$ 时长度影响最强（具体形式以实现公式为准）。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-10">9. 课件简单示例中，查询「他喜欢编程」相对文档「我喜欢编程」「编程很有趣」，更可能因哪些词重叠抬高第一篇？</h3>
+<p>A. 只有「他」<br />
+B. 「喜欢」与「编程」的重叠<br />
+C. 只有标点<br />
+D. 只有停用词「很」</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 查询与文档1共享「喜欢」「编程」；文档2主要共享「编程」。实际库实现（如 BM25L）细节会影响数值，但词重叠是主因。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-11">10. 课件示例运行日志给出的最佳匹配是？</h3>
+<p>A. 「编程很有趣」<br />
+B. 「我喜欢编程」<br />
+C. 空文档<br />
+D. 随机一篇</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 日志写明：查询「他喜欢编程」，最佳匹配「我喜欢编程」，得分约 1.094。若文中「分析」段与此矛盾，应以可复现输出与公式为准做核对。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-12">11. 中文场景使用 <code>jieba.lcut</code> 的主要原因是？</h3>
+<p>A. BM25 只能接受英文空格分词，中文必须先切词<br />
+B. 为了训练 CNN<br />
+C. 为了替换 Redis<br />
+D. 为了生成向量维度</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> BM25 工作在「词项序列」上；中文无空格时需分词（或字/子词方案），分词质量直接影响召回。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-13">12. 课件检索模块选用的是 <code>rank_bm25</code> 中的？</h3>
+<p>A. 仅 TF-IDF<br />
+B. <code>BM25L</code><br />
+C. 仅 HNSW<br />
+D. 仅余弦距离</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> <code>from rank_bm25 import BM25L</code>；同库还有 Okapi 等变体，API 类似但饱和/长度细节不同。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-14">13. <code>BM25Search.__init__</code> 中正确的初始化顺序是？</h3>
+<p>A. 先 search 再分词<br />
+B. 保存文档 → 分词得到 <code>tokenized_docs</code> → 用其构造 BM25 模型<br />
+C. 先删日志再随机打分<br />
+D. 不需要分词</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 模型建立在「已分词语料」上；语料变更通常需重建索引/模型。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-15">14. <code>search</code> 方法中 <code>scores.argmax()</code> 的含义是？</h3>
+<p>A. 返回最低分文档<br />
+B. 返回得分最高的文档下标<br />
+C. 返回词表大小<br />
+D. 返回平均文档长度</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 再取 <code>documents[best_idx]</code> 与对应分数；异常时课件返回 <code>(None, 0.0)</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-16">15. 在 EduRAG 的 FAQ 路径里，BM25 更像哪类能力？</h3>
+<p>A. 稠密向量语义检索<br />
+B. 稀疏关键词相关匹配（适合标准问法/字面重合）<br />
+C. 图像超分<br />
+D. 强化学习对齐</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 与 Milvus 稠密检索互补：FAQ/关键词命中走稀疏，长尾语义走向量 + 生成。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-17">16. 下列哪项不是 BM25 稀疏检索的典型优势？</h3>
+<p>A. 可解释：命中哪些词较直观<br />
+B. 对专有名词、型号、错误拼写变体的鲁棒性通常强于一切稠密模型<br />
+C. 实现轻、可快速对标准问打分<br />
+D. 不依赖 GPU</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 稀疏法对同义改写、语序变化往往弱；那是稠密检索更擅长的地方。专有名词场景稀疏常强，但不是「强于一切稠密」。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-18">17. 依赖文件只需列出？</h3>
+<p>A. <code>torch</code> 与 <code>pymilvus</code> 即可<br />
+B. <code>jieba</code> 与 <code>rank_bm25</code><br />
+C. 只需要 <code>fastapi</code><br />
+D. 不需要任何依赖</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 课件 <code>requirements.txt</code> 即此二者（工程里还会有日志等标准库）。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-19">18. 若查询词在所有文档中都出现（$n_i=N$），IDF 贡献通常会？</h3>
+<p>A. 变得极大，压过一切 TF<br />
+B. 变得很小/接近无区分度，难以靠该词分辨文档<br />
+C. 强制得分为 1<br />
+D. 删除该词的长度归一化</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 停用词或普遍词 IDF 低；真正抬分的是「在查询中出现、但只在少数文档出现」的词。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-20">19. 文档极长且反复堆砌查询词时，BM25 相对朴素 TF 的更合理行为是？</h3>
+<p>A. 分数随堆词近似线性爆炸<br />
+B. 词频饱和 + 长度惩罚抑制「靠长度和重复刷分」<br />
+C. 直接把长文档设为无限分<br />
+D. 忽略所有查询词</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 这也是课件总结强调的两点。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-21">20. 将 BM25 最高分与阈值（如 0.85）比较再路由 RAG，工程上还需要注意？</h3>
+<p>A. 不同实现/语料下分数量纲不同，阈值不可照搬，需标定<br />
+B. 任何语料阈值都永恒等于 0.85<br />
+C. 阈值只对向量检索有意义<br />
+D. 不需要日志</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> BM25 绝对分依赖分词、参数与语料；应用侧应用验证集/线上抽样标定阈值，并打日志。</p></div></div>
+
+
+</div><h2 id="sec-22">二、简答题（12 题）</h2>
+<div class="q-card"><h3 id="sec-23">21. 用一句话对比 TF-IDF 与 BM25。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>TF-IDF 用词频与逆文档频率衡量重要性；BM25 在此基础上加入词频饱和与文档长度归一化，减轻「堆词」和「长文优势」，排名通常更稳。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-24">22. 解释 $k_1$ 过大或过小可能带来的检索现象。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>$k_1$ 过小：词频很快饱和，重复出现几乎不再加分；过大：更接近线性 TF，堆词文档更容易被抬高。应在业务查询集上看是否过拟合「关键词刷屏」。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-25">23. 解释 $b$ 过大或过小可能带来的检索现象。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>$b$ 偏大：更惩罚长文档，短而精的文档更易胜出；$b$ 偏小：长度影响弱，长文档即使稀释了主题也可能靠绝对词频占优。需结合语料长度分布调节。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-26">24. 为什么中文 FAQ 匹配里分词错误比「公式写错一位小数」更致命？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>BM25 的基本单位是词项。错切（如专有名词被拆碎、该合的未合）会改变 TF/IDF 统计，导致该命中的词对不上。应沉淀领域词典并回归测试高频问法。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-27">25. 课件目录为何拆成 <code>retrieval/bm25_search.py</code> 与 <code>main.py</code>？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>检索能力模块化：模型初始化、打分、日志与异常在检索类内；入口只负责语料与演示调用。后续可替换为连 MySQL 的 FAQ 检索而不改业务主流程。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-28">26. 描述 <code>get_scores</code> → <code>argmax</code> 这条链路的输出语义与风险。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>对语料每篇文档打一个相关分，取最高者作为「最佳匹配」。风险：最高分仍可能很低（全都不相关）；或并列高分时 <code>argmax</code> 只取一个。工程上常加阈值、返回 top-k 并人工/规则复核。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-29">27. 为何说「分析段写文档2更高」与「运行日志文档1更高」冲突时该怎么处理？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>以可复现实验与公式为准：核对分词、库变体（BM25L/Okapi）、随机性与文本是否一致。文档笔误常见；复习时应自己跑通并修正笔记，而不是死记矛盾结论。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-30">28. BM25 与稠密向量检索如何互补？各举一个更适合的 query。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>BM25：字面重合强，如「退费多久到账」「错误码 E1234」。稠密：同义改写/语义相近，如「钱什么时候能回来」。EduRAG 先 FAQ/BM25 短路，再走 Milvus RAG。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-31">29. 若语料新增大量文档，为什么往往要重建 BM25 模型？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>$N$、$n_i$、$\mathrm{avgdl}$ 等统计量会变，IDF 与长度归一化随之变。增量策略可以有，但简单实现通常整体重分词 + 重初始化更安全。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-32">30. 日志在 BM25 模块里应至少打哪些字段便于排障？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>原始 query、分词结果、top 分数与文档摘要/id、阈值判定路径、异常栈。没有分词与分数，很难区分「阈值问题」还是「切词问题」。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-33">31. 停用词要不要一律删除？结合 BM25 谈利弊。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>删除可降噪、缩词表；但某些场景停用词参与固定表达（如「如何」「是否」）。一刀切可能伤 FAQ。更稳是：领域停用词表 + 评测，而不是盲目套用通用表。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-34">32. 把 BM25 得分直接当「概率」或「余弦相似度」有什么问题？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>量纲与上界依赖实现和语料，未必在 $[0,1]$，也不能直接与向量相似度比大小。跨系统融合要校准、归一或分路阈值，不能裸比数值。</p></div></div>
+
+
+</div><h2 id="sec-35">三、代码题（8 题）</h2>
+<div class="q-card"><h3 id="sec-36">33. 实现词项 TF 与文档频率统计</h3>
+<p>给定已分词语料 <code>docs: list[list[str]]</code>，实现 <code>tf(doc, term)</code> 与 <code>doc_freq(docs, term)</code>。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">tf</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">term</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Counter</span><span class="p">(</span><span class="n">doc</span><span class="p">)[</span><span class="n">term</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">doc_freq</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">term</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="n">docs</span> <span class="k">if</span> <span class="n">term</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">doc</span><span class="p">))</span>
+
+
+<span class="n">docs</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;我&quot;</span><span class="p">,</span> <span class="s2">&quot;喜欢&quot;</span><span class="p">,</span> <span class="s2">&quot;编程&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;编程&quot;</span><span class="p">,</span> <span class="s2">&quot;很&quot;</span><span class="p">,</span> <span class="s2">&quot;有趣&quot;</span><span class="p">]]</span>
+<span class="k">assert</span> <span class="n">tf</span><span class="p">(</span><span class="n">docs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="s2">&quot;编程&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="k">assert</span> <span class="n">doc_freq</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="s2">&quot;编程&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+<span class="k">assert</span> <span class="n">doc_freq</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="s2">&quot;喜欢&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">tf</span><span class="p">(</span><span class="n">docs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;有趣&quot;</span><span class="p">),</span> <span class="n">doc_freq</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="s2">&quot;喜欢&quot;</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-37">34. 实现简化 IDF：$\log\bigl(1 + (N - n_i + 0.5)/(n_i + 0.5)\bigr)$</h3>
+<p>与常见 Okapi 风格一致；对 $n_i=0$ 仍可计算。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">idf</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">n_i</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="n">n_i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+
+
+<span class="k">assert</span> <span class="n">idf</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">idf</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">idf</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">idf</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-38">35. 实现 BM25 单词项贡献（含饱和与长度归一）</h3>
+<p>$$
+\frac{f(k_1+1)}{f + k_1\bigl(1-b+b\cdot|D|/\mathrm{avgdl}\bigr)}\cdot \mathrm{IDF}
+$$</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">idf</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">n_i</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="n">n_i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">bm25_term</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">dl</span><span class="p">,</span> <span class="n">avgdl</span><span class="p">,</span> <span class="n">N</span><span class="p">,</span> <span class="n">n_i</span><span class="p">,</span> <span class="n">k1</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
+    <span class="n">denom</span> <span class="o">=</span> <span class="n">f</span> <span class="o">+</span> <span class="n">k1</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">dl</span> <span class="o">/</span> <span class="n">avgdl</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="p">(</span><span class="n">k1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">denom</span><span class="p">)</span> <span class="o">*</span> <span class="n">idf</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">n_i</span><span class="p">)</span>
+
+
+<span class="c1"># same TF, longer doc should score lower when b&gt;0</span>
+<span class="n">s_short</span> <span class="o">=</span> <span class="n">bm25_term</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dl</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">avgdl</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_i</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">s_long</span> <span class="o">=</span> <span class="n">bm25_term</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dl</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">avgdl</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">n_i</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">s_short</span> <span class="o">&gt;</span> <span class="n">s_long</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">s_short</span><span class="p">,</span> <span class="n">s_long</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-39">36. 实现简易 BM25 文档得分：对查询词项求和</h3>
+<p>未知词（$n_i=0$）仍用 IDF 公式；文档内 TF 为 0 的词贡献为 0。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">idf</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">n_i</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="n">n_i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">avg_dl</span><span class="p">(</span><span class="n">docs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">)</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">bm25_score</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="n">k1</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+    <span class="n">avgdl</span> <span class="o">=</span> <span class="n">avg_dl</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">term</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span> <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+    <span class="n">tfc</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+    <span class="n">dl</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+    <span class="n">score</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">query</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">tfc</span><span class="p">[</span><span class="n">term</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">n_i</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">term</span><span class="p">]</span>
+        <span class="n">denom</span> <span class="o">=</span> <span class="n">f</span> <span class="o">+</span> <span class="n">k1</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">dl</span> <span class="o">/</span> <span class="n">avgdl</span><span class="p">)</span>
+        <span class="n">score</span> <span class="o">+=</span> <span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="p">(</span><span class="n">k1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">denom</span><span class="p">)</span> <span class="o">*</span> <span class="n">idf</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">n_i</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">score</span>
+
+
+<span class="n">docs</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;我&quot;</span><span class="p">,</span> <span class="s2">&quot;喜欢&quot;</span><span class="p">,</span> <span class="s2">&quot;编程&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;编程&quot;</span><span class="p">,</span> <span class="s2">&quot;很&quot;</span><span class="p">,</span> <span class="s2">&quot;有趣&quot;</span><span class="p">]]</span>
+<span class="n">q</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;他&quot;</span><span class="p">,</span> <span class="s2">&quot;喜欢&quot;</span><span class="p">,</span> <span class="s2">&quot;编程&quot;</span><span class="p">]</span>
+<span class="n">s0</span> <span class="o">=</span> <span class="n">bm25_score</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">docs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">docs</span><span class="p">)</span>
+<span class="n">s1</span> <span class="o">=</span> <span class="n">bm25_score</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">docs</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">docs</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">s0</span> <span class="o">&gt;</span> <span class="n">s1</span>  <span class="c1"># overlaps 喜欢+编程 vs only 编程</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">s0</span><span class="p">,</span> <span class="n">s1</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-40">37. 封装 <code>SimpleBM25</code>：建库、打分、返回最佳匹配</h3>
+<p>接口对齐课件：<code>search(query_tokens) -&gt; (doc_text, score)</code>；空语料返回 <code>(None, 0.0)</code>。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SimpleBM25</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">documents</span><span class="p">,</span> <span class="n">tokenized_docs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokenized_docs</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;length mismatch&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">documents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokenized_docs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">tokenized_docs</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenized_docs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">avgdl</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenized_docs</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="k">else</span> <span class="mf">0.0</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">t</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenized_docs</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_score_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="n">k1</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
+        <span class="n">tfc</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+        <span class="n">dl</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">query</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">tfc</span><span class="p">[</span><span class="n">term</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">n_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">term</span><span class="p">]</span>
+            <span class="n">idf</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">-</span> <span class="n">n_i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+            <span class="n">denom</span> <span class="o">=</span> <span class="n">f</span> <span class="o">+</span> <span class="n">k1</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">dl</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">avgdl</span><span class="p">)</span>
+            <span class="n">score</span> <span class="o">+=</span> <span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="p">(</span><span class="n">k1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">denom</span><span class="p">)</span> <span class="o">*</span> <span class="n">idf</span>
+        <span class="k">return</span> <span class="n">score</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">documents</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="mf">0.0</span>
+        <span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_score_one</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenized_docs</span><span class="p">]</span>
+        <span class="n">best_idx</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">scores</span><span class="p">)),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="p">(</span><span class="n">scores</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">-</span><span class="n">i</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">documents</span><span class="p">[</span><span class="n">best_idx</span><span class="p">],</span> <span class="n">scores</span><span class="p">[</span><span class="n">best_idx</span><span class="p">]</span>
+
+
+<span class="n">docs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;我喜欢编程&quot;</span><span class="p">,</span> <span class="s2">&quot;编程很有趣&quot;</span><span class="p">]</span>
+<span class="n">toks</span> <span class="o">=</span> <span class="p">[[</span><span class="s2">&quot;我&quot;</span><span class="p">,</span> <span class="s2">&quot;喜欢&quot;</span><span class="p">,</span> <span class="s2">&quot;编程&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;编程&quot;</span><span class="p">,</span> <span class="s2">&quot;很&quot;</span><span class="p">,</span> <span class="s2">&quot;有趣&quot;</span><span class="p">]]</span>
+<span class="n">eng</span> <span class="o">=</span> <span class="n">SimpleBM25</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span> <span class="n">toks</span><span class="p">)</span>
+<span class="n">best</span><span class="p">,</span> <span class="n">score</span> <span class="o">=</span> <span class="n">eng</span><span class="o">.</span><span class="n">search</span><span class="p">([</span><span class="s2">&quot;他&quot;</span><span class="p">,</span> <span class="s2">&quot;喜欢&quot;</span><span class="p">,</span> <span class="s2">&quot;编程&quot;</span><span class="p">])</span>
+<span class="k">assert</span> <span class="n">best</span> <span class="o">==</span> <span class="s2">&quot;我喜欢编程&quot;</span> <span class="ow">and</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="mi">0</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">best</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">score</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-41">38. 实现 top-k 检索与阈值门控</h3>
+<p>返回按分降序的 top-k；若最高分 <code>&lt; threshold</code> 则 <code>path="rag"</code>，否则 <code>path="faq"</code>。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">rank_topk</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="n">scored</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">doc</span><span class="p">,</span> <span class="n">toks</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">engine</span><span class="o">.</span><span class="n">documents</span><span class="p">,</span> <span class="n">engine</span><span class="o">.</span><span class="n">tokenized_docs</span><span class="p">):</span>
+        <span class="n">scored</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">doc</span><span class="p">,</span> <span class="n">engine</span><span class="o">.</span><span class="n">_score_one</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">toks</span><span class="p">)))</span>
+    <span class="n">scored</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">scored</span><span class="p">[:</span><span class="n">k</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">route</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.8</span><span class="p">):</span>
+    <span class="n">ranked</span> <span class="o">=</span> <span class="n">rank_topk</span><span class="p">(</span><span class="n">engine</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ranked</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;rag&quot;</span><span class="p">,</span> <span class="s2">&quot;doc&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">}</span>
+    <span class="n">doc</span><span class="p">,</span> <span class="n">score</span> <span class="o">=</span> <span class="n">ranked</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">score</span> <span class="o">&gt;=</span> <span class="n">threshold</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;faq&quot;</span><span class="p">,</span> <span class="s2">&quot;doc&quot;</span><span class="p">:</span> <span class="n">doc</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="n">score</span><span class="p">}</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;rag&quot;</span><span class="p">,</span> <span class="s2">&quot;doc&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="n">score</span><span class="p">}</span>
+
+
+<span class="c1"># reuse SimpleBM25 from previous mental model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SimpleBM25</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">documents</span><span class="p">,</span> <span class="n">tokenized_docs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">documents</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">documents</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokenized_docs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">tokenized_docs</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenized_docs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">avgdl</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenized_docs</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">t</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenized_docs</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_score_one</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="n">k1</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
+        <span class="n">tfc</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+        <span class="n">dl</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">query</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">tfc</span><span class="p">[</span><span class="n">term</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">n_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">term</span><span class="p">]</span>
+            <span class="n">idf</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">-</span> <span class="n">n_i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+            <span class="n">denom</span> <span class="o">=</span> <span class="n">f</span> <span class="o">+</span> <span class="n">k1</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">dl</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">avgdl</span><span class="p">)</span>
+            <span class="n">score</span> <span class="o">+=</span> <span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="p">(</span><span class="n">k1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">denom</span><span class="p">)</span> <span class="o">*</span> <span class="n">idf</span>
+        <span class="k">return</span> <span class="n">score</span>
+
+<span class="n">eng</span> <span class="o">=</span> <span class="n">SimpleBM25</span><span class="p">([</span><span class="s2">&quot;我喜欢编程&quot;</span><span class="p">,</span> <span class="s2">&quot;编程很有趣&quot;</span><span class="p">],</span> <span class="p">[[</span><span class="s2">&quot;我&quot;</span><span class="p">,</span> <span class="s2">&quot;喜欢&quot;</span><span class="p">,</span> <span class="s2">&quot;编程&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;编程&quot;</span><span class="p">,</span> <span class="s2">&quot;很&quot;</span><span class="p">,</span> <span class="s2">&quot;有趣&quot;</span><span class="p">]])</span>
+<span class="n">hit</span> <span class="o">=</span> <span class="n">route</span><span class="p">(</span><span class="n">eng</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;他&quot;</span><span class="p">,</span> <span class="s2">&quot;喜欢&quot;</span><span class="p">,</span> <span class="s2">&quot;编程&quot;</span><span class="p">],</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="n">miss</span> <span class="o">=</span> <span class="n">route</span><span class="p">(</span><span class="n">eng</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;量子&quot;</span><span class="p">,</span> <span class="s2">&quot;引力&quot;</span><span class="p">],</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">hit</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;faq&quot;</span> <span class="ow">and</span> <span class="n">miss</span><span class="p">[</span><span class="s2">&quot;path&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;rag&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">hit</span><span class="p">,</span> <span class="n">miss</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-42">39. 对比 $b=0$ 与 $b=1$：同一 TF 在长短文档上的分数差</h3>
+<p>构造两篇只在长度上不同的文档（通过填充占位词），证明 $b=1$ 时长短差距更大。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">score_doc</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">doc</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="n">k1</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
+    <span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">docs</span><span class="p">)</span>
+    <span class="n">avgdl</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span><span class="p">)</span> <span class="o">/</span> <span class="n">N</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">t</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+    <span class="n">tfc</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+    <span class="n">dl</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">query</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">tfc</span><span class="p">[</span><span class="n">term</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">n_i</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">term</span><span class="p">]</span>
+        <span class="n">idf</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="n">n_i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+        <span class="n">denom</span> <span class="o">=</span> <span class="n">f</span> <span class="o">+</span> <span class="n">k1</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">dl</span> <span class="o">/</span> <span class="n">avgdl</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="p">(</span><span class="n">k1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">denom</span><span class="p">)</span> <span class="o">*</span> <span class="n">idf</span>
+    <span class="k">return</span> <span class="n">s</span>
+
+
+<span class="n">short</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;编程&quot;</span><span class="p">]</span>
+<span class="n">long</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;编程&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s2">&quot;填充&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">20</span>
+<span class="n">docs</span> <span class="o">=</span> <span class="p">[</span><span class="n">short</span><span class="p">,</span> <span class="n">long</span><span class="p">]</span>
+<span class="n">q</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;编程&quot;</span><span class="p">]</span>
+<span class="n">gap0</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">score_doc</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">short</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">score_doc</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">long</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">gap1</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">score_doc</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">short</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">-</span> <span class="n">score_doc</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">long</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="k">assert</span> <span class="n">gap1</span> <span class="o">&gt;</span> <span class="n">gap0</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">gap0</span><span class="p">,</span> <span class="n">gap1</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-43">40. 实现「预分词缓存」：避免每次 search 重新切文档</h3>
+<p><code>CorpusIndex</code> 在初始化时缓存 <code>tokenized_docs</code>；<code>update(doc)</code> 追加文档并刷新 DF/avgdl；<code>batch_scores(query)</code> 返回全部分数列表。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CorpusIndex</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">docs_tokens</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokenized_docs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">docs_tokens</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recompute</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_recompute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tokenized_docs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">avgdl</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">sum</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenized_docs</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="k">else</span> <span class="mf">0.0</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">df</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">t</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenized_docs</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc_tokens</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokenized_docs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">doc_tokens</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_recompute</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">batch_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">k1</span><span class="o">=</span><span class="mf">1.2</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mf">0.75</span><span class="p">):</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">doc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tokenized_docs</span><span class="p">:</span>
+            <span class="n">tfc</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+            <span class="n">dl</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">doc</span><span class="p">)</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="mf">0.0</span>
+            <span class="k">for</span> <span class="n">term</span> <span class="ow">in</span> <span class="n">query</span><span class="p">:</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="n">tfc</span><span class="p">[</span><span class="n">term</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">f</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">n_i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">term</span><span class="p">]</span>
+                <span class="n">idf</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span> <span class="o">-</span> <span class="n">n_i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n_i</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">))</span>
+                <span class="n">denom</span> <span class="o">=</span> <span class="n">f</span> <span class="o">+</span> <span class="n">k1</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">b</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="n">dl</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">avgdl</span><span class="p">)</span>
+                <span class="n">s</span> <span class="o">+=</span> <span class="p">(</span><span class="n">f</span> <span class="o">*</span> <span class="p">(</span><span class="n">k1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="n">denom</span><span class="p">)</span> <span class="o">*</span> <span class="n">idf</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">out</span>
+
+
+<span class="n">idx</span> <span class="o">=</span> <span class="n">CorpusIndex</span><span class="p">([[</span><span class="s2">&quot;我&quot;</span><span class="p">,</span> <span class="s2">&quot;喜欢&quot;</span><span class="p">,</span> <span class="s2">&quot;编程&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;编程&quot;</span><span class="p">,</span> <span class="s2">&quot;很&quot;</span><span class="p">,</span> <span class="s2">&quot;有趣&quot;</span><span class="p">]])</span>
+<span class="n">s1</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">batch_scores</span><span class="p">([</span><span class="s2">&quot;喜欢&quot;</span><span class="p">,</span> <span class="s2">&quot;编程&quot;</span><span class="p">])</span>
+<span class="n">idx</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="s2">&quot;喜欢&quot;</span><span class="p">,</span> <span class="s2">&quot;音乐&quot;</span><span class="p">])</span>
+<span class="n">s2</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">batch_scores</span><span class="p">([</span><span class="s2">&quot;喜欢&quot;</span><span class="p">,</span> <span class="s2">&quot;编程&quot;</span><span class="p">])</span>
+<span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">s1</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">s2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span>
+<span class="k">assert</span> <span class="n">s2</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">s1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># N/DF/avgdl 变化后旧文档分数也会变</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">s1</span><span class="p">,</span> <span class="n">s2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>这对应课件工程实践：分词与语料统计前置；查询路径只对 query 分词并 <code>get_scores</code>，避免每次全量重新切文档。</p></div></div>
+
+
+</div><div class="done-bar"><button class="mark-done-btn" data-key="hw60" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="hw59.html"><div class="dir">← 上一篇</div><div class="name">🧊 Milvus：向量数据库原理与操作综合训练</div></a><a class="next" href="hw49.html"><div class="dir">下一篇 →</div><div class="name">🪄 Prompt-Tuning：PET、软提示与 P-tuning 综合训练</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、选择题（20 题）</a><a class="lv3" href="#sec-2">1. BM25 的全称 Best Matching 25 在信息检索中主要用于？</a><a class="lv3" href="#sec-3">2. 相对传统 TF-IDF，BM25 明确引入的两项改进是？</a><a class="lv3" href="#sec-4">3. 公式中的 $f_i$ 表示？</a><a class="lv3" href="#sec-5">4. 公式中的 $N$ 与 $n_i$ 分别是？</a><a class="lv3" href="#sec-6">5. $|D|$ 与 $\mathrm{avgdl}$ 的作用是？</a><a class="lv3" href="#sec-7">6. 课件给出的常用参数默认值是？</a><a class="lv3" href="#sec-8">7. 词频饱和机制的直观含义是？</a><a class="lv3" href="#sec-9">8. 将 $b$ 设为 0 时，长度归一化项会？</a><a class="lv3" href="#sec-10">9. 课件简单示例中，查询「他喜欢编程」相对文档「我喜欢编程」「编程很有趣」，更可能因哪些词重叠抬高第一篇？</a><a class="lv3" href="#sec-11">10. 课件示例运行日志给出的最佳匹配是？</a><a class="lv3" href="#sec-12">11. 中文场景使用 jieba.lcut 的主要原因是？</a><a class="lv3" href="#sec-13">12. 课件检索模块选用的是 rank_bm25 中的？</a><a class="lv3" href="#sec-14">13. BM25Search.__init__ 中正确的初始化顺序是？</a><a class="lv3" href="#sec-15">14. search 方法中 scores.argmax() 的含义是？</a><a class="lv3" href="#sec-16">15. 在 EduRAG 的 FAQ 路径里，BM25 更像哪类能力？</a><a class="lv3" href="#sec-17">16. 下列哪项不是 BM25 稀疏检索的典型优势？</a><a class="lv3" href="#sec-18">17. 依赖文件只需列出？</a><a class="lv3" href="#sec-19">18. 若查询词在所有文档中都出现（$n_i=N$），IDF 贡献通常会？</a><a class="lv3" href="#sec-20">19. 文档极长且反复堆砌查询词时，BM25 相对朴素 TF 的更合理行为是？</a><a class="lv3" href="#sec-21">20. 将 BM25 最高分与阈值（如 0.85）比较再路由 RAG，工程上还需要注意？</a><a class="lv2" href="#sec-22">二、简答题（12 题）</a><a class="lv3" href="#sec-23">21. 用一句话对比 TF-IDF 与 BM25。</a><a class="lv3" href="#sec-24">22. 解释 $k_1$ 过大或过小可能带来的检索现象。</a><a class="lv3" href="#sec-25">23. 解释 $b$ 过大或过小可能带来的检索现象。</a><a class="lv3" href="#sec-26">24. 为什么中文 FAQ 匹配里分词错误比「公式写错一位小数」更致命？</a><a class="lv3" href="#sec-27">25. 课件目录为何拆成 retrieval/bm25_search.py 与 main.py？</a><a class="lv3" href="#sec-28">26. 描述 get_scores → argmax 这条链路的输出语义与风险。</a><a class="lv3" href="#sec-29">27. 为何说「分析段写文档2更高」与「运行日志文档1更高」冲突时该怎么处理？</a><a class="lv3" href="#sec-30">28. BM25 与稠密向量检索如何互补？各举一个更适合的 query。</a><a class="lv3" href="#sec-31">29. 若语料新增大量文档，为什么往往要重建 BM25 模型？</a><a class="lv3" href="#sec-32">30. 日志在 BM25 模块里应至少打哪些字段便于排障？</a><a class="lv3" href="#sec-33">31. 停用词要不要一律删除？结合 BM25 谈利弊。</a><a class="lv3" href="#sec-34">32. 把 BM25 得分直接当「概率」或「余弦相似度」有什么问题？</a><a class="lv2" href="#sec-35">三、代码题（8 题）</a><a class="lv3" href="#sec-36">33. 实现词项 TF 与文档频率统计</a><a class="lv3" href="#sec-37">34. 实现简化 IDF：$\log\bigl(1 + (N - n_i + 0.5)/(n_i + 0.5)\bigr)$</a><a class="lv3" href="#sec-38">35. 实现 BM25 单词项贡献（含饱和与长度归一）</a><a class="lv3" href="#sec-39">36. 实现简易 BM25 文档得分：对查询词项求和</a><a class="lv3" href="#sec-40">37. 封装 SimpleBM25：建库、打分、返回最佳匹配</a><a class="lv3" href="#sec-41">38. 实现 top-k 检索与阈值门控</a><a class="lv3" href="#sec-42">39. 对比 $b=0$ 与 $b=1$：同一 TF 在长短文档上的分数差</a><a class="lv3" href="#sec-43">40. 实现「预分词缓存」：避免每次 search 重新切文档</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 仅供个人学习使用，请勿传播 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
