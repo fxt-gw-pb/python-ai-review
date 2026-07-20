@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Milvus：向量数据库原理与操作综合训练 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../lessons.html">课程讲义</a>
+    <a href="../homework.html" class="active">课后练习</a>
+    <a href="../projects.html">实战项目</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">11</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">12</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson58" href="../lessons/lesson58.html"><span class="no">19</span><span>NumPy 统计计算与科学分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">20</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">21</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">22</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">23</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">24</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">25</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">26</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">27</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">28</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">29</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">30</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">31</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">32</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">33</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">34</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">35</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">36</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">37</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">38</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">39</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">40</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">41</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">42</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">43</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">44</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">45</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">46</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">47</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">48</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">49</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">50</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">51</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">📘 医学知识图谱</div><a class="item" data-page-key="lesson51" href="../lessons/lesson51.html"><span class="no">52</span><span>知识图谱基础与医学图谱架构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson52" href="../lessons/lesson52.html"><span class="no">53</span><span>数据标注、查询语言与 Neo4j 工具链</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson53" href="../lessons/lesson53.html"><span class="no">54</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson54" href="../lessons/lesson54.html"><span class="no">55</span><span>关系抽取：规则、Pipeline 与 CasRel</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson55" href="../lessons/lesson55.html"><span class="no">56</span><span>知识融合：实体统一、链接与消歧</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson56" href="../lessons/lesson56.html"><span class="no">57</span><span>Neo4j 医学图谱搭建与质量验证</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson57" href="../lessons/lesson57.html"><span class="no">58</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">21</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">22</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">24</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">25</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">27</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">28</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">29</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">30</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">31</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">32</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw33" href="../homework/hw33.html"><span class="no">33</span><span>卷积神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw34" href="../homework/hw34.html"><span class="no">34</span><span>循环神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw35" href="../homework/hw35.html"><span class="no">35</span><span>自然语言处理入门与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw36" href="../homework/hw36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw37" href="../homework/hw37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw38" href="../homework/hw38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw39" href="../homework/hw39.html"><span class="no">39</span><span>Transformer 架构与工程实现综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw40" href="../homework/hw40.html"><span class="no">40</span><span>Transformer 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw41" href="../homework/hw41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw42" href="../homework/hw42.html"><span class="no">42</span><span>FastText：文本分类与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw43" href="../homework/hw43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw44" href="../homework/hw44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw45" href="../homework/hw45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw46" href="../homework/hw46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw47" href="../homework/hw47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw48" href="../homework/hw48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw58" href="../homework/hw58.html"><span class="no">49</span><span>RAG 项目背景、原理与工程结构综合训练</span><span class="done-flag">✅</span></a><a class="item hw active" data-page-key="hw59" href="../homework/hw59.html"><span class="no">50</span><span>Milvus：向量数据库原理与操作综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw49" href="../homework/hw49.html"><span class="no">51</span><span>Prompt-Tuning：PET、软提示与 P-tuning 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw50" href="../homework/hw50.html"><span class="no">52</span><span>PEFT：Prefix、Adapter、LoRA 与 QLoRA 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw51" href="../homework/hw51.html"><span class="no">53</span><span>知识图谱基础与医学图谱架构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw52" href="../homework/hw52.html"><span class="no">54</span><span>数据标注、查询语言与 Neo4j 工具链综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw53" href="../homework/hw53.html"><span class="no">55</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw54" href="../homework/hw54.html"><span class="no">56</span><span>关系抽取：规则、Pipeline 与 CasRel 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw55" href="../homework/hw55.html"><span class="no">57</span><span>知识融合：实体统一、链接与消歧综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw56" href="../homework/hw56.html"><span class="no">58</span><span>Neo4j 医学图谱搭建与质量验证综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw57" href="../homework/hw57.html"><span class="no">59</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project07" href="../projects/project07.html"><span class="no">07</span><span>医学知识图谱：从信息抽取到 KBQA</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="../homework.html">课后练习</a> / 练习 50</div>
+<h1>🧊 Milvus：向量数据库原理与操作综合训练</h1>
+<div class="chips"><span class="chip amber">🏷️ 选择 + 简答 + 代码</span><span class="chip amber">🏷️ 40 题</span><a class="chip" href="../projects/project02-04.html">📖 相关章节：Milvus：向量数据库原理与操作</a><a class="chip green" href="../projects/project02.html">🚀 所属项目：EduRAG：企业私有知识智能问答</a></div>
+</div>
+<p>40 道练习，覆盖 Milvus 核心概念、Collection/Field Schema、索引与度量、以及增删改查、分区、过滤/范围检索与混合检索重排。重点练「何时用哪种索引/度量」和「search / filter / hybrid 的工程取舍」。</p>
+<blockquote>
+<p>建议先独立作答，再展开参考答案。代码题只用纯 Python 模拟向量检索思想，不依赖真实 <code>pymilvus</code> 服务。</p>
+</blockquote>
+<h2 id="sec-1">一、选择题（20 题）</h2>
+<div class="q-card"><h3 id="sec-2">1. Milvus 作为向量数据库，最核心的设计目标是？</h3>
+<p>A. 只存储 CSV 表格并做 SQL JOIN<br />
+B. 存储、索引并管理由深度网络等模型生成的大规模嵌入向量<br />
+C. 替代操作系统的文件系统<br />
+D. 专门训练 Transformer 权重</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 课件强调它面向「从非结构化数据转换而来的嵌入向量」，并通过相似距离分析相关性。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-3">2. 非结构化数据转为计算机可比较形式的关键步骤通常是？</h3>
+<p>A. 直接按文件名排序即可<br />
+B. 用嵌入技术转换为向量，再入库检索<br />
+C. 必须先手工写成关系表主键<br />
+D. 只能压缩成 ZIP</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 图像、文本、音频等先变成向量，Milvus 再负责存与搜；向量相近往往意味着原始对象语义相近。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-4">3. 向量相似度搜索为加速常用哪类算法思想？</h3>
+<p>A. 只对主键做二分查找<br />
+B. 近似最近邻（ANNS）<br />
+C. 冒泡排序全文扫描 SQL<br />
+D. 随机丢弃一半向量</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 精确暴力搜索在大规模下昂贵；ANNS 用可接受的近似换取速度。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-5">4. 在 Milvus 与关系数据库的对应关系中，Collection 更接近？</h3>
+<p>A. 一行记录<br />
+B. 一张表<br />
+C. 一个外键约束<br />
+D. 一条 SQL 事务日志</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> Collection ↔ 表，Field ↔ 列；向量字段额外有 <code>dim</code> 等约束。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-6">5. 关于主键字段，课件明确的约束是？</h3>
+<p>A. 一个 Collection 可以有任意多个主键<br />
+B. 一个 Collection 仅支持一个主键字段<br />
+C. 主键必须是 FLOAT_VECTOR<br />
+D. 主键不能命名为 <code>id</code></p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> Field schema 中用 <code>is_primary</code> 标记；另可用 <code>auto_id</code> 自动分配主键。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-7">6. 课件提到一个 Collection 最多支持几个向量 Field？</h3>
+<p>A. 1<br />
+B. 2<br />
+C. 4<br />
+D. 无限制</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 多向量场用于多模态/多路检索，但仍有上限；设计 Schema 时要规划清楚。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-8">7. 向量字段 <code>dim</code> 的合法范围（课件给出）是？</h3>
+<p>A. 只能是 768<br />
+B. $\in[1, 32768]$<br />
+C. 必须大于 100000<br />
+D. 只能是偶数</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 维度由嵌入模型决定，创建字段时必须声明并与写入向量长度一致。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-9">8. VARCHAR 字段的 <code>max_length</code> 课件给出的范围是？</h3>
+<p>A. $[1, 255]$<br />
+B. $[1, 65535]$<br />
+C. 只能是 16<br />
+D. 无上限</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 超长文本通常应切分后放入向量段，标量字段存标题/标签/短元数据更合适。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-10">9. 若创建 Collection 时未指定索引类型，Milvus 默认行为是？</h3>
+<p>A. 拒绝任何搜索<br />
+B. 使用暴力搜索（brute-force）<br />
+C. 自动训练神经网络<br />
+D. 删除全部数据</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 课件强调：搜索前应声明索引与度量；未指定则走默认暴力检索。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-11">10. FLAT 索引最适合的场景是？</h3>
+<p>A. 万亿级数据且只要毫秒级近似<br />
+B. 小型、百万级数据集上追求完全精确<br />
+C. 只存标量、不存向量<br />
+D. 必须配合乘积量化</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> FLAT 即暴力精确搜，精度最高但大数据量时效率差。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-12">11. IVF_FLAT 中增大 <code>nprobe</code> 的直接影响是？</h3>
+<p>A. 一定减少召回簇数，更快但更不准<br />
+B. 搜索更多簇，通常更准但更慢<br />
+C. 改变向量维度<br />
+D. 删除倒排索引</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> <code>nprobe</code> 控制查询时探测的簇数量，是精度—延迟的核心旋钮。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-13">12. IVF_SQ8 相对 IVF_FLAT 的关键压缩手段是？</h3>
+<p>A. 删除所有簇中心<br />
+B. 标量量化：把每维 4 字节浮点压成约 1 字节整数<br />
+C. 把向量改成字符串主键<br />
+D. 只保留前 3 维</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 以可接受精度损失换存储与带宽；思想仍基于 IVF 倒排。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-14">13. IVF_PQ 结合了哪两类技术？</h3>
+<p>A. 仅 B 树与哈希表<br />
+B. 倒排文件（IVF）与乘积量化（PQ）<br />
+C. 仅正则与全文索引<br />
+D. 仅 JPEG 压缩</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 先按簇缩小候选，再在簇内用 PQ 降低存储与距离计算成本，适合大规模高维。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-15">14. HNSW 被课件归类为？</h3>
+<p>A. 纯倒排簇心索引<br />
+B. 基于图的索引，适合高搜索效率场景<br />
+C. 只用于标量 <code>INVERTED</code><br />
+D. 必须关闭 ANNS</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 图索引在许多低延迟检索场景表现好，实际选型仍要结合数据规模与召回要求。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-16">15. 对浮点嵌入，课件列出的常用度量不包括？</h3>
+<p>A. 欧几里得距离（L2）<br />
+B. 内积（IP）<br />
+C. 余弦相似度（COSINE）<br />
+D. 编辑距离（Levenshtein）</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> 编辑距离面向字符串；向量检索常用 L2 / IP / COSINE。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-17">16. <code>MilvusClient(uri="milvus_demo.db")</code> 与 <code>uri="http://localhost:19530"</code> 的区别是？</h3>
+<p>A. 没有区别<br />
+B. 前者偏本地文件库（Lite）；后者连接独立/后台 Milvus 服务<br />
+C. 前者只能删库，后者只能建库<br />
+D. 后者禁止创建 Collection</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 课件用 Lite 做嵌入式实验；生产可用 Docker/K8s 部署的服务端。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-18">17. <code>enable_dynamic_field=True</code> 时，未在 Schema 声明的字段通常会？</h3>
+<p>A. 导致进程崩溃且无法恢复<br />
+B. 作为动态字段以键值形式保存（常在 <code>$meta</code>）<br />
+C. 自动变成第二个主键<br />
+D. 被静默丢弃且无任何存储</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 便于快速迭代元数据；生产中对关键字段仍建议显式建模以便过滤与索引。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-19">18. <code>upsert</code> 的语义是？</h3>
+<p>A. 只删除、不写入<br />
+B. 主键已存在则覆盖，不存在则插入<br />
+C. 永远追加一条新主键<br />
+D. 只更新向量、禁止更新标量</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 注意分区场景：在指定分区 upsert 时，行为需结合文档理解，避免「以为更新了分区却只影响集合侧」的误用。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-20">19. 过滤搜索示例 <code>color like "red%"</code> 的作用是？</h3>
+<p>A. 把所有颜色改成 red<br />
+B. 在向量相似检索结果上叠加标量条件（颜色以 red 为前缀）<br />
+C. 强制改用 FLAT 索引<br />
+D. 关闭 output_fields</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 这是「向量相似 + 标量过滤」的混合能力，也是选 Milvus 的理由之一。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-21">20. 范围搜索中 <code>radius</code> 与 <code>range_filter</code> 更准确的理解是？</h3>
+<p>A. 二者都表示向量维度<br />
+B. <code>radius</code> 定义外侧距离边界；<code>range_filter</code> 可再设内侧边界，形成距离环带<br />
+C. 只能用于 VARCHAR 字段<br />
+D. 用于删除 Collection</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 适合「只要足够相似、但又不要几乎重复/过近」等带状召回需求（具体开闭与度量方向要对照所用 metric）。</p></div></div>
+
+
+</div><h2 id="sec-22">二、简答题（12 题）</h2>
+<div class="q-card"><h3 id="sec-23">21. 用对比句说明：Milvus 与 MySQL 各自更擅长什么？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>MySQL 等关系库擅长结构化行数据的事务、复杂 JOIN 与强一致业务表；Milvus 擅长高维向量的相似检索与向量索引。RAG 里常见组合：业务/FAQ 走 MySQL，语义知识片段走 Milvus。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-24">22. 解释「两个嵌入向量很相似 ⇒ 原始对象也可能相似」成立的前提与风险。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>前提是嵌入模型把语义/视觉等特征投影到度量空间，且所用度量与训练目标匹配。风险：模型偏差、过短文本、跨域数据、度量选错或未归一化，都会让「近邻」不等于业务相似。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-25">23. 写出创建 Collection 前 Field schema 至少应 prioritise 的 4 个决策点。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>示例：主键策略（手工 id 还是 <code>auto_id</code>）；向量字段名/<code>dim</code>/度量；需要过滤的标量字段类型与 <code>max_length</code>；是否启用动态字段/分区键。先定 Schema，再谈索引参数。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-26">24. 为什么说「索引是搜索前必须想清楚的组织方式」？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>索引决定候选集如何剪枝。未建索引时默认暴力搜，小数据可接受，大数据会爆延迟与成本。IVF/HNSW 等用近似换速度，需要用评测集看召回是否达标。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-27">25. 简述 IVF_FLAT 的三步：聚类、倒排、查询。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><ol>
+<li>用聚类把向量划到若干簇并保留簇心；  </li>
+<li>向量映射到所属簇形成倒排；  </li>
+<li>查询先找近邻簇（由 <code>nprobe</code> 控制），再在簇内精确扫描。  </li>
+</ol></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-28">26. 在什么业务条件下你更倾向 FLAT，而不是 IVF_PQ？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>数据规模小、必须尽量精确、可接受较高延迟，或正处于召回评测基线阶段。IVF_PQ 更适合大规模高维、要省存储/加速、可接受近似误差的生产检索。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-29">27. 说明 L2、IP、COSINE 各自更「敏感」的几何含义（直觉即可）。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>L2 看欧氏距离，对绝对位置/模长差异敏感；IP 看内积，常与未归一化向量的「对齐程度」相关；COSINE 关注方向，弱化模长差异。选型应与嵌入是否归一化、训练损失一致。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-30">28. <code>insert</code> 到指定 <code>partition_name</code> 有什么工程价值？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>可按租户、时间、业务线隔离数据，缩小搜索范围（<code>partition_names</code>），提升性能与治理清晰度。但也增加路由与运维复杂度，需要明确分区键策略。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-31">29. 单向量 search、批量 search、多向量 hybrid_search 三者差别？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>单向量：一次查询一个向量；批量：一次请求多个查询向量，各自返回 top-k；hybrid_search：对多个向量字段分别 ANN，再用 Ranker 融合，不是简单把多个 query 拼成 batch。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-32">30. WeightedRanker 与 RRFRanker 如何选型？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>有明确「某路更重要」（如文本描述 &gt; 颜色）用加权；没有先验侧重、希望平衡多路排名用 RRF。权重或 <code>k</code> 都要用业务评测校准，不能只凭感觉。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-33">31. 为什么过滤条件写错（如字段未建或类型不匹配）会比「向量不准」更隐蔽？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>过滤可能直接把正确近邻剔除，表现为「检索很差」，但根因在标量侧。应用日志应同时记录 filter、命中候选数与 top 分数，便于区分向量问题与过滤问题。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-34">32. Milvus Lite 本地 <code>.db</code> 文件带来的开发便利与生产局限各是什么？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>便利：嵌入式、易入门、进程重启可复开文件续写。局限：扩展性、高可用、多副本与运维能力不如独立集群；生产应评估 Docker/K8s 服务化部署。</p></div></div>
+
+
+</div><h2 id="sec-35">三、代码题（8 题）</h2>
+<div class="q-card"><h3 id="sec-36">33. 实现 L2 / 内积 / 余弦三种度量</h3>
+<p>对等长浮点列表实现 <code>l2</code>、<code>ip</code>、<code>cosine</code>；零向量余弦返回 <code>0.0</code>。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">l2</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">cosine</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">a</span><span class="p">))</span>
+    <span class="n">nb</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">y</span> <span class="o">*</span> <span class="n">y</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">b</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">na</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">nb</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+    <span class="k">return</span> <span class="n">ip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">na</span> <span class="o">*</span> <span class="n">nb</span><span class="p">)</span>
+
+
+<span class="n">q</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+<span class="n">v</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]</span>
+<span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">l2</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">q</span><span class="p">))</span> <span class="o">&lt;</span> <span class="mf">1e-9</span>
+<span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">ip</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.6</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-9</span>
+<span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">cosine</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.6</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-9</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">l2</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">v</span><span class="p">),</span> <span class="n">cosine</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-37">34. 实现 FLAT top-k 搜索（越小越好用 L2）</h3>
+<p><code>entities</code> 为 <code>{"id", "vector", ...}</code> 列表；返回 <code>[(id, distance), ...]</code> 按距离升序。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">flat_search</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">entities</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">scored</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">e</span><span class="p">[</span><span class="s2">&quot;vector&quot;</span><span class="p">])))</span>
+        <span class="n">scored</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="n">dist</span><span class="p">))</span>
+    <span class="n">scored</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">scored</span><span class="p">[:</span><span class="n">k</span><span class="p">]</span>
+
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;vector&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;vector&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;vector&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">]},</span>
+<span class="p">]</span>
+<span class="k">assert</span> <span class="n">flat_search</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="n">data</span><span class="p">,</span> <span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">flat_search</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="n">data</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-38">35. 用极简 IVF 模拟 <code>nprobe</code> 对候选集的影响</h3>
+<p>先按簇心把库划到 2 个簇；查询时只扫描距离最近的 <code>nprobe</code> 个簇，再在候选内做 L2 top-k。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">assign</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">centroids</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">min</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">centroids</span><span class="p">)),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">math</span><span class="o">.</span><span class="n">dist</span><span class="p">(</span><span class="n">vec</span><span class="p">,</span> <span class="n">centroids</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">ivf_search</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">entities</span><span class="p">,</span> <span class="n">centroids</span><span class="p">,</span> <span class="n">nprobe</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="c1"># build inverted lists</span>
+    <span class="n">buckets</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="p">[]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">centroids</span><span class="p">))}</span>
+    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
+        <span class="n">buckets</span><span class="p">[</span><span class="n">assign</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="s2">&quot;vector&quot;</span><span class="p">],</span> <span class="n">centroids</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+
+    <span class="n">probe</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">centroids</span><span class="p">)),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="n">math</span><span class="o">.</span><span class="n">dist</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">centroids</span><span class="p">[</span><span class="n">i</span><span class="p">]))[:</span><span class="n">nprobe</span><span class="p">]</span>
+    <span class="n">cand</span> <span class="o">=</span> <span class="p">[</span><span class="n">e</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">probe</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">buckets</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span>
+    <span class="n">scored</span> <span class="o">=</span> <span class="p">[(</span><span class="n">e</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="n">math</span><span class="o">.</span><span class="n">dist</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">e</span><span class="p">[</span><span class="s2">&quot;vector&quot;</span><span class="p">]))</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">cand</span><span class="p">]</span>
+    <span class="n">scored</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">scored</span><span class="p">[:</span><span class="n">k</span><span class="p">],</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">probe</span><span class="p">)</span>
+
+
+<span class="n">centroids</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">]]</span>
+<span class="n">entities</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;vector&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;vector&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.1</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;vector&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">9.5</span><span class="p">,</span> <span class="mf">9.7</span><span class="p">]},</span>
+<span class="p">]</span>
+<span class="n">hits1</span><span class="p">,</span> <span class="n">probe1</span> <span class="o">=</span> <span class="n">ivf_search</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="n">entities</span><span class="p">,</span> <span class="n">centroids</span><span class="p">,</span> <span class="n">nprobe</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">hits2</span><span class="p">,</span> <span class="n">probe2</span> <span class="o">=</span> <span class="n">ivf_search</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="n">entities</span><span class="p">,</span> <span class="n">centroids</span><span class="p">,</span> <span class="n">nprobe</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">probe1</span> <span class="o">==</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">assert</span> <span class="nb">set</span><span class="p">(</span><span class="n">probe2</span><span class="p">)</span> <span class="o">==</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">}</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">hits1</span><span class="p">,</span> <span class="n">hits2</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-39">36. 实现 Schema 校验器：主键唯一、向量维一致、最多 4 个向量场</h3>
+<p><code>fields</code> 为字段定义列表；<code>validate_schema(fields)</code> 不合规时抛 <code>ValueError</code>。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">VECTOR_TYPES</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;FLOAT_VECTOR&quot;</span><span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_schema</span><span class="p">(</span><span class="n">fields</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">fields</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;empty schema&quot;</span><span class="p">)</span>
+    <span class="n">primaries</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;is_primary&quot;</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">primaries</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;exactly one primary key required&quot;</span><span class="p">)</span>
+    <span class="n">vectors</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fields</span> <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dtype&quot;</span><span class="p">)</span> <span class="ow">in</span> <span class="n">VECTOR_TYPES</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">vectors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;at most 4 vector fields&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">vectors</span><span class="p">:</span>
+        <span class="n">dim</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;dim&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dim</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">dim</span> <span class="o">&lt;=</span> <span class="mi">32768</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;invalid dim for </span><span class="si">{</span><span class="n">f</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="n">ok</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="s2">&quot;dtype&quot;</span><span class="p">:</span> <span class="s2">&quot;INT64&quot;</span><span class="p">,</span> <span class="s2">&quot;is_primary&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;vector&quot;</span><span class="p">,</span> <span class="s2">&quot;dtype&quot;</span><span class="p">:</span> <span class="s2">&quot;FLOAT_VECTOR&quot;</span><span class="p">,</span> <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="mi">768</span><span class="p">},</span>
+<span class="p">]</span>
+<span class="k">assert</span> <span class="n">validate_schema</span><span class="p">(</span><span class="n">ok</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">validate_schema</span><span class="p">(</span><span class="n">ok</span> <span class="o">+</span> <span class="p">[{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;v2&quot;</span><span class="p">,</span> <span class="s2">&quot;dtype&quot;</span><span class="p">:</span> <span class="s2">&quot;FLOAT_VECTOR&quot;</span><span class="p">,</span> <span class="s2">&quot;dim&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}])</span>
+    <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;should fail&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;schema ok&quot;</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-40">37. 实现内存集合的 upsert + filter 删除</h3>
+<p>支持：<code>upsert(rows)</code>、<code>delete(ids=None, filter_prefix=None)</code>。<code>filter_prefix</code> 匹配 <code>color</code> 前缀（模拟 <code>like "red%"</code>）。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MemCollection</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rows</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">upsert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rows</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">filter_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">remove</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">ids</span> <span class="ow">or</span> <span class="p">[])</span>
+        <span class="k">if</span> <span class="n">filter_prefix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">remove</span> <span class="o">|=</span> <span class="p">{</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">filter_prefix</span><span class="p">)}</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">remove</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">remove</span><span class="p">)</span>
+
+
+<span class="n">c</span> <span class="o">=</span> <span class="n">MemCollection</span><span class="p">()</span>
+<span class="n">c</span><span class="o">.</span><span class="n">upsert</span><span class="p">([</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;red_1&quot;</span><span class="p">,</span> <span class="s2">&quot;vector&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;blue_1&quot;</span><span class="p">,</span> <span class="s2">&quot;vector&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;red_9&quot;</span><span class="p">,</span> <span class="s2">&quot;vector&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]},</span>
+<span class="p">])</span>
+<span class="n">c</span><span class="o">.</span><span class="n">upsert</span><span class="p">([{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;blue_2&quot;</span><span class="p">,</span> <span class="s2">&quot;vector&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]}])</span>
+<span class="k">assert</span> <span class="n">c</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="s2">&quot;color&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;blue_2&quot;</span>
+<span class="n">deleted</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">filter_prefix</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">deleted</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">c</span><span class="o">.</span><span class="n">rows</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-41">38. 实现「向量 top-k + 标量过滤」的搜索</h3>
+<p>先按内积取较大者排序，再应用 <code>color like f"{prefix}%"</code>，最后截断 <code>limit</code>。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">filtered_ip_search</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">entities</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">scored</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">prefix</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">e</span><span class="p">[</span><span class="s2">&quot;vector&quot;</span><span class="p">]))</span>
+        <span class="n">scored</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="n">score</span><span class="p">,</span> <span class="n">e</span><span class="p">[</span><span class="s2">&quot;color&quot;</span><span class="p">]))</span>
+    <span class="n">scored</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">scored</span><span class="p">[:</span><span class="n">limit</span><span class="p">]</span>
+
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;vector&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;red_1&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;vector&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;blue_1&quot;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;vector&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;red_2&quot;</span><span class="p">},</span>
+<span class="p">]</span>
+<span class="n">hits</span> <span class="o">=</span> <span class="n">filtered_ip_search</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="n">data</span><span class="p">,</span> <span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="k">assert</span> <span class="p">[</span><span class="n">h</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">hits</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">hits</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-42">39. 实现范围检索：保留 IP 分数落在 <code>(range_filter, radius]</code> 的结果</h3>
+<p>按课件直觉：<code>radius</code> 为外侧边界，<code>range_filter</code> 为内侧边界；本题约定分数满足 <code>range_filter &lt; score &lt;= radius</code>。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">range_ip_search</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">entities</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">range_filter</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">hits</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">entities</span><span class="p">:</span>
+        <span class="n">score</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">e</span><span class="p">[</span><span class="s2">&quot;vector&quot;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">range_filter</span> <span class="o">&lt;</span> <span class="n">score</span> <span class="o">&lt;=</span> <span class="n">radius</span><span class="p">:</span>
+            <span class="n">hits</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">e</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="n">score</span><span class="p">))</span>
+    <span class="n">hits</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">hits</span><span class="p">[:</span><span class="n">limit</span><span class="p">]</span>
+
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;vector&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;vector&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s2">&quot;vector&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.95</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]},</span>
+<span class="p">]</span>
+<span class="c1"># keep moderately high IP, drop near-perfect and weak</span>
+<span class="n">out</span> <span class="o">=</span> <span class="n">range_ip_search</span><span class="p">([</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="n">data</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">0.96</span><span class="p">,</span> <span class="n">range_filter</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="k">assert</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">out</span><span class="p">]</span> <span class="o">==</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-43">40. 实现简化版 RRF 融合两条检索列表</h3>
+<p>对文档 id，RRF 分数为 $\sum_i 1/(k + \mathrm{rank}_i)$，<code>rank</code> 从 0 起；返回按分数降序的 top-n。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">rrf_fuse</span><span class="p">(</span><span class="n">lists</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">ranking</span> <span class="ow">in</span> <span class="n">lists</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">rank</span><span class="p">,</span> <span class="n">doc_id</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ranking</span><span class="p">):</span>
+            <span class="n">scores</span><span class="p">[</span><span class="n">doc_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">scores</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">doc_id</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="n">rank</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">scores</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]))[:</span><span class="n">n</span><span class="p">]</span>
+
+
+<span class="n">fused</span> <span class="o">=</span> <span class="n">rrf_fuse</span><span class="p">([[</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="s2">&quot;C&quot;</span><span class="p">,</span> <span class="s2">&quot;D&quot;</span><span class="p">]],</span> <span class="n">k</span><span class="o">=</span><span class="mi">60</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">fused</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;B&quot;</span>  <span class="c1"># appears high in both</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">fused</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>这与课件 RRFRanker 同思想：无先验权重时，用排名位置融合多路 ANN；<code>k</code> 控制名次衰减速度。</p></div></div>
+
+
+</div><div class="done-bar"><button class="mark-done-btn" data-key="hw59" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="hw58.html"><div class="dir">← 上一篇</div><div class="name">🧭 RAG 项目背景、原理与工程结构综合训练</div></a><a class="next" href="hw49.html"><div class="dir">下一篇 →</div><div class="name">🪄 Prompt-Tuning：PET、软提示与 P-tuning 综合训练</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、选择题（20 题）</a><a class="lv3" href="#sec-2">1. Milvus 作为向量数据库，最核心的设计目标是？</a><a class="lv3" href="#sec-3">2. 非结构化数据转为计算机可比较形式的关键步骤通常是？</a><a class="lv3" href="#sec-4">3. 向量相似度搜索为加速常用哪类算法思想？</a><a class="lv3" href="#sec-5">4. 在 Milvus 与关系数据库的对应关系中，Collection 更接近？</a><a class="lv3" href="#sec-6">5. 关于主键字段，课件明确的约束是？</a><a class="lv3" href="#sec-7">6. 课件提到一个 Collection 最多支持几个向量 Field？</a><a class="lv3" href="#sec-8">7. 向量字段 dim 的合法范围（课件给出）是？</a><a class="lv3" href="#sec-9">8. VARCHAR 字段的 max_length 课件给出的范围是？</a><a class="lv3" href="#sec-10">9. 若创建 Collection 时未指定索引类型，Milvus 默认行为是？</a><a class="lv3" href="#sec-11">10. FLAT 索引最适合的场景是？</a><a class="lv3" href="#sec-12">11. IVF_FLAT 中增大 nprobe 的直接影响是？</a><a class="lv3" href="#sec-13">12. IVF_SQ8 相对 IVF_FLAT 的关键压缩手段是？</a><a class="lv3" href="#sec-14">13. IVF_PQ 结合了哪两类技术？</a><a class="lv3" href="#sec-15">14. HNSW 被课件归类为？</a><a class="lv3" href="#sec-16">15. 对浮点嵌入，课件列出的常用度量不包括？</a><a class="lv3" href="#sec-17">16. MilvusClient(uri=&quot;milvus_demo.db&quot;) 与 uri=&quot;http://localhost:19530&quot; 的区别是？</a><a class="lv3" href="#sec-18">17. enable_dynamic_field=True 时，未在 Schema 声明的字段通常会？</a><a class="lv3" href="#sec-19">18. upsert 的语义是？</a><a class="lv3" href="#sec-20">19. 过滤搜索示例 color like &quot;red%&quot; 的作用是？</a><a class="lv3" href="#sec-21">20. 范围搜索中 radius 与 range_filter 更准确的理解是？</a><a class="lv2" href="#sec-22">二、简答题（12 题）</a><a class="lv3" href="#sec-23">21. 用对比句说明：Milvus 与 MySQL 各自更擅长什么？</a><a class="lv3" href="#sec-24">22. 解释「两个嵌入向量很相似 ⇒ 原始对象也可能相似」成立的前提与风险。</a><a class="lv3" href="#sec-25">23. 写出创建 Collection 前 Field schema 至少应 prioritise 的 4 个决策点。</a><a class="lv3" href="#sec-26">24. 为什么说「索引是搜索前必须想清楚的组织方式」？</a><a class="lv3" href="#sec-27">25. 简述 IVF_FLAT 的三步：聚类、倒排、查询。</a><a class="lv3" href="#sec-28">26. 在什么业务条件下你更倾向 FLAT，而不是 IVF_PQ？</a><a class="lv3" href="#sec-29">27. 说明 L2、IP、COSINE 各自更「敏感」的几何含义（直觉即可）。</a><a class="lv3" href="#sec-30">28. insert 到指定 partition_name 有什么工程价值？</a><a class="lv3" href="#sec-31">29. 单向量 search、批量 search、多向量 hybrid_search 三者差别？</a><a class="lv3" href="#sec-32">30. WeightedRanker 与 RRFRanker 如何选型？</a><a class="lv3" href="#sec-33">31. 为什么过滤条件写错（如字段未建或类型不匹配）会比「向量不准」更隐蔽？</a><a class="lv3" href="#sec-34">32. Milvus Lite 本地 .db 文件带来的开发便利与生产局限各是什么？</a><a class="lv2" href="#sec-35">三、代码题（8 题）</a><a class="lv3" href="#sec-36">33. 实现 L2 / 内积 / 余弦三种度量</a><a class="lv3" href="#sec-37">34. 实现 FLAT top-k 搜索（越小越好用 L2）</a><a class="lv3" href="#sec-38">35. 用极简 IVF 模拟 nprobe 对候选集的影响</a><a class="lv3" href="#sec-39">36. 实现 Schema 校验器：主键唯一、向量维一致、最多 4 个向量场</a><a class="lv3" href="#sec-40">37. 实现内存集合的 upsert + filter 删除</a><a class="lv3" href="#sec-41">38. 实现「向量 top-k + 标量过滤」的搜索</a><a class="lv3" href="#sec-42">39. 实现范围检索：保留 IP 分数落在 (range_filter, radius] 的结果</a><a class="lv3" href="#sec-43">40. 实现简化版 RRF 融合两条检索列表</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 仅供个人学习使用，请勿传播 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
