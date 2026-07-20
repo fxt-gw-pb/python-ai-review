@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RAG 评估框架与指标综合训练 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../lessons.html">课程讲义</a>
+    <a href="../homework.html" class="active">课后练习</a>
+    <a href="../projects.html">实战项目</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">11</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">12</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson58" href="../lessons/lesson58.html"><span class="no">19</span><span>NumPy 统计计算与科学分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">20</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">21</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">22</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">23</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">24</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">25</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">26</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">27</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">28</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">29</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">30</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">31</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">32</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">33</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">34</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">35</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">36</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">37</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">38</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">39</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">40</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">41</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">42</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">43</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">44</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">45</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">46</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">47</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">48</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">49</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">50</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">51</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">📘 医学知识图谱</div><a class="item" data-page-key="lesson51" href="../lessons/lesson51.html"><span class="no">52</span><span>知识图谱基础与医学图谱架构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson52" href="../lessons/lesson52.html"><span class="no">53</span><span>数据标注、查询语言与 Neo4j 工具链</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson53" href="../lessons/lesson53.html"><span class="no">54</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson54" href="../lessons/lesson54.html"><span class="no">55</span><span>关系抽取：规则、Pipeline 与 CasRel</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson55" href="../lessons/lesson55.html"><span class="no">56</span><span>知识融合：实体统一、链接与消歧</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson56" href="../lessons/lesson56.html"><span class="no">57</span><span>Neo4j 医学图谱搭建与质量验证</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson57" href="../lessons/lesson57.html"><span class="no">58</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">21</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">22</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">24</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">25</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">27</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">28</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">29</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">30</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">31</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">32</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw33" href="../homework/hw33.html"><span class="no">33</span><span>卷积神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw34" href="../homework/hw34.html"><span class="no">34</span><span>循环神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw35" href="../homework/hw35.html"><span class="no">35</span><span>自然语言处理入门与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw36" href="../homework/hw36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw37" href="../homework/hw37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw38" href="../homework/hw38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw39" href="../homework/hw39.html"><span class="no">39</span><span>Transformer 架构与工程实现综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw40" href="../homework/hw40.html"><span class="no">40</span><span>Transformer 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw41" href="../homework/hw41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw42" href="../homework/hw42.html"><span class="no">42</span><span>FastText：文本分类与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw43" href="../homework/hw43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw44" href="../homework/hw44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw45" href="../homework/hw45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw46" href="../homework/hw46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw47" href="../homework/hw47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw48" href="../homework/hw48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw58" href="../homework/hw58.html"><span class="no">49</span><span>RAG 项目背景、原理与工程结构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw59" href="../homework/hw59.html"><span class="no">50</span><span>Milvus：向量数据库原理与操作综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw60" href="../homework/hw60.html"><span class="no">51</span><span>BM25：稀疏检索原理与实现综合训练</span><span class="done-flag">✅</span></a><a class="item hw active" data-page-key="hw61" href="../homework/hw61.html"><span class="no">52</span><span>RAG 评估框架与指标综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw49" href="../homework/hw49.html"><span class="no">53</span><span>Prompt-Tuning：PET、软提示与 P-tuning 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw50" href="../homework/hw50.html"><span class="no">54</span><span>PEFT：Prefix、Adapter、LoRA 与 QLoRA 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw51" href="../homework/hw51.html"><span class="no">55</span><span>知识图谱基础与医学图谱架构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw52" href="../homework/hw52.html"><span class="no">56</span><span>数据标注、查询语言与 Neo4j 工具链综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw53" href="../homework/hw53.html"><span class="no">57</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw54" href="../homework/hw54.html"><span class="no">58</span><span>关系抽取：规则、Pipeline 与 CasRel 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw55" href="../homework/hw55.html"><span class="no">59</span><span>知识融合：实体统一、链接与消歧综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw56" href="../homework/hw56.html"><span class="no">60</span><span>Neo4j 医学图谱搭建与质量验证综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw57" href="../homework/hw57.html"><span class="no">61</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project07" href="../projects/project07.html"><span class="no">07</span><span>医学知识图谱：从信息抽取到 KBQA</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="../homework.html">课后练习</a> / 练习 52</div>
+<h1>📏 RAG 评估框架与指标综合训练</h1>
+<div class="chips"><span class="chip amber">🏷️ 选择 + 简答 + 代码</span><span class="chip amber">🏷️ 40 题</span><a class="chip" href="../projects/project02-20.html">📖 相关章节：RAG 评估框架与指标</a><a class="chip green" href="../projects/project02.html">🚀 所属项目：EduRAG：企业私有知识智能问答</a></div>
+</div>
+<p>40 道练习，覆盖为何要评 RAG、RAGAS 数据字段、检索侧（上下文相关性 / 召回）与生成侧（忠实度 / 答案相关性）四类指标，以及「低分该改检索还是改生成」的诊断思路。</p>
+<blockquote>
+<p>建议先独立作答，再展开参考答案。代码题用纯 Python 模拟指标计算，不调用真实 LLM / RAGAS 库。</p>
+</blockquote>
+<h2 id="sec-1">一、选择题（20 题）</h2>
+<div class="q-card"><h3 id="sec-2">1. 上线前评估 RAG 的首要工程目的是？</h3>
+<p>A. 只为了打印更长的日志<br />
+B. 得到可对比的指标，判断改动是否真的有效<br />
+C. 取消全部检索<br />
+D. 把向量维度改成随机数</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 课件强调：先评估再自动化对比，才能确认新流程是否改进。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-3">2. RAGAS 名称更贴近的含义是？</h3>
+<p>A. Random Attention Graph Search<br />
+B. Retrieval Augmented Generation Assessment（检索增强生成的自动评估）<br />
+C. Redis And GPU Auto Scaling<br />
+D. Relational Algebra Generator API</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 课件称其为 Automated Evaluation of Retrieval Augmented Generation。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-4">3. RAGAS 评估主要覆盖哪两个方向？</h3>
+<p>A. 仅 GPU 温度与磁盘空间<br />
+B. 检索部分与生成部分<br />
+C. 仅前端样式与颜色<br />
+D. 仅操作系统内核</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 不同方向用不同指标：上下文相关/召回 vs 忠实度/答案相关。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-5">4. 评估样本字段 <code>question</code> 指的是？</h3>
+<p>A. 检索到的全部 PDF 原文<br />
+B. 作为 RAG 管道输入的用户查询<br />
+C. 仅模型的系统提示<br />
+D. 仅 GPU 型号</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 它是评测输入侧的核心字段。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-6">5. 字段 <code>contexts</code> 表示？</h3>
+<p>A. 训练损失函数<br />
+B. 为回答问题而从外部知识源检索到的上下文<br />
+C. 仅 ground truth 全文<br />
+D. 仅 tokenizer 词表</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 检索质量评估主要看 contexts 是否相关、是否覆盖真实答案所需信息。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-7">6. 字段 <code>ground_truths</code> 在课件中的特殊地位是？</h3>
+<p>A. 可以完全随机生成且不必人工看<br />
+B. 是唯一需要人工注释的基本事实答案信息<br />
+C. 等于 contexts<br />
+D. 等于 answer</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 早期 RAGAS 部分指标可少依赖人工，但召回等仍常需要 GT；课件明确将其标为人工注释信息。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-8">7. 评估检索（context）侧的两个指标是？</h3>
+<p>A. BLEU 与 ROUGE<br />
+B. 上下文相关性（context relevancy）与上下文召回率（context recall）<br />
+C. 仅学习率与 batch size<br />
+D. 仅 FPS 与延迟</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 课件：衡量检索段落是否相关、是否覆盖所需信息。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-9">8. 评估生成（answer）侧的两个指标是？</h3>
+<p>A. 忠实度（faithfulness）与答案相关性（answer relevancy）<br />
+B. 仅 nprobe 与 k1<br />
+C. 仅磁盘 IOPS<br />
+D. 仅 Collection 数量</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 忠实度看是否依据上下文；答案相关性看是否切题。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-10">9. 上下文相关性（context relevancy）主要惩罚什么？</h3>
+<p>A. 答案太短<br />
+B. 检索上下文夹带大量回答问题所不需要的冗余信息<br />
+C. 向量维度是偶数<br />
+D. 使用了 BM25</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 理想上下文应「够用且精炼」；比率越高通常表示相关越强。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-11">10. 课件计算上下文相关性的大致步骤是？</h3>
+<p>A. 随机删一半句子<br />
+B. 用 LLM 从上下文抽出对答题关键的句子，再按相关句占比计分<br />
+C. 只比较字符串编辑距离<br />
+D. 只看 GPU 利用率</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 若无法从上下文回答，提示要求返回「信息不足」；且不得改写原句。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-12">11. 上下文召回率（context recall）衡量的是？</h3>
+<p>A. 答案是否幽默<br />
+B. 真实答案中的声明有多少能归因于检索上下文<br />
+C. 仅 Prompt 长度<br />
+D. 仅模型参数量</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 分数通常在 0~1，越高越好；理想情况 GT 的全部声明都应可归因。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-13">12. 课件世界杯例子中，Context Recall = 0.5 是因为？</h3>
+<p>A. 两个声明都被召回<br />
+B. 两个声明中只有「冠军是西班牙」可归因，比分 1-0 未在上下文中<br />
+C. 没有检索到任何上下文<br />
+D. 公式分母为 0</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 总声明 2，召回 1，故 $1/2=0.5$。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-14">13. 忠实度（faithfulness）低，更直接暗示？</h3>
+<p>A. 磁盘快满了<br />
+B. 生成答案未遵循检索知识，幻觉风险上升<br />
+C. 一定是 BM25 参数错了<br />
+D. 一定是 CSS 写错了</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 忠实度要求答案可由给定上下文推出，用于抑制「检索对了但仍瞎编」。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-15">14. 忠实度分数 $F=|V|/|S|$ 中 $|V|$ 与 $|S|$ 是？</h3>
+<p>A. $|V|$ 为向量维度，$|S|$ 为样本数<br />
+B. $|V|$ 为被判定「可由上下文支持」的陈述数，$|S|$ 为从答案抽出的陈述总数<br />
+C. 二者都是文档长度<br />
+D. 二者都是学习率</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 先抽陈述，再逐条验证是否可从上下文推断。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-16">15. 答案相关性（answer relevancy）关注的是？</h3>
+<p>A. 答案与查询是否切题相关<br />
+B. 答案是否逐字复制上下文<br />
+C. 仅上下文是否含冗余<br />
+D. 仅 GT 声明数</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 分数越高相关性越好；它不直接等于忠实度。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-17">16. 答案相关性的实现要点是？</h3>
+<p>A. 从答案生成若干可能问题，再与原问题做嵌入余弦相似度并平均<br />
+B. 只比较答案字符长度<br />
+C. 只比较 contexts 数量<br />
+D. 随机给 0 或 1</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 若答案跑题，反推问题会与原 query 方向偏离，平均相似度下降。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-18">17. 若 context recall 很低、faithfulness 很高，更优先排查？</h3>
+<p>A. 生成温度<br />
+B. 检索是否漏掉 GT 所需证据<br />
+C. 浏览器缓存<br />
+D. logo 颜色</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 召回低说明上下文覆盖不足；忠实高只说明「在已有上下文内」生成较守据，不能弥补没检索到的事实。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-19">18. 若 context relevancy 很低、context recall 尚可，更可能的问题是？</h3>
+<p>A. 检索到了有用信息，但也塞进大量无关段落<br />
+B. 完全没有 GT<br />
+C. 模型不会分词<br />
+D. 没有 question 字段</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 冗余上下文抬高噪声、浪费窗口，相关句占比下降。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-20">19. 若 faithfulness 很低、answer relevancy 尚可，典型现象是？</h3>
+<p>A. 答案听起来切题，但关键事实不是依据上下文推出（易幻觉）<br />
+B. 答案完全空白<br />
+C. 检索模块未启动且指标仍完美<br />
+D. 只有 BM25 能救</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 切题 ≠ 有据；需要强化「依据上下文作答 / 不足则拒答」的 Prompt 与约束。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-21">20. 下列哪项不是「只盯单一指标」的风险？</h3>
+<p>A. 只追答案相关性可能鼓励空泛但切题的套话<br />
+B. 只追忠实度可能鼓励「安全但未完整回答」<br />
+C. 多指标联看才能定位检索/生成瓶颈<br />
+D. 四指标永远同升同降，所以看一个就够</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> 指标会此消彼长；工程上要联看并配合人工抽检与延迟/成本。</p></div></div>
+
+
+</div><h2 id="sec-22">二、简答题（12 题）</h2>
+<div class="q-card"><h3 id="sec-23">21. 为什么「感觉回答还行」不能替代 RAGAS 一类自动评估？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>主观感觉难复现、难对比版本差异，也难覆盖长尾问题。自动指标提供可回归的数值信号，再配合人工抽检，才能支撑持续迭代。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-24">22. 列出评测样本最小字段集，并说明缺谁会卡住哪类指标。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><code>question</code>、<code>answer</code>、<code>contexts</code> 几乎处处需要；<code>ground_truths</code> 对 context recall 等「相对 GT」的指标关键。缺 contexts 无法评检索与忠实；缺 GT 则召回难算准。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-25">23. 用一句话区分 context relevancy 与 context recall。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>Relevancy：检索到的内容有多少是答题真正需要的（精不精）；Recall：真实答案所需信息有多少被检索覆盖（全不全）。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-26">24. 解释课件中「不得更改给定上下文中的句子」对相关句抽取的意义。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>防止 LLM 改写后「看起来相关」却无法回溯原文，保证抽取结果可定位到真实检索片段，评测更可审计。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-27">25. 为什么 context recall 要以「声明（claim）」而不是整段字符串相等来判断？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>真实答案常含多条可独立验证的事实；逐条归因能区分「部分覆盖」。整段相等过严，也难以处理表述差异。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-28">26. 忠实度评估两步（抽陈述 → 验证）各自失败会怎样？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>抽陈述失败：漏掉胡编内容或过度切碎导致不稳定。验证失败/偏松：把无依据陈述判成支持，忠实度虚高。两边都依赖评测 LLM 质量与提示约束。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-29">27. 答案相关性用「反推问题 + 嵌入相似」有什么局限？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>评测 LLM/嵌入模型偏差会影响分数；答案很短或模板化时可能虚高；它也不保证事实正确。需与忠实度、人工抽检一起看。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-30">28. 给出一个「改进检索」相对「改进生成」的决策表（各两行）。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><ul>
+<li>召回低、相关低 → 改切分/索引/top-k/混合检索。  </li>
+<li>相关低、召回尚可 → 加强过滤/重排，减少冗余。  </li>
+<li>忠实低 → 改 Prompt、引用约束、降温度、拒答策略。  </li>
+<li>答案相关低 → 改指令遵循、问题改写、输出格式。</li>
+</ul></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-31">29. 为什么自动化评估仍需要抽样人工复核？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>评测 LLM 自己会错判支持关系；业务合规、语气、安全问题也不被这四指标完全覆盖。人工复核校准阈值与坏案例库。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-32">30. 若两套 RAG 流水线：A 四指标略高但延迟翻倍，B 略低但更快，你如何汇报？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>同时报告质量指标与成本/延迟，并按业务容忍度给建议（例如先用 B 服务、对高风险问题走 A）。单报均值指标不够做上线决策。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-33">31. <code>ground_truths</code> 质量差会如何污染评估？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>召回会被错误 GT 误导：漏标事实会低估召回，错标事实会奖励错误检索。GT 需要版本管理与双人抽检。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-34">32. 把 RAGAS 分数从 0.72 提到 0.75，是否一定说明用户体验更好？为什么？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>不一定。可能只是评测提示/模型变了，或优化了评测集过拟合项。要用固定评测协议、冻结评测模型版本，并看线上反馈与人工分。</p></div></div>
+
+
+</div><h2 id="sec-35">三、代码题（8 题）</h2>
+<div class="q-card"><h3 id="sec-36">33. 校验评估样本 Schema</h3>
+<p>每条样本必须含 <code>question</code>、<code>answer</code>、<code>contexts</code>（非空 list[str]）；<code>ground_truths</code> 可选但若存在须为非空 list[str]。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">validate_sample</span><span class="p">(</span><span class="n">sample</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;question&quot;</span><span class="p">,</span> <span class="s2">&quot;answer&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">sample</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;invalid </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">ctx</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;contexts&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ctx</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">ctx</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ctx</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid contexts&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;ground_truths&quot;</span> <span class="ow">in</span> <span class="n">sample</span><span class="p">:</span>
+        <span class="n">gt</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s2">&quot;ground_truths&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">gt</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">gt</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;invalid ground_truths&quot;</span><span class="p">)</span>
+
+
+<span class="n">validate_sample</span><span class="p">({</span>
+    <span class="s2">&quot;question&quot;</span><span class="p">:</span> <span class="s2">&quot;谁夺冠？&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;answer&quot;</span><span class="p">:</span> <span class="s2">&quot;西班牙。&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;contexts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;2010年世界杯冠军是西班牙。&quot;</span><span class="p">],</span>
+    <span class="s2">&quot;ground_truths&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;2010年世界杯的冠军是西班牙。&quot;</span><span class="p">],</span>
+<span class="p">})</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">validate_sample</span><span class="p">({</span><span class="s2">&quot;question&quot;</span><span class="p">:</span> <span class="s2">&quot;q&quot;</span><span class="p">,</span> <span class="s2">&quot;answer&quot;</span><span class="p">:</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;contexts&quot;</span><span class="p">:</span> <span class="p">[]})</span>
+    <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s2">&quot;should fail&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;schema ok&quot;</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-37">34. 计算上下文相关性：相关句数 / 总句数</h3>
+<p>给定上下文句子列表与「是否相关」布尔标记（模拟 LLM 抽取结果）。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">context_relevancy</span><span class="p">(</span><span class="n">flags</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">flags</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">flags</span> <span class="k">if</span> <span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">flags</span><span class="p">)</span>
+
+
+<span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">context_relevancy</span><span class="p">([</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-9</span>
+<span class="k">assert</span> <span class="n">context_relevancy</span><span class="p">([])</span> <span class="o">==</span> <span class="mf">0.0</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">context_relevancy</span><span class="p">([</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-38">35. 计算上下文召回：可归因 GT 声明数 / GT 声明总数</h3>
+<p>用课件世界杯例子验证应为 0.5。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">context_recall</span><span class="p">(</span><span class="n">claim_supported</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">claim_supported</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">claim_supported</span> <span class="k">if</span> <span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">claim_supported</span><span class="p">)</span>
+
+
+<span class="c1"># 声明1可归因，声明2（含1-0）不可归因</span>
+<span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">context_recall</span><span class="p">([</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">])</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-9</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">context_recall</span><span class="p">([</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-39">36. 计算忠实度：$F=|V|/|S|$</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">faithfulness</span><span class="p">(</span><span class="n">supported</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">supported</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">supported</span> <span class="k">if</span> <span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">supported</span><span class="p">)</span>
+
+
+<span class="k">assert</span> <span class="nb">abs</span><span class="p">(</span><span class="n">faithfulness</span><span class="p">([</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">])</span> <span class="o">-</span> <span class="mf">0.75</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-9</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">faithfulness</span><span class="p">([</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-40">37. 计算答案相关性：反推问题嵌入与原问题的平均余弦相似</h3>
+<p>用纯 Python 余弦；嵌入以「词袋计数向量」在共享词表上表示（教学用）。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">bag_vec</span><span class="p">(</span><span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">vocab</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    <span class="k">return</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="n">w</span><span class="p">])</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">vocab</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">cosine</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">ip</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">))</span>
+    <span class="n">na</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">x</span> <span class="o">*</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">a</span><span class="p">))</span>
+    <span class="n">nb</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">y</span> <span class="o">*</span> <span class="n">y</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">b</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">na</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">nb</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">0.0</span>
+    <span class="k">return</span> <span class="n">ip</span> <span class="o">/</span> <span class="p">(</span><span class="n">na</span> <span class="o">*</span> <span class="n">nb</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">answer_relevancy</span><span class="p">(</span><span class="n">question</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">generated_questions</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="n">vocab</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">({</span><span class="n">w</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="p">[</span><span class="n">question</span><span class="p">,</span> <span class="o">*</span><span class="n">generated_questions</span><span class="p">]</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">t</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()})</span>
+    <span class="n">qv</span> <span class="o">=</span> <span class="n">bag_vec</span><span class="p">(</span><span class="n">question</span><span class="p">,</span> <span class="n">vocab</span><span class="p">)</span>
+    <span class="n">sims</span> <span class="o">=</span> <span class="p">[</span><span class="n">cosine</span><span class="p">(</span><span class="n">qv</span><span class="p">,</span> <span class="n">bag_vec</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">vocab</span><span class="p">))</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">generated_questions</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">sims</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">sims</span><span class="p">)</span> <span class="k">if</span> <span class="n">sims</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+
+<span class="n">q</span> <span class="o">=</span> <span class="s2">&quot;who won the 2010 world cup&quot;</span>
+<span class="n">good</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;which team won world cup 2010&quot;</span><span class="p">,</span> <span class="s2">&quot;who was 2010 world cup champion&quot;</span><span class="p">]</span>
+<span class="n">bad</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;how to cook pasta&quot;</span><span class="p">,</span> <span class="s2">&quot;what is the weather today&quot;</span><span class="p">]</span>
+<span class="k">assert</span> <span class="n">answer_relevancy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">good</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">answer_relevancy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">bad</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">answer_relevancy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">good</span><span class="p">),</span> <span class="n">answer_relevancy</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">bad</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-41">38. 指标诊断器：根据四指标给出优先动作</h3>
+<p>规则（可简化）：<br />
+- recall &lt; 0.5 → <code>improve_retrieval_coverage</code><br />
+- relevancy &lt; 0.5 → <code>reduce_context_noise</code><br />
+- faith &lt; 0.5 → <code>ground_generation</code><br />
+- ans_rel &lt; 0.5 → <code>improve_answer_focus</code><br />
+可返回多个标签，按上面优先级排序。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">diagnose</span><span class="p">(</span><span class="n">metrics</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="n">actions</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;context_recall&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="n">actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;improve_retrieval_coverage&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;context_relevancy&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="n">actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;reduce_context_noise&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;faithfulness&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="n">actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;ground_generation&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">metrics</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;answer_relevancy&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">0.5</span><span class="p">:</span>
+        <span class="n">actions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;improve_answer_focus&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">actions</span>
+
+
+<span class="k">assert</span> <span class="n">diagnose</span><span class="p">({</span><span class="s2">&quot;context_recall&quot;</span><span class="p">:</span> <span class="mf">0.3</span><span class="p">,</span> <span class="s2">&quot;context_relevancy&quot;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span>
+                 <span class="s2">&quot;faithfulness&quot;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span> <span class="s2">&quot;answer_relevancy&quot;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">})</span> <span class="o">==</span> <span class="p">[</span>
+    <span class="s2">&quot;improve_retrieval_coverage&quot;</span>
+<span class="p">]</span>
+<span class="k">assert</span> <span class="s2">&quot;ground_generation&quot;</span> <span class="ow">in</span> <span class="n">diagnose</span><span class="p">({</span><span class="s2">&quot;context_recall&quot;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span> <span class="s2">&quot;context_relevancy&quot;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span>
+                                        <span class="s2">&quot;faithfulness&quot;</span><span class="p">:</span> <span class="mf">0.2</span><span class="p">,</span> <span class="s2">&quot;answer_relevancy&quot;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">diagnose</span><span class="p">({</span><span class="s2">&quot;context_recall&quot;</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span> <span class="s2">&quot;context_relevancy&quot;</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span>
+                <span class="s2">&quot;faithfulness&quot;</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">,</span> <span class="s2">&quot;answer_relevancy&quot;</span><span class="p">:</span> <span class="mf">0.4</span><span class="p">}))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-42">39. 对比两套流水线：在固定权重下算综合分并选出胜者</h3>
+<p>综合分 $=0.25\sum$ 四指标；并列时选延迟更低者。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">aggregate</span><span class="p">(</span><span class="n">metrics</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="n">keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;context_relevancy&quot;</span><span class="p">,</span> <span class="s2">&quot;context_recall&quot;</span><span class="p">,</span> <span class="s2">&quot;faithfulness&quot;</span><span class="p">,</span> <span class="s2">&quot;answer_relevancy&quot;</span><span class="p">]</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">metrics</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">)</span> <span class="o">/</span> <span class="mf">4.0</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">pick_winner</span><span class="p">(</span><span class="n">a</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">b</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="n">sa</span><span class="p">,</span> <span class="n">sb</span> <span class="o">=</span> <span class="n">aggregate</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="s2">&quot;metrics&quot;</span><span class="p">]),</span> <span class="n">aggregate</span><span class="p">(</span><span class="n">b</span><span class="p">[</span><span class="s2">&quot;metrics&quot;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">sa</span> <span class="o">-</span> <span class="n">sb</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-9</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;A&quot;</span> <span class="k">if</span> <span class="n">a</span><span class="p">[</span><span class="s2">&quot;latency_ms&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">b</span><span class="p">[</span><span class="s2">&quot;latency_ms&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="s2">&quot;B&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot;A&quot;</span> <span class="k">if</span> <span class="n">sa</span> <span class="o">&gt;</span> <span class="n">sb</span> <span class="k">else</span> <span class="s2">&quot;B&quot;</span>
+
+
+<span class="n">A</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;metrics&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;context_relevancy&quot;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span> <span class="s2">&quot;context_recall&quot;</span><span class="p">:</span> <span class="mf">0.7</span><span class="p">,</span>
+                 <span class="s2">&quot;faithfulness&quot;</span><span class="p">:</span> <span class="mf">0.9</span><span class="p">,</span> <span class="s2">&quot;answer_relevancy&quot;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">},</span> <span class="s2">&quot;latency_ms&quot;</span><span class="p">:</span> <span class="mi">800</span><span class="p">}</span>
+<span class="n">B</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;metrics&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;context_relevancy&quot;</span><span class="p">:</span> <span class="mf">0.75</span><span class="p">,</span> <span class="s2">&quot;context_recall&quot;</span><span class="p">:</span> <span class="mf">0.75</span><span class="p">,</span>
+                 <span class="s2">&quot;faithfulness&quot;</span><span class="p">:</span> <span class="mf">0.75</span><span class="p">,</span> <span class="s2">&quot;answer_relevancy&quot;</span><span class="p">:</span> <span class="mf">0.75</span><span class="p">},</span> <span class="s2">&quot;latency_ms&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">}</span>
+<span class="k">assert</span> <span class="n">pick_winner</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;A&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">aggregate</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="s2">&quot;metrics&quot;</span><span class="p">]),</span> <span class="n">pick_winner</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-43">40. 迷你评测挂架：对数据集逐条套用「假 LLM 判决」并汇总均值</h3>
+<p>用可注入的 <code>judge</code> 函数模拟陈述支持与相关句标记，输出四指标均值。</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">mean</span><span class="p">(</span><span class="n">xs</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span> <span class="k">if</span> <span class="n">xs</span> <span class="k">else</span> <span class="mf">0.0</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">evaluate</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">judge</span><span class="p">):</span>
+    <span class="n">rel</span><span class="p">,</span> <span class="n">rec</span><span class="p">,</span> <span class="n">faith</span><span class="p">,</span> <span class="n">ans</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">dataset</span><span class="p">:</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">judge</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">rel</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;ctx_flags&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;ctx_flags&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;ctx_flags&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">rec</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;gt_flags&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;gt_flags&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;gt_flags&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">faith</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;ans_flags&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;ans_flags&quot;</span><span class="p">])</span> <span class="k">if</span> <span class="n">r</span><span class="p">[</span><span class="s2">&quot;ans_flags&quot;</span><span class="p">]</span> <span class="k">else</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="n">ans</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;answer_relevancy&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;context_relevancy&quot;</span><span class="p">:</span> <span class="n">mean</span><span class="p">(</span><span class="n">rel</span><span class="p">),</span>
+        <span class="s2">&quot;context_recall&quot;</span><span class="p">:</span> <span class="n">mean</span><span class="p">(</span><span class="n">rec</span><span class="p">),</span>
+        <span class="s2">&quot;faithfulness&quot;</span><span class="p">:</span> <span class="n">mean</span><span class="p">(</span><span class="n">faith</span><span class="p">),</span>
+        <span class="s2">&quot;answer_relevancy&quot;</span><span class="p">:</span> <span class="n">mean</span><span class="p">(</span><span class="n">ans</span><span class="p">),</span>
+    <span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">toy_judge</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+    <span class="c1"># 教学：上下文句若含问题关键字则相关；GT 声明若被某句包含则召回；</span>
+    <span class="c1"># 答案陈述若都能在上下文找到子串则忠实；答案相关性给固定演示值。</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;question&quot;</span><span class="p">]</span>
+    <span class="n">ctx_flags</span> <span class="o">=</span> <span class="p">[</span><span class="nb">any</span><span class="p">(</span><span class="n">tok</span> <span class="ow">in</span> <span class="n">sent</span> <span class="k">for</span> <span class="n">tok</span> <span class="ow">in</span> <span class="n">q</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">tok</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">)</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;contexts&quot;</span><span class="p">]]</span>
+    <span class="n">gt_flags</span> <span class="o">=</span> <span class="p">[</span><span class="nb">any</span><span class="p">(</span><span class="n">claim</span> <span class="ow">in</span> <span class="n">sent</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;contexts&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">claim</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;ground_truths&quot;</span><span class="p">]]</span>
+    <span class="n">statements</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;answer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;。&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">strip</span><span class="p">()]</span>
+    <span class="n">ans_flags</span> <span class="o">=</span> <span class="p">[</span><span class="nb">any</span><span class="p">(</span><span class="n">st</span> <span class="ow">in</span> <span class="n">sent</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;contexts&quot;</span><span class="p">])</span> <span class="k">for</span> <span class="n">st</span> <span class="ow">in</span> <span class="n">statements</span><span class="p">]</span> <span class="ow">or</span> <span class="p">[</span><span class="kc">False</span><span class="p">]</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;ctx_flags&quot;</span><span class="p">:</span> <span class="n">ctx_flags</span><span class="p">,</span>
+        <span class="s2">&quot;gt_flags&quot;</span><span class="p">:</span> <span class="n">gt_flags</span><span class="p">,</span>
+        <span class="s2">&quot;ans_flags&quot;</span><span class="p">:</span> <span class="n">ans_flags</span><span class="p">,</span>
+        <span class="s2">&quot;answer_relevancy&quot;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<span class="n">data</span> <span class="o">=</span> <span class="p">[{</span>
+    <span class="s2">&quot;question&quot;</span><span class="p">:</span> <span class="s2">&quot;西班牙 世界杯&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;answer&quot;</span><span class="p">:</span> <span class="s2">&quot;2010年世界杯的冠军是西班牙。&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;contexts&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;2010年世界杯的冠军是西班牙，西班牙队首次赢得世界杯。&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;天气预报说明天有雨。&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;ground_truths&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;2010年世界杯的冠军是西班牙。&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;西班牙在决赛中以1-0击败了荷兰。&quot;</span><span class="p">,</span>
+    <span class="p">],</span>
+<span class="p">}]</span>
+<span class="n">report</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">toy_judge</span><span class="p">)</span>
+<span class="k">assert</span> <span class="mf">0.0</span> <span class="o">&lt;=</span> <span class="n">report</span><span class="p">[</span><span class="s2">&quot;context_recall&quot;</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="mf">1.0</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">report</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>真实 RAGAS 用评测 LLM 完成抽取与判定；本挂架展示「逐条判决 → 聚合均值」的工程骨架，便于接入固定评测集做回归。</p></div></div>
+
+
+</div><div class="done-bar"><button class="mark-done-btn" data-key="hw61" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="hw60.html"><div class="dir">← 上一篇</div><div class="name">🔎 BM25：稀疏检索原理与实现综合训练</div></a><a class="next" href="hw49.html"><div class="dir">下一篇 →</div><div class="name">🪄 Prompt-Tuning：PET、软提示与 P-tuning 综合训练</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、选择题（20 题）</a><a class="lv3" href="#sec-2">1. 上线前评估 RAG 的首要工程目的是？</a><a class="lv3" href="#sec-3">2. RAGAS 名称更贴近的含义是？</a><a class="lv3" href="#sec-4">3. RAGAS 评估主要覆盖哪两个方向？</a><a class="lv3" href="#sec-5">4. 评估样本字段 question 指的是？</a><a class="lv3" href="#sec-6">5. 字段 contexts 表示？</a><a class="lv3" href="#sec-7">6. 字段 ground_truths 在课件中的特殊地位是？</a><a class="lv3" href="#sec-8">7. 评估检索（context）侧的两个指标是？</a><a class="lv3" href="#sec-9">8. 评估生成（answer）侧的两个指标是？</a><a class="lv3" href="#sec-10">9. 上下文相关性（context relevancy）主要惩罚什么？</a><a class="lv3" href="#sec-11">10. 课件计算上下文相关性的大致步骤是？</a><a class="lv3" href="#sec-12">11. 上下文召回率（context recall）衡量的是？</a><a class="lv3" href="#sec-13">12. 课件世界杯例子中，Context Recall = 0.5 是因为？</a><a class="lv3" href="#sec-14">13. 忠实度（faithfulness）低，更直接暗示？</a><a class="lv3" href="#sec-15">14. 忠实度分数 $F=|V|/|S|$ 中 $|V|$ 与 $|S|$ 是？</a><a class="lv3" href="#sec-16">15. 答案相关性（answer relevancy）关注的是？</a><a class="lv3" href="#sec-17">16. 答案相关性的实现要点是？</a><a class="lv3" href="#sec-18">17. 若 context recall 很低、faithfulness 很高，更优先排查？</a><a class="lv3" href="#sec-19">18. 若 context relevancy 很低、context recall 尚可，更可能的问题是？</a><a class="lv3" href="#sec-20">19. 若 faithfulness 很低、answer relevancy 尚可，典型现象是？</a><a class="lv3" href="#sec-21">20. 下列哪项不是「只盯单一指标」的风险？</a><a class="lv2" href="#sec-22">二、简答题（12 题）</a><a class="lv3" href="#sec-23">21. 为什么「感觉回答还行」不能替代 RAGAS 一类自动评估？</a><a class="lv3" href="#sec-24">22. 列出评测样本最小字段集，并说明缺谁会卡住哪类指标。</a><a class="lv3" href="#sec-25">23. 用一句话区分 context relevancy 与 context recall。</a><a class="lv3" href="#sec-26">24. 解释课件中「不得更改给定上下文中的句子」对相关句抽取的意义。</a><a class="lv3" href="#sec-27">25. 为什么 context recall 要以「声明（claim）」而不是整段字符串相等来判断？</a><a class="lv3" href="#sec-28">26. 忠实度评估两步（抽陈述 → 验证）各自失败会怎样？</a><a class="lv3" href="#sec-29">27. 答案相关性用「反推问题 + 嵌入相似」有什么局限？</a><a class="lv3" href="#sec-30">28. 给出一个「改进检索」相对「改进生成」的决策表（各两行）。</a><a class="lv3" href="#sec-31">29. 为什么自动化评估仍需要抽样人工复核？</a><a class="lv3" href="#sec-32">30. 若两套 RAG 流水线：A 四指标略高但延迟翻倍，B 略低但更快，你如何汇报？</a><a class="lv3" href="#sec-33">31. ground_truths 质量差会如何污染评估？</a><a class="lv3" href="#sec-34">32. 把 RAGAS 分数从 0.72 提到 0.75，是否一定说明用户体验更好？为什么？</a><a class="lv2" href="#sec-35">三、代码题（8 题）</a><a class="lv3" href="#sec-36">33. 校验评估样本 Schema</a><a class="lv3" href="#sec-37">34. 计算上下文相关性：相关句数 / 总句数</a><a class="lv3" href="#sec-38">35. 计算上下文召回：可归因 GT 声明数 / GT 声明总数</a><a class="lv3" href="#sec-39">36. 计算忠实度：$F=|V|/|S|$</a><a class="lv3" href="#sec-40">37. 计算答案相关性：反推问题嵌入与原问题的平均余弦相似</a><a class="lv3" href="#sec-41">38. 指标诊断器：根据四指标给出优先动作</a><a class="lv3" href="#sec-42">39. 对比两套流水线：在固定权重下算综合分并选出胜者</a><a class="lv3" href="#sec-43">40. 迷你评测挂架：对数据集逐条套用「假 LLM 判决」并汇总均值</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 仅供个人学习使用，请勿传播 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
