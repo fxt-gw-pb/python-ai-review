@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Redis：缓存数据库与 Python 操作综合训练 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../lessons.html">课程讲义</a>
+    <a href="../homework.html" class="active">课后练习</a>
+    <a href="../projects.html">实战项目</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">11</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">12</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson58" href="../lessons/lesson58.html"><span class="no">19</span><span>NumPy 统计计算与科学分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">20</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">21</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">22</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">23</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">24</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">25</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">26</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">27</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">28</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">29</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">30</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">31</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">32</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">33</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">34</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">35</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">36</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">37</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">38</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">39</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">40</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">41</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">42</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">43</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">44</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">45</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">46</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">47</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">48</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">49</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">50</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">51</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">📘 医学知识图谱</div><a class="item" data-page-key="lesson51" href="../lessons/lesson51.html"><span class="no">52</span><span>知识图谱基础与医学图谱架构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson52" href="../lessons/lesson52.html"><span class="no">53</span><span>数据标注、查询语言与 Neo4j 工具链</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson53" href="../lessons/lesson53.html"><span class="no">54</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson54" href="../lessons/lesson54.html"><span class="no">55</span><span>关系抽取：规则、Pipeline 与 CasRel</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson55" href="../lessons/lesson55.html"><span class="no">56</span><span>知识融合：实体统一、链接与消歧</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson56" href="../lessons/lesson56.html"><span class="no">57</span><span>Neo4j 医学图谱搭建与质量验证</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson57" href="../lessons/lesson57.html"><span class="no">58</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">21</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">22</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">24</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">25</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">27</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">28</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">29</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">30</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">31</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">32</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw33" href="../homework/hw33.html"><span class="no">33</span><span>卷积神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw34" href="../homework/hw34.html"><span class="no">34</span><span>循环神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw35" href="../homework/hw35.html"><span class="no">35</span><span>自然语言处理入门与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw36" href="../homework/hw36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw37" href="../homework/hw37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw38" href="../homework/hw38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw39" href="../homework/hw39.html"><span class="no">39</span><span>Transformer 架构与工程实现综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw40" href="../homework/hw40.html"><span class="no">40</span><span>Transformer 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw41" href="../homework/hw41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw42" href="../homework/hw42.html"><span class="no">42</span><span>FastText：文本分类与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw43" href="../homework/hw43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw44" href="../homework/hw44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw45" href="../homework/hw45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw46" href="../homework/hw46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw47" href="../homework/hw47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw48" href="../homework/hw48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw58" href="../homework/hw58.html"><span class="no">49</span><span>RAG 项目背景、原理与工程结构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw59" href="../homework/hw59.html"><span class="no">50</span><span>Milvus：向量数据库原理与操作综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw60" href="../homework/hw60.html"><span class="no">51</span><span>BM25：稀疏检索原理与实现综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw61" href="../homework/hw61.html"><span class="no">52</span><span>RAG 评估框架与指标综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw62" href="../homework/hw62.html"><span class="no">53</span><span>Function Call：工具调用原理与三种定义方式综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw63" href="../homework/hw63.html"><span class="no">54</span><span>MCP：模型与外部工具的标准接口综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw64" href="../homework/hw64.html"><span class="no">55</span><span>Agent、ReAct 与五种智能体模式综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw65" href="../homework/hw65.html"><span class="no">56</span><span>A2A：智能体通信、路由与协作综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw66" href="../homework/hw66.html"><span class="no">57</span><span>Ollama：本地大模型运行与调用综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw67" href="../homework/hw67.html"><span class="no">58</span><span>LangChain：模型、Prompt、链与 Agent 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw68" href="../homework/hw68.html"><span class="no">59</span><span>ChatGLM-6B：架构改动、配置与环境综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw69" href="../homework/hw69.html"><span class="no">60</span><span>模型压缩：量化、蒸馏与剪枝综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw70" href="../homework/hw70.html"><span class="no">61</span><span>Docker：部署 Milvus 与 Redis 综合训练</span><span class="done-flag">✅</span></a><a class="item hw active" data-page-key="hw71" href="../homework/hw71.html"><span class="no">62</span><span>Redis：缓存数据库与 Python 操作综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw49" href="../homework/hw49.html"><span class="no">63</span><span>Prompt-Tuning：PET、软提示与 P-tuning 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw50" href="../homework/hw50.html"><span class="no">64</span><span>PEFT：Prefix、Adapter、LoRA 与 QLoRA 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw51" href="../homework/hw51.html"><span class="no">65</span><span>知识图谱基础与医学图谱架构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw52" href="../homework/hw52.html"><span class="no">66</span><span>数据标注、查询语言与 Neo4j 工具链综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw53" href="../homework/hw53.html"><span class="no">67</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw54" href="../homework/hw54.html"><span class="no">68</span><span>关系抽取：规则、Pipeline 与 CasRel 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw55" href="../homework/hw55.html"><span class="no">69</span><span>知识融合：实体统一、链接与消歧综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw56" href="../homework/hw56.html"><span class="no">70</span><span>Neo4j 医学图谱搭建与质量验证综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw57" href="../homework/hw57.html"><span class="no">71</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project07" href="../projects/project07.html"><span class="no">07</span><span>医学知识图谱：从信息抽取到 KBQA</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="../homework.html">课后练习</a> / 练习 62</div>
+<h1>⚡ Redis：缓存数据库与 Python 操作综合训练</h1>
+<div class="chips"><span class="chip amber">🏷️ 选择 + 简答 + 代码</span><span class="chip amber">🏷️ 40 题</span><a class="chip" href="../projects/project02-08.html">📖 相关章节：Redis：缓存数据库与 Python 操作</a><a class="chip green" href="../projects/project02.html">🚀 所属项目：EduRAG：企业私有知识智能问答</a></div>
+</div>
+<p>40 道练习，覆盖 Redis 定位与核心特性（内存、RDB/AOF、多数据结构）、典型场景，以及 Python <code>StrictRedis</code> 工程封装（配置注入、JSON 存取、<code>answer:</code> 缓存键、异常与日志）。重点练「缓存命中如何减少重复计算」和「decode_responses / JSON 编解码边界」。</p>
+<blockquote>
+<p>建议先独立作答，再展开参考答案。代码题用纯 Python 模拟迷你 Redis 与客户端封装，不连接真实 Redis 进程。</p>
+</blockquote>
+<h2 id="sec-1">一、选择题（20 题）</h2>
+<div class="q-card"><h3 id="sec-2">1. Redis 全称更接近？</h3>
+<p>A. Remote Dictionary Server<br />
+B. Random Disk SQL<br />
+C. Relational Data Schema<br />
+D. Rapid Django Service</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 高性能键值数据库。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-3">2. Redis 最突出的性能来源是？</h3>
+<p>A. 每次查询都全表扫描磁盘 CSV<br />
+B. 数据主要在内存中，读写极快<br />
+C. 只能单线程爬取网页<br />
+D. 禁止使用任何数据结构</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 适合缓存与高频访问。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-4">3. 课件提到的两种持久化是？</h3>
+<p>A. 仅截图与打印<br />
+B. RDB 与 AOF<br />
+C. 仅 Git commit<br />
+D. 仅 JPEG 压缩</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 兼顾性能与可恢复性（具体策略按部署配置）。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-5">4. 下列哪项<strong>不是</strong>课件概括的核心特性？</h3>
+<p>A. 高性能、持久化<br />
+B. 多种数据类型与丰富命令、简单易用<br />
+C. 必须替代全部关系型事务引擎且无键值语义<br />
+D. A 与 B 均属课件特性方向</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> Redis 是 KV/多结构内存库，不是「取消 SQL」的同义词。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-6">5. 典型应用场景不包括？</h3>
+<p>A. 缓存查询结果，减轻数据库压力<br />
+B. 会话信息、排行榜/计数器<br />
+C. 只能训练大模型权重文件<br />
+D. A 与 B 均为课件场景</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong></p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-7">6. Python 客户端课件使用的类是？</h3>
+<p>A. <code>redis.StrictRedis(...)</code><br />
+B. <code>pymongo.MongoClient</code> 直接当 Redis<br />
+C. <code>sqlite3.connect</code> 监听 6379<br />
+D. 禁止 <code>decode_responses</code></p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 从 <code>Config</code> 读 host/port/password/db。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-8">7. <code>decode_responses=True</code> 的作用是？</h3>
+<p>A. 返回值自动解码为 str，而不是 bytes<br />
+B. 加密全部 value<br />
+C. 关闭网络<br />
+D. 强制使用 AOF</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 便于日志打印与 JSON 处理。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-9">8. 课件默认配置更接近？</h3>
+<p>A. <code>localhost:6379</code>，<code>db=0</code>，<code>password=None</code><br />
+B. 必须 <code>255.255.255.255:80</code><br />
+C. 只能 Unix socket 且无端口<br />
+D. <code>db</code> 必须为负数</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 见 <code>base.py</code> 的 <code>Config</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-10">9. <code>set_data</code> 存储复杂对象时课件做法是？</h3>
+<p>A. <code>json.dumps(value)</code> 后再 <code>set</code><br />
+B. 直接 <code>set</code> 未序列化的 dict 且期望自动成功于所有驱动版本语义<br />
+C. 只存文件路径到磁盘忽略 Redis<br />
+D. 禁止 set</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> <code>get_data</code> 再 <code>json.loads</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-11">10. <code>get_data</code> 在 key 不存在时返回？</h3>
+<p>A. <code>None</code><br />
+B. 抛出未捕获的系统崩溃且无日志<br />
+C. 空列表 <code>[]</code> 且当作命中<br />
+D. 随机整数</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> <code>return json.loads(data) if data else None</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-12">11. FAQ 缓存键课件约定更接近？</h3>
+<p>A. <code>answer:{query}</code><br />
+B. 仅用整数 0 做唯一键<br />
+C. 无前缀的随机 UUID 且不可检索<br />
+D. 必须用 Milvus collection 名</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> <code>get_answer</code> 按此前缀 <code>get</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-13">12. 连接或操作失败时，课件封装倾向于？</h3>
+<p>A. 记录错误日志；初始化失败可 <code>raise</code>，读写失败返回 <code>None</code><br />
+B. 静默吞掉所有异常且假装成功<br />
+C. 重启操作系统<br />
+D. 删除 Config 类</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 捕获 <code>redis.RedisError</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-14">13. 工程目录中 <code>redis_client.py</code> / <code>base.py</code> / <code>main.py</code> 分工是？</h3>
+<p>A. 客户端封装 / 配置与日志 / 演示入口<br />
+B. 三者必须合并为单文件且禁止模块化<br />
+C. <code>main.py</code> 只负责画 UI<br />
+D. <code>base.py</code> 只存向量</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> <code>requirements.txt</code> 依赖 <code>redis</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-15">14. 示例运行「未找到缓存答案」说明？</h3>
+<p>A. <code>get_answer("test_query")</code> 未命中，属预期演示<br />
+B. Redis 安装失败的唯一证明<br />
+C. JSON 永远不可用<br />
+D. 端口必须改成 19530</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 先前只 <code>set_data(user:1, ...)</code>，未写入 <code>answer:test_query</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-16">15. 把查询结果缓存起来，直接收益是？</h3>
+<p>A. 减少重复计算/重复打后端，降低延迟与负载<br />
+B. 必然提高模型参数量<br />
+C. 取消所有持久化需求<br />
+D. 使 BM25 公式失效</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 为后续与 BM25 FAQ 结合铺路。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-17">16. 字符串、哈希、列表等在 Redis 中属于？</h3>
+<p>A. 支持的多种数据结构/类型<br />
+B. 仅 SQL JOIN 关键字<br />
+C. 仅 HTTP 状态码<br />
+D. 禁止在缓存场景使用</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 灵活性来源之一。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-18">17. 密码配置为 <code>None</code> 时通常表示？</h3>
+<p>A. 本机演示未启用 requirepass<br />
+B. 密码是字符串 <code>"None"</code> 且必须字面匹配<br />
+C. 强制 TLS 双向证书<br />
+D. 禁止连接</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 生产应注入真实口令，勿写死仓库。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-19">18. 为何要用独立 <code>Config</code> 而不是在客户端写死 IP？</h3>
+<p>A. 便于按环境切换 host/port/db/密码，符合工程化<br />
+B. 让代码更难维护<br />
+C. 配置类不能被 import<br />
+D. 只能服务端改客户端不能读</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 与日志模块一并放在 <code>base.py</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-20">19. <code>StrictRedis</code> 的 <code>db</code> 参数含义是？</h3>
+<p>A. 逻辑库编号（默认 0），用于隔离键空间<br />
+B. 磁盘分区号<br />
+C. GPU 编号<br />
+D. HTTP 状态码</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 不同 db 键不共享（同实例内）。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-21">20. 本节总结的核心收获是？</h3>
+<p>A. 理解 Redis 原理，并用 Python 完成存储、查询与缓存封装<br />
+B. 只学会卸载 Docker<br />
+C. 取消键值模型<br />
+D. 下一章与 Redis 无关</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 下章可与 BM25 等检索结合。</p></div></div>
+
+
+</div><h2 id="sec-22">二、简答题（12 题）</h2>
+<div class="q-card"><h3 id="sec-23">21. 用一句话说明 Redis 适合当缓存的原因。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>热数据放内存，按 key 极速读写，可挡住对慢后端（如 MySQL/重计算）的重复请求，降低延迟与压力。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-24">22. RDB 与 AOF 在直觉上如何分工？（不必背细节参数）</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>RDB 偏快照式落盘；AOF 偏追加写命令/变更。可单独或组合使用，在性能、体积与可恢复性之间权衡。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-25">23. 为什么复杂结构要用 JSON 再存 Redis 字符串？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>Redis string 存的是字节/文本；dict 等 Python 对象需序列化。JSON 通用、可读，<code>loads</code> 后恢复结构；也可用 hash 等类型，课件选 JSON 字符串路径。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-26">24. <code>get_data</code> 与 <code>get_answer</code> 的差异是什么？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><code>get_data</code> 通用：按 key 取 JSON 对象。<code>get_answer</code> 面向问答缓存：固定前缀 <code>answer:</code> + query，返回答案字符串（课件未再 json.loads）。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-27">25. 缓存键设计为何常加前缀（如 <code>user:</code> / <code>answer:</code>）？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>避免不同业务键冲突，便于按前缀排查/批量管理，语义清晰（用户资料 vs 问答答案）。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-28">26. 连接失败时为什么要打日志并向上抛出？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>初始化失败说明基础设施不可用，继续跑会产生更难查的连锁错误；日志保留现场，调用方可快速失败或降级。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-29">27. <code>decode_responses=False</code> 时 <code>get</code> 后直接 <code>json.loads</code> 可能怎样？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>拿到的是 <code>bytes</code>，部分环境下 <code>json.loads</code> 仍可处理，但混用 str/bytes 易出错；课件用 <code>True</code> 统一成 str 更省心。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-30">28. 缓存未命中时应如何与「真实计算」配合？（工程直觉）</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>未命中则走 MySQL/BM25/模型等计算路径，得到结果后 <code>set</code> 回 Redis（可带 TTL），下次命中直接返回。注意更新源数据时的失效策略。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-31">29. 列出 <code>RedisClient.__init__</code> 需要的 4 个连接参数。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><code>host</code>、<code>port</code>、<code>password</code>、<code>db</code>（外加 <code>decode_responses=True</code>）。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-32">30. 示例中存 <code>user:1</code> 后查 <code>answer:test_query</code> 为何未命中？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>两个不同 key；演示只写入用户资料，没有写入该 query 的缓存答案，故 <code>get_answer</code> 返回 <code>None</code>。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-33">31. 将 Redis 接入 FAQ 系统时，适合缓存什么？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>高频重复问题的最终答案、或检索中间结果（需权衡一致性）；避免缓存易变且无失效策略的敏感个性化数据。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-34">32. 密码、主机为何不应硬编码进公开仓库？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>泄露导致未授权访问；应用环境变量/私密配置注入，仓库只保留本地演示默认值或占位符。</p></div></div>
+
+
+</div><h2 id="sec-35">三、代码题（8 题）</h2>
+<div class="q-card"><h3 id="sec-36">33. 迷你内存 KV：set/get 与 decode 语义</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MiniRedis</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+
+<span class="n">r</span> <span class="o">=</span> <span class="n">MiniRedis</span><span class="p">()</span>
+<span class="n">r</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;v&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;k&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;v&quot;</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;missing&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;k&quot;</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-37">34. JSON 序列化存取（对齐 set_data/get_data）</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MiniRedis</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">set_data</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ensure_ascii</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">if</span> <span class="n">data</span> <span class="k">else</span> <span class="kc">None</span>
+
+
+<span class="n">c</span> <span class="o">=</span> <span class="n">MiniRedis</span><span class="p">()</span>
+<span class="n">set_data</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s2">&quot;user:1&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">25</span><span class="p">})</span>
+<span class="k">assert</span> <span class="n">get_data</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s2">&quot;user:1&quot;</span><span class="p">)[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Alice&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">get_data</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s2">&quot;user:1&quot;</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-38">35. get_answer：前缀约定与未命中</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_answer</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;answer:</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MiniRedis</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+
+<span class="n">c</span> <span class="o">=</span> <span class="n">MiniRedis</span><span class="p">()</span>
+<span class="n">c</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;answer:天气怎么样&quot;</span><span class="p">,</span> <span class="s2">&quot;晴天&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">get_answer</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s2">&quot;天气怎么样&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;晴天&quot;</span>
+<span class="k">assert</span> <span class="n">get_answer</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s2">&quot;test_query&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">get_answer</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s2">&quot;天气怎么样&quot;</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-39">36. 缓存旁路：未命中则计算并回填</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">cached_answer</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">compute</span><span class="p">):</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;answer:</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="n">hit</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">hit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">hit</span><span class="p">,</span> <span class="kc">True</span>
+    <span class="n">val</span> <span class="o">=</span> <span class="n">compute</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+    <span class="n">client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">val</span><span class="p">,</span> <span class="kc">False</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MiniRedis</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+
+<span class="n">c</span> <span class="o">=</span> <span class="n">MiniRedis</span><span class="p">()</span>
+<span class="n">calls</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;n&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">compute</span><span class="p">(</span><span class="n">q</span><span class="p">):</span>
+    <span class="n">calls</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;ans:</span><span class="si">{</span><span class="n">q</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
+<span class="n">v1</span><span class="p">,</span> <span class="n">hit1</span> <span class="o">=</span> <span class="n">cached_answer</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s2">&quot;hi&quot;</span><span class="p">,</span> <span class="n">compute</span><span class="p">)</span>
+<span class="n">v2</span><span class="p">,</span> <span class="n">hit2</span> <span class="o">=</span> <span class="n">cached_answer</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="s2">&quot;hi&quot;</span><span class="p">,</span> <span class="n">compute</span><span class="p">)</span>
+<span class="k">assert</span> <span class="p">(</span><span class="n">v1</span><span class="p">,</span> <span class="n">hit1</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;ans:hi&quot;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="ow">and</span> <span class="n">hit2</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">and</span> <span class="n">calls</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">v2</span><span class="p">,</span> <span class="n">calls</span><span class="p">[</span><span class="s2">&quot;n&quot;</span><span class="p">])</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-40">37. Config 注入连接参数</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">Config</span><span class="p">:</span>
+    <span class="n">REDIS_HOST</span> <span class="o">=</span> <span class="s2">&quot;localhost&quot;</span>
+    <span class="n">REDIS_PORT</span> <span class="o">=</span> <span class="mi">6379</span>
+    <span class="n">REDIS_PASSWORD</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">REDIS_DB</span> <span class="o">=</span> <span class="mi">0</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">connect_kwargs</span><span class="p">(</span><span class="n">cfg</span><span class="o">=</span><span class="n">Config</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;host&quot;</span><span class="p">:</span> <span class="n">cfg</span><span class="o">.</span><span class="n">REDIS_HOST</span><span class="p">,</span>
+        <span class="s2">&quot;port&quot;</span><span class="p">:</span> <span class="n">cfg</span><span class="o">.</span><span class="n">REDIS_PORT</span><span class="p">,</span>
+        <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="n">cfg</span><span class="o">.</span><span class="n">REDIS_PASSWORD</span><span class="p">,</span>
+        <span class="s2">&quot;db&quot;</span><span class="p">:</span> <span class="n">cfg</span><span class="o">.</span><span class="n">REDIS_DB</span><span class="p">,</span>
+        <span class="s2">&quot;decode_responses&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">}</span>
+
+
+<span class="n">kw</span> <span class="o">=</span> <span class="n">connect_kwargs</span><span class="p">()</span>
+<span class="k">assert</span> <span class="n">kw</span><span class="p">[</span><span class="s2">&quot;port&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">6379</span> <span class="ow">and</span> <span class="n">kw</span><span class="p">[</span><span class="s2">&quot;decode_responses&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">kw</span><span class="p">[</span><span class="s2">&quot;host&quot;</span><span class="p">],</span> <span class="n">kw</span><span class="p">[</span><span class="s2">&quot;db&quot;</span><span class="p">])</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-41">38. 模拟 RedisError：读写失败返回 None，不中断演示主流程</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">RedisError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">FlakyClient</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fail</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fail</span> <span class="o">=</span> <span class="n">fail</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">RedisError</span><span class="p">(</span><span class="s2">&quot;down&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">RedisError</span><span class="p">(</span><span class="s2">&quot;down&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">safe_get</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">RedisError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">assert</span> <span class="n">safe_get</span><span class="p">(</span><span class="n">FlakyClient</span><span class="p">(</span><span class="n">fail</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="s2">&quot;a&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">safe_get</span><span class="p">(</span><span class="n">FlakyClient</span><span class="p">(),</span> <span class="s2">&quot;missing&quot;</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-42">39. 键前缀工具：user / answer 命名空间</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">user_key</span><span class="p">(</span><span class="n">uid</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;user:</span><span class="si">{</span><span class="n">uid</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">answer_key</span><span class="p">(</span><span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;answer:</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&quot;</span>
+
+
+<span class="k">assert</span> <span class="n">user_key</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;user:1&quot;</span>
+<span class="k">assert</span> <span class="n">answer_key</span><span class="p">(</span><span class="s2">&quot;test_query&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;answer:test_query&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">user_key</span><span class="p">(</span><span class="s2">&quot;42&quot;</span><span class="p">),</span> <span class="n">answer_key</span><span class="p">(</span><span class="s2">&quot;你好&quot;</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-43">40. 迷你 RedisClient：串起连接参数、JSON、答案缓存</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MiniStrictRedis</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">store</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">RedisClient</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span> <span class="o">=</span> <span class="n">backend</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">if</span> <span class="n">data</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_answer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;answer:</span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<span class="n">backend</span> <span class="o">=</span> <span class="n">MiniStrictRedis</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">6379</span><span class="p">,</span> <span class="n">decode_responses</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">cli</span> <span class="o">=</span> <span class="n">RedisClient</span><span class="p">(</span><span class="n">backend</span><span class="p">)</span>
+<span class="n">cli</span><span class="o">.</span><span class="n">set_data</span><span class="p">(</span><span class="s2">&quot;user:1&quot;</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;Alice&quot;</span><span class="p">,</span> <span class="s2">&quot;age&quot;</span><span class="p">:</span> <span class="mi">25</span><span class="p">})</span>
+<span class="n">backend</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s2">&quot;answer:q1&quot;</span><span class="p">,</span> <span class="s2">&quot;A1&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">cli</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s2">&quot;user:1&quot;</span><span class="p">)[</span><span class="s2">&quot;age&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">25</span>
+<span class="k">assert</span> <span class="n">cli</span><span class="o">.</span><span class="n">get_answer</span><span class="p">(</span><span class="s2">&quot;q1&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;A1&quot;</span>
+<span class="k">assert</span> <span class="n">cli</span><span class="o">.</span><span class="n">get_answer</span><span class="p">(</span><span class="s2">&quot;missing&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cli</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span><span class="s2">&quot;user:1&quot;</span><span class="p">))</span>
+
+<span class="c1"># 对应课件：配置化连接 + JSON 存对象 + answer: 前缀做 FAQ 缓存。</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="done-bar"><button class="mark-done-btn" data-key="hw71" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="hw70.html"><div class="dir">← 上一篇</div><div class="name">🐳 Docker：部署 Milvus 与 Redis 综合训练</div></a><a class="next" href="hw49.html"><div class="dir">下一篇 →</div><div class="name">🪄 Prompt-Tuning：PET、软提示与 P-tuning 综合训练</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、选择题（20 题）</a><a class="lv3" href="#sec-2">1. Redis 全称更接近？</a><a class="lv3" href="#sec-3">2. Redis 最突出的性能来源是？</a><a class="lv3" href="#sec-4">3. 课件提到的两种持久化是？</a><a class="lv3" href="#sec-5">4. 下列哪项不是课件概括的核心特性？</a><a class="lv3" href="#sec-6">5. 典型应用场景不包括？</a><a class="lv3" href="#sec-7">6. Python 客户端课件使用的类是？</a><a class="lv3" href="#sec-8">7. decode_responses=True 的作用是？</a><a class="lv3" href="#sec-9">8. 课件默认配置更接近？</a><a class="lv3" href="#sec-10">9. set_data 存储复杂对象时课件做法是？</a><a class="lv3" href="#sec-11">10. get_data 在 key 不存在时返回？</a><a class="lv3" href="#sec-12">11. FAQ 缓存键课件约定更接近？</a><a class="lv3" href="#sec-13">12. 连接或操作失败时，课件封装倾向于？</a><a class="lv3" href="#sec-14">13. 工程目录中 redis_client.py / base.py / main.py 分工是？</a><a class="lv3" href="#sec-15">14. 示例运行「未找到缓存答案」说明？</a><a class="lv3" href="#sec-16">15. 把查询结果缓存起来，直接收益是？</a><a class="lv3" href="#sec-17">16. 字符串、哈希、列表等在 Redis 中属于？</a><a class="lv3" href="#sec-18">17. 密码配置为 None 时通常表示？</a><a class="lv3" href="#sec-19">18. 为何要用独立 Config 而不是在客户端写死 IP？</a><a class="lv3" href="#sec-20">19. StrictRedis 的 db 参数含义是？</a><a class="lv3" href="#sec-21">20. 本节总结的核心收获是？</a><a class="lv2" href="#sec-22">二、简答题（12 题）</a><a class="lv3" href="#sec-23">21. 用一句话说明 Redis 适合当缓存的原因。</a><a class="lv3" href="#sec-24">22. RDB 与 AOF 在直觉上如何分工？（不必背细节参数）</a><a class="lv3" href="#sec-25">23. 为什么复杂结构要用 JSON 再存 Redis 字符串？</a><a class="lv3" href="#sec-26">24. get_data 与 get_answer 的差异是什么？</a><a class="lv3" href="#sec-27">25. 缓存键设计为何常加前缀（如 user: / answer:）？</a><a class="lv3" href="#sec-28">26. 连接失败时为什么要打日志并向上抛出？</a><a class="lv3" href="#sec-29">27. decode_responses=False 时 get 后直接 json.loads 可能怎样？</a><a class="lv3" href="#sec-30">28. 缓存未命中时应如何与「真实计算」配合？（工程直觉）</a><a class="lv3" href="#sec-31">29. 列出 RedisClient.__init__ 需要的 4 个连接参数。</a><a class="lv3" href="#sec-32">30. 示例中存 user:1 后查 answer:test_query 为何未命中？</a><a class="lv3" href="#sec-33">31. 将 Redis 接入 FAQ 系统时，适合缓存什么？</a><a class="lv3" href="#sec-34">32. 密码、主机为何不应硬编码进公开仓库？</a><a class="lv2" href="#sec-35">三、代码题（8 题）</a><a class="lv3" href="#sec-36">33. 迷你内存 KV：set/get 与 decode 语义</a><a class="lv3" href="#sec-37">34. JSON 序列化存取（对齐 set_data/get_data）</a><a class="lv3" href="#sec-38">35. get_answer：前缀约定与未命中</a><a class="lv3" href="#sec-39">36. 缓存旁路：未命中则计算并回填</a><a class="lv3" href="#sec-40">37. Config 注入连接参数</a><a class="lv3" href="#sec-41">38. 模拟 RedisError：读写失败返回 None，不中断演示主流程</a><a class="lv3" href="#sec-42">39. 键前缀工具：user / answer 命名空间</a><a class="lv3" href="#sec-43">40. 迷你 RedisClient：串起连接参数、JSON、答案缓存</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 仅供个人学习使用，请勿传播 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
