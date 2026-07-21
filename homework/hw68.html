@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ChatGLM-6B：架构改动、配置与环境综合训练 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+
+</head>
+<body>
+<header class="topbar">
+  <button class="menu-btn" type="button" title="菜单">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../lessons.html">课程讲义</a>
+    <a href="../homework.html" class="active">课后练习</a>
+    <a href="../projects.html">实战项目</a>
+  </nav>
+  <span class="spacer"></span>
+  <a class="gh-link" href="https://github.com/fxt-gw-pb/python-ai-review" target="_blank" rel="noopener" title="GitHub 仓库">GitHub&nbsp;↗</a>
+</header>
+<div class="layout">
+<aside class="sidenav"><div class="group-title">📖 Python 与大模型入门</div><a class="item" data-page-key="lesson01" href="../lessons/lesson01.html"><span class="no">01</span><span>初识大模型与本地部署</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson02" href="../lessons/lesson02.html"><span class="no">02</span><span>Python 基础语法与条件判断</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson03" href="../lessons/lesson03.html"><span class="no">03</span><span>循环与字符串</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson04" href="../lessons/lesson04.html"><span class="no">04</span><span>数据容器：列表、元组、字典与集合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson05" href="../lessons/lesson05.html"><span class="no">05</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson06" href="../lessons/lesson06.html"><span class="no">06</span><span>文件操作与异常处理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson07" href="../lessons/lesson07.html"><span class="no">07</span><span>调用本地大模型 API：打造聊天机器人</span><span class="done-flag">✅</span></a><div class="group-title">📘 Python 高级</div><a class="item" data-page-key="lesson08" href="../lessons/lesson08.html"><span class="no">08</span><span>面向对象基础与继承</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson09" href="../lessons/lesson09.html"><span class="no">09</span><span>面向对象进阶与学生管理系统</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson10" href="../lessons/lesson10.html"><span class="no">10</span><span>闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson12" href="../lessons/lesson12.html"><span class="no">11</span><span>网络编程、进程与线程入门</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson11" href="../lessons/lesson11.html"><span class="no">12</span><span>多线程、数据共享与互斥锁</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson13" href="../lessons/lesson13.html"><span class="no">13</span><span>迭代器、生成器与 Property</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson14" href="../lessons/lesson14.html"><span class="no">14</span><span>正则表达式从入门到实战</span><span class="done-flag">✅</span></a><div class="group-title">📘 Linux 与数据分析基础</div><a class="item" data-page-key="lesson15" href="../lessons/lesson15.html"><span class="no">15</span><span>Linux 基础：从终端到服务器运维</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson16" href="../lessons/lesson16.html"><span class="no">16</span><span>MySQL 基础：数据库、DDL 与数据管理</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson17" href="../lessons/lesson17.html"><span class="no">17</span><span>MySQL 查询：单表检索与多表关联</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson18" href="../lessons/lesson18.html"><span class="no">18</span><span>数据分析环境与 NumPy</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson58" href="../lessons/lesson58.html"><span class="no">19</span><span>NumPy 统计计算与科学分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson19" href="../lessons/lesson19.html"><span class="no">20</span><span>Pandas 基础：Series 与 DataFrame</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson20" href="../lessons/lesson20.html"><span class="no">21</span><span>Pandas 进阶：读写、清洗与分组透视</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson21" href="../lessons/lesson21.html"><span class="no">22</span><span>Matplotlib 与数据可视化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson22" href="../lessons/lesson22.html"><span class="no">23</span><span>综合案例：RFM 会员价值分群</span><span class="done-flag">✅</span></a><div class="group-title">📘 机器学习</div><a class="item" data-page-key="lesson23" href="../lessons/lesson23.html"><span class="no">24</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson24" href="../lessons/lesson24.html"><span class="no">25</span><span>K 近邻算法与模型调优</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson25" href="../lessons/lesson25.html"><span class="no">26</span><span>线性回归、梯度下降与正则化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson26" href="../lessons/lesson26.html"><span class="no">27</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson27" href="../lessons/lesson27.html"><span class="no">28</span><span>决策树：ID3、C4.5 与 CART</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson28" href="../lessons/lesson28.html"><span class="no">29</span><span>集成学习：随机森林、AdaBoost、GBDT 与 XGBoost</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson29" href="../lessons/lesson29.html"><span class="no">30</span><span>朴素贝叶斯与文本情感分析</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson30" href="../lessons/lesson30.html"><span class="no">31</span><span>K-Means 聚类与聚类评估</span><span class="done-flag">✅</span></a><div class="group-title">📘 深度学习</div><a class="item" data-page-key="lesson31" href="../lessons/lesson31.html"><span class="no">32</span><span>PyTorch 基础：张量、自动微分与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson32" href="../lessons/lesson32.html"><span class="no">33</span><span>神经网络基础：结构、损失与优化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson33" href="../lessons/lesson33.html"><span class="no">34</span><span>卷积神经网络：图像表示、卷积与分类实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson34" href="../lessons/lesson34.html"><span class="no">35</span><span>循环神经网络：词嵌入、RNN 与文本生成</span><span class="done-flag">✅</span></a><div class="group-title">📘 自然语言处理</div><a class="item" data-page-key="lesson35" href="../lessons/lesson35.html"><span class="no">36</span><span>自然语言处理入门与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson36" href="../lessons/lesson36.html"><span class="no">37</span><span>文本预处理、特征分析与数据增强</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson37" href="../lessons/lesson37.html"><span class="no">38</span><span>RNN 进阶：LSTM、GRU 与双向网络</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson38" href="../lessons/lesson38.html"><span class="no">39</span><span>注意力机制：Q、K、V 与缩放点积</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson39" href="../lessons/lesson39.html"><span class="no">40</span><span>Transformer 架构与工程实现</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson40" href="../lessons/lesson40.html"><span class="no">41</span><span>Transformer 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson41" href="../lessons/lesson41.html"><span class="no">42</span><span>RNN Seq2Seq 机器翻译实战</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson42" href="../lessons/lesson42.html"><span class="no">43</span><span>FastText：文本分类与词向量</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson43" href="../lessons/lesson43.html"><span class="no">44</span><span>Transformers 迁移学习与中文任务</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson44" href="../lessons/lesson44.html"><span class="no">45</span><span>BERT、GPT 与主流预训练架构</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型基础</div><a class="item" data-page-key="lesson45" href="../lessons/lesson45.html"><span class="no">46</span><span>大语言模型基础：发展、训练、使用与评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson46" href="../lessons/lesson46.html"><span class="no">47</span><span>主流 LLM 架构：BERT、GPT 与 T5</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson47" href="../lessons/lesson47.html"><span class="no">48</span><span>Prompt 工程：原则、技术与推理范式</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson48" href="../lessons/lesson48.html"><span class="no">49</span><span>金融 Prompt 实战：分类、抽取与匹配</span><span class="done-flag">✅</span></a><div class="group-title">📘 大模型微调</div><a class="item" data-page-key="lesson49" href="../lessons/lesson49.html"><span class="no">50</span><span>Prompt-Tuning：从 NLP 四范式到 PET 与软提示</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson50" href="../lessons/lesson50.html"><span class="no">51</span><span>PEFT 参数高效微调：Prefix、Adapter、LoRA 与 QLoRA</span><span class="done-flag">✅</span></a><div class="group-title">📘 医学知识图谱</div><a class="item" data-page-key="lesson51" href="../lessons/lesson51.html"><span class="no">52</span><span>知识图谱基础与医学图谱架构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson52" href="../lessons/lesson52.html"><span class="no">53</span><span>数据标注、查询语言与 Neo4j 工具链</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson53" href="../lessons/lesson53.html"><span class="no">54</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson54" href="../lessons/lesson54.html"><span class="no">55</span><span>关系抽取：规则、Pipeline 与 CasRel</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson55" href="../lessons/lesson55.html"><span class="no">56</span><span>知识融合：实体统一、链接与消歧</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson56" href="../lessons/lesson56.html"><span class="no">57</span><span>Neo4j 医学图谱搭建与质量验证</span><span class="done-flag">✅</span></a><a class="item" data-page-key="lesson57" href="../lessons/lesson57.html"><span class="no">58</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答</span><span class="done-flag">✅</span></a><div class="group-title">✏️ 课后练习</div><a class="item hw" data-page-key="hw01" href="../homework/hw01.html"><span class="no">01</span><span>起步任务清单</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw02" href="../homework/hw02.html"><span class="no">02</span><span>变量与数据类型</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw03" href="../homework/hw03.html"><span class="no">03</span><span>基础语法编程实操</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw04" href="../homework/hw04.html"><span class="no">04</span><span>运算符、分支与循环</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw05" href="../homework/hw05.html"><span class="no">05</span><span>循环、字符串与列表</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw06" href="../homework/hw06.html"><span class="no">06</span><span>数据容器综合练习</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw07" href="../homework/hw07.html"><span class="no">07</span><span>推导式与函数</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw08" href="../homework/hw08.html"><span class="no">08</span><span>函数专项训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw09" href="../homework/hw09.html"><span class="no">09</span><span>解包、lambda、文件与异常</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw10" href="../homework/hw10.html"><span class="no">10</span><span>面向对象基础</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw11" href="../homework/hw11.html"><span class="no">11</span><span>继承、封装与多态</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw12" href="../homework/hw12.html"><span class="no">12</span><span>复制、闭包与装饰器</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw13" href="../homework/hw13.html"><span class="no">13</span><span>网络编程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw14" href="../homework/hw14.html"><span class="no">14</span><span>多任务、进程与线程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw15" href="../homework/hw15.html"><span class="no">15</span><span>Python 综合训练（一）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw16" href="../homework/hw16.html"><span class="no">16</span><span>Python 综合训练（二）</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw17" href="../homework/hw17.html"><span class="no">17</span><span>Linux 基础测评</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw18" href="../homework/hw18.html"><span class="no">18</span><span>SQL 加强练习：北风项目 34 题</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw19" href="../homework/hw19.html"><span class="no">19</span><span>Pandas 实战：租房数据分析</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw20" href="../homework/hw20.html"><span class="no">20</span><span>Pandas 综合：电影 · GDP · 销售</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw31" href="../homework/hw31.html"><span class="no">21</span><span>NumPy 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw32" href="../homework/hw32.html"><span class="no">22</span><span>Pandas 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw21" href="../homework/hw21.html"><span class="no">23</span><span>机器学习概述与建模流程</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw22" href="../homework/hw22.html"><span class="no">24</span><span>KNN 与模型调优</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw23" href="../homework/hw23.html"><span class="no">25</span><span>线性回归与正则化</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw24" href="../homework/hw24.html"><span class="no">26</span><span>逻辑回归与分类评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw25" href="../homework/hw25.html"><span class="no">27</span><span>决策树与 CART</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw26" href="../homework/hw26.html"><span class="no">28</span><span>集成学习综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw27" href="../homework/hw27.html"><span class="no">29</span><span>朴素贝叶斯与文本分类</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw28" href="../homework/hw28.html"><span class="no">30</span><span>K-Means 聚类与评估</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw29" href="../homework/hw29.html"><span class="no">31</span><span>PyTorch 基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw30" href="../homework/hw30.html"><span class="no">32</span><span>神经网络基础综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw33" href="../homework/hw33.html"><span class="no">33</span><span>卷积神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw34" href="../homework/hw34.html"><span class="no">34</span><span>循环神经网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw35" href="../homework/hw35.html"><span class="no">35</span><span>自然语言处理入门与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw36" href="../homework/hw36.html"><span class="no">36</span><span>文本预处理、特征分析与数据增强综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw37" href="../homework/hw37.html"><span class="no">37</span><span>RNN 进阶：LSTM、GRU 与双向网络综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw38" href="../homework/hw38.html"><span class="no">38</span><span>注意力机制：Q、K、V 与缩放点积综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw39" href="../homework/hw39.html"><span class="no">39</span><span>Transformer 架构与工程实现综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw40" href="../homework/hw40.html"><span class="no">40</span><span>Transformer 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw41" href="../homework/hw41.html"><span class="no">41</span><span>RNN Seq2Seq 机器翻译实战综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw42" href="../homework/hw42.html"><span class="no">42</span><span>FastText：文本分类与词向量综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw43" href="../homework/hw43.html"><span class="no">43</span><span>Transformers 迁移学习与中文任务综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw44" href="../homework/hw44.html"><span class="no">44</span><span>BERT、GPT 与主流预训练架构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw45" href="../homework/hw45.html"><span class="no">45</span><span>大语言模型基础：发展、训练、使用与评估综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw46" href="../homework/hw46.html"><span class="no">46</span><span>主流 LLM 架构：BERT、GPT 与 T5 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw47" href="../homework/hw47.html"><span class="no">47</span><span>Prompt 工程：原则、技术与推理范式综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw48" href="../homework/hw48.html"><span class="no">48</span><span>金融 Prompt 实战：分类、抽取与匹配综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw58" href="../homework/hw58.html"><span class="no">49</span><span>RAG 项目背景、原理与工程结构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw59" href="../homework/hw59.html"><span class="no">50</span><span>Milvus：向量数据库原理与操作综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw60" href="../homework/hw60.html"><span class="no">51</span><span>BM25：稀疏检索原理与实现综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw61" href="../homework/hw61.html"><span class="no">52</span><span>RAG 评估框架与指标综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw62" href="../homework/hw62.html"><span class="no">53</span><span>Function Call：工具调用原理与三种定义方式综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw63" href="../homework/hw63.html"><span class="no">54</span><span>MCP：模型与外部工具的标准接口综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw64" href="../homework/hw64.html"><span class="no">55</span><span>Agent、ReAct 与五种智能体模式综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw65" href="../homework/hw65.html"><span class="no">56</span><span>A2A：智能体通信、路由与协作综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw66" href="../homework/hw66.html"><span class="no">57</span><span>Ollama：本地大模型运行与调用综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw67" href="../homework/hw67.html"><span class="no">58</span><span>LangChain：模型、Prompt、链与 Agent 综合训练</span><span class="done-flag">✅</span></a><a class="item hw active" data-page-key="hw68" href="../homework/hw68.html"><span class="no">59</span><span>ChatGLM-6B：架构改动、配置与环境综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw49" href="../homework/hw49.html"><span class="no">60</span><span>Prompt-Tuning：PET、软提示与 P-tuning 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw50" href="../homework/hw50.html"><span class="no">61</span><span>PEFT：Prefix、Adapter、LoRA 与 QLoRA 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw51" href="../homework/hw51.html"><span class="no">62</span><span>知识图谱基础与医学图谱架构综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw52" href="../homework/hw52.html"><span class="no">63</span><span>数据标注、查询语言与 Neo4j 工具链综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw53" href="../homework/hw53.html"><span class="no">64</span><span>医学实体抽取：规则、BiLSTM-CRF 与 Viterbi 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw54" href="../homework/hw54.html"><span class="no">65</span><span>关系抽取：规则、Pipeline 与 CasRel 综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw55" href="../homework/hw55.html"><span class="no">66</span><span>知识融合：实体统一、链接与消歧综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw56" href="../homework/hw56.html"><span class="no">67</span><span>Neo4j 医学图谱搭建与质量验证综合训练</span><span class="done-flag">✅</span></a><a class="item hw" data-page-key="hw57" href="../homework/hw57.html"><span class="no">68</span><span>医疗 KBQA：NLU、Cypher 编排与可追溯回答综合训练</span><span class="done-flag">✅</span></a><div class="group-title">🚀 实战项目</div><a class="item project" data-page-key="project01" href="../projects/project01.html"><span class="no">01</span><span>投满分：智能文本分类全流程</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project02" href="../projects/project02.html"><span class="no">02</span><span>EduRAG：企业私有知识智能问答</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project03" href="../projects/project03.html"><span class="no">03</span><span>SmartVoyage：Agent 与多智能体旅行助手</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project04" href="../projects/project04.html"><span class="no">04</span><span>医疗问诊机器人：GPT2 从零训练对话模型</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project05" href="../projects/project05.html"><span class="no">05</span><span>新零售评价决策：BERT 提示学习双路线</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project06" href="../projects/project06.html"><span class="no">06</span><span>ChatGLM 多任务微调：LoRA 信息抽取与分类</span><span class="done-flag">✅</span></a><a class="item project" data-page-key="project07" href="../projects/project07.html"><span class="no">07</span><span>医学知识图谱：从信息抽取到 KBQA</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="../homework.html">课后练习</a> / 练习 59</div>
+<h1>🧭 ChatGLM-6B：架构改动、配置与环境综合训练</h1>
+<div class="chips"><span class="chip amber">🏷️ 选择 + 简答 + 代码</span><span class="chip amber">🏷️ 40 题</span><a class="chip" href="../projects/project06-01.html">📖 相关章节：项目简介、ChatGLM-6B 架构与环境配置</a><a class="chip green" href="../projects/project06.html">🚀 所属项目：ChatGLM 多任务微调：LoRA 信息抽取与分类</a></div>
+</div>
+<p>40 道练习，覆盖用微调对齐输出格式的项目动机、ChatGLM-6B / GLM 架构改动（Deep Norm、GeGLU、RoPE、embedding 梯度缩减）、6B 配置表与量化显存、环境依赖与预训练权重准备。重点练「结构改动各自解决什么」和「FP16 / INT8 / INT4 显存对照」。</p>
+<blockquote>
+<p>建议先独立作答，再展开参考答案。代码题用纯 Python 模拟配置表查询、显存选型与指令样本校验，不下载真实权重、不启动训练。</p>
+</blockquote>
+<h2 id="sec-1">一、选择题（20 题）</h2>
+<div class="q-card"><h3 id="sec-2">1. 本项目对 ChatGLM-6B 做 Finetune 的直接动机更接近？</h3>
+<p>A. 让模型学会改操作系统内核<br />
+B. 直接用 LLM 时输出格式难规范、难严格服从输入，需对齐所需格式<br />
+C. 取消全部先验知识<br />
+D. 只为增大词表到无限</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 答案解析与规范化输出是痛点。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-3">2. ChatGLM-6B 由谁提出、基于什么架构？</h3>
+<p>A. 匿名个人，基于纯 CNN<br />
+B. 清华大学提出，基于 GLM（General Language Model）架构<br />
+C. 仅浏览器厂商，基于 CSS<br />
+D. 仅数据库厂商，基于 B+ 树</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 开源、支持中英双语对话。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-4">3. 课件给出的参数量约为？</h3>
+<p>A. 6.2B（62 亿）<br />
+B. 620B<br />
+C. 6200 万<br />
+D. 仅 6200 参数</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 配置表写作 6.2B。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-5">4. 预训练语料规模与中英比例（课件）更接近？</h3>
+<p>A. 约 1T 标识符，中英约 1:1<br />
+B. 仅 1MB，全英文<br />
+C. 仅中文古诗 100 首<br />
+D. 无预训练，随机初始化即上线</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 并辅以监督微调、反馈自助、人类反馈强化学习等。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-6">5. 相对原始 Decoder，下列哪项<strong>不是</strong>课件列出的结构改动？</h3>
+<p>A. embedding 层梯度缩减<br />
+B. Deep Norm 的 post layer norm<br />
+C. GeGLU 激活、RoPE 位置编码<br />
+D. 必须改回绝对位置编码并强制 ReLU</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：D。</strong> 实际是去掉绝对位置编码、用 RoPE，激活改为 GeGLU。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-7">6. embedding 梯度缩减的目的与效果（课件）？</h3>
+<p>A. 提升训练稳定性；相当于把 embedding 梯度缩小约 10 倍、减小范数<br />
+B. 故意让训练必散<br />
+C. 只影响推理 UI 颜色<br />
+D. 删除全部 embedding 参数</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 稳定性相关改动。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-8">7. ChatGLM-6B 配置表中隐藏层维度与层数是？</h3>
+<p>A. 隐藏维 4096，层数 28<br />
+B. 隐藏维 128，层数 2<br />
+C. 隐藏维 1，层数 1<br />
+D. 隐藏维 40960，层数 2800</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 注意力头数 32。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-9">8. 词表大小与最大长度（课件 6B 配置）？</h3>
+<p>A. 词表 130528，最大长度 2048<br />
+B. 词表 100，最大长度 8<br />
+C. 词表无限，最大长度无限<br />
+D. 无词表，仅字节对</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 与硬件占用也相关。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-10">9. FP16（无量化）推理最低 GPU 显存（官网表）约为？</h3>
+<p>A. 13GB<br />
+B. 1GB<br />
+C. 130GB<br />
+D. 无需显存</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 高效参数微调约 14GB。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-11">10. INT4 推理最低 GPU 显存约为？</h3>
+<p>A. 6GB<br />
+B. 60GB<br />
+C. 600MB 且与长度无关<br />
+D. 必须 80GB</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 消费级卡可推理是优点之一；微调约 7GB。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-12">11. 显存占用除参数量外，课件还强调与什么有关？</h3>
+<p>A. 仅与显示器刷新率有关<br />
+B. 文本支持的最大长度<br />
+C. 仅与键盘背光有关<br />
+D. 与长度完全无关</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 长上下文会抬高占用。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-13">12. 模型特点中的优点不包括？</h3>
+<p>A. INT4 下较低部署门槛<br />
+B. 人类意图对齐训练相关能力<br />
+C. 模型容量小导致记忆与语言能力相对较弱（这是缺点）<br />
+D. A 与 B 属于优点表述方向</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：C。</strong> 「容量小、多轮较弱」写在缺点。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-14">13. 课件依赖包中 transformers / peft 版本更接近？</h3>
+<p>A. <code>transformers&lt;mark&gt;4.33</code>，<code>peft&lt;/mark&gt;0.3.0</code><br />
+B. 任意最新 nightly 且无需锁定<br />
+C. 只装 numpy 即可跑 ChatGLM<br />
+D. 禁止使用 peft</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 站点也提示复现需注意版本兼容。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-15">14. 创建并激活虚拟环境的推荐流程是？</h3>
+<p>A. <code>conda create -n llm_env python=3.10</code> → <code>conda activate llm_env</code><br />
+B. 必须在系统 Python 2.7 全局乱装<br />
+C. 禁止虚拟环境<br />
+D. 只用 <code>rm -rf /</code></p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 激活失败可先 <code>conda init</code> 并重开终端。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-16">15. 依赖安装课件写法是？</h3>
+<p>A. <code>pip install -r requirements.txt</code>（进入环境后）<br />
+B. 只能手动逐个猜包名且无文件<br />
+C. 用 <code>npm install</code> 装 PyTorch<br />
+D. 禁止 protobuf</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> requirements 含 accelerate、datasets、streamlit 等。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-17">16. 预训练权重下载课件示例工具是？</h3>
+<p>A. <code>modelscope download --model ZhipuAI/ChatGLM-6B --local_dir ./</code><br />
+B. 只能用 FTP 匿名上传到随机服务器<br />
+C. <code>apt install chatglm</code><br />
+D. 浏览器拖拽 exe 即权重</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 先 <code>pip install modelscope</code>，缺文件可到模型页补齐。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-18">17. 若 <code>configuration_chatglm.py</code> 等未下全，应？</h3>
+<p>A. 忽略，随机新建空文件即可训练<br />
+B. 手动从模型文件页下载并放到 chatglm-6b 目录<br />
+C. 删除整个 CUDA<br />
+D. 改用 CSS 代替建模文件</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 课件点名这些关键 py 文件。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-19">18. GeGLU 在本课结构改动中的角色是？</h3>
+<p>A. 替换原 ReLU 类激活，作为新的激活选择<br />
+B. 一种向量数据库名字<br />
+C. 仅日志级别名称<br />
+D. 仅 Docker 网络驱动</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 与 RoPE、Deep Norm 等并列。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-20">19. RoPE 相对「绝对位置编码」的课件表述是？</h3>
+<p>A. 去除绝对位置编码，采用旋转位置编码 RoPE<br />
+B. 同时强制保留两套互斥编码且不可关<br />
+C. 位置编码与 Transformer 无关<br />
+D. RoPE 只用于图像卷积</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 位置信息注入方式的改动。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-21">20. 本章小结强调本章帮助你了解？</h3>
+<p>A. 仅了解 CSS 动画<br />
+B. 项目背景、适配环境与整体架构流程，方便后续开发<br />
+C. 取消微调需求<br />
+D. 只背诵显卡价格</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：B。</strong> 为数据预处理与 LoRA 训练铺路。</p></div></div>
+
+
+</div><h2 id="sec-22">二、简答题（12 题）</h2>
+<div class="q-card"><h3 id="sec-23">21. 为什么「先验知识强」仍可能不够用？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>通用 LLM 能答很多题，但在特定任务上常出现格式漂移、不严格按输入约束输出，后处理/解析困难。微调（本项目）用于对齐目标输出格式与任务协议。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-24">22. 用自己的话解释 Deep Norm + post layer norm 改动的工程意图。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>层归一化位置与归一化策略影响深层训练稳定性。课件采用基于 Deep Norm 的 post-LN，属于为更稳训练做的结构选择（与原始 Decoder 配置不同）。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-25">23. 列出 6B 配置表中你认为最关键的 4 个数字并说明用途。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>示例：参数 6.2B（容量）、隐藏维 4096 / 层数 28 / 头数 32（算力与结构宽度深度）、词表 130528（分词空间）、最大长度 2048（上下文与显存）。任选合理即可。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-26">24. 对照解释 FP16 / INT8 / INT4 推理显存阶梯。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>无量化 FP16 约 13GB；INT8 约 10GB；INT4 约 6GB。量化降低权重精度以换显存与部署门槛，可能伴随一定质量折损，需按场景权衡。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-27">25. 「高效参数微调」显存为何仍接近或略高于同级推理？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>除前向外，训练还需梯度、优化器状态等额外占用（即便 LoRA 只训少量参数）。课件表：FP16 微调约 14GB，INT4 约 7GB。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-28">26. 优点里「较低部署门槛」具体指什么？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>INT4 下约 6GB 显存即可推理，使 ChatGLM-6B 有机会跑在消费级 GPU 上，而不是只能上数据中心大卡。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-29">27. 缺点「模型容量小」会带来哪些可观察现象？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>相对更大模型，知识记忆、复杂推理与语言表现可能更弱；课件还提到多轮对话能力相对较弱。应用上需靠检索/工具或更大模型补齐。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-30">28. 为什么 requirements 要钉死 transformers / peft 版本？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>ChatGLM 自定义建模文件与 PEFT 注入接口随版本变化大；钉版本降低「能 import 但不能 load / 不能训练」的兼容风险。复现新环境时仍要核对。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-31">29. 简述从空机器到可加载权重的最小步骤。</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>准备 GPU 环境与 Python → 建 conda 环境 → <code>pip install -r requirements.txt</code> → 建模型目录 → modelscope 下载 ChatGLM-6B → 核对关键 py/权重文件齐全。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-32">30. 项目架构（概念）上，本章之后通常接什么？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>混合任务数据预处理（指令化 jsonl），再 LoRA 注入与训练验证、推理预测。本章解决「用什么模型、什么环境」。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-33">31. embedding 梯度缩小 10 倍，直观上如何理解「范数变小」？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>更新步里 embedding 参数变动幅度被压小，减轻早期不稳定或梯度爆炸/震荡风险，换更稳的训练动态（具体实现以官方/建模代码为准）。</p></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-34">32. 若只有 8GB 显卡，优先考虑哪种精度路径？风险是什么？</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>优先 INT4 推理（表称约 6GB）；微调约 7GB 仍可能吃紧，需降序列长度、开梯度检查点或换更大显存。风险是量化带来的质量下降与实现兼容问题。</p></div></div>
+
+
+</div><h2 id="sec-35">三、代码题（8 题）</h2>
+<div class="q-card"><h3 id="sec-36">33. 用字典表达 6B 配置表并查询字段</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">CHATGLM_6B</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;params&quot;</span><span class="p">:</span> <span class="s2">&quot;6.2B&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;hidden_size&quot;</span><span class="p">:</span> <span class="mi">4096</span><span class="p">,</span>
+    <span class="s2">&quot;num_layers&quot;</span><span class="p">:</span> <span class="mi">28</span><span class="p">,</span>
+    <span class="s2">&quot;num_heads&quot;</span><span class="p">:</span> <span class="mi">32</span><span class="p">,</span>
+    <span class="s2">&quot;vocab_size&quot;</span><span class="p">:</span> <span class="mi">130528</span><span class="p">,</span>
+    <span class="s2">&quot;max_length&quot;</span><span class="p">:</span> <span class="mi">2048</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">assert</span> <span class="n">CHATGLM_6B</span><span class="p">[</span><span class="s2">&quot;num_layers&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">0</span> <span class="o">+</span> <span class="n">CHATGLM_6B</span><span class="p">[</span><span class="s2">&quot;hidden_size&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">4096</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">CHATGLM_6B</span><span class="p">[</span><span class="s2">&quot;vocab_size&quot;</span><span class="p">],</span> <span class="n">CHATGLM_6B</span><span class="p">[</span><span class="s2">&quot;max_length&quot;</span><span class="p">])</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-37">34. 量化等级 → 推理/微调最低显存（GB）查询</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">VRAM</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;FP16&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;infer&quot;</span><span class="p">:</span> <span class="mi">13</span><span class="p">,</span> <span class="s2">&quot;peft&quot;</span><span class="p">:</span> <span class="mi">14</span><span class="p">},</span>
+    <span class="s2">&quot;INT8&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;infer&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s2">&quot;peft&quot;</span><span class="p">:</span> <span class="mi">9</span><span class="p">},</span>
+    <span class="s2">&quot;INT4&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;infer&quot;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s2">&quot;peft&quot;</span><span class="p">:</span> <span class="mi">7</span><span class="p">},</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">need_vram</span><span class="p">(</span><span class="n">quant</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;infer&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">VRAM</span><span class="p">[</span><span class="n">quant</span><span class="o">.</span><span class="n">upper</span><span class="p">()][</span><span class="n">mode</span><span class="p">]</span>
+
+
+<span class="k">assert</span> <span class="n">need_vram</span><span class="p">(</span><span class="s2">&quot;INT4&quot;</span><span class="p">,</span> <span class="s2">&quot;infer&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">6</span>
+<span class="k">assert</span> <span class="n">need_vram</span><span class="p">(</span><span class="s2">&quot;FP16&quot;</span><span class="p">,</span> <span class="s2">&quot;peft&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">14</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">need_vram</span><span class="p">(</span><span class="s2">&quot;INT8&quot;</span><span class="p">,</span> <span class="s2">&quot;infer&quot;</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-38">35. 按可用显存推荐量化等级（推理）</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">ORDER</span> <span class="o">=</span> <span class="p">[(</span><span class="s2">&quot;INT4&quot;</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;INT8&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;FP16&quot;</span><span class="p">,</span> <span class="mi">13</span><span class="p">)]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">recommend_quant</span><span class="p">(</span><span class="n">avail_gb</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># 选满足最低需求的最高精度</span>
+    <span class="n">ok</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">need</span> <span class="ow">in</span> <span class="n">ORDER</span> <span class="k">if</span> <span class="n">avail_gb</span> <span class="o">&gt;=</span> <span class="n">need</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="c1"># ORDER 从低显存到高；取最后一个即可用的最高精度</span>
+    <span class="k">return</span> <span class="n">ok</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+
+<span class="k">assert</span> <span class="n">recommend_quant</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;INT4&quot;</span>
+<span class="k">assert</span> <span class="n">recommend_quant</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;INT8&quot;</span>
+<span class="k">assert</span> <span class="n">recommend_quant</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;FP16&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">recommend_quant</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-39">36. 校验结构改动清单是否齐全</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">REQUIRED</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;embedding_grad_shrink&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;deep_norm_post_ln&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;geglu&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;rope&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">check_mods</span><span class="p">(</span><span class="n">mods</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">REQUIRED</span> <span class="o">-</span> <span class="n">mods</span><span class="p">)</span>
+
+
+<span class="n">missing</span> <span class="o">=</span> <span class="n">check_mods</span><span class="p">({</span><span class="s2">&quot;embedding_grad_shrink&quot;</span><span class="p">,</span> <span class="s2">&quot;geglu&quot;</span><span class="p">,</span> <span class="s2">&quot;rope&quot;</span><span class="p">})</span>
+<span class="k">assert</span> <span class="n">missing</span> <span class="o">==</span> <span class="p">[</span><span class="s2">&quot;deep_norm_post_ln&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">check_mods</span><span class="p">(</span><span class="n">REQUIRED</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-40">37. 迷你「指令样本」格式检查（为后续微调铺垫）</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">validate_sample</span><span class="p">(</span><span class="n">sample</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="p">(</span>
+        <span class="nb">isinstance</span><span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;instruction&quot;</span><span class="p">),</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;input&quot;</span><span class="p">),</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sample</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;output&quot;</span><span class="p">),</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample</span><span class="p">[</span><span class="s2">&quot;output&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span>
+    <span class="p">)</span>
+
+
+<span class="n">ok</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;instruction&quot;</span><span class="p">:</span> <span class="s2">&quot;抽取人名&quot;</span><span class="p">,</span> <span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="s2">&quot;张三去了北京&quot;</span><span class="p">,</span> <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="s2">&quot;张三&quot;</span><span class="p">}</span>
+<span class="n">bad</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;instruction&quot;</span><span class="p">:</span> <span class="s2">&quot;分类&quot;</span><span class="p">,</span> <span class="s2">&quot;input&quot;</span><span class="p">:</span> <span class="s2">&quot;文本&quot;</span><span class="p">,</span> <span class="s2">&quot;output&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">}</span>
+<span class="k">assert</span> <span class="n">validate_sample</span><span class="p">(</span><span class="n">ok</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">validate_sample</span><span class="p">(</span><span class="n">bad</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">validate_sample</span><span class="p">(</span><span class="n">ok</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-41">38. 估算「同量化下加长上下文」的显存风险标志</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">context_risk</span><span class="p">(</span><span class="n">base_gb</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">max_len</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">ref_len</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2048</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="c1"># 教学：长度超过参考则标记风险升高（非精确公式）</span>
+    <span class="k">if</span> <span class="n">max_len</span> <span class="o">&lt;=</span> <span class="n">ref_len</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;约&gt;=</span><span class="si">{</span><span class="n">base_gb</span><span class="si">}</span><span class="s2">GB（长度未超参考 </span><span class="si">{</span><span class="n">ref_len</span><span class="si">}</span><span class="s2">）&quot;</span>
+    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;可能显著高于 </span><span class="si">{</span><span class="n">base_gb</span><span class="si">}</span><span class="s2">GB（max_len=</span><span class="si">{</span><span class="n">max_len</span><span class="si">}</span><span class="s2">&gt;</span><span class="si">{</span><span class="n">ref_len</span><span class="si">}</span><span class="s2">）&quot;</span>
+
+
+<span class="nb">print</span><span class="p">(</span><span class="n">context_risk</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2048</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">context_risk</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">8192</span><span class="p">))</span>
+<span class="k">assert</span> <span class="s2">&quot;显著&quot;</span> <span class="ow">in</span> <span class="n">context_risk</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">8192</span><span class="p">)</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-42">39. 解析 requirements 钉版本行</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">pinned_version</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s2">&quot;==&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">ver</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;==&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">name</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span> <span class="n">ver</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">assert</span> <span class="n">pinned_version</span><span class="p">(</span><span class="s2">&quot;transformers==4.33&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;transformers&quot;</span><span class="p">,</span> <span class="s2">&quot;4.33&quot;</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">pinned_version</span><span class="p">(</span><span class="s2">&quot;peft==0.3.0&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="s2">&quot;peft&quot;</span><span class="p">,</span> <span class="s2">&quot;0.3.0&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">pinned_version</span><span class="p">(</span><span class="s2">&quot;accelerate&gt;=0.20.3&quot;</span><span class="p">))</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="q-card"><h3 id="sec-43">40. 环境就绪检查清单（布尔汇总）</h3>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">env_ready</span><span class="p">(</span><span class="n">checks</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+    <span class="n">required</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;python310&quot;</span><span class="p">,</span> <span class="s2">&quot;torch_cuda&quot;</span><span class="p">,</span> <span class="s2">&quot;reqs_installed&quot;</span><span class="p">,</span> <span class="s2">&quot;weights_present&quot;</span><span class="p">]</span>
+    <span class="n">missing</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">required</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">checks</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;ok&quot;</span><span class="p">:</span> <span class="ow">not</span> <span class="n">missing</span><span class="p">,</span> <span class="s2">&quot;missing&quot;</span><span class="p">:</span> <span class="n">missing</span><span class="p">}</span>
+
+
+<span class="n">status</span> <span class="o">=</span> <span class="n">env_ready</span><span class="p">({</span>
+    <span class="s2">&quot;python310&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;torch_cuda&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;reqs_installed&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;weights_present&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">})</span>
+<span class="k">assert</span> <span class="n">status</span><span class="p">[</span><span class="s2">&quot;ok&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">and</span> <span class="s2">&quot;weights_present&quot;</span> <span class="ow">in</span> <span class="n">status</span><span class="p">[</span><span class="s2">&quot;missing&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">status</span><span class="p">)</span>
+
+<span class="c1"># 对应课件：环境 + 依赖 + 权重三件套齐了，再进入数据与 LoRA 训练章节。</span>
+</pre></div>
+</div></div></div>
+
+
+</div><div class="done-bar"><button class="mark-done-btn" data-key="hw68" type="button">⛳ 学完了？标记为已完成</button></div>
+<div class="pager"><a href="hw67.html"><div class="dir">← 上一篇</div><div class="name">⛓️ LangChain：模型、Prompt、链与 Agent 综合训练</div></a><a class="next" href="hw49.html"><div class="dir">下一篇 →</div><div class="name">🪄 Prompt-Tuning：PET、软提示与 P-tuning 综合训练</div></a></div>
+</main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、选择题（20 题）</a><a class="lv3" href="#sec-2">1. 本项目对 ChatGLM-6B 做 Finetune 的直接动机更接近？</a><a class="lv3" href="#sec-3">2. ChatGLM-6B 由谁提出、基于什么架构？</a><a class="lv3" href="#sec-4">3. 课件给出的参数量约为？</a><a class="lv3" href="#sec-5">4. 预训练语料规模与中英比例（课件）更接近？</a><a class="lv3" href="#sec-6">5. 相对原始 Decoder，下列哪项不是课件列出的结构改动？</a><a class="lv3" href="#sec-7">6. embedding 梯度缩减的目的与效果（课件）？</a><a class="lv3" href="#sec-8">7. ChatGLM-6B 配置表中隐藏层维度与层数是？</a><a class="lv3" href="#sec-9">8. 词表大小与最大长度（课件 6B 配置）？</a><a class="lv3" href="#sec-10">9. FP16（无量化）推理最低 GPU 显存（官网表）约为？</a><a class="lv3" href="#sec-11">10. INT4 推理最低 GPU 显存约为？</a><a class="lv3" href="#sec-12">11. 显存占用除参数量外，课件还强调与什么有关？</a><a class="lv3" href="#sec-13">12. 模型特点中的优点不包括？</a><a class="lv3" href="#sec-14">13. 课件依赖包中 transformers / peft 版本更接近？</a><a class="lv3" href="#sec-15">14. 创建并激活虚拟环境的推荐流程是？</a><a class="lv3" href="#sec-16">15. 依赖安装课件写法是？</a><a class="lv3" href="#sec-17">16. 预训练权重下载课件示例工具是？</a><a class="lv3" href="#sec-18">17. 若 configuration_chatglm.py 等未下全，应？</a><a class="lv3" href="#sec-19">18. GeGLU 在本课结构改动中的角色是？</a><a class="lv3" href="#sec-20">19. RoPE 相对「绝对位置编码」的课件表述是？</a><a class="lv3" href="#sec-21">20. 本章小结强调本章帮助你了解？</a><a class="lv2" href="#sec-22">二、简答题（12 题）</a><a class="lv3" href="#sec-23">21. 为什么「先验知识强」仍可能不够用？</a><a class="lv3" href="#sec-24">22. 用自己的话解释 Deep Norm + post layer norm 改动的工程意图。</a><a class="lv3" href="#sec-25">23. 列出 6B 配置表中你认为最关键的 4 个数字并说明用途。</a><a class="lv3" href="#sec-26">24. 对照解释 FP16 / INT8 / INT4 推理显存阶梯。</a><a class="lv3" href="#sec-27">25. 「高效参数微调」显存为何仍接近或略高于同级推理？</a><a class="lv3" href="#sec-28">26. 优点里「较低部署门槛」具体指什么？</a><a class="lv3" href="#sec-29">27. 缺点「模型容量小」会带来哪些可观察现象？</a><a class="lv3" href="#sec-30">28. 为什么 requirements 要钉死 transformers / peft 版本？</a><a class="lv3" href="#sec-31">29. 简述从空机器到可加载权重的最小步骤。</a><a class="lv3" href="#sec-32">30. 项目架构（概念）上，本章之后通常接什么？</a><a class="lv3" href="#sec-33">31. embedding 梯度缩小 10 倍，直观上如何理解「范数变小」？</a><a class="lv3" href="#sec-34">32. 若只有 8GB 显卡，优先考虑哪种精度路径？风险是什么？</a><a class="lv2" href="#sec-35">三、代码题（8 题）</a><a class="lv3" href="#sec-36">33. 用字典表达 6B 配置表并查询字段</a><a class="lv3" href="#sec-37">34. 量化等级 → 推理/微调最低显存（GB）查询</a><a class="lv3" href="#sec-38">35. 按可用显存推荐量化等级（推理）</a><a class="lv3" href="#sec-39">36. 校验结构改动清单是否齐全</a><a class="lv3" href="#sec-40">37. 迷你「指令样本」格式检查（为后续微调铺垫）</a><a class="lv3" href="#sec-41">38. 估算「同量化下加长上下文」的显存风险标志</a><a class="lv3" href="#sec-42">39. 解析 requirements 钉版本行</a><a class="lv3" href="#sec-43">40. 环境就绪检查清单（布尔汇总）</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 仅供个人学习使用，请勿传播 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
