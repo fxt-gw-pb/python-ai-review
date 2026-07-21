@@ -147,13 +147,62 @@
     top.classList.toggle("show", scrollY > 500);
   }, { passive: true });
 
-  /* ---------- 移动端侧栏 ---------- */
+  /* ---------- 侧栏：桌面收起 / 移动端抽屉 ---------- */
   const menuBtn = document.querySelector(".menu-btn");
   const sidenav = document.querySelector(".sidenav");
+  const SIDENAV_KEY = "sidenav-collapsed";
+  const isMobileNav = () => matchMedia("(max-width: 900px)").matches;
+
+  const syncMenuBtn = () => {
+    if (!menuBtn || !sidenav) return;
+    if (isMobileNav()) {
+      const open = sidenav.classList.contains("open");
+      menuBtn.title = open ? "关闭菜单" : "打开菜单";
+      menuBtn.setAttribute("aria-expanded", open ? "true" : "false");
+      return;
+    }
+    const collapsed = document.body.classList.contains("sidenav-collapsed");
+    menuBtn.title = collapsed ? "展开侧栏" : "收起侧栏";
+    menuBtn.setAttribute("aria-expanded", collapsed ? "false" : "true");
+  };
+
   if (menuBtn && sidenav) {
-    menuBtn.addEventListener("click", () => sidenav.classList.toggle("open"));
-    document.addEventListener("click", e => {
-      if (!sidenav.contains(e.target) && !menuBtn.contains(e.target)) sidenav.classList.remove("open");
+    if (!isMobileNav() && localStorage.getItem(SIDENAV_KEY) === "1") {
+      document.body.classList.add("sidenav-collapsed");
+    }
+    syncMenuBtn();
+
+    menuBtn.addEventListener("click", () => {
+      if (isMobileNav()) {
+        sidenav.classList.toggle("open");
+      } else {
+        document.body.classList.toggle("sidenav-collapsed");
+        localStorage.setItem(
+          SIDENAV_KEY,
+          document.body.classList.contains("sidenav-collapsed") ? "1" : "0"
+        );
+      }
+      syncMenuBtn();
     });
+
+    document.addEventListener("click", e => {
+      if (!isMobileNav()) return;
+      if (!sidenav.contains(e.target) && !menuBtn.contains(e.target)) {
+        sidenav.classList.remove("open");
+        syncMenuBtn();
+      }
+    });
+
+    addEventListener("resize", () => {
+      if (isMobileNav()) {
+        document.body.classList.remove("sidenav-collapsed");
+      } else {
+        sidenav.classList.remove("open");
+        if (localStorage.getItem(SIDENAV_KEY) === "1") {
+          document.body.classList.add("sidenav-collapsed");
+        }
+      }
+      syncMenuBtn();
+    }, { passive: true });
   }
 })();
