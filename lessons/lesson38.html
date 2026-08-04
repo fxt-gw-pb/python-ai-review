@@ -113,7 +113,7 @@ window.MathJax = {
 <ul>
 <li>对于 句子 到 句子的通用模型。目标是给定输入句子Source，通过Encoder-Decoder框架来生成目标句子Target。而Source和Target分别为：
   $$
-  Source = \langle X_1,X_2 \cdots X_m \rangle \
+  Source = \langle X_1,X_2 \cdots X_m \rangle \\
   Target = \langle y_1,y_2 \cdots y_n \rangle
   $$</li>
 <li>编码器Encoder 对输入Source进行编码，通过非线性变换转化为中间语义表示C：
@@ -126,8 +126,8 @@ window.MathJax = {
   $$</li>
 <li>上述图的Encoder-Decoder框架是没有使用“注意力机制”的。目标句子Target中每个单词的生成过程如下：
   $$
-  y_1 = f(C) \
-  y_2 = f(C, y_1) \
+  y_1 = f(C) \\
+  y_2 = f(C, y_1) \\
   y_3 = f(C, y_1, y_2)
   $$</li>
 <li>不论生成哪个单词，中间语义表示C都是一样的。对于target中的任何一个单词，source中任意单词对某个目标单词$y_i$的影响力都是相同的，模型没有学会"找重点"。</li>
@@ -152,8 +152,8 @@ window.MathJax = {
 <li>
 <p>生成目标句子单词的过程为：
   $$
-  y_1 = f1(C_1, h_0) \
-  y_2 = f1(C_2, h_0, h_1) \
+  y_1 = f1(C_1, h_0) \\
+  y_2 = f1(C_2, h_0, h_1) \\
   y_3 = f1(C_3, h_0, h_1, h_2)
   $$</p>
 </li>
@@ -170,9 +170,9 @@ $$
 </ul>
 <p>比如中间语义张量Ci如下:
   $$
-  C_{1}=0.2<em>v1 + 0.6</em>v2 + 0.1<em>v3 + 0.1</em>v4 \
-  C_{2}=0.1<em>v1 + 0.2</em>v2 + 0.6<em>v3 + 0.1</em>v4 \
-  C_{3}=0.1<em>v1 + 0.1</em>v2 + 0.2<em>v3 + 0.6</em>v4 \
+  C_{1}=0.2*v1 + 0.6*v2 + 0.1*v3 + 0.1*v4 \\
+  C_{2}=0.1*v1 + 0.2*v2 + 0.6*v3 + 0.1*v4 \\
+  C_{3}=0.1*v1 + 0.1*v2 + 0.2*v3 + 0.6*v4 \\
   $$</p>
 <h2 id="sec-5">3 注意力机制的计算过程</h2>
 <h3 id="sec-6">3.1 Attention 的统一计算公式</h3>
@@ -185,13 +185,13 @@ $$</p>
 <li>
 <p><strong>打分</strong>：得到注意力分数
 $$
-attention_score = score(Q, K)
+attention\_score = score(Q, K)
 $$</p>
 </li>
 <li>
 <p><strong>归一化</strong>：得到注意力权重
 $$
-\alpha = softmax(attention_score)
+\alpha = softmax(attention\_score)
 $$</p>
 </li>
 <li>
@@ -346,13 +346,13 @@ $$</p>
 <li>Step 1：计算注意力分数</li>
 </ul>
 <p>$$
-attention_score = score(Q, K)
+attention\_score = score(Q, K)
 $$</p>
 <ul>
 <li>Step 2：softmax转换为注意力概率分布</li>
 </ul>
 <p>$$
-\alpha_i = softmax(attention_score)
+\alpha_i = softmax(attention\_score)
 $$</p>
 <ul>
 <li>Step 3：加权求和得到中间语义表示</li>
@@ -486,7 +486,7 @@ $$</p>
 <li>$d_k$：K 的特征维度（最后一个轴的长度）</li>
 <li>输出：(batch_size, tgt_seq_len, d_v)</li>
 </ul>
-<p>注意：通常的 $d_k$ 和 $d_v$ 都等于 $d_model$，即输入输出的维度一致。</p>
+<p>注意：通常的 $d_k$ 和 $d_v$ 都等于 $d\_model$，即输入输出的维度一致。</p>
 <h3 id="sec-14">4.3 为什么缩放点积注意力要除以 $\sqrt{d_k}$？</h3>
 <p>$$
 Attention(Q,K,V)=Softmax\left(\frac{QK^T}{\sqrt{d_k}}\right)V
@@ -515,22 +515,22 @@ $$</p>
 <p>假设 Q 和 K 分别为：</p>
 <p>$$
 Q = \begin{bmatrix}
-1 &amp; 0 &amp; 1 &amp; 0\
-0 &amp; 1 &amp; 0 &amp; 1\
+1 &amp; 0 &amp; 1 &amp; 0\\
+0 &amp; 1 &amp; 0 &amp; 1\\
 1 &amp; 1 &amp; 0 &amp; 0
 \end{bmatrix} \quad (3 \times 4), \quad d_k = 4
 $$</p>
 <p>$$
 K = \begin{bmatrix}
-0 &amp; 1 &amp; 0 &amp; 1\
-1 &amp; 0 &amp; 1 &amp; 0\
+0 &amp; 1 &amp; 0 &amp; 1\\
+1 &amp; 0 &amp; 1 &amp; 0\\
 1 &amp; 1 &amp; 1 &amp; 1
 \end{bmatrix} \quad (3 \times 4), \quad d_k = 4
 $$</p>
 <p>$$
 QK^T = \begin{bmatrix}
-0 &amp; 2 &amp; 2\
-2 &amp; 0 &amp; 2\
+0 &amp; 2 &amp; 2\\
+2 &amp; 0 &amp; 2\\
 1 &amp; 1 &amp; 2
 \end{bmatrix}
 $$</p>
@@ -539,8 +539,8 @@ $$</p>
 <p><strong>缩放情况</strong>（除以 $\sqrt{d_k} = 2$）：</p>
 <p>$$
 \frac{QK^T}{\sqrt{d_k}} = \begin{bmatrix}
-0 &amp; 1 &amp; 1\
-1 &amp; 0 &amp; 1\
+0 &amp; 1 &amp; 1\\
+1 &amp; 0 &amp; 1\\
 0.5 &amp; 0.5 &amp; 1
 \end{bmatrix}
 $$</p>

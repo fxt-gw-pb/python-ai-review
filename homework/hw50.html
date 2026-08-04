@@ -42,7 +42,7 @@ window.MathJax = {
 </div>
 <p>55 道练习，按“PEFT 共同目标 → Prefix Tuning → Adapter Tuning → LoRA 数学与工程实现 → QLoRA 量化训练 → 评测、检查点和部署”组织。做题时始终从五个问题判断一种方法：<strong>参数加在哪里、哪些参数更新、额外前向开销是什么、能否合并、推理需要哪些工件</strong>。</p>
 <blockquote>
-<p>建议先独立作答，再展开参考答案。本练习依据 <a href="https://arxiv.org/abs/2101.00190">Prefix-Tuning 原始论文</a>、<a href="https://arxiv.org/abs/1902.00751">Adapter 原始论文</a>、<a href="https://arxiv.org/abs/2106.09685">LoRA 原始论文</a>、<a href="https://arxiv.org/abs/2305.14314">QLoRA 原始论文</a>、<a href="https://huggingface.co/docs/peft/package_reference/lora">Hugging Face PEFT LoRA 文档</a>与 <a href="https://huggingface.co/docs/transformers/quantization/bitsandbytes">Transformers bitsandbytes 文档</a>校准。注意：PEFT 减少的是可训练参数和每任务检查点，不代表激活、临时张量和全部训练显存按相同比例下降；LoRA 合并的是缩放后的低秩乘积 (\Delta W=BA)，不是矩阵相加；QLoRA 的 4-bit 主要用于冻结基座权重存储，计算及 LoRA、梯度和优化器状态并非全部 4-bit。10 道代码题均离线运行，不下载模型。</p>
+<p>建议先独立作答，再展开参考答案。本练习依据 <a href="https://arxiv.org/abs/2101.00190">Prefix-Tuning 原始论文</a>、<a href="https://arxiv.org/abs/1902.00751">Adapter 原始论文</a>、<a href="https://arxiv.org/abs/2106.09685">LoRA 原始论文</a>、<a href="https://arxiv.org/abs/2305.14314">QLoRA 原始论文</a>、<a href="https://huggingface.co/docs/peft/package_reference/lora">Hugging Face PEFT LoRA 文档</a>与 <a href="https://huggingface.co/docs/transformers/quantization/bitsandbytes">Transformers bitsandbytes 文档</a>校准。注意：PEFT 减少的是可训练参数和每任务检查点，不代表激活、临时张量和全部训练显存按相同比例下降；LoRA 合并的是缩放后的低秩乘积 \(\Delta W=BA\)，不是矩阵相加；QLoRA 的 4-bit 主要用于冻结基座权重存储，计算及 LoRA、梯度和优化器状态并非全部 4-bit。10 道代码题均离线运行，不下载模型。</p>
 </blockquote>
 <h2 id="sec-1">一、选择题（30 题）</h2>
 <div class="q-card"><h3 id="sec-2">1. PEFT 的共同目标最准确的是？</h3>
@@ -95,24 +95,24 @@ D. 二者都只能改变分类头</p>
 <div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Prefix 让各层 token 可注意到虚拟前缀；朴素 Soft Prompt 只改变输入 embedding。不同库的命名可能略有差异，因此应检查实际张量注入点。</p></div></div>
 
 
-</div><div class="q-card"><h3 id="sec-7">6. 对 (L) 层 Transformer、前缀长度 (p)、隐藏维度 (d)，直接学习每层 K/V 前缀的主体参数量约为？</h3>
-<p>A. (2Lpd)<br />
-B. (L+p+d)<br />
-C. (Lpd/2)<br />
-D. (p)</p>
+</div><div class="q-card"><h3 id="sec-7">6. 对 \(L\) 层 Transformer、前缀长度 \(p\)、隐藏维度 \(d\)，直接学习每层 K/V 前缀的主体参数量约为？</h3>
+<p>A. \(2Lpd\)<br />
+B. \(L+p+d\)<br />
+C. \(Lpd/2\)<br />
+D. \(p\)</p>
 
 
 <div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 每层各有 K 与 V 两组前缀。若使用共享 embedding 加 MLP 投影，参数公式需按实际编码器结构重新计算；偏置等小项也可能存在。</p></div></div>
 
 
 </div><div class="q-card"><h3 id="sec-8">7. 单层 Prefix K/V 在多头表示下常见形状是？</h3>
-<p>A. ([B,h,p,d_h])，其中 (d=h d_h)<br />
-B. ([V,V])<br />
-C. ([B,p]) 且没有隐藏维<br />
-D. ([L,B])</p>
+<p>A. \([B,h,p,d_h]\)，其中 \(d=h d_h\)<br />
+B. \([V,V]\)<br />
+C. \([B,p]\) 且没有隐藏维<br />
+D. \([L,B]\)</p>
 
 
-<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 将其与真实 token 的 K/V 在序列维拼接后，注意力键值长度从 (s) 变为 (p+s)，查询长度通常仍由真实 token 决定。</p></div></div>
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 将其与真实 token 的 K/V 在序列维拼接后，注意力键值长度从 \(s\) 变为 \(p+s\)，查询长度通常仍由真实 token 决定。</p></div></div>
 
 
 </div><div class="q-card"><h3 id="sec-9">8. Prefix 使用 MLP 重参数化的主要作用是？</h3>
@@ -146,23 +146,23 @@ D. 只在最后一个 token 使用</p>
 
 
 </div><div class="q-card"><h3 id="sec-12">11. 典型串联瓶颈 Adapter 的形式更接近？</h3>
-<p>A. (h' = h + W_{\text{up}}\sigma(W_{\text{down}}h))<br />
-B. (h'=W_{\text{down}}+W_{\text{up}})<br />
-C. (h'=\operatorname{softmax}(h)) 且无参数<br />
-D. (h'=0)</p>
+<p>A. \(h' = h + W_{\text{up}}\sigma(W_{\text{down}}h)\)<br />
+B. \(h'=W_{\text{down}}+W_{\text{up}}\)<br />
+C. \(h'=\operatorname{softmax}(h)\) 且无参数<br />
+D. \(h'=0\)</p>
 
 
-<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Down projection 将隐藏维 (d) 压到瓶颈维 (b)，非线性后再升回 (d)，残差连接保留原表示。实际结构还可能含 LayerNorm、dropout 或不同插入位置。</p></div></div>
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> Down projection 将隐藏维 \(d\) 压到瓶颈维 \(b\)，非线性后再升回 \(d\)，残差连接保留原表示。实际结构还可能含 LayerNorm、dropout 或不同插入位置。</p></div></div>
 
 
-</div><div class="q-card"><h3 id="sec-13">12. 忽略偏置，一个 (d\to b\to d) Adapter 的参数量约为？</h3>
-<p>A. (2db)<br />
-B. (d^2)<br />
-C. (b^2)<br />
-D. (d+b)</p>
+</div><div class="q-card"><h3 id="sec-13">12. 忽略偏置，一个 \(d\to b\to d\) Adapter 的参数量约为？</h3>
+<p>A. \(2db\)<br />
+B. \(d^2\)<br />
+C. \(b^2\)<br />
+D. \(d+b\)</p>
 
 
-<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 两个矩阵分别为 (b\times d) 和 (d\times b)。每层放置一个或多个 Adapter 时，还要乘以层数和插入次数。</p></div></div>
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 两个矩阵分别为 \(b\times d\) 和 \(d\times b\)。每层放置一个或多个 Adapter 时，还要乘以层数和插入次数。</p></div></div>
 
 
 </div><div class="q-card"><h3 id="sec-14">13. Adapter 相比可合并 LoRA 更可能带来的推理代价是？</h3>
@@ -172,7 +172,7 @@ C. 无法保存参数<br />
 D. 一定增加词表大小</p>
 
 
-<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> LoRA 在兼容线性层上可将 (\Delta W) 合并进权重，从而避免额外分支；Adapter 通常仍需在前向中执行模块。真实延迟取决于硬件、批量和服务实现。</p></div></div>
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> LoRA 在兼容线性层上可将 \(\Delta W\) 合并进权重，从而避免额外分支；Adapter 通常仍需在前向中执行模块。真实延迟取决于硬件、批量和服务实现。</p></div></div>
 
 
 </div><div class="q-card"><h3 id="sec-15">14. 将 Adapter 的升维矩阵初始化为零，初始时有什么效果？</h3>
@@ -195,38 +195,38 @@ D. 所有 Adapter 可无条件相加</p>
 <div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 切换、组合或融合需要框架支持与单独评测。不同标签空间、任务头和基座版本仍要一起管理。</p></div></div>
 
 
-</div><div class="q-card"><h3 id="sec-17">16. 对 PyTorch Linear 权重 (W\in\mathbb{R}^{d_{out}\times d_{in}})，LoRA 的经典低秩更新是？</h3>
-<p>A. (\Delta W = BA)，其中 (A\in\mathbb{R}^{r\times d_{in}})、(B\in\mathbb{R}^{d_{out}\times r})<br />
-B. (\Delta W=A+B)<br />
-C. (\Delta W=W^{-1})<br />
-D. (\Delta W) 必须与输入相加后再求逆</p>
+</div><div class="q-card"><h3 id="sec-17">16. 对 PyTorch Linear 权重 \(W\in\mathbb{R}^{d_{out}\times d_{in}}\)，LoRA 的经典低秩更新是？</h3>
+<p>A. \(\Delta W = BA\)，其中 \(A\in\mathbb{R}^{r\times d_{in}}\)、\(B\in\mathbb{R}^{d_{out}\times r}\)<br />
+B. \(\Delta W=A+B\)<br />
+C. \(\Delta W=W^{-1}\)<br />
+D. \(\Delta W\) 必须与输入相加后再求逆</p>
 
 
-<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 前向可写为 (xW^\top + s(xA^\top)B^\top)，其中经典缩放 (s=\alpha/r)。有些库交换 A/B 命名，但形状和乘积必须与原权重一致。</p></div></div>
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 前向可写为 \(xW^\top + s(xA^\top)B^\top\)，其中经典缩放 \(s=\alpha/r\)。有些库交换 A/B 命名，但形状和乘积必须与原权重一致。</p></div></div>
 
 
-</div><div class="q-card"><h3 id="sec-18">17. LoRA 更新 (\Delta W=BA) 的秩满足？</h3>
-<p>A. (\operatorname{rank}(\Delta W)\le r)<br />
-B. 永远等于 (d_{in}+d_{out})<br />
+</div><div class="q-card"><h3 id="sec-18">17. LoRA 更新 \(\Delta W=BA\) 的秩满足？</h3>
+<p>A. \(\operatorname{rank}(\Delta W)\le r\)<br />
+B. 永远等于 \(d_{in}+d_{out}\)<br />
 C. 必然为零<br />
-D. 与 (r) 无关</p>
+D. 与 \(r\) 无关</p>
 
 
-<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 实际秩还可能小于 (r)，例如训练后某些方向线性相关。LoRA 的假设是任务所需权重变化可由较低维子空间有效近似。</p></div></div>
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 实际秩还可能小于 \(r\)，例如训练后某些方向线性相关。LoRA 的假设是任务所需权重变化可由较低维子空间有效近似。</p></div></div>
 
 
-</div><div class="q-card"><h3 id="sec-19">18. 一个 (d_{in}\to d_{out}) Linear 的 LoRA 可训练参数量（不含偏置）是？</h3>
-<p>A. (r(d_{in}+d_{out}))<br />
-B. (d_{in}d_{out})<br />
-C. (r^2d_{in}d_{out})<br />
-D. (d_{out}-d_{in})</p>
+</div><div class="q-card"><h3 id="sec-19">18. 一个 \(d_{in}\to d_{out}\) Linear 的 LoRA 可训练参数量（不含偏置）是？</h3>
+<p>A. \(r(d_{in}+d_{out})\)<br />
+B. \(d_{in}d_{out}\)<br />
+C. \(r^2d_{in}d_{out}\)<br />
+D. \(d_{out}-d_{in}\)</p>
 
 
-<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 与全量矩阵的 (d_{in}d_{out}) 相比，当 (r\ll d_{in},d_{out}) 时节省明显。必须乘上实际被注入的目标层数量。</p></div></div>
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 与全量矩阵的 \(d_{in}d_{out}\) 相比，当 \(r\ll d_{in},d_{out}\) 时节省明显。必须乘上实际被注入的目标层数量。</p></div></div>
 
 
 </div><div class="q-card"><h3 id="sec-20">19. 经典 LoRA 常令 A 随机、B 为零，初始时？</h3>
-<p>A. (\Delta W=0)，模型输出与原基座一致<br />
+<p>A. \(\Delta W=0\)，模型输出与原基座一致<br />
 B. 基座输出随机清零<br />
 C. A 和 B 都无法获得梯度<br />
 D. 等价于 rank 为零且永远不训练</p>
@@ -235,14 +235,14 @@ D. 等价于 rank 为零且永远不训练</p>
 <div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> 第一次反向传播时 B 通常有梯度，而 A 的梯度可能因 B=0 而为零；B 更新后，后续步骤 A 也会获得梯度。</p></div></div>
 
 
-</div><div class="q-card"><h3 id="sec-21">20. 经典 LoRA 中 (\alpha/r) 的主要作用是？</h3>
+</div><div class="q-card"><h3 id="sec-21">20. 经典 LoRA 中 \(\alpha/r\) 的主要作用是？</h3>
 <p>A. 缩放低秩分支，解耦 rank 与更新幅度的一部分影响<br />
 B. 决定 tokenizer 词表大小<br />
 C. 把权重强制量化成 4-bit<br />
 D. 决定 batch 中标签数量</p>
 
 
-<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> (\alpha) 与学习率、rank、初始化共同影响优化。某些变体使用不同缩放，如 rsLoRA 的 (\alpha/\sqrt r)，所以复现实验必须记录实际公式。</p></div></div>
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p><strong>答案：A。</strong> \(\alpha\) 与学习率、rank、初始化共同影响优化。某些变体使用不同缩放，如 rsLoRA 的 \(\alpha/\sqrt r\)，所以复现实验必须记录实际公式。</p></div></div>
 
 
 </div><div class="q-card"><h3 id="sec-22">21. 增大 LoRA rank 的正确判断是？</h3>
@@ -276,7 +276,7 @@ D. LoRA 只能注入最后一层</p>
 
 
 </div><div class="q-card"><h3 id="sec-25">24. LoRA 合并后可以做到“无额外推理分支”的条件是？</h3>
-<p>A. 将缩放后的 (BA) 加入兼容的基座 Linear 权重，并停用 LoRA 分支<br />
+<p>A. 将缩放后的 \(BA\) 加入兼容的基座 Linear 权重，并停用 LoRA 分支<br />
 B. 把 A 与 B 逐元素相加<br />
 C. 删除基座权重<br />
 D. 保持 dropout 训练模式并重复叠加</p>
@@ -355,37 +355,37 @@ D. 假设 QLoRA 不可能 OOM</p>
 </div><div class="q-card"><h3 id="sec-34">32. 推导 Prefix K/V 的形状和注意力变化。</h3>
 
 
-<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>设 batch 为 (B)、头数 (h)、头维 (d_h)、原长度 (s)、Prefix 长度 (p)。每层 (K_p,V_p) 为 ([B,h,p,d_h])，原 (K,V) 为 ([B,h,s,d_h])，拼接后为 ([B,h,p+s,d_h])。查询仍常为 ([B,h,s,d_h])，因此注意力分数为 ([B,h,s,p+s])。mask 必须让有效 Prefix 可见，并保留 padding/causal 规则。</p></div></div>
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>设 batch 为 \(B\)、头数 \(h\)、头维 \(d_h\)、原长度 \(s\)、Prefix 长度 \(p\)。每层 \(K_p,V_p\) 为 \([B,h,p,d_h]\)，原 \(K,V\) 为 \([B,h,s,d_h]\)，拼接后为 \([B,h,p+s,d_h]\)。查询仍常为 \([B,h,s,d_h]\)，因此注意力分数为 \([B,h,s,p+s]\)。mask 必须让有效 Prefix 可见，并保留 padding/causal 规则。</p></div></div>
 
 
 </div><div class="q-card"><h3 id="sec-35">33. 如何评估 Prefix 长度的工程影响？</h3>
 
 
-<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>在固定数据和训练预算下比较多个 (p)，报告质量、可训练参数、峰值显存、训练吞吐、首 token 延迟、生成吞吐和每层 KV cache 增量。检查 Prefix Encoder 是否可预计算、服务是否共享缓存，以及长输入时是否触发位置或显存限制。不能只看 tokenizer 的 input_ids 长度。</p></div></div>
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>在固定数据和训练预算下比较多个 \(p\)，报告质量、可训练参数、峰值显存、训练吞吐、首 token 延迟、生成吞吐和每层 KV cache 增量。检查 Prefix Encoder 是否可预计算、服务是否共享缓存，以及长输入时是否触发位置或显存限制。不能只看 tokenizer 的 input_ids 长度。</p></div></div>
 
 
 </div><div class="q-card"><h3 id="sec-36">34. 设计一个可稳定初始化的串联 Adapter。</h3>
 
 
-<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>采用 Down (d\to b)、激活、dropout、Up (b\to d) 与残差；Down 可小随机初始化，Up 置零，使初始输出等于输入。冻结基座并只把 Adapter（以及明确需要的任务头/LayerNorm）交给优化器。训练一步检查 Up 有梯度、基座不变；后续检查 Down 也获得梯度。</p></div></div>
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>采用 Down \(d\to b\)、激活、dropout、Up \(b\to d\) 与残差；Down 可小随机初始化，Up 置零，使初始输出等于输入。冻结基座并只把 Adapter（以及明确需要的任务头/LayerNorm）交给优化器。训练一步检查 Up 有梯度、基座不变；后续检查 Down 也获得梯度。</p></div></div>
 
 
 </div><div class="q-card"><h3 id="sec-37">35. Adapter 瓶颈维度如何影响容量与部署？</h3>
 
 
-<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>每个 Adapter 主体参数约 (2db)，瓶颈 (b) 越大容量和计算越高，也更可能过拟合小数据。每层串联模块会增加 kernel 调用和延迟，参数少不等于推理免费。应联合比较任务质量、峰值显存、吞吐、P95 延迟和多任务切换成本。</p></div></div>
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>每个 Adapter 主体参数约 \(2db\)，瓶颈 \(b\) 越大容量和计算越高，也更可能过拟合小数据。每层串联模块会增加 kernel 调用和延迟，参数少不等于推理免费。应联合比较任务质量、峰值显存、吞吐、P95 延迟和多任务切换成本。</p></div></div>
 
 
 </div><div class="q-card"><h3 id="sec-38">36. 推导一个 LoRA 参数量示例。</h3>
 
 
-<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>对 (4096\to4096) 的 Linear，rank (r=8) 时 A 为 (8\times4096)，B 为 (4096\times8)，共 (8(4096+4096)=65{,}536) 参数；原权重有 (4096^2=16{,}777{,}216) 参数，单层 LoRA 约为其 0.391%。若每层注入 Q/V 两个矩阵且有 (L) 层，再乘 (2L)；还应计入额外可训练头和偏置。</p></div></div>
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>对 \(4096\to4096\) 的 Linear，rank \(r=8\) 时 A 为 \(8\times4096\)，B 为 \(4096\times8\)，共 \(8(4096+4096)=65{,}536\) 参数；原权重有 \(4096^2=16{,}777{,}216\) 参数，单层 LoRA 约为其 0.391%。若每层注入 Q/V 两个矩阵且有 \(L\) 层，再乘 \(2L\)；还应计入额外可训练头和偏置。</p></div></div>
 
 
 </div><div class="q-card"><h3 id="sec-39">37. 解释 LoRA 零 B 初始化时第一步的梯度。</h3>
 
 
-<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>分支为 (xA^\top B^\top)。B=0 时前向增量为零；损失对 B 的梯度包含 (xA^\top)，通常非零，而对 A 的梯度还乘 B，通常为零。第一次 optimizer step 后 B 非零，第二次反向时 A 才获得非零梯度。这是正常链式法则，不应误判为 A 永远被冻结。</p></div></div>
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>分支为 \(xA^\top B^\top\)。B=0 时前向增量为零；损失对 B 的梯度包含 \(xA^\top\)，通常非零，而对 A 的梯度还乘 B，通常为零。第一次 optimizer step 后 B 非零，第二次反向时 A 才获得非零梯度。这是正常链式法则，不应误判为 A 永远被冻结。</p></div></div>
 
 
 </div><div class="q-card"><h3 id="sec-40">38. 如何联合选择 rank、alpha、dropout 与学习率？</h3>
@@ -438,7 +438,7 @@ D. 假设 QLoRA 不可能 OOM</p>
 
 </div><h2 id="sec-48">三、代码题（10 题）</h2>
 <div class="q-card"><h3 id="sec-49">46. 构造低秩更新并验证秩与参数量</h3>
-<p>给定 (d_{in}=6,d_{out}=5,r=2)，构造 (A,B,\Delta W=BA)，验证形状、秩上界和参数量。</p>
+<p>给定 \(d_{in}=6,d_{out}=5,r=2\)，构造 \(A,B,\Delta W=BA\)，验证形状、秩上界和参数量。</p>
 
 
 <div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
@@ -469,7 +469,7 @@ D. 假设 QLoRA 不可能 OOM</p>
 
 
 </div><div class="q-card"><h3 id="sec-50">47. 实现一个经典 LoRA Linear</h3>
-<p>冻结原 Linear，使用随机 A、零 B、经典 (\alpha/r) 缩放；验证初始输出与基座完全一致。</p>
+<p>冻结原 Linear，使用随机 A、零 B、经典 \(\alpha/r\) 缩放；验证初始输出与基座完全一致。</p>
 
 
 <div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
@@ -557,7 +557,7 @@ D. 假设 QLoRA 不可能 OOM</p>
 
 
 </div><div class="q-card"><h3 id="sec-52">49. 实现零初始化瓶颈 Adapter</h3>
-<p>构造 (d\to b\to d) 串联 Adapter，初始输出必须等于输入；基座冻结且只优化 Adapter。</p>
+<p>构造 \(d\to b\to d\) 串联 Adapter，初始输出必须等于输入；基座冻结且只优化 Adapter。</p>
 
 
 <div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
@@ -605,7 +605,7 @@ D. 假设 QLoRA 不可能 OOM</p>
 
 
 </div><div class="q-card"><h3 id="sec-53">50. 构造每层 Prefix K/V 并扩展 Mask</h3>
-<p>Prefix 参数形状为 ([L,2,p,h,d_h])，扩展到 batch 后与真实 K/V 在序列维拼接。</p>
+<p>Prefix 参数形状为 \([L,2,p,h,d_h]\)，扩展到 batch 后与真实 K/V 在序列维拼接。</p>
 
 
 <div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
@@ -936,7 +936,7 @@ D. 假设 QLoRA 不可能 OOM</p>
 </div><div class="done-bar"><button class="mark-done-btn" data-key="hw50" type="button">⛳ 学完了？标记为已完成</button></div>
 <div class="pager"><a href="hw49.html"><div class="dir">← 上一篇</div><div class="name">🪄 Prompt-Tuning：PET、软提示与 P-tuning 综合训练</div></a><a class="next" href="hw51.html"><div class="dir">下一篇 →</div><div class="name">🕸️ 知识图谱基础与医学图谱架构综合训练</div></a></div>
 </main>
-<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、选择题（30 题）</a><a class="lv3" href="#sec-2">1. PEFT 的共同目标最准确的是？</a><a class="lv3" href="#sec-3">2. “可训练参数只有 0.1%，所以训练显存也必然只有全量微调的 0.1%”为什么错误？</a><a class="lv3" href="#sec-4">3. 下列哪项是比较 PEFT 方法时必须明确的？</a><a class="lv3" href="#sec-5">4. 关于“PEFT 与全量微调性能相当”，最稳妥的表述是？</a><a class="lv3" href="#sec-6">5. Prefix Tuning 与输入级 Prompt Tuning 的关键区别通常是？</a><a class="lv3" href="#sec-7">6. 对 (L) 层 Transformer、前缀长度 (p)、隐藏维度 (d)，直接学习每层 K/V 前缀的主体参数量约为？</a><a class="lv3" href="#sec-8">7. 单层 Prefix K/V 在多头表示下常见形状是？</a><a class="lv3" href="#sec-9">8. Prefix 使用 MLP 重参数化的主要作用是？</a><a class="lv3" href="#sec-10">9. “Prefix 一定占用 tokenizer 的普通输入 token 配额”为什么不够准确？</a><a class="lv3" href="#sec-11">10. 自回归生成时，同一任务的 Prefix K/V 可以怎样优化？</a><a class="lv3" href="#sec-12">11. 典型串联瓶颈 Adapter 的形式更接近？</a><a class="lv3" href="#sec-13">12. 忽略偏置，一个 (d\to b\to d) Adapter 的参数量约为？</a><a class="lv3" href="#sec-14">13. Adapter 相比可合并 LoRA 更可能带来的推理代价是？</a><a class="lv3" href="#sec-15">14. 将 Adapter 的升维矩阵初始化为零，初始时有什么效果？</a><a class="lv3" href="#sec-16">15. 多任务部署中 Adapter 的典型优势是？</a><a class="lv3" href="#sec-17">16. 对 PyTorch Linear 权重 (W\in\mathbb{R}^{d_{out}\times d_{in}})，LoRA 的经典低秩更新是？</a><a class="lv3" href="#sec-18">17. LoRA 更新 (\Delta W=BA) 的秩满足？</a><a class="lv3" href="#sec-19">18. 一个 (d_{in}\to d_{out}) Linear 的 LoRA 可训练参数量（不含偏置）是？</a><a class="lv3" href="#sec-20">19. 经典 LoRA 常令 A 随机、B 为零，初始时？</a><a class="lv3" href="#sec-21">20. 经典 LoRA 中 (\alpha/r) 的主要作用是？</a><a class="lv3" href="#sec-22">21. 增大 LoRA rank 的正确判断是？</a><a class="lv3" href="#sec-23">22. LoRA dropout 主要施加在？</a><a class="lv3" href="#sec-24">23. 为什么 target_modules 不能不加检查地从一个模型复制到另一个模型？</a><a class="lv3" href="#sec-25">24. LoRA 合并后可以做到“无额外推理分支”的条件是？</a><a class="lv3" href="#sec-26">25. 保存 LoRA Adapter 时，除了 A/B 权重还必须记录？</a><a class="lv3" href="#sec-27">26. QLoRA 的核心训练数据流是？</a><a class="lv3" href="#sec-28">27. NF4 的设计动机是？</a><a class="lv3" href="#sec-29">28. QLoRA 的 Double Quantization 指？</a><a class="lv3" href="#sec-30">29. Paged Optimizer 的主要目标是？</a><a class="lv3" href="#sec-31">30. 使用 QLoRA 后仍然 OOM，优先检查什么？</a><a class="lv2" href="#sec-32">二、简答题（15 题）</a><a class="lv3" href="#sec-33">31. 用“注入位置、可训练参数、推理开销、可合并性”比较 Prefix、Adapter、LoRA 与 QLoRA。</a><a class="lv3" href="#sec-34">32. 推导 Prefix K/V 的形状和注意力变化。</a><a class="lv3" href="#sec-35">33. 如何评估 Prefix 长度的工程影响？</a><a class="lv3" href="#sec-36">34. 设计一个可稳定初始化的串联 Adapter。</a><a class="lv3" href="#sec-37">35. Adapter 瓶颈维度如何影响容量与部署？</a><a class="lv3" href="#sec-38">36. 推导一个 LoRA 参数量示例。</a><a class="lv3" href="#sec-39">37. 解释 LoRA 零 B 初始化时第一步的梯度。</a><a class="lv3" href="#sec-40">38. 如何联合选择 rank、alpha、dropout 与学习率？</a><a class="lv3" href="#sec-41">39. 如何审计 target_modules？</a><a class="lv3" href="#sec-42">40. 设计 LoRA merge/unmerge 的自动测试。</a><a class="lv3" href="#sec-43">41. 说明 QLoRA 的三个关键内存技术。</a><a class="lv3" href="#sec-44">42. 如何做 QLoRA 显存预算？</a><a class="lv3" href="#sec-45">43. 给出 QLoRA 训练前检查清单。</a><a class="lv3" href="#sec-46">44. 如何公平比较 Full FT、Prefix、Adapter、LoRA 与 QLoRA？</a><a class="lv3" href="#sec-47">45. 给出多 Adapter/LoRA 服务的上线清单。</a><a class="lv2" href="#sec-48">三、代码题（10 题）</a><a class="lv3" href="#sec-49">46. 构造低秩更新并验证秩与参数量</a><a class="lv3" href="#sec-50">47. 实现一个经典 LoRA Linear</a><a class="lv3" href="#sec-51">48. 验证 LoRA 零 B 初始化的梯度顺序</a><a class="lv3" href="#sec-52">49. 实现零初始化瓶颈 Adapter</a><a class="lv3" href="#sec-53">50. 构造每层 Prefix K/V 并扩展 Mask</a><a class="lv3" href="#sec-54">51. 按模块名注入 LoRA 并审计命中范围</a><a class="lv3" href="#sec-55">52. 实现可逆且防重复的 LoRA Merge</a><a class="lv3" href="#sec-56">53. 估算 PEFT 参数存储，不把激活算进去</a><a class="lv3" href="#sec-57">54. 模拟 QLoRA 的“量化冻结基座 + 浮点 LoRA”数据流</a><a class="lv3" href="#sec-58">55. 完成 LoRA 训练、基座不变与合并等价闭环</a></aside>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">一、选择题（30 题）</a><a class="lv3" href="#sec-2">1. PEFT 的共同目标最准确的是？</a><a class="lv3" href="#sec-3">2. “可训练参数只有 0.1%，所以训练显存也必然只有全量微调的 0.1%”为什么错误？</a><a class="lv3" href="#sec-4">3. 下列哪项是比较 PEFT 方法时必须明确的？</a><a class="lv3" href="#sec-5">4. 关于“PEFT 与全量微调性能相当”，最稳妥的表述是？</a><a class="lv3" href="#sec-6">5. Prefix Tuning 与输入级 Prompt Tuning 的关键区别通常是？</a><a class="lv3" href="#sec-7">6. 对 \(L\) 层 Transformer、前缀长度 \(p\)、隐藏维度 \(d\)，直接学习每层 K/V 前缀的主体参数量约为？</a><a class="lv3" href="#sec-8">7. 单层 Prefix K/V 在多头表示下常见形状是？</a><a class="lv3" href="#sec-9">8. Prefix 使用 MLP 重参数化的主要作用是？</a><a class="lv3" href="#sec-10">9. “Prefix 一定占用 tokenizer 的普通输入 token 配额”为什么不够准确？</a><a class="lv3" href="#sec-11">10. 自回归生成时，同一任务的 Prefix K/V 可以怎样优化？</a><a class="lv3" href="#sec-12">11. 典型串联瓶颈 Adapter 的形式更接近？</a><a class="lv3" href="#sec-13">12. 忽略偏置，一个 \(d\to b\to d\) Adapter 的参数量约为？</a><a class="lv3" href="#sec-14">13. Adapter 相比可合并 LoRA 更可能带来的推理代价是？</a><a class="lv3" href="#sec-15">14. 将 Adapter 的升维矩阵初始化为零，初始时有什么效果？</a><a class="lv3" href="#sec-16">15. 多任务部署中 Adapter 的典型优势是？</a><a class="lv3" href="#sec-17">16. 对 PyTorch Linear 权重 \(W\in\mathbb{R}^{d_{out}\times d_{in}}\)，LoRA 的经典低秩更新是？</a><a class="lv3" href="#sec-18">17. LoRA 更新 \(\Delta W=BA\) 的秩满足？</a><a class="lv3" href="#sec-19">18. 一个 \(d_{in}\to d_{out}\) Linear 的 LoRA 可训练参数量（不含偏置）是？</a><a class="lv3" href="#sec-20">19. 经典 LoRA 常令 A 随机、B 为零，初始时？</a><a class="lv3" href="#sec-21">20. 经典 LoRA 中 \(\alpha/r\) 的主要作用是？</a><a class="lv3" href="#sec-22">21. 增大 LoRA rank 的正确判断是？</a><a class="lv3" href="#sec-23">22. LoRA dropout 主要施加在？</a><a class="lv3" href="#sec-24">23. 为什么 target_modules 不能不加检查地从一个模型复制到另一个模型？</a><a class="lv3" href="#sec-25">24. LoRA 合并后可以做到“无额外推理分支”的条件是？</a><a class="lv3" href="#sec-26">25. 保存 LoRA Adapter 时，除了 A/B 权重还必须记录？</a><a class="lv3" href="#sec-27">26. QLoRA 的核心训练数据流是？</a><a class="lv3" href="#sec-28">27. NF4 的设计动机是？</a><a class="lv3" href="#sec-29">28. QLoRA 的 Double Quantization 指？</a><a class="lv3" href="#sec-30">29. Paged Optimizer 的主要目标是？</a><a class="lv3" href="#sec-31">30. 使用 QLoRA 后仍然 OOM，优先检查什么？</a><a class="lv2" href="#sec-32">二、简答题（15 题）</a><a class="lv3" href="#sec-33">31. 用“注入位置、可训练参数、推理开销、可合并性”比较 Prefix、Adapter、LoRA 与 QLoRA。</a><a class="lv3" href="#sec-34">32. 推导 Prefix K/V 的形状和注意力变化。</a><a class="lv3" href="#sec-35">33. 如何评估 Prefix 长度的工程影响？</a><a class="lv3" href="#sec-36">34. 设计一个可稳定初始化的串联 Adapter。</a><a class="lv3" href="#sec-37">35. Adapter 瓶颈维度如何影响容量与部署？</a><a class="lv3" href="#sec-38">36. 推导一个 LoRA 参数量示例。</a><a class="lv3" href="#sec-39">37. 解释 LoRA 零 B 初始化时第一步的梯度。</a><a class="lv3" href="#sec-40">38. 如何联合选择 rank、alpha、dropout 与学习率？</a><a class="lv3" href="#sec-41">39. 如何审计 target_modules？</a><a class="lv3" href="#sec-42">40. 设计 LoRA merge/unmerge 的自动测试。</a><a class="lv3" href="#sec-43">41. 说明 QLoRA 的三个关键内存技术。</a><a class="lv3" href="#sec-44">42. 如何做 QLoRA 显存预算？</a><a class="lv3" href="#sec-45">43. 给出 QLoRA 训练前检查清单。</a><a class="lv3" href="#sec-46">44. 如何公平比较 Full FT、Prefix、Adapter、LoRA 与 QLoRA？</a><a class="lv3" href="#sec-47">45. 给出多 Adapter/LoRA 服务的上线清单。</a><a class="lv2" href="#sec-48">三、代码题（10 题）</a><a class="lv3" href="#sec-49">46. 构造低秩更新并验证秩与参数量</a><a class="lv3" href="#sec-50">47. 实现一个经典 LoRA Linear</a><a class="lv3" href="#sec-51">48. 验证 LoRA 零 B 初始化的梯度顺序</a><a class="lv3" href="#sec-52">49. 实现零初始化瓶颈 Adapter</a><a class="lv3" href="#sec-53">50. 构造每层 Prefix K/V 并扩展 Mask</a><a class="lv3" href="#sec-54">51. 按模块名注入 LoRA 并审计命中范围</a><a class="lv3" href="#sec-55">52. 实现可逆且防重复的 LoRA Merge</a><a class="lv3" href="#sec-56">53. 估算 PEFT 参数存储，不把激活算进去</a><a class="lv3" href="#sec-57">54. 模拟 QLoRA 的“量化冻结基座 + 浮点 LoRA”数据流</a><a class="lv3" href="#sec-58">55. 完成 LoRA 训练、基座不变与合并等价闭环</a></aside>
 </div>
 <footer class="site-foot">用心整理的个人复习笔记 · 仅供个人学习使用，请勿传播 ✨</footer>
 <script src="../assets/js/main.js"></script>

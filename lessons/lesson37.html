@@ -883,10 +883,10 @@ cn.shape:torch.Size([2, 1, 8])
 </ol>
 <p>将当前输入 $x_t$ 与上一时间步隐藏状态 $h_{t-1}$ 拼接，
   通过线性变换和 Sigmoid 激活函数：</p>
-<p>$
+<p>  $
   z_t = \sigma(W_z [x_t, h_{t-1}] + b_z)
   $</p>
-<p>$
+<p>  $
   r_t = \sigma(W_r [x_t, h_{t-1}] + b_r)
   $</p>
 <p>其中：
@@ -894,7 +894,7 @@ cn.shape:torch.Size([2, 1, 8])
   - $r_t$：重置门，控制旧信息的使用程度<br />
 2. <strong>重置旧信息</strong></p>
 <p>使用重置门作用在上一时间步隐藏状态上：</p>
-<p>$
+<p>  $
   r_t \odot h_{t-1}
   $</p>
 <p>该操作决定旧状态中哪些信息可以参与当前计算。</p>
@@ -903,15 +903,15 @@ cn.shape:torch.Size([2, 1, 8])
 </ol>
 <p>将当前输入 $x_t$ 与重置后的隐藏状态拼接，
   经过线性变换和 Tanh 激活，得到候选隐藏状态：</p>
-<p>$
-  \tilde{h}<em>t = \tanh(W_h [x_t, r_t \odot h</em>{t-1}] + b_h)
+<p>  $
+  \tilde{h}_t = \tanh(W_h [x_t, r_t \odot h_{t-1}] + b_h)
   $</p>
 <ol start="4">
 <li><strong>更新当前隐藏状态</strong></li>
 </ol>
 <p>使用更新门对新旧状态进行加权融合：</p>
-<p>$
-  h_t = z_t \odot \tilde{h}<em>t + (1 - z_t) \odot h</em>{t-1}
+<p>  $
+  h_t = z_t \odot \tilde{h}_t + (1 - z_t) \odot h_{t-1}
   $</p>
 <p>当：
   - $z_t \to 1$：更多采用新状态<br />
