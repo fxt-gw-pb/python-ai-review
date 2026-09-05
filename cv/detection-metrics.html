@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>目标检测任务、IoU、NMS 与 mAP · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<link rel="stylesheet" href="../assets/css/cv.css">
+</head>
+<body class="has-sidenav cv-doc">
+<header class="topbar">
+  <button class="menu-btn" type="button" aria-label="收起或展开侧栏" title="收起侧栏">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../lessons.html">课程讲义</a>
+    <a href="../cv.html" class="active">CV 视觉</a>
+    <a href="../homework.html">课后练习</a>
+    <a href="../projects.html">实战项目</a>
+  </nav>
+  <span class="spacer"></span>
+</header>
+<div class="layout">
+<aside class="sidenav"><a class="item" href="../cv.html">← CV 模块总览</a><div class="group-title">🧭 学习准备</div><a class="item" data-page-key="cv-getting-started" href="getting-started.html"><span class="no">01</span><span>视觉任务、张量与实验准备</span><span class="done-flag">✅</span></a><div class="group-title">🖼️ OpenCV 图像处理</div><a class="item" data-page-key="cv-opencv-image-arrays" href="opencv-image-arrays.html"><span class="no">02</span><span>图像读写、数组与坐标：先读懂一张图</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-threshold-morphology" href="opencv-threshold-morphology.html"><span class="no">03</span><span>阈值、平滑与形态学：把目标从背景中分离</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-edges-contours-frequency" href="opencv-edges-contours-frequency.html"><span class="no">04</span><span>梯度、轮廓与频域：从像素变化到几何结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-histogram-template" href="opencv-histogram-template.html"><span class="no">05</span><span>直方图与模板匹配：分布、对比度和局部相似度</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-features-matching" href="opencv-features-matching.html"><span class="no">06</span><span>Harris、SIFT 与特征匹配：找到可重复识别的局部结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-background-optical-flow" href="opencv-background-optical-flow.html"><span class="no">07</span><span>背景建模与光流：区分运动区域并追踪像素</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-credit-card-ocr" href="opencv-credit-card-ocr.html"><span class="no">08</span><span>模板 OCR 实战：从信用卡数字组到逐字识别</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-document-scanner" href="opencv-document-scanner.html"><span class="no">09</span><span>文档扫描与 OCR：从四个角点恢复平整页面</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-panorama-exam" href="opencv-panorama-exam.html"><span class="no">10</span><span>几何视觉的两种应用：全景拼接与答题卡判卷</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-parking-spaces" href="opencv-parking-spaces.html"><span class="no">11</span><span>停车场车位识别：固定几何地图与图像分类结合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-convolution-dnn-tracking" href="opencv-convolution-dnn-tracking.html"><span class="no">12</span><span>卷积、DNN 与目标跟踪：把算法接成视频流水线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-face-blinks" href="opencv-face-blinks.html"><span class="no">13</span><span>人脸关键点与眨眼计数：从坐标到时间状态</span><span class="done-flag">✅</span></a><div class="group-title">🎯 目标检测</div><a class="item active" data-page-key="cv-detection-metrics" href="detection-metrics.html"><span class="no">14</span><span>目标检测任务、IoU、NMS 与 mAP</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detection-data-pipeline" href="detection-data-pipeline.html"><span class="no">15</span><span>目标检测标注与数据管线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov3-from-grid-to-box" href="yolov3-from-grid-to-box.html"><span class="no">16</span><span>YOLOv3：从网格到边界框</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov5-model-and-training" href="yolov5-model-and-training.html"><span class="no">17</span><span>YOLOv5：结构、标签分配与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov7-assignment-and-reparameterization" href="yolov7-assignment-and-reparameterization.html"><span class="no">18</span><span>YOLOv7：动态分配与重参数化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientnet-mbconv-and-scaling" href="efficientnet-mbconv-and-scaling.html"><span class="no">19</span><span>EfficientNet：MBConv、SE 与复合缩放</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientdet-bifpn-and-loss" href="efficientdet-bifpn-and-loss.html"><span class="no">20</span><span>EfficientDet：BiFPN、检测头与损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-centernet-objects-as-points" href="centernet-objects-as-points.html"><span class="no">21</span><span>CenterNet：把目标表示为中心点</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detr-set-prediction" href="detr-set-prediction.html"><span class="no">22</span><span>DETR：查询、注意力与集合预测</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deformable-detr-sparse-attention" href="deformable-detr-sparse-attention.html"><span class="no">23</span><span>Deformable DETR：稀疏多尺度注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mmdetection-reproducible-experiment" href="mmdetection-reproducible-experiment.html"><span class="no">24</span><span>MMDetection：配置驱动的检测实验</span><span class="done-flag">✅</span></a><div class="group-title">🧩 图像分割</div><a class="item" data-page-key="cv-segmentation-foundations" href="segmentation-foundations.html"><span class="no">25</span><span>分割基础：标签、损失与 IoU 指标</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-pytorch-vision-workflow" href="pytorch-vision-workflow.html"><span class="no">26</span><span>PyTorch 视觉工程：张量、训练与迁移学习</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-unet-nested-segmentation" href="unet-nested-segmentation.html"><span class="no">27</span><span>U-Net 与 U-Net++：医学细胞分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-u2net-saliency" href="u2net-saliency.html"><span class="no">28</span><span>U²-Net：残差 U 形块与显著目标分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deeplab-voc" href="deeplab-voc.html"><span class="no">29</span><span>DeepLabV3+：空洞卷积、ASPP 与 VOC 工程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-echo-video-segmentation" href="echo-video-segmentation.html"><span class="no">30</span><span>心脏视频分割：代表帧、面积曲线与数据流</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-resnet-medical-classification" href="resnet-medical-classification.html"><span class="no">31</span><span>ResNet 医学分类：残差结构与任务评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-mechanics" href="mask-rcnn-mechanics.html"><span class="no">32</span><span>Mask R-CNN：FPN、RPN、ROIAlign 与 mask 损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-custom-data" href="mask-rcnn-custom-data.html"><span class="no">33</span><span>Mask R-CNN 自定义任务：实例标注与分阶段训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-maskformer-mask2former" href="maskformer-mask2former.html"><span class="no">34</span><span>MaskFormer 与 Mask2Former：区域查询和掩码注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-r2plus1d-video-learning" href="r2plus1d-video-learning.html"><span class="no">35</span><span>R(2+1)D：视频时空卷积与数值回归</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="../cv.html">CV 计算机视觉</a> / 目标检测 / 第 14 讲</div>
+<h1>目标检测任务、IoU、NMS 与 mAP</h1>
+<div class="chips"><span class="chip">🎯 目标检测</span></div>
+</div>
+<h2 id="sec-1">从分类到检测：模型究竟要回答什么</h2>
+<p>图像分类给一张图片一个或几个类别，目标检测则要输出一个<strong>长度可变的集合</strong>：每个元素包含类别、边界框和置信度。同一张图可以没有物体，也可以有几十个物体。因此，检测系统不只是把分类网络最后一层换大，还需要解决位置表示、正负样本分配、重复预测与集合评估。</p>
+<p>可以先用四个组件理解大多数检测器：骨干网络提取特征，特征融合网络连接不同分辨率，检测头生成候选结果，后处理把候选结果整理成最终集合。两阶段方法先提出候选区域，再对区域分类与回归；单阶段方法直接在特征上预测类别与框。这里的“阶段”描述算法流程，不能直接推导出任何数据集上的速度和精度排名。</p>
+<h2 id="sec-2">边界框与 IoU：先统一坐标，再谈正确</h2>
+<p>常见表示包括左上右下坐标 $(x_1,y_1,x_2,y_2)$，以及中心宽高 $(c_x,c_y,w,h)$。连续坐标下，$w=x_2-x_1$、$h=y_2-y_1$。有些旧实现按包含两个端点的整数像素计算宽高，会额外加 1。两种约定不能混用，尤其是小框；宽度从 2 变成 3，会显著改变面积。</p>
+<p>IoU 衡量预测框 $A$ 与真实框 $B$ 的重叠程度：</p>
+<p>$$
+\operatorname{IoU}(A,B)=\frac{|A\cap B|}{|A|+|B|-|A\cap B|}.
+$$</p>
+<p>计算交集时，左上角取两框坐标的最大值，右下角取最小值。交集宽高必须截断到非负数，否则不相交的框会产生错误的正面积。下面是可运行的连续坐标教学实现：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">iou_xyxy</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">ix1</span><span class="p">,</span> <span class="n">iy1</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="nb">max</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">ix2</span><span class="p">,</span> <span class="n">iy2</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span> <span class="nb">min</span><span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">b</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+    <span class="n">inter</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">ix2</span> <span class="o">-</span> <span class="n">ix1</span><span class="p">)</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">iy2</span> <span class="o">-</span> <span class="n">iy1</span><span class="p">)</span>
+    <span class="n">area_a</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">area_b</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">b</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">-</span> <span class="n">b</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">*</span> <span class="nb">max</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">b</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">-</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">inter</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="n">area_a</span> <span class="o">+</span> <span class="n">area_b</span> <span class="o">-</span> <span class="n">inter</span><span class="p">,</span> <span class="mf">1e-9</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>前两行求相交矩形；第三行处理不相交情形；最后一行避免空框导致除零。真实训练前仍应拒绝宽高非正的标注，而不能靠分母中的小数掩盖数据错误。</p>
+<h2 id="sec-3">三个阈值分别控制什么</h2>
+<p>置信度阈值决定哪些预测被保留；NMS 的 IoU 阈值决定哪些同类预测被认为重复；评估时的 IoU 阈值决定预测与真实框是否足够接近。它们解决三个不同问题，数值可以相同，含义却不能合并。</p>
+<p>标准贪心 NMS 先按分数降序排序，取最高分框，再删除与它同类且 IoU 超过阈值的候选，重复直到没有候选。YOLO 中常见的类别分数是目标性分数与类别条件分数的乘积。课内 YOLOv3 实现还会对重叠框坐标做置信度加权平均，因此它包含“合并框”行为，并非最简单的只删框 NMS。</p>
+<p>Soft-NMS 对重叠预测降低分数，保留之后再次参与排序的机会。密集目标中，过强抑制容易把相邻真实物体删掉；阈值过松则增加重复框。调整阈值时应同时查看漏检与重复检测图片，而不是只盯着框的数量。</p>
+<h2 id="sec-4">TP、FP、FN 与一对一匹配</h2>
+<p>一个预测成为 TP，需要类别正确、位置达到评估 IoU 阈值，而且对应真实目标尚未被更高优先级预测匹配。对同一真实物体预测两个正确框，通常只能有一个 TP，另一个属于重复检测 FP。真实目标没有匹配到合格预测就是 FN。</p>
+<p>$$
+P=\frac{TP}{TP+FP},\qquad R=\frac{TP}{TP+FN}.
+$$</p>
+<p>检测中的背景位置没有自然、有限且统一的枚举方式，所以通常不以 TN 为核心指标。分类准确率也不能代替检测质量：一张图中存在“猫”不意味着猫的位置正确，更不意味着所有猫都被找到了。</p>
+<h2 id="sec-5">从排序表手算 AP</h2>
+<p>假设只有一个类别，共有 3 个真实目标，按置信度排序后的预测依次为 TP、FP、TP、TP。累计精确率为 $1,1/2,2/3,3/4$，累计召回率为 $1/3,1/3,2/3,1$。</p>
+<p>AP 汇总整条精确率—召回率曲线。全点插值先构造精确率包络：每个召回位置取右侧可达到的最高精确率；再对召回率增加的区间求面积。下面保留了课内 AP 实现的主要计算步骤：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">interpolated_ap</span><span class="p">(</span><span class="n">recall</span><span class="p">,</span> <span class="n">precision</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">recall</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">precision</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="o">.</span><span class="n">accumulate</span><span class="p">(</span><span class="n">p</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">changed</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">!=</span> <span class="n">r</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">((</span><span class="n">r</span><span class="p">[</span><span class="n">changed</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">r</span><span class="p">[</span><span class="n">changed</span><span class="p">])</span> <span class="o">*</span> <span class="n">p</span><span class="p">[</span><span class="n">changed</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>反向累计最大值构造包络；<code>changed</code> 只保留召回率变化的位置，防止同一召回位置重复计面积。上述例子的全点插值 AP 为 $1/3+1/3\times3/4+1/3\times3/4=5/6$。VOC 早期的 11 点插值与这个算法不同；COCO 常用 AP 还会综合 IoU 从 0.50 到 0.95、步长 0.05 的多个阈值，并采用其规定的召回采样与目标数量限制。报告结果时应明确是 AP50 还是 AP50:95。</p>
+<h2 id="sec-6">怎么解释一组实验结果</h2>
+<p>AP50 较高而 AP75 较低，常提示模型大体找到了物体，但框定位不够精确。小目标 AP 低，可以检查缩放后目标还剩多少像素、标注是否稳定、较高分辨率特征是否参与预测。训练损失下降而验证 AP 不动，也可能是类别顺序、坐标还原或评估实现出错，并不总是模型容量不足。</p>
+<p>公平比较至少固定数据划分、输入尺寸、测试增强、后处理及指标实现。速度需要注明设备、批量大小与是否计入预处理和 NMS。一次前向传播的毫秒数不能直接代表整个应用的端到端延迟。</p>
+<h2 id="sec-7">指标实现也需要小样例验证</h2>
+<p>先构造只有一个真实框的场景：完全相同的同类预测应为TP，错类预测应为FP，第二个同类重复框也应为FP。再加入一张没有目标的背景图，确认高置信度误报会降低精确率。最后检查没有任何预测时的行为：程序应返回可解释的零召回结果，而不是出现空数组拼接或除零错误。用这些小例子验证评估器，比拿一个大数据集的总分猜测实现是否正确更直接。</p>
+<h2 id="sec-8">练习：发现重复检测</h2>
+<p>某类别有 2 个真实框。按分数从高到低的三个预测分别正确匹配第一个真实框、重复匹配第一个真实框、正确匹配第二个真实框。最终 P、R 是多少？为什么不能把三个预测都计为 TP？</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>最终 TP=2、FP=1、FN=0，所以 P=2/3、R=1。同一真实实例只能贡献一次成功检测，否则重复输出就能人为提高召回率。这里还应注意：NMS 删除重复框可能改善 P，但如果两个真实物体重叠，NMS 也可能误删其中一个，因此需要评估数据与可视化共同验证。</p></div></div>
+
+
+<div class="done-bar"><button class="mark-done-btn" data-key="cv-detection-metrics" type="button">⛳ 学完了？标记为已完成</button></div>
+
+<div class="pager"><a href="opencv-face-blinks.html"><div class="dir">← 上一讲</div><div class="name">人脸关键点与眨眼计数：从坐标到时间状态</div></a><a class="next" href="detection-data-pipeline.html"><div class="dir">下一讲 →</div><div class="name">目标检测标注与数据管线</div></a></div></main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">从分类到检测：模型究竟要回答什么</a><a class="lv2" href="#sec-2">边界框与 IoU：先统一坐标，再谈正确</a><a class="lv2" href="#sec-3">三个阈值分别控制什么</a><a class="lv2" href="#sec-4">TP、FP、FN 与一对一匹配</a><a class="lv2" href="#sec-5">从排序表手算 AP</a><a class="lv2" href="#sec-6">怎么解释一组实验结果</a><a class="lv2" href="#sec-7">指标实现也需要小样例验证</a><a class="lv2" href="#sec-8">练习：发现重复检测</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 仅供个人学习使用，请勿传播 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>背景建模与光流：区分运动区域并追踪像素 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<link rel="stylesheet" href="../assets/css/cv.css">
+</head>
+<body class="has-sidenav cv-doc">
+<header class="topbar">
+  <button class="menu-btn" type="button" aria-label="收起或展开侧栏" title="收起侧栏">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../lessons.html">课程讲义</a>
+    <a href="../cv.html" class="active">CV 视觉</a>
+    <a href="../homework.html">课后练习</a>
+    <a href="../projects.html">实战项目</a>
+  </nav>
+  <span class="spacer"></span>
+</header>
+<div class="layout">
+<aside class="sidenav"><a class="item" href="../cv.html">← CV 模块总览</a><div class="group-title">🧭 学习准备</div><a class="item" data-page-key="cv-getting-started" href="getting-started.html"><span class="no">01</span><span>视觉任务、张量与实验准备</span><span class="done-flag">✅</span></a><div class="group-title">🖼️ OpenCV 图像处理</div><a class="item" data-page-key="cv-opencv-image-arrays" href="opencv-image-arrays.html"><span class="no">02</span><span>图像读写、数组与坐标：先读懂一张图</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-threshold-morphology" href="opencv-threshold-morphology.html"><span class="no">03</span><span>阈值、平滑与形态学：把目标从背景中分离</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-edges-contours-frequency" href="opencv-edges-contours-frequency.html"><span class="no">04</span><span>梯度、轮廓与频域：从像素变化到几何结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-histogram-template" href="opencv-histogram-template.html"><span class="no">05</span><span>直方图与模板匹配：分布、对比度和局部相似度</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-features-matching" href="opencv-features-matching.html"><span class="no">06</span><span>Harris、SIFT 与特征匹配：找到可重复识别的局部结构</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="cv-opencv-background-optical-flow" href="opencv-background-optical-flow.html"><span class="no">07</span><span>背景建模与光流：区分运动区域并追踪像素</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-credit-card-ocr" href="opencv-credit-card-ocr.html"><span class="no">08</span><span>模板 OCR 实战：从信用卡数字组到逐字识别</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-document-scanner" href="opencv-document-scanner.html"><span class="no">09</span><span>文档扫描与 OCR：从四个角点恢复平整页面</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-panorama-exam" href="opencv-panorama-exam.html"><span class="no">10</span><span>几何视觉的两种应用：全景拼接与答题卡判卷</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-parking-spaces" href="opencv-parking-spaces.html"><span class="no">11</span><span>停车场车位识别：固定几何地图与图像分类结合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-convolution-dnn-tracking" href="opencv-convolution-dnn-tracking.html"><span class="no">12</span><span>卷积、DNN 与目标跟踪：把算法接成视频流水线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-face-blinks" href="opencv-face-blinks.html"><span class="no">13</span><span>人脸关键点与眨眼计数：从坐标到时间状态</span><span class="done-flag">✅</span></a><div class="group-title">🎯 目标检测</div><a class="item" data-page-key="cv-detection-metrics" href="detection-metrics.html"><span class="no">14</span><span>目标检测任务、IoU、NMS 与 mAP</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detection-data-pipeline" href="detection-data-pipeline.html"><span class="no">15</span><span>目标检测标注与数据管线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov3-from-grid-to-box" href="yolov3-from-grid-to-box.html"><span class="no">16</span><span>YOLOv3：从网格到边界框</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov5-model-and-training" href="yolov5-model-and-training.html"><span class="no">17</span><span>YOLOv5：结构、标签分配与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov7-assignment-and-reparameterization" href="yolov7-assignment-and-reparameterization.html"><span class="no">18</span><span>YOLOv7：动态分配与重参数化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientnet-mbconv-and-scaling" href="efficientnet-mbconv-and-scaling.html"><span class="no">19</span><span>EfficientNet：MBConv、SE 与复合缩放</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientdet-bifpn-and-loss" href="efficientdet-bifpn-and-loss.html"><span class="no">20</span><span>EfficientDet：BiFPN、检测头与损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-centernet-objects-as-points" href="centernet-objects-as-points.html"><span class="no">21</span><span>CenterNet：把目标表示为中心点</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detr-set-prediction" href="detr-set-prediction.html"><span class="no">22</span><span>DETR：查询、注意力与集合预测</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deformable-detr-sparse-attention" href="deformable-detr-sparse-attention.html"><span class="no">23</span><span>Deformable DETR：稀疏多尺度注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mmdetection-reproducible-experiment" href="mmdetection-reproducible-experiment.html"><span class="no">24</span><span>MMDetection：配置驱动的检测实验</span><span class="done-flag">✅</span></a><div class="group-title">🧩 图像分割</div><a class="item" data-page-key="cv-segmentation-foundations" href="segmentation-foundations.html"><span class="no">25</span><span>分割基础：标签、损失与 IoU 指标</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-pytorch-vision-workflow" href="pytorch-vision-workflow.html"><span class="no">26</span><span>PyTorch 视觉工程：张量、训练与迁移学习</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-unet-nested-segmentation" href="unet-nested-segmentation.html"><span class="no">27</span><span>U-Net 与 U-Net++：医学细胞分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-u2net-saliency" href="u2net-saliency.html"><span class="no">28</span><span>U²-Net：残差 U 形块与显著目标分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deeplab-voc" href="deeplab-voc.html"><span class="no">29</span><span>DeepLabV3+：空洞卷积、ASPP 与 VOC 工程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-echo-video-segmentation" href="echo-video-segmentation.html"><span class="no">30</span><span>心脏视频分割：代表帧、面积曲线与数据流</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-resnet-medical-classification" href="resnet-medical-classification.html"><span class="no">31</span><span>ResNet 医学分类：残差结构与任务评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-mechanics" href="mask-rcnn-mechanics.html"><span class="no">32</span><span>Mask R-CNN：FPN、RPN、ROIAlign 与 mask 损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-custom-data" href="mask-rcnn-custom-data.html"><span class="no">33</span><span>Mask R-CNN 自定义任务：实例标注与分阶段训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-maskformer-mask2former" href="maskformer-mask2former.html"><span class="no">34</span><span>MaskFormer 与 Mask2Former：区域查询和掩码注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-r2plus1d-video-learning" href="r2plus1d-video-learning.html"><span class="no">35</span><span>R(2+1)D：视频时空卷积与数值回归</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="../cv.html">CV 计算机视觉</a> / OpenCV 图像处理 / 第 07 讲</div>
+<h1>背景建模与光流：区分运动区域并追踪像素</h1>
+<div class="chips"><span class="chip">🖼️ OpenCV 图像处理</span></div>
+</div>
+<h2 id="sec-1">运动检测与运动估计</h2>
+<p>背景建模判断“哪些位置不像背景”，输出前景掩模；光流估计判断“这个点移动到了哪里”，输出位移。一个运动物体可以对应很多前景像素，也可以包含多个光流点。这些结果都不直接提供物体的语义类别，必须和检测、聚类或区域规则组合使用。</p>
+<h2 id="sec-2">从帧差到混合高斯背景</h2>
+<p>帧差计算 $D_t(x,y)=|I_t(x,y)-I_{t-1}(x,y)|$，再用阈值判断变化。它容易实现，但目标移动较小时，重叠部分变化少，会出现内部空洞；相机抖动、光照突变也会让大量背景像素变成前景。</p>
+<p>混合高斯方法给每个固定位置的像素建立历史分布。树叶摆动会使某处在叶片与天空颜色间交替，一条高斯难以描述，多个分量可以对应多种经常出现的状态。权重描述出现频率，均值与方差描述数值范围；新帧到来后再更新模型。</p>
+<p>资料把匹配范围写成“几倍方差”，应注意量纲：标准化距离使用标准差，或等价地比较平方距离与方差倍数。不能把“灰度差小于三倍方差”直接当成严谨的概率规则。实际 MOG2 的背景分量选择、距离阈值和更新逻辑比课堂口头概括更完整。</p>
+<p>下面保留原始“建模—开运算—轮廓”流程，补上读帧失败和阴影处理，作为教学改写：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+
+<span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="s1">&#39;test.avi&#39;</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">createBackgroundSubtractorMOG2</span><span class="p">(</span><span class="n">detectShadows</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">kernel</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getStructuringElement</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">MORPH_ELLIPSE</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">ok</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span> <span class="ow">or</span> <span class="n">frame</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">raw_mask</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+        <span class="n">foreground</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">threshold</span><span class="p">(</span><span class="n">raw_mask</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">THRESH_BINARY</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">foreground</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">morphologyEx</span><span class="p">(</span><span class="n">foreground</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">MORPH_OPEN</span><span class="p">,</span> <span class="n">kernel</span><span class="p">)</span>
+        <span class="n">contours</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">findContours</span><span class="p">(</span><span class="n">foreground</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">RETR_EXTERNAL</span><span class="p">,</span>
+                                    <span class="n">cv2</span><span class="o">.</span><span class="n">CHAIN_APPROX_SIMPLE</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">contour</span> <span class="ow">in</span> <span class="n">contours</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cv2</span><span class="o">.</span><span class="n">arcLength</span><span class="p">(</span><span class="n">contour</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">188</span><span class="p">:</span>
+                <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">boundingRect</span><span class="p">(</span><span class="n">contour</span><span class="p">)</span>
+                <span class="n">cv2</span><span class="o">.</span><span class="n">rectangle</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="p">(</span><span class="n">x</span><span class="o">+</span><span class="n">w</span><span class="p">,</span> <span class="n">y</span><span class="o">+</span><span class="n">h</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">cap</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>阈值 200 用于排除中间灰度阴影标记，是否启用阴影检测必须与处理方式对应。周长 188 来自演示场景，分辨率改变后并不保持相同物理意义；周长大也可能只是形状破碎，实际还应检查面积与区域连通性。模型刚启动时尚未积累背景，最初几帧不适合直接统计稳定效果。</p>
+<h2 id="sec-3">光流方程为什么欠定</h2>
+<p>亮度恒定假设为 $I(x,y,t)=I(x+u\Delta t,y+v\Delta t,t+\Delta t)$。做一阶展开并除以时间间隔，得到</p>
+<p>$$I_xu+I_yv+I_t=0.$$</p>
+<p>一个像素只有一个方程，却有水平速度 $u$ 和竖直速度 $v$ 两个未知数。Lucas–Kanade 假设小窗口内共享相同运动，把多个像素的方程堆叠成 $A\mathbf{v}=\mathbf{b}$，求最小二乘解。矩阵 $A^TA$ 与角点章节中的梯度结构矩阵形式一致，因此在平坦区域或只有单方向边缘时，估计会不稳定；角点通常更适合追踪。</p>
+<p>亮度恒定、小运动、局部运动一致是近似条件。反光、遮挡、快速运动或窗口内含不同物体都会破坏它们。金字塔先在缩小图上估计粗位移，再向高分辨率细化，从而扩大可处理位移范围，但并不能解决任意剧烈运动。</p>
+<figure class="cv-figure"><img loading="lazy" decoding="async" src="../assets/img/cv/lucas-kanade.png" alt="局部窗口提供多条光流约束。只有结构矩阵条件良好时，两个位移分量才容易稳定求解；平坦区域与单一边缘会退化。"><figcaption>局部窗口提供多条光流约束。只有结构矩阵条件良好时，两个位移分量才容易稳定求解；平坦区域与单一边缘会退化。</figcaption></figure>
+
+<h2 id="sec-4">点集的形状与状态筛选</h2>
+<p><code>goodFeaturesToTrack</code> 返回的点通常形如 <code>(N,1,2)</code>，最后两个数是 <code>(x,y)</code>。<code>calcOpticalFlowPyrLK</code> 返回新位置、状态和误差；必须用状态筛除失败点，不能把所有输出都画成可靠轨迹。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">points</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">goodFeaturesToTrack</span><span class="p">(</span><span class="n">old_gray</span><span class="p">,</span> <span class="n">maxCorners</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                                 <span class="n">qualityLevel</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">minDistance</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">points</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">new_points</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">calcOpticalFlowPyrLK</span><span class="p">(</span>
+        <span class="n">old_gray</span><span class="p">,</span> <span class="n">new_gray</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">winSize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">),</span> <span class="n">maxLevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="n">criteria</span><span class="o">=</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">TERM_CRITERIA_EPS</span> <span class="o">|</span> <span class="n">cv2</span><span class="o">.</span><span class="n">TERM_CRITERIA_COUNT</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">new_points</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">status</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">valid</span> <span class="o">=</span> <span class="n">status</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="n">previous</span> <span class="o">=</span> <span class="n">points</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">current</span> <span class="o">=</span> <span class="n">new_points</span><span class="p">[</span><span class="n">valid</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">current</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">old_gray</span> <span class="o">=</span> <span class="n">new_gray</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><code>maxCorners</code> 限制初始点数，<code>qualityLevel</code> 是相对最强角点响应的质量门槛，<code>minDistance</code> 控制点间距离。<code>winSize</code> 是局部窗口，<code>maxLevel=2</code> 包括原图层和两个更粗层，不是只计算两个点。</p>
+<p>更新时既要替换旧图，也要替换旧点；只更新一项会让两者不属于同一帧。绘图前把浮点坐标转成整数。点全部丢失时应重新检测，否则跟踪只会不断减少；继续使用空点集无法凭空发现新对象。</p>
+<h2 id="sec-5">把中间结果变成可判断的证据</h2>
+<p>背景检测可分别记录每帧前景占比、轮廓面积和检测框数量。若前景占比突然接近整幅图，应优先检查相机移动或光照变化；若只有细碎小轮廓增多，再检查噪声与形态学参数。不同原因不应统一通过提高阈值掩盖。</p>
+<p>光流则可记录有效点数和位移分布。正常情况下，局部同一物体上的点应具有相近运动趋势；少数远离主群的位移可能对应错误匹配或遮挡。叠加轨迹时，绘图掩模可以跨帧累积，但用于求光流的灰度图应保持原始内容，不能包含之前画上去的彩色轨迹。</p>
+<h2 id="sec-6">练习</h2>
+<ol>
+<li>为什么停下来的车辆可能逐渐被背景模型吸收？</li>
+<li>为什么一条长直线上的点难以确定沿线运动？</li>
+<li>需要稳定运动轨迹时，只判断 <code>status==1</code> 足够吗？</li>
+</ol>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><ol>
+<li>自适应模型持续学习，长时间不变的车辆像素可能成为常见背景状态，应根据业务决定学习率、更新策略和目标保留方式。</li>
+<li>沿着直线移动时局部外观变化很小，梯度只约束法线方向，这是孔径问题的表现。</li>
+<li>不一定。还可检查误差、位移大小、前后向一致性与遮挡，并在点集不足时补点；状态成功只表示算法完成了局部估计。</li>
+</ol></div></div>
+
+
+<div class="done-bar"><button class="mark-done-btn" data-key="cv-opencv-background-optical-flow" type="button">⛳ 学完了？标记为已完成</button></div>
+
+<div class="pager"><a href="opencv-features-matching.html"><div class="dir">← 上一讲</div><div class="name">Harris、SIFT 与特征匹配：找到可重复识别的局部结构</div></a><a class="next" href="opencv-credit-card-ocr.html"><div class="dir">下一讲 →</div><div class="name">模板 OCR 实战：从信用卡数字组到逐字识别</div></a></div></main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">运动检测与运动估计</a><a class="lv2" href="#sec-2">从帧差到混合高斯背景</a><a class="lv2" href="#sec-3">光流方程为什么欠定</a><a class="lv2" href="#sec-4">点集的形状与状态筛选</a><a class="lv2" href="#sec-5">把中间结果变成可判断的证据</a><a class="lv2" href="#sec-6">练习</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 仅供个人学习使用，请勿传播 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

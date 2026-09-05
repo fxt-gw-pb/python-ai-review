@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>R(2+1)D：视频时空卷积与数值回归 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<link rel="stylesheet" href="../assets/css/cv.css">
+</head>
+<body class="has-sidenav cv-doc">
+<header class="topbar">
+  <button class="menu-btn" type="button" aria-label="收起或展开侧栏" title="收起侧栏">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../lessons.html">课程讲义</a>
+    <a href="../cv.html" class="active">CV 视觉</a>
+    <a href="../homework.html">课后练习</a>
+    <a href="../projects.html">实战项目</a>
+  </nav>
+  <span class="spacer"></span>
+</header>
+<div class="layout">
+<aside class="sidenav"><a class="item" href="../cv.html">← CV 模块总览</a><div class="group-title">🧭 学习准备</div><a class="item" data-page-key="cv-getting-started" href="getting-started.html"><span class="no">01</span><span>视觉任务、张量与实验准备</span><span class="done-flag">✅</span></a><div class="group-title">🖼️ OpenCV 图像处理</div><a class="item" data-page-key="cv-opencv-image-arrays" href="opencv-image-arrays.html"><span class="no">02</span><span>图像读写、数组与坐标：先读懂一张图</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-threshold-morphology" href="opencv-threshold-morphology.html"><span class="no">03</span><span>阈值、平滑与形态学：把目标从背景中分离</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-edges-contours-frequency" href="opencv-edges-contours-frequency.html"><span class="no">04</span><span>梯度、轮廓与频域：从像素变化到几何结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-histogram-template" href="opencv-histogram-template.html"><span class="no">05</span><span>直方图与模板匹配：分布、对比度和局部相似度</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-features-matching" href="opencv-features-matching.html"><span class="no">06</span><span>Harris、SIFT 与特征匹配：找到可重复识别的局部结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-background-optical-flow" href="opencv-background-optical-flow.html"><span class="no">07</span><span>背景建模与光流：区分运动区域并追踪像素</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-credit-card-ocr" href="opencv-credit-card-ocr.html"><span class="no">08</span><span>模板 OCR 实战：从信用卡数字组到逐字识别</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-document-scanner" href="opencv-document-scanner.html"><span class="no">09</span><span>文档扫描与 OCR：从四个角点恢复平整页面</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-panorama-exam" href="opencv-panorama-exam.html"><span class="no">10</span><span>几何视觉的两种应用：全景拼接与答题卡判卷</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-parking-spaces" href="opencv-parking-spaces.html"><span class="no">11</span><span>停车场车位识别：固定几何地图与图像分类结合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-convolution-dnn-tracking" href="opencv-convolution-dnn-tracking.html"><span class="no">12</span><span>卷积、DNN 与目标跟踪：把算法接成视频流水线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-face-blinks" href="opencv-face-blinks.html"><span class="no">13</span><span>人脸关键点与眨眼计数：从坐标到时间状态</span><span class="done-flag">✅</span></a><div class="group-title">🎯 目标检测</div><a class="item" data-page-key="cv-detection-metrics" href="detection-metrics.html"><span class="no">14</span><span>目标检测任务、IoU、NMS 与 mAP</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detection-data-pipeline" href="detection-data-pipeline.html"><span class="no">15</span><span>目标检测标注与数据管线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov3-from-grid-to-box" href="yolov3-from-grid-to-box.html"><span class="no">16</span><span>YOLOv3：从网格到边界框</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov5-model-and-training" href="yolov5-model-and-training.html"><span class="no">17</span><span>YOLOv5：结构、标签分配与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov7-assignment-and-reparameterization" href="yolov7-assignment-and-reparameterization.html"><span class="no">18</span><span>YOLOv7：动态分配与重参数化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientnet-mbconv-and-scaling" href="efficientnet-mbconv-and-scaling.html"><span class="no">19</span><span>EfficientNet：MBConv、SE 与复合缩放</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientdet-bifpn-and-loss" href="efficientdet-bifpn-and-loss.html"><span class="no">20</span><span>EfficientDet：BiFPN、检测头与损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-centernet-objects-as-points" href="centernet-objects-as-points.html"><span class="no">21</span><span>CenterNet：把目标表示为中心点</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detr-set-prediction" href="detr-set-prediction.html"><span class="no">22</span><span>DETR：查询、注意力与集合预测</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deformable-detr-sparse-attention" href="deformable-detr-sparse-attention.html"><span class="no">23</span><span>Deformable DETR：稀疏多尺度注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mmdetection-reproducible-experiment" href="mmdetection-reproducible-experiment.html"><span class="no">24</span><span>MMDetection：配置驱动的检测实验</span><span class="done-flag">✅</span></a><div class="group-title">🧩 图像分割</div><a class="item" data-page-key="cv-segmentation-foundations" href="segmentation-foundations.html"><span class="no">25</span><span>分割基础：标签、损失与 IoU 指标</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-pytorch-vision-workflow" href="pytorch-vision-workflow.html"><span class="no">26</span><span>PyTorch 视觉工程：张量、训练与迁移学习</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-unet-nested-segmentation" href="unet-nested-segmentation.html"><span class="no">27</span><span>U-Net 与 U-Net++：医学细胞分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-u2net-saliency" href="u2net-saliency.html"><span class="no">28</span><span>U²-Net：残差 U 形块与显著目标分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deeplab-voc" href="deeplab-voc.html"><span class="no">29</span><span>DeepLabV3+：空洞卷积、ASPP 与 VOC 工程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-echo-video-segmentation" href="echo-video-segmentation.html"><span class="no">30</span><span>心脏视频分割：代表帧、面积曲线与数据流</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-resnet-medical-classification" href="resnet-medical-classification.html"><span class="no">31</span><span>ResNet 医学分类：残差结构与任务评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-mechanics" href="mask-rcnn-mechanics.html"><span class="no">32</span><span>Mask R-CNN：FPN、RPN、ROIAlign 与 mask 损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-custom-data" href="mask-rcnn-custom-data.html"><span class="no">33</span><span>Mask R-CNN 自定义任务：实例标注与分阶段训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-maskformer-mask2former" href="maskformer-mask2former.html"><span class="no">34</span><span>MaskFormer 与 Mask2Former：区域查询和掩码注意力</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="cv-r2plus1d-video-learning" href="r2plus1d-video-learning.html"><span class="no">35</span><span>R(2+1)D：视频时空卷积与数值回归</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="../cv.html">CV 计算机视觉</a> / 图像分割 / 第 35 讲</div>
+<h1>R(2+1)D：视频时空卷积与数值回归</h1>
+<div class="chips"><span class="chip">🧩 图像分割</span></div>
+</div>
+<h2 id="sec-1">视频建模：时间轴不能被忽略</h2>
+<p>单张图像只能描述某一时刻的外观，视频还包含运动顺序与变化速度。心腔收缩、人的动作或物体交互往往依赖多帧关系。视频模型通常输入 <code>[B,C,T,H,W]</code>，其中 $T$ 是采样帧数；先理解时间采样，再比较网络结构，才能避免把不同信息量的输入拿来做不公平对比。</p>
+<h3 id="sec-2">R2D、R3D 与 R(2+1)D 的差别</h3>
+<p>二维卷积只在高宽方向滑动。把多帧堆进通道，可以让模型混合固定帧位置的信息，但没有显式的时间平移卷积结构，也会把输入通道数绑定到片段长度。逐帧二维特征再平均则保留外观统计，却丢掉大部分顺序信息。</p>
+<p>三维卷积同时沿时间、高、宽滑动，核大小为 $k_t\times k_h\times k_w$。它直接学习局部时空模式。混合卷积网络在部分层用 3D，其他层用 2D，用于研究何处需要时间建模。R(2+1)D 则把一个时空卷积拆成空间卷积和时间卷积两步，并在中间加入非线性。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>模块</th>
+<th>卷积核</th>
+<th>主要作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>空间卷积</td>
+<td><code>1×kh×kw</code></td>
+<td>每帧内提取纹理与形状</td>
+</tr>
+<tr>
+<td>时间卷积</td>
+<td><code>kt×1×1</code></td>
+<td>比较同位置相邻帧的变化</td>
+</tr>
+<tr>
+<td>残差捷径</td>
+<td>恒等或投影</td>
+<td>保持维度匹配与梯度路径</td>
+</tr>
+</tbody>
+</table></div>
+<p>时间卷积仍可用 <code>Conv3d</code> 表达，只是空间核为 1×1；这里“1D”指只沿时间建模，不代表必须把数据先变成一维数组。</p>
+<h3 id="sec-3">参数量为什么不一定更少</h3>
+<p>忽略偏置，原始 3D 卷积参数量为</p>
+<p>$$P_{3D}=C_{in}C_{out}k_tk_hk_w.$$</p>
+<p>若中间通道为 $M$，分解后的参数量为</p>
+<p>$$P_{2+1D}=C_{in}Mk_hk_w+MC_{out}k_t.$$</p>
+<p>因此可以选择</p>
+<p>$$M=\left\lfloor\frac{C_{in}C_{out}k_tk_hk_w}{C_{in}k_hk_w+C_{out}k_t}\right\rfloor$$</p>
+<p>使参数量接近原始 3D 卷积。结构分解的收益还包括中间多一次非线性与不同优化路径，不能简化为“拆开以后参数必然更少”。比较时应同时控制通道数、参数量、片段长度、采样间隔和训练设置。</p>
+<h3 id="sec-4">实现一个形状清楚的分解块</h3>
+<p>下面为简化教学代码，只展示 stride=1、奇数卷积核的情况。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">torch</span><span class="w"> </span><span class="kn">import</span> <span class="n">nn</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">SpatialTemporalBlock</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="n">mid_channels</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">body</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Sequential</span><span class="p">(</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv3d</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">mid_channels</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+                      <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm3d</span><span class="p">(</span><span class="n">mid_channels</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">ReLU</span><span class="p">(</span><span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">Conv3d</span><span class="p">(</span><span class="n">mid_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                      <span class="n">padding</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+            <span class="n">nn</span><span class="o">.</span><span class="n">BatchNorm3d</span><span class="p">(</span><span class="n">out_channels</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">skip</span> <span class="o">=</span> <span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Identity</span><span class="p">()</span> <span class="k">if</span> <span class="n">in_channels</span> <span class="o">==</span> <span class="n">out_channels</span> <span class="k">else</span>
+                     <span class="n">nn</span><span class="o">.</span><span class="n">Conv3d</span><span class="p">(</span><span class="n">in_channels</span><span class="p">,</span> <span class="n">out_channels</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">body</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>第一层保持 $T,H,W$，将通道变为 <code>mid_channels</code>；第二层仍保持空间尺寸，但沿时间比较三帧。捷径将输入通道映射为 <code>out_channels</code>，才能与主分支相加。完整网络在部分阶段还会下采样时间或空间，届时捷径的 stride 也必须相应变化。</p>
+<h3 id="sec-5">片段采样决定模型看到多少运动</h3>
+<p>若取 $L$ 帧、间隔为 $p$，索引是 $s+p\cdot[0,1,\ldots,L-1]$。首尾跨越 $(L-1)p$ 个原始帧间隔，而不是 $Lp$。例如 16 帧、间隔 4、50 FPS，首尾相距 60/50=1.2 秒。输入张量仍只有 16 帧，增大间隔扩大时间覆盖，却降低时间采样密度。</p>
+<p>短视频需要 padding 或其他明确处理。若先标准化再补零，零表示训练均值对应颜色，不再是原始黑色。应该保存有效帧信息或至少检查短视频占比，避免模型利用 padding 长度作为非目标线索。多个片段的空间增强还应保持时间一致，逐帧随机裁剪会制造假的运动。</p>
+<h3 id="sec-6">从动作分类网络改成数值回归</h3>
+<p>视频案例将最后的 <code>fc</code> 改为输出一个数，训练用均方误差：</p>
+<p>$$MSE=\frac1B\sum_i(\hat y_i-y_i)^2.$$</p>
+<p>目标为回归数值，因此不在最终输出上做类别 softmax。形状 <code>[B,1]</code> 可以 reshape 为 <code>[B]</code> 与标签对齐；但要避免误广播成 <code>[B,B]</code>，那会比较每个预测与所有标签。</p>
+<p>推理可以从同一个视频取多个片段，输入从 <code>[B,K,C,T,H,W]</code> 临时合并成 <code>[B*K,C,T,H,W]</code>，模型前向后再恢复 <code>[B,K,1]</code>，对片段求平均。<code>block_size</code> 控制一次送入多少片段，以限制显存，它不是采样间隔，也不是视频 batch size。</p>
+<h3 id="sec-7">评价应该回到视频或患者单位</h3>
+<p>MAE 表示平均绝对误差，RMSE 对大误差更敏感，$R^2$ 比较模型相对常数均值预测的解释能力。回归标签以百分数 0 到 100 表示，还是比例 0 到 1 表示，会使 MAE 与 RMSE 相差 100 倍，记录时必须明确单位。</p>
+<p>同一视频多个片段不是独立患者。最终指标应先将片段汇总成视频预测，再按视频或患者评价；置信区间抽样也应保持同源分组。若按照展开后的片段数累计“样本数”，可能使长视频在平均误差中获得更大权重。增加片段数改善平均稳定性，也增加推理成本，应同时报告策略。</p>
+<h3 id="sec-8">设计公平的时空模型对照</h3>
+<p>若要比较三维卷积和分解卷积，先固定每个视频的采样起点或保存采样随机种子，保证模型看到的内容一致。再固定输入帧数、帧间隔、训练划分和目标单位；否则一个模型看到了完整动作，另一个只看到了短暂静止片段，结构结论就不可靠。</p>
+<p>还可以增加逐帧二维模型加平均池化的基线。如果二维基线已经接近视频模型，说明当前目标可能主要由静态外观决定，或者时间信息尚未被有效利用。将帧顺序打乱后性能是否明显下降，也是探索模型是否利用时间关系的实验，但应在固定评估设计中进行，避免把这种扰动混进正常性能报告。</p>
+<p>最后观察错误与视频长度、运动速度和采样稀疏度的关系。较快运动在大间隔采样下可能被跳过，较慢运动在短片段中又可能几乎没有变化。适当扩大覆盖范围与增加采样密度会带来不同成本，应根据任务变化的时间尺度选择，而不是一味增加帧数。</p>
+<h3 id="sec-9">练习：时间覆盖</h3>
+<p>32 帧、采样间隔 2、原视频 30 FPS，首尾帧的时间跨度是多少？</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>首尾相距 (32-1)×2=62 个原始帧间隔，即 62/30≈2.067 秒。不能直接用 32/30，因为输入不是连续每帧采样。</p></div></div>
+
+
+<h3 id="sec-10">练习：片段指标为何虚高</h3>
+<p>把一个视频的 20 段分别当成 20 个独立测试样本，会有哪些问题？</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>它们高度相关，会夸大独立样本数；视频片段数量不同时还会改变各视频权重。应先按视频汇总预测，再按独立视频或患者计算指标及不确定性。</p></div></div>
+
+
+<div class="done-bar"><button class="mark-done-btn" data-key="cv-r2plus1d-video-learning" type="button">⛳ 学完了？标记为已完成</button></div>
+
+<div class="pager"><a href="maskformer-mask2former.html"><div class="dir">← 上一讲</div><div class="name">MaskFormer 与 Mask2Former：区域查询和掩码注意力</div></a><a class="next" href="../cv.html">返回 CV 总览 →</a></div></main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">视频建模：时间轴不能被忽略</a><a class="lv3" href="#sec-2">R2D、R3D 与 R(2+1)D 的差别</a><a class="lv3" href="#sec-3">参数量为什么不一定更少</a><a class="lv3" href="#sec-4">实现一个形状清楚的分解块</a><a class="lv3" href="#sec-5">片段采样决定模型看到多少运动</a><a class="lv3" href="#sec-6">从动作分类网络改成数值回归</a><a class="lv3" href="#sec-7">评价应该回到视频或患者单位</a><a class="lv3" href="#sec-8">设计公平的时空模型对照</a><a class="lv3" href="#sec-9">练习：时间覆盖</a><a class="lv3" href="#sec-10">练习：片段指标为何虚高</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 仅供个人学习使用，请勿传播 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

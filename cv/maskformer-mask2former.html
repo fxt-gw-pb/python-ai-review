@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MaskFormer 与 Mask2Former：区域查询和掩码注意力 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<link rel="stylesheet" href="../assets/css/cv.css">
+</head>
+<body class="has-sidenav cv-doc">
+<header class="topbar">
+  <button class="menu-btn" type="button" aria-label="收起或展开侧栏" title="收起侧栏">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../lessons.html">课程讲义</a>
+    <a href="../cv.html" class="active">CV 视觉</a>
+    <a href="../homework.html">课后练习</a>
+    <a href="../projects.html">实战项目</a>
+  </nav>
+  <span class="spacer"></span>
+</header>
+<div class="layout">
+<aside class="sidenav"><a class="item" href="../cv.html">← CV 模块总览</a><div class="group-title">🧭 学习准备</div><a class="item" data-page-key="cv-getting-started" href="getting-started.html"><span class="no">01</span><span>视觉任务、张量与实验准备</span><span class="done-flag">✅</span></a><div class="group-title">🖼️ OpenCV 图像处理</div><a class="item" data-page-key="cv-opencv-image-arrays" href="opencv-image-arrays.html"><span class="no">02</span><span>图像读写、数组与坐标：先读懂一张图</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-threshold-morphology" href="opencv-threshold-morphology.html"><span class="no">03</span><span>阈值、平滑与形态学：把目标从背景中分离</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-edges-contours-frequency" href="opencv-edges-contours-frequency.html"><span class="no">04</span><span>梯度、轮廓与频域：从像素变化到几何结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-histogram-template" href="opencv-histogram-template.html"><span class="no">05</span><span>直方图与模板匹配：分布、对比度和局部相似度</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-features-matching" href="opencv-features-matching.html"><span class="no">06</span><span>Harris、SIFT 与特征匹配：找到可重复识别的局部结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-background-optical-flow" href="opencv-background-optical-flow.html"><span class="no">07</span><span>背景建模与光流：区分运动区域并追踪像素</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-credit-card-ocr" href="opencv-credit-card-ocr.html"><span class="no">08</span><span>模板 OCR 实战：从信用卡数字组到逐字识别</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-document-scanner" href="opencv-document-scanner.html"><span class="no">09</span><span>文档扫描与 OCR：从四个角点恢复平整页面</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-panorama-exam" href="opencv-panorama-exam.html"><span class="no">10</span><span>几何视觉的两种应用：全景拼接与答题卡判卷</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-parking-spaces" href="opencv-parking-spaces.html"><span class="no">11</span><span>停车场车位识别：固定几何地图与图像分类结合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-convolution-dnn-tracking" href="opencv-convolution-dnn-tracking.html"><span class="no">12</span><span>卷积、DNN 与目标跟踪：把算法接成视频流水线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-face-blinks" href="opencv-face-blinks.html"><span class="no">13</span><span>人脸关键点与眨眼计数：从坐标到时间状态</span><span class="done-flag">✅</span></a><div class="group-title">🎯 目标检测</div><a class="item" data-page-key="cv-detection-metrics" href="detection-metrics.html"><span class="no">14</span><span>目标检测任务、IoU、NMS 与 mAP</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detection-data-pipeline" href="detection-data-pipeline.html"><span class="no">15</span><span>目标检测标注与数据管线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov3-from-grid-to-box" href="yolov3-from-grid-to-box.html"><span class="no">16</span><span>YOLOv3：从网格到边界框</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov5-model-and-training" href="yolov5-model-and-training.html"><span class="no">17</span><span>YOLOv5：结构、标签分配与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov7-assignment-and-reparameterization" href="yolov7-assignment-and-reparameterization.html"><span class="no">18</span><span>YOLOv7：动态分配与重参数化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientnet-mbconv-and-scaling" href="efficientnet-mbconv-and-scaling.html"><span class="no">19</span><span>EfficientNet：MBConv、SE 与复合缩放</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientdet-bifpn-and-loss" href="efficientdet-bifpn-and-loss.html"><span class="no">20</span><span>EfficientDet：BiFPN、检测头与损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-centernet-objects-as-points" href="centernet-objects-as-points.html"><span class="no">21</span><span>CenterNet：把目标表示为中心点</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detr-set-prediction" href="detr-set-prediction.html"><span class="no">22</span><span>DETR：查询、注意力与集合预测</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deformable-detr-sparse-attention" href="deformable-detr-sparse-attention.html"><span class="no">23</span><span>Deformable DETR：稀疏多尺度注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mmdetection-reproducible-experiment" href="mmdetection-reproducible-experiment.html"><span class="no">24</span><span>MMDetection：配置驱动的检测实验</span><span class="done-flag">✅</span></a><div class="group-title">🧩 图像分割</div><a class="item" data-page-key="cv-segmentation-foundations" href="segmentation-foundations.html"><span class="no">25</span><span>分割基础：标签、损失与 IoU 指标</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-pytorch-vision-workflow" href="pytorch-vision-workflow.html"><span class="no">26</span><span>PyTorch 视觉工程：张量、训练与迁移学习</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-unet-nested-segmentation" href="unet-nested-segmentation.html"><span class="no">27</span><span>U-Net 与 U-Net++：医学细胞分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-u2net-saliency" href="u2net-saliency.html"><span class="no">28</span><span>U²-Net：残差 U 形块与显著目标分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deeplab-voc" href="deeplab-voc.html"><span class="no">29</span><span>DeepLabV3+：空洞卷积、ASPP 与 VOC 工程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-echo-video-segmentation" href="echo-video-segmentation.html"><span class="no">30</span><span>心脏视频分割：代表帧、面积曲线与数据流</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-resnet-medical-classification" href="resnet-medical-classification.html"><span class="no">31</span><span>ResNet 医学分类：残差结构与任务评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-mechanics" href="mask-rcnn-mechanics.html"><span class="no">32</span><span>Mask R-CNN：FPN、RPN、ROIAlign 与 mask 损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-custom-data" href="mask-rcnn-custom-data.html"><span class="no">33</span><span>Mask R-CNN 自定义任务：实例标注与分阶段训练</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="cv-maskformer-mask2former" href="maskformer-mask2former.html"><span class="no">34</span><span>MaskFormer 与 Mask2Former：区域查询和掩码注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-r2plus1d-video-learning" href="r2plus1d-video-learning.html"><span class="no">35</span><span>R(2+1)D：视频时空卷积与数值回归</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="../cv.html">CV 计算机视觉</a> / 图像分割 / 第 34 讲</div>
+<h1>MaskFormer 与 Mask2Former：区域查询和掩码注意力</h1>
+<div class="chips"><span class="chip">🧩 图像分割</span></div>
+</div>
+<h2 id="sec-1">版本提示：这份 Mask2Former 实现基于 2.x</h2>
+<p>本章的 Mask2Former 工程使用 <strong>MMDetection 2.25.2</strong>，与目标检测章节中的 <strong>3.0.0rc3</strong> 是两份不同年代的代码，不能共用一套配置假设。<strong>截至 2026-09-05，官方最新正式版为 3.3.0</strong>；当前 3.x 的训练引擎、配置和数据接口与 2.x 有明显变化。先用本章掌握 query、mask、匹配与注意力的算法逻辑，迁移工程时再按目标版本整体核对依赖和配置。<a href="https://github.com/open-mmlab/mmdetection/releases/tag/v3.3.0">官方发布记录</a> · <a href="https://mmdetection.readthedocs.io/en/latest/migration/config_migration.html">2.x → 3.x 配置迁移</a></p>
+<h2 id="sec-2">从像素分类到 mask 分类</h2>
+<p>传统语义分割对每个像素预测类别。MaskFormer 换一个角度：先预测一组区域 mask，再给每个区域预测类别。每个预测由“类别分布 + 二值区域概率图”组成。多个预测可以属于同一类别，因此这套表示也能表达不同实例。</p>
+<p>模型输出的 query 数 $Q$ 不等于类别数 $C$。query 是预测区域的槽位，某张图不需要的槽位预测为 no-object；每个 query 可以在不同图像中表示不同类别，不是固定绑定一个词。语义分割将同类区域合并，实例分割保留个体，全景分割还要处理像素归属及 stuff 区域合并。</p>
+<h3 id="sec-3">三个模块与关键形状</h3>
+<p>骨干产生多尺度特征；pixel decoder 将它们融合为密集像素特征；Transformer decoder 更新 query 表示。对 <code>[B,Q,D]</code> 的 query 表示，一条线性分类头输出 <code>[B,Q,C+1]</code>，额外一类是 no-object；另一条 MLP 输出 mask embedding，与 <code>[B,D,H,W]</code> 像素特征做通道点积。</p>
+<p>$$z_{bqhw}=\sum_d e_{bqd}f_{bdhw},\qquad m_{bqhw}=\sigma(z_{bqhw}).$$</p>
+<p>所有 query 共享像素特征，只使用不同 embedding 读取它们。生成 mask 的原样核心代码只有一行：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">mask_pred</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;bqc,bchw-&gt;bqhw&#39;</span><span class="p">,</span> <span class="n">mask_embed</span><span class="p">,</span> <span class="n">mask_feature</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code>c</code> 在点积中求和，<code>b</code> 保留 batch，<code>q</code> 保留预测区域，<code>h,w</code> 保留空间位置。不能在 query 轴上 softmax 强迫每个像素只属于一个 query；训练阶段各 mask 独立 sigmoid，后处理再按任务解决重叠。</p>
+<p>语义融合可使用 $S_c(h,w)=\sum_q p_q(c)m_q(h,w)$，再在类别维取最大值。这里的聚合分数不必天然和为 1，因此称为类别得分更严谨。全景后处理则结合类别置信度、mask 概率与区域保留率，将像素分配给某个区域。</p>
+<h3 id="sec-4">匈牙利匹配：让预测集合找到对应真值</h3>
+<p>预测槽位没有固定顺序，真实对象也没有唯一排序。如果直接把第一个 query 和第一个标注配对，同一图中标注顺序改变就会改变训练目标。因此先构造 <code>[Q,N_gt]</code> 代价矩阵，综合类别代价、mask 代价与 Dice 代价，再求总代价最低的一对一匹配。</p>
+<p>匹配确定后，匹配上的 query 学习对应类别和 mask，其余 query 学习 no-object。匹配过程本身不通过离散索引求导；反向传播发生在被匹配的预测损失上。MaskFormer 使用 focal 与 Dice 的区域损失；Mask2Former 的示例配置使用 BCE 与 Dice，不能只凭继承类名称判断实际损失。</p>
+<h3 id="sec-5">Mask2Former：注意力只看当前候选区域</h3>
+<p>MaskFormer 的 cross-attention 面向全图。Mask2Former 用上一层的 mask 预测限制下一层注意力范围：被认为是背景的位置加 $-\infty$，保留位置加 0。</p>
+<p>$$X_l=\operatorname{softmax}\left(Q_lK_l^T/\sqrt d+M_{l-1}\right)V_l+X_{l-1}.$$</p>
+<p>$M$ 是用于注意力的屏蔽矩阵，不是目标真值，也不是 Dropout。模型在自身当前判断的区域里提取局部特征，再通过 query 间的 self-attention 交换信息，逐步修正区域。</p>
+<p>代码先把 mask logits 插值到下一层特征分辨率，展平成空间轴，为各注意力头复制，再转为布尔屏蔽。原样核心节选如下。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">attn_mask</span> <span class="o">=</span> <span class="n">attn_mask</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">unsqueeze</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span>
+    <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_heads</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">flatten</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">attn_mask</span> <span class="o">=</span> <span class="n">attn_mask</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mf">0.5</span>
+<span class="n">attn_mask</span> <span class="o">=</span> <span class="n">attn_mask</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>形状为 <code>[B*heads,Q,H*W]</code>，<code>True</code> 表示禁止关注。<code>detach</code> 使离散阈值不承担梯度路径，mask 本身仍通过区域损失训练。若某 query 屏蔽了所有位置，softmax 将没有有效输入，因此实现会将该行全部改回 False，让它重新观察图像。</p>
+<h3 id="sec-6">多尺度轮换与点采样监督</h3>
+<p>pixel decoder 输出三个供注意力读取的尺度，通常为输入的 1/32、1/16、1/8。九层 Transformer decoder 按 <code>level_idx=i%3</code> 轮流使用，而不是把所有高分辨率特征一次拼给每层。这样兼顾小物体信息与计算成本。</p>
+<p><code>query_feat</code> 是初始查询内容，<code>query_embed</code> 是查询位置表示；二者分别可学习，含义不同。模型在进入第一层之前就预测一次，再对九层输出分别监督，因此会看到十组中间预测损失。层数九不代表只有九次监督。</p>
+<p>高分辨率 mask 损失占用大量内存。实现匹配时为所有预测和真值采同一组随机点，保证代价公平；最终损失则偏向不确定点并混合随机点。配置中的 12544 是每张 mask 采样点数，不是将输出图固定改为 112×112。完整输出仍是空间 mask。</p>
+<h3 id="sec-7">配置文件也是模型的一部分</h3>
+<p>示例配置将实例分割打开，语义与全景关闭，thing 类为 80、stuff 为 0。训练 pipeline 读取 mask，做大范围尺度扰动、裁剪、过滤空对象、padding 和归一化。类别数、class_weight 长度、数据集类别映射、fusion head 与评估类型应一致。</p>
+<p>自定义演示配置的 train、val、test 使用同一小数据集合，只能用于验证训练流程。正式实验必须拆分独立数据。同时检查迭代学习率：若训练总共只有 10000 步，而衰减点仍在 30 多万步，整个实验就不会触发预期衰减。不能因为配置名包含某个 epoch 数，就认定实际训练长度与名称相符。</p>
+<p>该实现属于一套完整的历史 mmdetection 配置与模块接口，阅读继承关系时需要同时看 detector、head、pixel decoder、assigner 和 fusion head。尤其语义输出不能只靠打开布尔开关：本示例的 <code>semantic_postprocess</code> 直接抛出 <code>NotImplementedError</code>，需要补齐后处理才能输出语义结果。</p>
+<h3 id="sec-8">匹配代价和最终损失不能只看名字</h3>
+<p>匹配阶段需要比较每个预测与每个真实区域，因此产生一个二维代价矩阵；最终损失只计算选定匹配对，再对 no-object 槽位计算分类监督。两者即使都含有交叉熵或 Dice，归约维度与权重作用位置也不同。阅读时应先标出输入和输出形状，再追踪配置是否覆盖默认代价。</p>
+<p>推理置信度同样包含两个来源：类别得分衡量这个区域属于某类的把握，mask 得分反映前景区域内部的像素概率。将它们组合后排序，可以抑制类别很自信但 mask 几乎没有有效前景的预测。只有空 mask 时分母还需平滑，避免得到无定义分数。</p>
+<h3 id="sec-9">练习：屏蔽方向</h3>
+<p>mask 概率低于 0.5 的位置得到 True，表示更关注还是不关注？如果整行都是 True 怎么办？</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>此处 True 表示不允许关注。整行屏蔽会让注意力没有可用位置，因此代码把它恢复为全 False，重新允许访问所有位置；这不等于把该 query 的预测 mask 强制设为全前景。</p></div></div>
+
+
+<h3 id="sec-10">练习：query 数与类别数</h3>
+<p>数据有 150 类，模型使用 100 个 query，是否必然无法预测所有类别？</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>不是。每个 query 都有 151 维类别输出，query 数限制单张图可表达的区域槽位，而非整个数据集词表大小。真正需要检查的是单图目标区域数量是否经常超过 query 容量。</p></div></div>
+
+
+<div class="done-bar"><button class="mark-done-btn" data-key="cv-maskformer-mask2former" type="button">⛳ 学完了？标记为已完成</button></div>
+
+<div class="pager"><a href="mask-rcnn-custom-data.html"><div class="dir">← 上一讲</div><div class="name">Mask R-CNN 自定义任务：实例标注与分阶段训练</div></a><a class="next" href="r2plus1d-video-learning.html"><div class="dir">下一讲 →</div><div class="name">R(2+1)D：视频时空卷积与数值回归</div></a></div></main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">版本提示：这份 Mask2Former 实现基于 2.x</a><a class="lv2" href="#sec-2">从像素分类到 mask 分类</a><a class="lv3" href="#sec-3">三个模块与关键形状</a><a class="lv3" href="#sec-4">匈牙利匹配：让预测集合找到对应真值</a><a class="lv3" href="#sec-5">Mask2Former：注意力只看当前候选区域</a><a class="lv3" href="#sec-6">多尺度轮换与点采样监督</a><a class="lv3" href="#sec-7">配置文件也是模型的一部分</a><a class="lv3" href="#sec-8">匹配代价和最终损失不能只看名字</a><a class="lv3" href="#sec-9">练习：屏蔽方向</a><a class="lv3" href="#sec-10">练习：query 数与类别数</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 仅供个人学习使用，请勿传播 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

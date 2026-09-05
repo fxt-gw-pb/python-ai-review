@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YOLOv7：动态分配与重参数化 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<link rel="stylesheet" href="../assets/css/cv.css">
+</head>
+<body class="has-sidenav cv-doc">
+<header class="topbar">
+  <button class="menu-btn" type="button" aria-label="收起或展开侧栏" title="收起侧栏">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../lessons.html">课程讲义</a>
+    <a href="../cv.html" class="active">CV 视觉</a>
+    <a href="../homework.html">课后练习</a>
+    <a href="../projects.html">实战项目</a>
+  </nav>
+  <span class="spacer"></span>
+</header>
+<div class="layout">
+<aside class="sidenav"><a class="item" href="../cv.html">← CV 模块总览</a><div class="group-title">🧭 学习准备</div><a class="item" data-page-key="cv-getting-started" href="getting-started.html"><span class="no">01</span><span>视觉任务、张量与实验准备</span><span class="done-flag">✅</span></a><div class="group-title">🖼️ OpenCV 图像处理</div><a class="item" data-page-key="cv-opencv-image-arrays" href="opencv-image-arrays.html"><span class="no">02</span><span>图像读写、数组与坐标：先读懂一张图</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-threshold-morphology" href="opencv-threshold-morphology.html"><span class="no">03</span><span>阈值、平滑与形态学：把目标从背景中分离</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-edges-contours-frequency" href="opencv-edges-contours-frequency.html"><span class="no">04</span><span>梯度、轮廓与频域：从像素变化到几何结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-histogram-template" href="opencv-histogram-template.html"><span class="no">05</span><span>直方图与模板匹配：分布、对比度和局部相似度</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-features-matching" href="opencv-features-matching.html"><span class="no">06</span><span>Harris、SIFT 与特征匹配：找到可重复识别的局部结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-background-optical-flow" href="opencv-background-optical-flow.html"><span class="no">07</span><span>背景建模与光流：区分运动区域并追踪像素</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-credit-card-ocr" href="opencv-credit-card-ocr.html"><span class="no">08</span><span>模板 OCR 实战：从信用卡数字组到逐字识别</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-document-scanner" href="opencv-document-scanner.html"><span class="no">09</span><span>文档扫描与 OCR：从四个角点恢复平整页面</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-panorama-exam" href="opencv-panorama-exam.html"><span class="no">10</span><span>几何视觉的两种应用：全景拼接与答题卡判卷</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-parking-spaces" href="opencv-parking-spaces.html"><span class="no">11</span><span>停车场车位识别：固定几何地图与图像分类结合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-convolution-dnn-tracking" href="opencv-convolution-dnn-tracking.html"><span class="no">12</span><span>卷积、DNN 与目标跟踪：把算法接成视频流水线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-face-blinks" href="opencv-face-blinks.html"><span class="no">13</span><span>人脸关键点与眨眼计数：从坐标到时间状态</span><span class="done-flag">✅</span></a><div class="group-title">🎯 目标检测</div><a class="item" data-page-key="cv-detection-metrics" href="detection-metrics.html"><span class="no">14</span><span>目标检测任务、IoU、NMS 与 mAP</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detection-data-pipeline" href="detection-data-pipeline.html"><span class="no">15</span><span>目标检测标注与数据管线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov3-from-grid-to-box" href="yolov3-from-grid-to-box.html"><span class="no">16</span><span>YOLOv3：从网格到边界框</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov5-model-and-training" href="yolov5-model-and-training.html"><span class="no">17</span><span>YOLOv5：结构、标签分配与训练</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="cv-yolov7-assignment-and-reparameterization" href="yolov7-assignment-and-reparameterization.html"><span class="no">18</span><span>YOLOv7：动态分配与重参数化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientnet-mbconv-and-scaling" href="efficientnet-mbconv-and-scaling.html"><span class="no">19</span><span>EfficientNet：MBConv、SE 与复合缩放</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientdet-bifpn-and-loss" href="efficientdet-bifpn-and-loss.html"><span class="no">20</span><span>EfficientDet：BiFPN、检测头与损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-centernet-objects-as-points" href="centernet-objects-as-points.html"><span class="no">21</span><span>CenterNet：把目标表示为中心点</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detr-set-prediction" href="detr-set-prediction.html"><span class="no">22</span><span>DETR：查询、注意力与集合预测</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deformable-detr-sparse-attention" href="deformable-detr-sparse-attention.html"><span class="no">23</span><span>Deformable DETR：稀疏多尺度注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mmdetection-reproducible-experiment" href="mmdetection-reproducible-experiment.html"><span class="no">24</span><span>MMDetection：配置驱动的检测实验</span><span class="done-flag">✅</span></a><div class="group-title">🧩 图像分割</div><a class="item" data-page-key="cv-segmentation-foundations" href="segmentation-foundations.html"><span class="no">25</span><span>分割基础：标签、损失与 IoU 指标</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-pytorch-vision-workflow" href="pytorch-vision-workflow.html"><span class="no">26</span><span>PyTorch 视觉工程：张量、训练与迁移学习</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-unet-nested-segmentation" href="unet-nested-segmentation.html"><span class="no">27</span><span>U-Net 与 U-Net++：医学细胞分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-u2net-saliency" href="u2net-saliency.html"><span class="no">28</span><span>U²-Net：残差 U 形块与显著目标分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deeplab-voc" href="deeplab-voc.html"><span class="no">29</span><span>DeepLabV3+：空洞卷积、ASPP 与 VOC 工程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-echo-video-segmentation" href="echo-video-segmentation.html"><span class="no">30</span><span>心脏视频分割：代表帧、面积曲线与数据流</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-resnet-medical-classification" href="resnet-medical-classification.html"><span class="no">31</span><span>ResNet 医学分类：残差结构与任务评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-mechanics" href="mask-rcnn-mechanics.html"><span class="no">32</span><span>Mask R-CNN：FPN、RPN、ROIAlign 与 mask 损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-custom-data" href="mask-rcnn-custom-data.html"><span class="no">33</span><span>Mask R-CNN 自定义任务：实例标注与分阶段训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-maskformer-mask2former" href="maskformer-mask2former.html"><span class="no">34</span><span>MaskFormer 与 Mask2Former：区域查询和掩码注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-r2plus1d-video-learning" href="r2plus1d-video-learning.html"><span class="no">35</span><span>R(2+1)D：视频时空卷积与数值回归</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="../cv.html">CV 计算机视觉</a> / 目标检测 / 第 18 讲</div>
+<h1>YOLOv7：动态分配与重参数化</h1>
+<div class="chips"><span class="chip">🎯 目标检测</span></div>
+</div>
+<h2 id="sec-1">把结构改进与训练策略分开理解</h2>
+<p>YOLOv7 仍然围绕多尺度特征、anchor 参数化和检测头工作，重点改进包括多分支特征聚合、训练时的正样本分配和部署时的结构合并。学习时可以沿两条路径阅读：图片经过哪些层得到三个尺度的预测；这些预测如何被分配标签并形成损失。</p>
+<p>640×640 的常规三尺度模型输出 80×80、40×40、20×20。每个位置有 3 个 anchor，每个 anchor 输出 $C+5$ 个数。80 类时，图中常写的“85”指一个 anchor 的属性数；真正输出卷积的通道是 255。六类缺陷任务则为 33 通道。这个区分能解释网络图与张量打印看似不一致的问题。</p>
+<h2 id="sec-2">多分支聚合的重点是路径</h2>
+<p>骨干配置中可以看到，多个连续卷积的不同中间结果被取出并拼接，再用 1×1 卷积融合。这类 ELAN 结构通过聚合不同长度的特征路径，保留不同变换深度的信息。读配置时，<code>[-1,-3,-5,-6]</code> 代表从当前层向前寻找四个输出，不是把同一个特征复制四次。</p>
+<p>下采样模块常同时使用最大池化分支与步长 2 卷积分支，再拼接；SPPCSPC 聚合不同池化尺度与旁路特征。检测前的 RepConv 则为部署准备可合并的线性分支。模型的学习能力与部署成本分别受到连接方式、通道数和算子实现影响，不能用“分支越多越好”概括。</p>
+<h2 id="sec-3">RepConv 为什么可以在推理时合并</h2>
+<p>训练时，一个 RepConv 将 3×3 卷积加 BN、1×1 卷积加 BN、可选的恒等 BN 分支相加，最后统一激活。推理时，BN 使用固定的运行均值 $\mu$ 和方差 $\sigma^2$，所以 Conv+BN 可以折叠为新的卷积：</p>
+<p>$$
+W'=\frac{\gamma}{\sqrt{\sigma^2+\epsilon}}W,\qquad
+b'=\beta+\frac{\gamma}{\sqrt{\sigma^2+\epsilon}}(b-\mu).
+$$</p>
+<p>若原卷积没有 bias，令 $b=0$。再把 1×1 卷积核放到全零 3×3 核的中心，把恒等映射表示为中心位置的单位矩阵，就可以对三个卷积核与偏置分别求和。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 教学摘录：假设三个分支已各自完成 BN 融合</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+
+<span class="n">kernel</span> <span class="o">=</span> <span class="n">kernel_3x3</span> <span class="o">+</span> <span class="n">F</span><span class="o">.</span><span class="n">pad</span><span class="p">(</span><span class="n">kernel_1x1</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="n">kernel_identity</span>
+<span class="n">bias</span> <span class="o">=</span> <span class="n">bias_3x3</span> <span class="o">+</span> <span class="n">bias_1x1</span> <span class="o">+</span> <span class="n">bias_identity</span>
+</pre></div>
+</div>
+<p>能相加的前提是分支的输入、输出、步长和采样对齐相容，而且激活在分支求和之后。若每个分支内部已经有非线性激活，就不能按这个式子合并。融合时必须使用评估模式的 BN 统计量，不能把随当前 batch 变化的训练 BN 当作固定线性变换。</p>
+<p>验证融合应给转换前后模型同一输入，在 <code>eval()</code> 下比较最大绝对误差与实际检测结果，允许有限浮点误差。精度模式、导出后端、输入尺寸变化都可能影响数值，应在目标部署流程中验证。</p>
+<h2 id="sec-4">IDetect 的两个隐式参数</h2>
+<p>课内检测头还使用 <code>ImplicitA</code> 和 <code>ImplicitM</code>：前者在卷积前添加可学习张量，后者在卷积后乘以可学习张量。其核心形式是 $y=m\odot(W(x+a)+b)$。当这些参数固定时，$Wa$ 可以并入偏置，输出乘数 $m$ 可以并入权重和偏置，所以推理路径能减少额外算子。</p>
+<p>这些隐式参数是训练得到的参数，不是每张图片动态计算的注意力图。它们的合并与 RepConv 的分支合并属于不同操作，导出时要确认两者是否都已正确处理。</p>
+<h2 id="sec-5">动态正样本分配：先筛候选，再竞争</h2>
+<p>首先按照真实框与 anchor 的宽高倍率进行初筛，并为接近网格边界的真实中心引入邻格候选。随后把当前图片所有尺度的候选合并，解码成像素框，计算真实框与候选框之间的 IoU 矩阵。若有 $M$ 个真实目标、$N$ 个候选，矩阵形状为 <code>[M,N]</code>。</p>
+<p>对每个真实目标，取最多 10 个最高 IoU，求和并取整，至少保留 1，形成该目标的动态正样本数量。再综合分类代价与 IoU 代价，选择总代价最小的候选：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 教学摘录：pairwise_iou、class_cost 的形状均为 [M, N]</span>
+<span class="n">k</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">pairwise_iou</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">best_ious</span> <span class="o">=</span> <span class="n">pairwise_iou</span><span class="o">.</span><span class="n">topk</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">values</span>
+<span class="n">dynamic_k</span> <span class="o">=</span> <span class="n">best_ious</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">int</span><span class="p">()</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="nb">min</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">iou_cost</span> <span class="o">=</span> <span class="o">-</span><span class="p">(</span><span class="n">pairwise_iou</span> <span class="o">+</span> <span class="mf">1e-8</span><span class="p">)</span><span class="o">.</span><span class="n">log</span><span class="p">()</span>
+<span class="n">cost</span> <span class="o">=</span> <span class="n">class_cost</span> <span class="o">+</span> <span class="mf">3.0</span> <span class="o">*</span> <span class="n">iou_cost</span>
+</pre></div>
+</div>
+<p><code>dynamic_k</code> 决定“选几个”，<code>cost</code> 决定“选哪些”。它们不能合并成只按 IoU 选固定 K 个框。若同一个候选被多个真实目标选中，再保留代价最小的匹配，防止一个预测承担互相冲突的监督。</p>
+<p>这里的动态 K 描述初步选取数量，冲突消解后各目标保留数量还可能变化。候选集合为空时也需要专门处理，否则 <code>topk</code> 或拼接会失败。</p>
+<h2 id="sec-6">辅助头做什么</h2>
+<p>较大输入的 P6 系列可以采用四尺度主头与辅助头，训练时增加中间监督。辅助分配可以更宽松，帮助增加正样本覆盖；最终预测以主头为核心。辅助头不是普通三尺度模型中必然存在的固定结构，也不意味着部署时必须保留两套输出。</p>
+<p>课内 <code>loss_ota</code> 配置决定是否启用动态分配，常规训练与辅助训练入口不同。复现时应先确认使用的模型配置、训练脚本与损失类型相匹配。不能只把图像尺寸改到 1280，就假定已经变成四尺度辅助头模型。</p>
+<h2 id="sec-7">从训练失败定位到具体环节</h2>
+<p>标签加载失败时先检查数据列表中的机器路径；类别正确但 loss 异常时检查 anchor 单位与类别维度；某尺度一直没有正样本时检查目标尺度分布、初筛阈值及候选解码。部分旧实现空张量直接放在 <code>cuda:0</code>，这在 CPU 或其他设备运行时可能造成设备不一致，应该由已有张量的设备决定新张量位置。</p>
+<p>训练结果需要通过固定验证集比较。重参数化主要改变推理图，不能期待仅执行融合就提升模型学习到的识别能力；它的收益要用一致条件下的实际延迟、显存和输出误差验证。</p>
+<h2 id="sec-8">练习：动态 K 与重参数化</h2>
+<p>某真实目标的最高 5 个 IoU 为 0.9、0.8、0.4、0.2、0.1，动态 K 是多少？为什么先在每条卷积分支后加 ReLU，就不能直接把卷积核求和？</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>IoU 之和为 2.4，取整后动态 K=2；最终按总代价选择两个候选，不一定恰为 IoU 最大的两个。ReLU 是非线性的，一般有 ReLU(a)+ReLU(b) 不等于 ReLU(a+b)，因此分支内激活破坏了简单线性合并条件。</p></div></div>
+
+
+<div class="done-bar"><button class="mark-done-btn" data-key="cv-yolov7-assignment-and-reparameterization" type="button">⛳ 学完了？标记为已完成</button></div>
+
+<div class="pager"><a href="yolov5-model-and-training.html"><div class="dir">← 上一讲</div><div class="name">YOLOv5：结构、标签分配与训练</div></a><a class="next" href="efficientnet-mbconv-and-scaling.html"><div class="dir">下一讲 →</div><div class="name">EfficientNet：MBConv、SE 与复合缩放</div></a></div></main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">把结构改进与训练策略分开理解</a><a class="lv2" href="#sec-2">多分支聚合的重点是路径</a><a class="lv2" href="#sec-3">RepConv 为什么可以在推理时合并</a><a class="lv2" href="#sec-4">IDetect 的两个隐式参数</a><a class="lv2" href="#sec-5">动态正样本分配：先筛候选，再竞争</a><a class="lv2" href="#sec-6">辅助头做什么</a><a class="lv2" href="#sec-7">从训练失败定位到具体环节</a><a class="lv2" href="#sec-8">练习：动态 K 与重参数化</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 仅供个人学习使用，请勿传播 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

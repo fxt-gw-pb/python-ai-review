@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>阈值、平滑与形态学：把目标从背景中分离 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<link rel="stylesheet" href="../assets/css/cv.css">
+</head>
+<body class="has-sidenav cv-doc">
+<header class="topbar">
+  <button class="menu-btn" type="button" aria-label="收起或展开侧栏" title="收起侧栏">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../lessons.html">课程讲义</a>
+    <a href="../cv.html" class="active">CV 视觉</a>
+    <a href="../homework.html">课后练习</a>
+    <a href="../projects.html">实战项目</a>
+  </nav>
+  <span class="spacer"></span>
+</header>
+<div class="layout">
+<aside class="sidenav"><a class="item" href="../cv.html">← CV 模块总览</a><div class="group-title">🧭 学习准备</div><a class="item" data-page-key="cv-getting-started" href="getting-started.html"><span class="no">01</span><span>视觉任务、张量与实验准备</span><span class="done-flag">✅</span></a><div class="group-title">🖼️ OpenCV 图像处理</div><a class="item" data-page-key="cv-opencv-image-arrays" href="opencv-image-arrays.html"><span class="no">02</span><span>图像读写、数组与坐标：先读懂一张图</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="cv-opencv-threshold-morphology" href="opencv-threshold-morphology.html"><span class="no">03</span><span>阈值、平滑与形态学：把目标从背景中分离</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-edges-contours-frequency" href="opencv-edges-contours-frequency.html"><span class="no">04</span><span>梯度、轮廓与频域：从像素变化到几何结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-histogram-template" href="opencv-histogram-template.html"><span class="no">05</span><span>直方图与模板匹配：分布、对比度和局部相似度</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-features-matching" href="opencv-features-matching.html"><span class="no">06</span><span>Harris、SIFT 与特征匹配：找到可重复识别的局部结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-background-optical-flow" href="opencv-background-optical-flow.html"><span class="no">07</span><span>背景建模与光流：区分运动区域并追踪像素</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-credit-card-ocr" href="opencv-credit-card-ocr.html"><span class="no">08</span><span>模板 OCR 实战：从信用卡数字组到逐字识别</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-document-scanner" href="opencv-document-scanner.html"><span class="no">09</span><span>文档扫描与 OCR：从四个角点恢复平整页面</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-panorama-exam" href="opencv-panorama-exam.html"><span class="no">10</span><span>几何视觉的两种应用：全景拼接与答题卡判卷</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-parking-spaces" href="opencv-parking-spaces.html"><span class="no">11</span><span>停车场车位识别：固定几何地图与图像分类结合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-convolution-dnn-tracking" href="opencv-convolution-dnn-tracking.html"><span class="no">12</span><span>卷积、DNN 与目标跟踪：把算法接成视频流水线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-face-blinks" href="opencv-face-blinks.html"><span class="no">13</span><span>人脸关键点与眨眼计数：从坐标到时间状态</span><span class="done-flag">✅</span></a><div class="group-title">🎯 目标检测</div><a class="item" data-page-key="cv-detection-metrics" href="detection-metrics.html"><span class="no">14</span><span>目标检测任务、IoU、NMS 与 mAP</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detection-data-pipeline" href="detection-data-pipeline.html"><span class="no">15</span><span>目标检测标注与数据管线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov3-from-grid-to-box" href="yolov3-from-grid-to-box.html"><span class="no">16</span><span>YOLOv3：从网格到边界框</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov5-model-and-training" href="yolov5-model-and-training.html"><span class="no">17</span><span>YOLOv5：结构、标签分配与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov7-assignment-and-reparameterization" href="yolov7-assignment-and-reparameterization.html"><span class="no">18</span><span>YOLOv7：动态分配与重参数化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientnet-mbconv-and-scaling" href="efficientnet-mbconv-and-scaling.html"><span class="no">19</span><span>EfficientNet：MBConv、SE 与复合缩放</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientdet-bifpn-and-loss" href="efficientdet-bifpn-and-loss.html"><span class="no">20</span><span>EfficientDet：BiFPN、检测头与损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-centernet-objects-as-points" href="centernet-objects-as-points.html"><span class="no">21</span><span>CenterNet：把目标表示为中心点</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detr-set-prediction" href="detr-set-prediction.html"><span class="no">22</span><span>DETR：查询、注意力与集合预测</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deformable-detr-sparse-attention" href="deformable-detr-sparse-attention.html"><span class="no">23</span><span>Deformable DETR：稀疏多尺度注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mmdetection-reproducible-experiment" href="mmdetection-reproducible-experiment.html"><span class="no">24</span><span>MMDetection：配置驱动的检测实验</span><span class="done-flag">✅</span></a><div class="group-title">🧩 图像分割</div><a class="item" data-page-key="cv-segmentation-foundations" href="segmentation-foundations.html"><span class="no">25</span><span>分割基础：标签、损失与 IoU 指标</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-pytorch-vision-workflow" href="pytorch-vision-workflow.html"><span class="no">26</span><span>PyTorch 视觉工程：张量、训练与迁移学习</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-unet-nested-segmentation" href="unet-nested-segmentation.html"><span class="no">27</span><span>U-Net 与 U-Net++：医学细胞分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-u2net-saliency" href="u2net-saliency.html"><span class="no">28</span><span>U²-Net：残差 U 形块与显著目标分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deeplab-voc" href="deeplab-voc.html"><span class="no">29</span><span>DeepLabV3+：空洞卷积、ASPP 与 VOC 工程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-echo-video-segmentation" href="echo-video-segmentation.html"><span class="no">30</span><span>心脏视频分割：代表帧、面积曲线与数据流</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-resnet-medical-classification" href="resnet-medical-classification.html"><span class="no">31</span><span>ResNet 医学分类：残差结构与任务评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-mechanics" href="mask-rcnn-mechanics.html"><span class="no">32</span><span>Mask R-CNN：FPN、RPN、ROIAlign 与 mask 损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-custom-data" href="mask-rcnn-custom-data.html"><span class="no">33</span><span>Mask R-CNN 自定义任务：实例标注与分阶段训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-maskformer-mask2former" href="maskformer-mask2former.html"><span class="no">34</span><span>MaskFormer 与 Mask2Former：区域查询和掩码注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-r2plus1d-video-learning" href="r2plus1d-video-learning.html"><span class="no">35</span><span>R(2+1)D：视频时空卷积与数值回归</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="../cv.html">CV 计算机视觉</a> / OpenCV 图像处理 / 第 03 讲</div>
+<h1>阈值、平滑与形态学：把目标从背景中分离</h1>
+<div class="chips"><span class="chip">🖼️ OpenCV 图像处理</span></div>
+</div>
+<h2 id="sec-1">从任务决定预处理</h2>
+<p>预处理的目的，是让下一步需要的结构更容易被提取。信用卡数字要保留亮字符、连成数字组；答题卡要把涂黑区域变成可计数的白色前景；文档扫描要保留纸张边界。相同的“二值化加形态学”在三种任务中会使用不同的前景极性、核大小和操作顺序。</p>
+<p>先灰度或颜色空间转换，再选择阈值与平滑，最后讨论集合形状的变化。HSV 将色调、饱和度与明亮程度分开，可以帮助写颜色筛选规则，但把 HSV 数组直接作为普通彩色图显示并不会还原真实颜色。</p>
+<h2 id="sec-2">五种阈值，五种不同问题</h2>
+<p>对于像素 $p$、阈值 $T$ 和最大输出值 $M$，二值阈值是 $p&gt;T$ 时输出 $M$，否则为 0；反二值正好相反。截断阈值把大于 $T$ 的数压到 $T$。<code>TOZERO</code> 将不大于 $T$ 的值清零，其余保留；<code>TOZERO_INV</code> 则保留低值并清除高值。不要把五种方法都称为“黑白化”，截断和置零结果仍可能保留多个灰度级。</p>
+<p>阈值 127 是演示选值，不是适用于所有图的经验最优值。<code>threshold</code> 返回两项：实际采用的阈值与输出图。后续项目使用 Otsu 自动阈值时，第一项很有诊断价值：它反映当前图的灰度分布，而不是一个可跨场景通用的常数。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">gray</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">40</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">200</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">)</span>
+<span class="n">threshold</span><span class="p">,</span> <span class="n">binary</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">threshold</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">THRESH_BINARY</span><span class="p">)</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">truncated</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">threshold</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="mi">127</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">THRESH_TRUNC</span><span class="p">)</span>
+<span class="c1"># binary: [[0, 0, 255]]；truncated: [[40, 127, 127]]</span>
+</pre></div>
+</div>
+<p>等于阈值的像素没有超过阈值，所以二值结果是 0；这一边界细节可以用三元素数组验证，没必要靠肉眼猜整张图片。</p>
+<h2 id="sec-3">平滑不是越模糊越好</h2>
+<p>下面比较四类滤波。均值滤波把窗口内值平均；归一化方框滤波做同样的求和除以窗口面积，未归一化时只求和，若输出仍是 <code>uint8</code>，大值会饱和。高斯滤波给靠近中心的像素较大权重，窗口和标准差控制平滑程度。中值滤波取邻域排序后的中间值，对孤立的极亮、极暗噪点有用，而且它不是固定权重的线性卷积。</p>
+<p>选择滤波必须联系目标尺度：3 像素宽的细字符经大核平滑后可能断笔或粘连。比较平滑效果时，不只看背景是否“干净”，还要观察边缘位置、细线宽度和小目标是否保留。彩色均值操作保持三个通道，拼接显示要求各结果高度和通道数一致。</p>
+<h2 id="sec-4">腐蚀、膨胀与结构元素</h2>
+<p>对白色前景，腐蚀要求结构元素覆盖的位置都属于前景，因而缩小白区；膨胀只要窗口内有前景就扩张白区。对灰度形态学，可把腐蚀理解为邻域最小值，膨胀理解为邻域最大值。若输入是黑字白底而目标是黑字，应先想清楚“前景”究竟指什么，否则会把变细与变粗解释反。</p>
+<p>结构元素不仅有尺寸，也有形状。矩形核能沿指定方向连接结构，椭圆核更适合近似圆形目标。<code>np.ones((3, 3), np.uint8)</code> 的尺寸按行列表示；<code>getStructuringElement(..., (9, 3))</code> 的尺寸参数则是宽、高。用 30×30 大核和 1、2、3 次迭代可以观察形状变化趋势，但参数不能直接沿用到所有分辨率。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>运算</th>
+<th>组合方式</th>
+<th>适合观察的结构</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>开运算</td>
+<td>先腐蚀，再膨胀</td>
+<td>去除比核小的白色噪点、断开细桥</td>
+</tr>
+<tr>
+<td>闭运算</td>
+<td>先膨胀，再腐蚀</td>
+<td>填补小黑洞、连接邻近白块</td>
+</tr>
+<tr>
+<td>形态学梯度</td>
+<td>膨胀减腐蚀</td>
+<td>目标边界带</td>
+</tr>
+<tr>
+<td>礼帽</td>
+<td>原图减开运算</td>
+<td>比局部背景更亮的小结构</td>
+</tr>
+<tr>
+<td>黑帽</td>
+<td>闭运算减原图</td>
+<td>比局部背景更暗的小结构</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="sec-5">代表代码逐段读</h2>
+<p>下面的教学片段中，输入 <code>binary_image</code> 是一张白色前景的单通道二值图：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">kernel</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">getStructuringElement</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">MORPH_RECT</span><span class="p">,</span> <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">opened</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">morphologyEx</span><span class="p">(</span><span class="n">binary_image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">MORPH_OPEN</span><span class="p">,</span> <span class="n">kernel</span><span class="p">)</span>
+<span class="n">closed</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">morphologyEx</span><span class="p">(</span><span class="n">opened</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">MORPH_CLOSE</span><span class="p">,</span> <span class="n">kernel</span><span class="p">)</span>
+<span class="n">outline</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">morphologyEx</span><span class="p">(</span><span class="n">closed</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">MORPH_GRADIENT</span><span class="p">,</span> <span class="n">kernel</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>第一行确定将被删除或连接的空间尺度；第二行先删除孤立小白点；第三行尝试补洞；第四行提取处理后边界。这个顺序只是演示，不是固定流水线：开运算已删除的小字符，闭运算无法可靠恢复。必须保留原图和各中间图，逐步确认信息损失。</p>
+<p>若手动计算迭代 5 次的膨胀与腐蚀，再与默认迭代次数的 <code>MORPH_GRADIENT</code> 比较，条件就不一致。两幅边界带宽度不同，并不说明梯度定义错误。对照实验必须使用相同核和迭代设置。</p>
+<h2 id="sec-6">练习</h2>
+<ol>
+<li>为什么白色数字被腐蚀后会变细？如果数字为黑色，结论是否仍成立？</li>
+<li>数字之间出现间隔，需要合并为水平方向的数字组，应优先尝试什么核和运算？</li>
+<li>为什么中值滤波不可以用一个固定的 3×3 权重矩阵表示？</li>
+</ol>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><ol>
+<li>白区边缘窗口会碰到背景，最小值变为 0，边界向内收缩；黑字白底中被扩大的是黑色区域，要按前景极性重新解释。</li>
+<li>宽大于高的矩形核配合闭运算；例如信用卡源码使用宽 9、高 3 的核。应确认它连接组内数字而没有把相邻数字组全部粘连。</li>
+<li>中间值由输入数值的排序决定，参与输出的像素会随输入改变；固定线性权重不会随排序自适应选择像素。</li>
+</ol></div></div>
+
+
+<div class="done-bar"><button class="mark-done-btn" data-key="cv-opencv-threshold-morphology" type="button">⛳ 学完了？标记为已完成</button></div>
+
+<div class="pager"><a href="opencv-image-arrays.html"><div class="dir">← 上一讲</div><div class="name">图像读写、数组与坐标：先读懂一张图</div></a><a class="next" href="opencv-edges-contours-frequency.html"><div class="dir">下一讲 →</div><div class="name">梯度、轮廓与频域：从像素变化到几何结构</div></a></div></main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">从任务决定预处理</a><a class="lv2" href="#sec-2">五种阈值，五种不同问题</a><a class="lv2" href="#sec-3">平滑不是越模糊越好</a><a class="lv2" href="#sec-4">腐蚀、膨胀与结构元素</a><a class="lv2" href="#sec-5">代表代码逐段读</a><a class="lv2" href="#sec-6">练习</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 仅供个人学习使用，请勿传播 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

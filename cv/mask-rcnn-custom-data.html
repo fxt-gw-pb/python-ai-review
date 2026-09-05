@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mask R-CNN 自定义任务：实例标注与分阶段训练 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<link rel="stylesheet" href="../assets/css/cv.css">
+</head>
+<body class="has-sidenav cv-doc">
+<header class="topbar">
+  <button class="menu-btn" type="button" aria-label="收起或展开侧栏" title="收起侧栏">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../lessons.html">课程讲义</a>
+    <a href="../cv.html" class="active">CV 视觉</a>
+    <a href="../homework.html">课后练习</a>
+    <a href="../projects.html">实战项目</a>
+  </nav>
+  <span class="spacer"></span>
+</header>
+<div class="layout">
+<aside class="sidenav"><a class="item" href="../cv.html">← CV 模块总览</a><div class="group-title">🧭 学习准备</div><a class="item" data-page-key="cv-getting-started" href="getting-started.html"><span class="no">01</span><span>视觉任务、张量与实验准备</span><span class="done-flag">✅</span></a><div class="group-title">🖼️ OpenCV 图像处理</div><a class="item" data-page-key="cv-opencv-image-arrays" href="opencv-image-arrays.html"><span class="no">02</span><span>图像读写、数组与坐标：先读懂一张图</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-threshold-morphology" href="opencv-threshold-morphology.html"><span class="no">03</span><span>阈值、平滑与形态学：把目标从背景中分离</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-edges-contours-frequency" href="opencv-edges-contours-frequency.html"><span class="no">04</span><span>梯度、轮廓与频域：从像素变化到几何结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-histogram-template" href="opencv-histogram-template.html"><span class="no">05</span><span>直方图与模板匹配：分布、对比度和局部相似度</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-features-matching" href="opencv-features-matching.html"><span class="no">06</span><span>Harris、SIFT 与特征匹配：找到可重复识别的局部结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-background-optical-flow" href="opencv-background-optical-flow.html"><span class="no">07</span><span>背景建模与光流：区分运动区域并追踪像素</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-credit-card-ocr" href="opencv-credit-card-ocr.html"><span class="no">08</span><span>模板 OCR 实战：从信用卡数字组到逐字识别</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-document-scanner" href="opencv-document-scanner.html"><span class="no">09</span><span>文档扫描与 OCR：从四个角点恢复平整页面</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-panorama-exam" href="opencv-panorama-exam.html"><span class="no">10</span><span>几何视觉的两种应用：全景拼接与答题卡判卷</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-parking-spaces" href="opencv-parking-spaces.html"><span class="no">11</span><span>停车场车位识别：固定几何地图与图像分类结合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-convolution-dnn-tracking" href="opencv-convolution-dnn-tracking.html"><span class="no">12</span><span>卷积、DNN 与目标跟踪：把算法接成视频流水线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-face-blinks" href="opencv-face-blinks.html"><span class="no">13</span><span>人脸关键点与眨眼计数：从坐标到时间状态</span><span class="done-flag">✅</span></a><div class="group-title">🎯 目标检测</div><a class="item" data-page-key="cv-detection-metrics" href="detection-metrics.html"><span class="no">14</span><span>目标检测任务、IoU、NMS 与 mAP</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detection-data-pipeline" href="detection-data-pipeline.html"><span class="no">15</span><span>目标检测标注与数据管线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov3-from-grid-to-box" href="yolov3-from-grid-to-box.html"><span class="no">16</span><span>YOLOv3：从网格到边界框</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov5-model-and-training" href="yolov5-model-and-training.html"><span class="no">17</span><span>YOLOv5：结构、标签分配与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov7-assignment-and-reparameterization" href="yolov7-assignment-and-reparameterization.html"><span class="no">18</span><span>YOLOv7：动态分配与重参数化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientnet-mbconv-and-scaling" href="efficientnet-mbconv-and-scaling.html"><span class="no">19</span><span>EfficientNet：MBConv、SE 与复合缩放</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientdet-bifpn-and-loss" href="efficientdet-bifpn-and-loss.html"><span class="no">20</span><span>EfficientDet：BiFPN、检测头与损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-centernet-objects-as-points" href="centernet-objects-as-points.html"><span class="no">21</span><span>CenterNet：把目标表示为中心点</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detr-set-prediction" href="detr-set-prediction.html"><span class="no">22</span><span>DETR：查询、注意力与集合预测</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deformable-detr-sparse-attention" href="deformable-detr-sparse-attention.html"><span class="no">23</span><span>Deformable DETR：稀疏多尺度注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mmdetection-reproducible-experiment" href="mmdetection-reproducible-experiment.html"><span class="no">24</span><span>MMDetection：配置驱动的检测实验</span><span class="done-flag">✅</span></a><div class="group-title">🧩 图像分割</div><a class="item" data-page-key="cv-segmentation-foundations" href="segmentation-foundations.html"><span class="no">25</span><span>分割基础：标签、损失与 IoU 指标</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-pytorch-vision-workflow" href="pytorch-vision-workflow.html"><span class="no">26</span><span>PyTorch 视觉工程：张量、训练与迁移学习</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-unet-nested-segmentation" href="unet-nested-segmentation.html"><span class="no">27</span><span>U-Net 与 U-Net++：医学细胞分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-u2net-saliency" href="u2net-saliency.html"><span class="no">28</span><span>U²-Net：残差 U 形块与显著目标分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deeplab-voc" href="deeplab-voc.html"><span class="no">29</span><span>DeepLabV3+：空洞卷积、ASPP 与 VOC 工程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-echo-video-segmentation" href="echo-video-segmentation.html"><span class="no">30</span><span>心脏视频分割：代表帧、面积曲线与数据流</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-resnet-medical-classification" href="resnet-medical-classification.html"><span class="no">31</span><span>ResNet 医学分类：残差结构与任务评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-mechanics" href="mask-rcnn-mechanics.html"><span class="no">32</span><span>Mask R-CNN：FPN、RPN、ROIAlign 与 mask 损失</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="cv-mask-rcnn-custom-data" href="mask-rcnn-custom-data.html"><span class="no">33</span><span>Mask R-CNN 自定义任务：实例标注与分阶段训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-maskformer-mask2former" href="maskformer-mask2former.html"><span class="no">34</span><span>MaskFormer 与 Mask2Former：区域查询和掩码注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-r2plus1d-video-learning" href="r2plus1d-video-learning.html"><span class="no">35</span><span>R(2+1)D：视频时空卷积与数值回归</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="../cv.html">CV 计算机视觉</a> / 图像分割 / 第 33 讲</div>
+<h1>Mask R-CNN 自定义任务：实例标注与分阶段训练</h1>
+<div class="chips"><span class="chip">🧩 图像分割</span></div>
+</div>
+<h2 id="sec-1">自定义实例分割：标签映射比启动训练更关键</h2>
+<p>将 Mask R-CNN 迁移到自己的类别，最容易出问题的是实例 mask 与类别数组没有一一对应。训练框架需要知道一张图里有几个独立对象、每个对象的区域是什么、它属于哪个类别。图像能够显示、loss 能够计算，都不足以证明标签接口正确。</p>
+<h3 id="sec-2">从 LabelMe 到实例张量</h3>
+<p>常见处理流程是读取多边形标注，生成实例编号图，再拆成多个二值通道。例如整数图中 0 表示背景、1 表示第一个物体、2 表示第二个物体。拆分后得到 <code>[H,W,N]</code>，每个通道对应一个物体；另有 <code>[N]</code> 的类别编号数组。</p>
+<p>要区分“实例编号”和“类别编号”。两个不同的人应有不同实例编号，但类别编号相同。不能把类别值为 1 的所有像素直接当成唯一实例，否则相邻同类物体会合并。若编号图的最大值为 9，也不一定有 9 个物体：实例编号可能不连续。</p>
+<p>示例 <code>DrugDataset</code> 继承框架 Dataset：<code>add_class</code> 注册类别，<code>add_image</code> 登记路径及尺寸，<code>prepare</code> 建立内部索引，<code>load_mask</code> 才真正返回实例 mask 与类别。类别映射通常保留零给背景，所以两个前景类别的 <code>NUM_CLASSES</code> 应为 3。</p>
+<h3 id="sec-3">用向量化方式构造 mask</h3>
+<p>原始示例通过三层循环逐像素拆 mask，既慢，也假设实例编号从 1 连续增长。下面是更清楚的简化教学代码；<code>class_by_instance</code> 必须来自标注映射，不能从实例编号大小猜类别。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">split_instances</span><span class="p">(</span><span class="n">instance_map</span><span class="p">,</span> <span class="n">class_by_instance</span><span class="p">):</span>
+    <span class="n">instance_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">instance_map</span><span class="p">)</span>
+    <span class="n">instance_ids</span> <span class="o">=</span> <span class="n">instance_ids</span><span class="p">[</span><span class="n">instance_ids</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">]</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">instance_map</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">instance_ids</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">h</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">0</span><span class="p">,),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    <span class="n">masks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">instance_map</span> <span class="o">==</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">instance_ids</span><span class="p">],</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">class_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">class_by_instance</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">instance_ids</span><span class="p">],</span>
+                         <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="n">masks</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">class_ids</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">class_ids</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">masks</span><span class="p">,</span> <span class="n">class_ids</span>
+</pre></div>
+</div>
+<p><code>np.unique</code> 找到实际出现的编号；比较运算生成布尔区域；<code>stack(axis=-1)</code> 将实例放到最后一轴。类别数组严格使用同一顺序构造，因此第 $k$ 个 mask 与第 $k$ 个类别天然对应。空图也返回合法形状，避免 <code>mask[:,:,-1]</code> 在零实例时越界。</p>
+<p>框可由各实例非零像素的最小最大坐标推导，但必须处理空 mask 与坐标右边界约定。缩放、padding、裁剪应同时作用到图像和所有 mask，框再按框架约定更新或重新计算。遮挡关系也应来自实例标注，而不是用一个固定 <code>count=1</code> 的循环假装处理了全部对象。</p>
+<h3 id="sec-4">训练集与验证集必须真正独立</h3>
+<p>演示代码中容易出现“先把所有图片作为训练集，再取前七张作为验证集”的写法。这只能用于检查流程能否跑通，不能用于判断泛化。应先生成独立的文件 ID 列表，再分别加载。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 简化教学代码：划分前先按患者、视频或原始图像分组。</span>
+<span class="n">train_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">train_file_ids</span><span class="p">)</span>
+<span class="n">val_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">val_file_ids</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">train_ids</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">val_ids</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">train_ids</span> <span class="ow">and</span> <span class="n">val_ids</span>
+</pre></div>
+</div>
+<p>若同一原图生成多个裁剪，检查裁剪文件名不重叠仍不够，还要检查原始图像 ID 不交叉。验证时应关闭训练增强，固定阈值与指标，保存失败样本便于检查粘连、漏检与边界偏移。</p>
+<h3 id="sec-5">配置怎样影响实例分割</h3>
+<p><code>IMAGE_MIN_DIM</code>、<code>IMAGE_MAX_DIM</code> 影响分辨率和显存，也会改变小物体在特征图上的大小。anchor scales 应与缩放后物体大小匹配，不能只看原始图像中的像素尺寸。<code>TRAIN_ROIS_PER_IMAGE</code> 控制每图用于训练头部的区域数量，<code>STEPS_PER_EPOCH</code> 则是迭代步数，不天然等于数据集完整遍历次数。</p>
+<p>从 COCO 权重开始时，骨干与部分通用层可以复用，但类别数不同的输出头不匹配。示例加载权重时排除 <code>mrcnn_class_logits</code>、<code>mrcnn_bbox_fc</code>、<code>mrcnn_bbox</code>、<code>mrcnn_mask</code>，就是为了重新学习与新类别有关的部分。忽略形状冲突并强行加载，会让任务定义与参数不一致。</p>
+<h3 id="sec-6">分阶段训练的 epochs 是累计终点</h3>
+<p>先训练 heads，再以更小学习率微调 all 是常见方式。但框架 <code>train(..., epochs=...)</code> 表示累计训练到哪一轮，而不是“本次再训练几轮”。第一阶段训练到 10，第二阶段仍写 10，可能根本没有新的轮次。应明确累计终点。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="c1"># 简化教学配置示例，轮数只用于说明累计语义。</span>
+<span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">val_dataset</span><span class="p">,</span>
+            <span class="n">learning_rate</span><span class="o">=</span><span class="n">base_lr</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="s1">&#39;heads&#39;</span><span class="p">)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">train</span><span class="p">(</span><span class="n">train_dataset</span><span class="p">,</span> <span class="n">val_dataset</span><span class="p">,</span>
+            <span class="n">learning_rate</span><span class="o">=</span><span class="n">base_lr</span> <span class="o">/</span> <span class="mi">10</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>第二次从已完成的 10 继续到 20。恢复断点后也要检查模型记录的当前 epoch。训练日志中显示“正在训练全部层”不代表真的执行了后续迭代，必须观察迭代计数和参数更新。</p>
+<h3 id="sec-7">如何评价自定义任务</h3>
+<p>实例分割需要按类别和 mask IoU 匹配预测与真值，再计算 precision、recall 和 AP。预测框正确但 mask 偏大，bbox AP 与 mask AP 可能分离，因此应同时关注区域指标。还要记录没有真值、没有预测、同一真值被多个预测覆盖等边界情况。</p>
+<p>课程框架使用历史 TensorFlow/Keras API。学习时重点掌握 Dataset、候选区域、实例匹配和损失接口；迁移环境时需要整体核对依赖版本，不能只把一处 import 改名就认为完整兼容。批量转换标注的脚本只表达文件处理流程，理解后应在准备好的数据副本上明确运行范围。</p>
+<h3 id="sec-8">类别映射不要依赖字符串模糊匹配</h3>
+<p>若用字符串包含关系寻找类别，名称相近时可能重复匹配或误配。更稳妥的做法是建立明确的标注名称到内部编号的字典，遇到未知类别立即报错。加载每个实例时同步检查类别、面积和图像范围，避免不合法标注悄悄进入训练。</p>
+<p>抽查数据时，给每个实例画不同颜色并标出类别和序号，再把这些序号与返回数组对应。仅显示所有前景的并集无法发现两个通道交换、同类实例被合并或空通道被保留的问题。先验证接口能表达真实实例结构，再讨论学习率和训练轮数，通常能更快建立可靠实验。</p>
+<h3 id="sec-9">练习：编号不连续</h3>
+<p>实例编号图包含 <code>{0,2,5}</code>，两个前景区域都属于类别 1。正确的 mask 通道数和类别数组是什么？</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>有两个实例通道，类别数组为 <code>[1,1]</code>。最大编号 5 不代表五个实例；类别编号也不应写成 <code>[2,5]</code>。</p></div></div>
+
+
+<h3 id="sec-10">练习：第二阶段为何零步</h3>
+<p>第一次 <code>epochs=10</code>，第二次仍 <code>epochs=10</code>，希望总共训练 20 轮却没有继续，怎么改？</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>该接口的 epochs 是累计终点，第二次应设置为 20，并确认模型的当前 epoch 为 10。不同框架可能采用不同约定，必须根据实际训练方法的循环边界判断。</p></div></div>
+
+
+<div class="done-bar"><button class="mark-done-btn" data-key="cv-mask-rcnn-custom-data" type="button">⛳ 学完了？标记为已完成</button></div>
+
+<div class="pager"><a href="mask-rcnn-mechanics.html"><div class="dir">← 上一讲</div><div class="name">Mask R-CNN：FPN、RPN、ROIAlign 与 mask 损失</div></a><a class="next" href="maskformer-mask2former.html"><div class="dir">下一讲 →</div><div class="name">MaskFormer 与 Mask2Former：区域查询和掩码注意力</div></a></div></main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">自定义实例分割：标签映射比启动训练更关键</a><a class="lv3" href="#sec-2">从 LabelMe 到实例张量</a><a class="lv3" href="#sec-3">用向量化方式构造 mask</a><a class="lv3" href="#sec-4">训练集与验证集必须真正独立</a><a class="lv3" href="#sec-5">配置怎样影响实例分割</a><a class="lv3" href="#sec-6">分阶段训练的 epochs 是累计终点</a><a class="lv3" href="#sec-7">如何评价自定义任务</a><a class="lv3" href="#sec-8">类别映射不要依赖字符串模糊匹配</a><a class="lv3" href="#sec-9">练习：编号不连续</a><a class="lv3" href="#sec-10">练习：第二阶段为何零步</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 仅供个人学习使用，请勿传播 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deformable DETR：稀疏多尺度注意力 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<link rel="stylesheet" href="../assets/css/cv.css">
+</head>
+<body class="has-sidenav cv-doc">
+<header class="topbar">
+  <button class="menu-btn" type="button" aria-label="收起或展开侧栏" title="收起侧栏">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../lessons.html">课程讲义</a>
+    <a href="../cv.html" class="active">CV 视觉</a>
+    <a href="../homework.html">课后练习</a>
+    <a href="../projects.html">实战项目</a>
+  </nav>
+  <span class="spacer"></span>
+</header>
+<div class="layout">
+<aside class="sidenav"><a class="item" href="../cv.html">← CV 模块总览</a><div class="group-title">🧭 学习准备</div><a class="item" data-page-key="cv-getting-started" href="getting-started.html"><span class="no">01</span><span>视觉任务、张量与实验准备</span><span class="done-flag">✅</span></a><div class="group-title">🖼️ OpenCV 图像处理</div><a class="item" data-page-key="cv-opencv-image-arrays" href="opencv-image-arrays.html"><span class="no">02</span><span>图像读写、数组与坐标：先读懂一张图</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-threshold-morphology" href="opencv-threshold-morphology.html"><span class="no">03</span><span>阈值、平滑与形态学：把目标从背景中分离</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-edges-contours-frequency" href="opencv-edges-contours-frequency.html"><span class="no">04</span><span>梯度、轮廓与频域：从像素变化到几何结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-histogram-template" href="opencv-histogram-template.html"><span class="no">05</span><span>直方图与模板匹配：分布、对比度和局部相似度</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-features-matching" href="opencv-features-matching.html"><span class="no">06</span><span>Harris、SIFT 与特征匹配：找到可重复识别的局部结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-background-optical-flow" href="opencv-background-optical-flow.html"><span class="no">07</span><span>背景建模与光流：区分运动区域并追踪像素</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-credit-card-ocr" href="opencv-credit-card-ocr.html"><span class="no">08</span><span>模板 OCR 实战：从信用卡数字组到逐字识别</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-document-scanner" href="opencv-document-scanner.html"><span class="no">09</span><span>文档扫描与 OCR：从四个角点恢复平整页面</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-panorama-exam" href="opencv-panorama-exam.html"><span class="no">10</span><span>几何视觉的两种应用：全景拼接与答题卡判卷</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-parking-spaces" href="opencv-parking-spaces.html"><span class="no">11</span><span>停车场车位识别：固定几何地图与图像分类结合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-convolution-dnn-tracking" href="opencv-convolution-dnn-tracking.html"><span class="no">12</span><span>卷积、DNN 与目标跟踪：把算法接成视频流水线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-face-blinks" href="opencv-face-blinks.html"><span class="no">13</span><span>人脸关键点与眨眼计数：从坐标到时间状态</span><span class="done-flag">✅</span></a><div class="group-title">🎯 目标检测</div><a class="item" data-page-key="cv-detection-metrics" href="detection-metrics.html"><span class="no">14</span><span>目标检测任务、IoU、NMS 与 mAP</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detection-data-pipeline" href="detection-data-pipeline.html"><span class="no">15</span><span>目标检测标注与数据管线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov3-from-grid-to-box" href="yolov3-from-grid-to-box.html"><span class="no">16</span><span>YOLOv3：从网格到边界框</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov5-model-and-training" href="yolov5-model-and-training.html"><span class="no">17</span><span>YOLOv5：结构、标签分配与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov7-assignment-and-reparameterization" href="yolov7-assignment-and-reparameterization.html"><span class="no">18</span><span>YOLOv7：动态分配与重参数化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientnet-mbconv-and-scaling" href="efficientnet-mbconv-and-scaling.html"><span class="no">19</span><span>EfficientNet：MBConv、SE 与复合缩放</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientdet-bifpn-and-loss" href="efficientdet-bifpn-and-loss.html"><span class="no">20</span><span>EfficientDet：BiFPN、检测头与损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-centernet-objects-as-points" href="centernet-objects-as-points.html"><span class="no">21</span><span>CenterNet：把目标表示为中心点</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detr-set-prediction" href="detr-set-prediction.html"><span class="no">22</span><span>DETR：查询、注意力与集合预测</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="cv-deformable-detr-sparse-attention" href="deformable-detr-sparse-attention.html"><span class="no">23</span><span>Deformable DETR：稀疏多尺度注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mmdetection-reproducible-experiment" href="mmdetection-reproducible-experiment.html"><span class="no">24</span><span>MMDetection：配置驱动的检测实验</span><span class="done-flag">✅</span></a><div class="group-title">🧩 图像分割</div><a class="item" data-page-key="cv-segmentation-foundations" href="segmentation-foundations.html"><span class="no">25</span><span>分割基础：标签、损失与 IoU 指标</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-pytorch-vision-workflow" href="pytorch-vision-workflow.html"><span class="no">26</span><span>PyTorch 视觉工程：张量、训练与迁移学习</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-unet-nested-segmentation" href="unet-nested-segmentation.html"><span class="no">27</span><span>U-Net 与 U-Net++：医学细胞分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-u2net-saliency" href="u2net-saliency.html"><span class="no">28</span><span>U²-Net：残差 U 形块与显著目标分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deeplab-voc" href="deeplab-voc.html"><span class="no">29</span><span>DeepLabV3+：空洞卷积、ASPP 与 VOC 工程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-echo-video-segmentation" href="echo-video-segmentation.html"><span class="no">30</span><span>心脏视频分割：代表帧、面积曲线与数据流</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-resnet-medical-classification" href="resnet-medical-classification.html"><span class="no">31</span><span>ResNet 医学分类：残差结构与任务评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-mechanics" href="mask-rcnn-mechanics.html"><span class="no">32</span><span>Mask R-CNN：FPN、RPN、ROIAlign 与 mask 损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-custom-data" href="mask-rcnn-custom-data.html"><span class="no">33</span><span>Mask R-CNN 自定义任务：实例标注与分阶段训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-maskformer-mask2former" href="maskformer-mask2former.html"><span class="no">34</span><span>MaskFormer 与 Mask2Former：区域查询和掩码注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-r2plus1d-video-learning" href="r2plus1d-video-learning.html"><span class="no">35</span><span>R(2+1)D：视频时空卷积与数值回归</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="../cv.html">CV 计算机视觉</a> / 目标检测 / 第 23 讲</div>
+<h1>Deformable DETR：稀疏多尺度注意力</h1>
+<div class="chips"><span class="chip">🎯 目标检测</span></div>
+</div>
+<h2 id="sec-1">为什么原始 DETR 会在高分辨率上变贵</h2>
+<p>原始 DETR 编码器让每个图像 token 与所有 token 计算注意力。设特征图有 $S=H_fW_f$ 个位置，注意力矩阵包含约 $S^2$ 个元素。若特征图长宽都翻倍，token 数增加四倍，注意力矩阵规模增加十六倍。这使直接引入高分辨率特征来检测小目标变得昂贵。</p>
+<p>另一个问题是训练初期注意力分布可能较分散，模型要从大量位置中逐渐学会关注物体。Deformable DETR 用可学习的少量采样点替代对所有位置的密集读取，在保留关系建模的同时降低图像注意力开销。</p>
+<h2 id="sec-2">三个量：参考点、偏移、注意力权重</h2>
+<p>每个 query 首先有一个参考点 $p_q$。网络根据 query 特征预测若干二维偏移 $\Delta p_{qk}$ 与权重 $A_{qk}$，从 $p_q+\Delta p_{qk}$ 处读取特征，再加权求和。单头单尺度的核心可以写成：</p>
+<p>$$
+o_q=\sum_{k=1}^{K}A_{qk}\,V(p_q+\Delta p_{qk}),\qquad
+\sum_k A_{qk}=1.
+$$</p>
+<p>参考点提供初始位置，偏移决定具体采样位置，权重决定采样值的贡献。偏移是连续实数，不必落在整数像素上；它也不是预先写死的固定 3×3 邻域。不同 query 可以学习适合不同物体的采样形状。</p>
+<p>与普通点积注意力不同，这里的采样偏移和权重通过 query 特征的线性投影生成，不需要先为当前 query 与整张图每个 key 都计算点积。模型仍包含多头投影和后续变换，不能因此把它当作简单裁剪几个像素。</p>
+<h2 id="sec-3">双线性插值为什么关键</h2>
+<p>采样坐标通常落在像素之间。若直接四舍五入选最近像素，位置变化可能长时间不改变采样值，难以通过梯度学习位置。双线性插值根据相邻四个网格值与距离，连续地计算采样值，因此在大部分位置都能向采样坐标传递梯度。</p>
+<p>下面是单尺度、单头、已归一化坐标的教学模块，不包含完整注意力中的线性投影：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">torch.nn.functional</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">F</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">sparse_sample</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">locations</span><span class="p">,</span> <span class="n">weight_logits</span><span class="p">):</span>
+    <span class="c1"># feature: [B,C,H,W]</span>
+    <span class="c1"># locations: [B,Q,K,2]，最后一维按 x,y，取值使用 [0,1] 坐标</span>
+    <span class="c1"># weight_logits: [B,Q,K]</span>
+    <span class="n">grid</span> <span class="o">=</span> <span class="n">locations</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="n">sampled</span> <span class="o">=</span> <span class="n">F</span><span class="o">.</span><span class="n">grid_sample</span><span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">grid</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;bilinear&#39;</span><span class="p">,</span>
+                            <span class="n">padding_mode</span><span class="o">=</span><span class="s1">&#39;zeros&#39;</span><span class="p">,</span> <span class="n">align_corners</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">weights</span> <span class="o">=</span> <span class="n">weight_logits</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">dim</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;bcqk,bqk-&gt;bqc&#39;</span><span class="p">,</span> <span class="n">sampled</span><span class="p">,</span> <span class="n">weights</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code>grid_sample</code> 接收的网格范围是 [-1,1]，所以先进行线性转换。此处输出采样张量为 <code>[B,C,Q,K]</code>，<code>einsum</code> 沿 K 维求和，得到 <code>[B,Q,C]</code>。在 <code>align_corners=False</code> 约定下，原特征像素 $(x,y)$ 的中心对应归一化位置 $((x+0.5)/W,(y+0.5)/H)$，不能简单用 $x/(W-1)$ 替代。</p>
+<p>越界位置按零填充处理，这个行为会影响边缘目标。采样点、padding mask 与图像有效范围都应保持一致。</p>
+<h2 id="sec-4">多尺度如何放到一个序列中</h2>
+<p>完整模型从骨干取三个尺度，再生成一个更低分辨率尺度，通常一共四层，每层投影到 256 通道。每层展平后沿位置轴拼接，形成长度 $S=\sum_lH_lW_l$ 的序列。</p>
+<p>仅保存拼接后的值还不够。<code>spatial_shapes</code> 记录每层的 <code>(H_l,W_l)</code>，<code>level_start_index</code> 记录每层在长序列中的起始位置，<code>valid_ratios</code> 记录补边后有效宽高比例，level embedding 区分尺度身份。这些辅助信息让算子能找到“第 l 层上的某个二维位置”。</p>
+<p>假设四层大小为 80×80、40×40、20×20、10×10，序列长度为 8500，起始位置是 <code>[0,6400,8000,8400]</code>。起点不是各层边长的累计，而是各层空间面积的累计。</p>
+<p>多尺度注意力每个头在每个尺度取 K 个点，并在所有尺度与采样点组成的集合上归一化权重。若 8 个头、4 个尺度、每层 4 点，每个 query 一共涉及 128 个采样位置；不是让每个头仍然读取全部 8500 个位置。</p>
+<h2 id="sec-5">编码器与解码器替换的位置</h2>
+<p>编码器的图像自注意力换成多尺度可变形注意力；解码器从图像读取信息的 cross-attention 也换成可变形注意力。query 之间的自注意力仍使用普通多头注意力，因为 query 数相对有限，实例之间的交流仍有价值。</p>
+<p>多尺度信息已经能通过注意力交换，所以不一定还需要额外 FPN。课内框架配置使用 ChannelMapper 对齐通道并补充尺度，再由注意力融合。通道对齐层与 FPN 的自顶向下融合并不是同一个模块。</p>
+<h2 id="sec-6">在 logit 空间逐层细化边界框</h2>
+<p>参考点通常由 query 位置向量经过线性层与 sigmoid 得到。框预测相对参考点调整，而不是每层都从零猜一个全新中心。对于已经归一化的参考框 $b^{(l-1)}$，可写成：</p>
+<p>$$
+b^{(l)}=\sigma\left(\Delta b^{(l)}+\sigma^{-1}(b^{(l-1)})\right).
+$$</p>
+<p>在 sigmoid 的输入空间加偏移，再映射回 [0,1]，可以保持坐标范围。实际代码要先把参考值限制在远离 0、1 的范围，防止 inverse sigmoid 产生无穷。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">torch</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">refine_reference</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">eps</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">):</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="n">reference</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">clamp</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">eps</span><span class="p">)</span>
+    <span class="n">logits</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">r</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">r</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">torch</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="n">logits</span> <span class="o">+</span> <span class="n">delta</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>这里 <code>detach()</code> 对应逐层细化时阻断参考框这一条反传路径，当前层仍通过 <code>delta</code> 学习更新。若只有二维参考点，则中心利用参考点细化，宽高由另两维输出预测；四维参考框时，中心和宽高都可以逐层更新。</p>
+<h2 id="sec-7">两阶段变体与训练设置</h2>
+<p>两阶段 Deformable DETR 可以从编码器位置生成候选框，挑出分数较高的候选作为解码器初始输入，再逐层细化。这里的两阶段不等于 Faster R-CNN 的 RPN+RoIAlign 结构，仍应根据实际模块理解。</p>
+<p>课内配置使用 300 个 queries、FocalLoss 分类、L1 与 GIoU 框损失，仍通过匈牙利匹配提供一对一监督。骨干、采样偏移与参考点投影可以使用较小学习率，以减少已预训练特征和几何采样位置的剧烈变化。报告“收敛更快”时必须同时说明训练计划、数据与对比条件，不能把论文中的固定轮数差直接解释为任意设备上的时间倍率。</p>
+<h2 id="sec-8">练习：检查稀疏采样</h2>
+<p>两层特征大小为 4×4 和 2×2，<code>level_start_index</code> 应是什么？参考坐标0.5、预测增量0时，细化后的坐标是多少？</p>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><p>起始位置为 <code>[0,16]</code>，总长度为20。参考0.5的logit为0，加上零增量再sigmoid，结果仍是0.5。这个例子也说明delta表示相对修正；delta为零并不把所有框推到同一个位置，而是保留原参考值。</p></div></div>
+
+
+<div class="done-bar"><button class="mark-done-btn" data-key="cv-deformable-detr-sparse-attention" type="button">⛳ 学完了？标记为已完成</button></div>
+
+<div class="pager"><a href="detr-set-prediction.html"><div class="dir">← 上一讲</div><div class="name">DETR：查询、注意力与集合预测</div></a><a class="next" href="mmdetection-reproducible-experiment.html"><div class="dir">下一讲 →</div><div class="name">MMDetection：配置驱动的检测实验</div></a></div></main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">为什么原始 DETR 会在高分辨率上变贵</a><a class="lv2" href="#sec-2">三个量：参考点、偏移、注意力权重</a><a class="lv2" href="#sec-3">双线性插值为什么关键</a><a class="lv2" href="#sec-4">多尺度如何放到一个序列中</a><a class="lv2" href="#sec-5">编码器与解码器替换的位置</a><a class="lv2" href="#sec-6">在 logit 空间逐层细化边界框</a><a class="lv2" href="#sec-7">两阶段变体与训练设置</a><a class="lv2" href="#sec-8">练习：检查稀疏采样</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 仅供个人学习使用，请勿传播 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

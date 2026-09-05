@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>停车场车位识别：固定几何地图与图像分类结合 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<link rel="stylesheet" href="../assets/css/cv.css">
+</head>
+<body class="has-sidenav cv-doc">
+<header class="topbar">
+  <button class="menu-btn" type="button" aria-label="收起或展开侧栏" title="收起侧栏">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../lessons.html">课程讲义</a>
+    <a href="../cv.html" class="active">CV 视觉</a>
+    <a href="../homework.html">课后练习</a>
+    <a href="../projects.html">实战项目</a>
+  </nav>
+  <span class="spacer"></span>
+</header>
+<div class="layout">
+<aside class="sidenav"><a class="item" href="../cv.html">← CV 模块总览</a><div class="group-title">🧭 学习准备</div><a class="item" data-page-key="cv-getting-started" href="getting-started.html"><span class="no">01</span><span>视觉任务、张量与实验准备</span><span class="done-flag">✅</span></a><div class="group-title">🖼️ OpenCV 图像处理</div><a class="item" data-page-key="cv-opencv-image-arrays" href="opencv-image-arrays.html"><span class="no">02</span><span>图像读写、数组与坐标：先读懂一张图</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-threshold-morphology" href="opencv-threshold-morphology.html"><span class="no">03</span><span>阈值、平滑与形态学：把目标从背景中分离</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-edges-contours-frequency" href="opencv-edges-contours-frequency.html"><span class="no">04</span><span>梯度、轮廓与频域：从像素变化到几何结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-histogram-template" href="opencv-histogram-template.html"><span class="no">05</span><span>直方图与模板匹配：分布、对比度和局部相似度</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-features-matching" href="opencv-features-matching.html"><span class="no">06</span><span>Harris、SIFT 与特征匹配：找到可重复识别的局部结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-background-optical-flow" href="opencv-background-optical-flow.html"><span class="no">07</span><span>背景建模与光流：区分运动区域并追踪像素</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-credit-card-ocr" href="opencv-credit-card-ocr.html"><span class="no">08</span><span>模板 OCR 实战：从信用卡数字组到逐字识别</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-document-scanner" href="opencv-document-scanner.html"><span class="no">09</span><span>文档扫描与 OCR：从四个角点恢复平整页面</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-panorama-exam" href="opencv-panorama-exam.html"><span class="no">10</span><span>几何视觉的两种应用：全景拼接与答题卡判卷</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="cv-opencv-parking-spaces" href="opencv-parking-spaces.html"><span class="no">11</span><span>停车场车位识别：固定几何地图与图像分类结合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-convolution-dnn-tracking" href="opencv-convolution-dnn-tracking.html"><span class="no">12</span><span>卷积、DNN 与目标跟踪：把算法接成视频流水线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-face-blinks" href="opencv-face-blinks.html"><span class="no">13</span><span>人脸关键点与眨眼计数：从坐标到时间状态</span><span class="done-flag">✅</span></a><div class="group-title">🎯 目标检测</div><a class="item" data-page-key="cv-detection-metrics" href="detection-metrics.html"><span class="no">14</span><span>目标检测任务、IoU、NMS 与 mAP</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detection-data-pipeline" href="detection-data-pipeline.html"><span class="no">15</span><span>目标检测标注与数据管线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov3-from-grid-to-box" href="yolov3-from-grid-to-box.html"><span class="no">16</span><span>YOLOv3：从网格到边界框</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov5-model-and-training" href="yolov5-model-and-training.html"><span class="no">17</span><span>YOLOv5：结构、标签分配与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov7-assignment-and-reparameterization" href="yolov7-assignment-and-reparameterization.html"><span class="no">18</span><span>YOLOv7：动态分配与重参数化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientnet-mbconv-and-scaling" href="efficientnet-mbconv-and-scaling.html"><span class="no">19</span><span>EfficientNet：MBConv、SE 与复合缩放</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientdet-bifpn-and-loss" href="efficientdet-bifpn-and-loss.html"><span class="no">20</span><span>EfficientDet：BiFPN、检测头与损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-centernet-objects-as-points" href="centernet-objects-as-points.html"><span class="no">21</span><span>CenterNet：把目标表示为中心点</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detr-set-prediction" href="detr-set-prediction.html"><span class="no">22</span><span>DETR：查询、注意力与集合预测</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deformable-detr-sparse-attention" href="deformable-detr-sparse-attention.html"><span class="no">23</span><span>Deformable DETR：稀疏多尺度注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mmdetection-reproducible-experiment" href="mmdetection-reproducible-experiment.html"><span class="no">24</span><span>MMDetection：配置驱动的检测实验</span><span class="done-flag">✅</span></a><div class="group-title">🧩 图像分割</div><a class="item" data-page-key="cv-segmentation-foundations" href="segmentation-foundations.html"><span class="no">25</span><span>分割基础：标签、损失与 IoU 指标</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-pytorch-vision-workflow" href="pytorch-vision-workflow.html"><span class="no">26</span><span>PyTorch 视觉工程：张量、训练与迁移学习</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-unet-nested-segmentation" href="unet-nested-segmentation.html"><span class="no">27</span><span>U-Net 与 U-Net++：医学细胞分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-u2net-saliency" href="u2net-saliency.html"><span class="no">28</span><span>U²-Net：残差 U 形块与显著目标分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deeplab-voc" href="deeplab-voc.html"><span class="no">29</span><span>DeepLabV3+：空洞卷积、ASPP 与 VOC 工程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-echo-video-segmentation" href="echo-video-segmentation.html"><span class="no">30</span><span>心脏视频分割：代表帧、面积曲线与数据流</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-resnet-medical-classification" href="resnet-medical-classification.html"><span class="no">31</span><span>ResNet 医学分类：残差结构与任务评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-mechanics" href="mask-rcnn-mechanics.html"><span class="no">32</span><span>Mask R-CNN：FPN、RPN、ROIAlign 与 mask 损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-custom-data" href="mask-rcnn-custom-data.html"><span class="no">33</span><span>Mask R-CNN 自定义任务：实例标注与分阶段训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-maskformer-mask2former" href="maskformer-mask2former.html"><span class="no">34</span><span>MaskFormer 与 Mask2Former：区域查询和掩码注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-r2plus1d-video-learning" href="r2plus1d-video-learning.html"><span class="no">35</span><span>R(2+1)D：视频时空卷积与数值回归</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="../cv.html">CV 计算机视觉</a> / OpenCV 图像处理 / 第 11 讲</div>
+<h1>停车场车位识别：固定几何地图与图像分类结合</h1>
+<div class="chips"><span class="chip">🖼️ OpenCV 图像处理</span></div>
+</div>
+<h2 id="sec-1">先定位车位，再判断是否占用</h2>
+<p>这个项目把任务拆成两部分：利用固定视角下的车位线建立车位坐标表，再裁出每个车位的小图做空闲与占用二分类。因此分类网络只回答给定区域内是否有车，不负责自动发现整个场景中所有车位。读懂这个分工，才知道更换摄像头后应该重新标定几何区域，而不是只重新加载模型。</p>
+<h2 id="sec-2">颜色与边缘筛选的真实含义</h2>
+<p>输入测试图由 Matplotlib 读取，后续灰度转换使用 RGB 顺序。名为 <code>select_rgb_white_yellow</code> 的函数实际只保留三个通道都在 120–255 的像素，即亮色近白区域，并没有单独实现黄色筛选。函数名表达的目标与代码真正做的事情要区分。</p>
+<p>接着转灰度、Canny 检测边缘、用手工多边形限制感兴趣区域。多边形顶点按图像宽高比例设置，可以随分辨率缩放，但仍绑定停车场布局和摄像头位置。它不会自动识别“哪里是停车场”。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">bright_mask</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">inRange</span><span class="p">(</span><span class="n">rgb_image</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">([</span><span class="mi">120</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">120</span><span class="p">]),</span>
+                          <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">([</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">]))</span>
+<span class="n">selected</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">bitwise_and</span><span class="p">(</span><span class="n">rgb_image</span><span class="p">,</span> <span class="n">rgb_image</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">bright_mask</span><span class="p">)</span>
+<span class="n">gray</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">selected</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_RGB2GRAY</span><span class="p">)</span>
+<span class="n">edges</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">Canny</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">HoughLinesP</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">theta</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">10</span><span class="p">,</span>
+                       <span class="n">threshold</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">minLineLength</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">maxLineGap</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>这是原方法的简化片段，输入应与原码一样使用 0–255 的 RGB 图。若图像加载接口返回 0–1 浮点值，阈值 120 会使掩模全黑；如果视频帧来自 OpenCV，则最初是 BGR，需统一颜色约定。</p>
+<h2 id="sec-3">霍夫线段如何变成车道</h2>
+<p>霍夫方法在参数空间中寻找支持直线的边缘点。<code>rho</code> 是距离分辨率，<code>theta</code> 是角度分辨率，<code>threshold</code> 是投票门槛，最短长度与最大间隙控制最终线段。原参数中的 <code>np.pi/10</code> 是 18 度，不是精细到 0.1 度的搜索。</p>
+<p>检测后只保留高度差不超过 1、横向长度在 25–55 像素之间的近水平线。再按起点 x、y 排序，把相邻 x 起点距离不超过 10 的线段归为一组。每组至少需要较多线段，去重后以最上、最下 y 和平均左右 x 定出车道矩形。这里的“聚类”是手写的相邻距离分组，并非调用通用聚类模型。</p>
+<p>原代码直接遍历 <code>lines</code>，如果没有检测到线段，它可能是 <code>None</code>，应先检查。线段端点顺序、重复边缘以及遮挡都会影响聚类；不应仅因为输出了十二个矩形，就认定车位地图正确。</p>
+<h2 id="sec-4">车位切分中的人工标定</h2>
+<p>每列车道按 15.5 像素的间隔切分，内部车道再从中间一分为二，左右两侧车道只保留单列。代码还有针对各列的 x、y 调整字典，明确体现了人工微调。换视角后照抄字典没有可迁移的几何含义。</p>
+<p>坐标表将 <code>(x1,y1,x2,y2)</code> 映射到车位编号，再用切片提取每块。因为间隔为浮点数，真正切片前必须转整数。还要检查最后一格是否超出车道边界，避免 <code>num_splits+1</code> 带来的额外小格或越界裁剪。对固定摄像头，人工审核并保存可信车位区域往往是合理的工程步骤。</p>
+<h2 id="sec-5">分类网络到底训练什么</h2>
+<p>训练脚本加载去掉顶层的 VGG16，输入为 48×48×3；冻结前十层，再接 Flatten 和两类 Softmax，用交叉熵训练。前十层被冻结，不意味着整个特征提取网络都冻结。其余可训练层与新分类头共同调整，使图像特征适应车位任务。</p>
+<p>训练生成器把像素除以 255，并加入翻转、缩放、平移和小角度旋转。验证生成器也加入了随机增强，会让每轮验证受随机变化影响；较清楚的基线通常让验证预处理保持确定，只在明确要评估扰动鲁棒性时做额外增强实验。示例采用 ImageNet 权重却用简单缩放，应理解这是原项目配置，不要宣称它等同于所有 VGG16 预训练模型的标准预处理。</p>
+<p>同一视频里相邻帧高度相似。若训练和验证混入同一时刻、同一车辆的近重复裁剪，验证分数会高估泛化。更有意义的是按拍摄时间、光照或完整场景划分，单独观察阴影、遮挡、夜间和空车位线磨损等情况。</p>
+<h2 id="sec-6">推理张量与训练约定</h2>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">crop</span> <span class="o">=</span> <span class="n">frame_rgb</span><span class="p">[</span><span class="n">y1</span><span class="p">:</span><span class="n">y2</span><span class="p">,</span> <span class="n">x1</span><span class="p">:</span><span class="n">x2</span><span class="p">]</span>
+<span class="k">if</span> <span class="n">crop</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;车位裁剪为空&#39;</span><span class="p">)</span>
+<span class="n">crop</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">crop</span><span class="p">,</span> <span class="p">(</span><span class="mi">48</span><span class="p">,</span> <span class="mi">48</span><span class="p">))</span>
+<span class="n">batch</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">crop</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span> <span class="o">/</span> <span class="mf">255.0</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">probabilities</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">batch</span><span class="p">)</span>
+<span class="n">class_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">probabilities</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+<span class="n">label</span> <span class="o">=</span> <span class="n">index_to_label</span><span class="p">[</span><span class="n">class_id</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>这是原预测函数的教学整理。单张图从 <code>(48,48,3)</code> 加批次维变为 <code>(1,48,48,3)</code>；模型返回每类的分数。训练和推理要统一颜色、缩放、尺寸与标签次序，标签表应从训练目录的类别映射保存，不能假设 0 永远等于空闲。</p>
+<p>原视频每五帧做一次预测，节省计算但会降低更新频率；它逐车位单独调用模型，扩展时可把全部车位叠成一个 batch。处理读取结果必须先判断帧是否有效，再进行复制和裁剪。显示空闲数时可以用一段时间内的稳定状态抑制瞬时闪烁，但应说明由此引入的响应延迟。</p>
+<h2 id="sec-7">练习</h2>
+<ol>
+<li>为什么这个系统更换相机位置后，分类模型没变也可能全部失效？</li>
+<li>20 个车位一起预测时，输入 batch 的形状是什么？</li>
+<li>训练读取 RGB、视频推理直接用 BGR，会发生什么？</li>
+</ol>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><ol>
+<li>车位区域和几何阈值已不对应新画面，裁剪得到的内容就错了。先重新标定车位，再评估分类器是否需要适配。</li>
+<li><code>(20,48,48,3)</code>，前提是模型使用该项目的通道末尾布局。</li>
+<li>通道语义不一致，预训练特征和训练得到的颜色关系被改变。即使没有运行错误，预测也可能退化，应在入口显式统一。</li>
+</ol></div></div>
+
+
+<div class="done-bar"><button class="mark-done-btn" data-key="cv-opencv-parking-spaces" type="button">⛳ 学完了？标记为已完成</button></div>
+
+<div class="pager"><a href="opencv-panorama-exam.html"><div class="dir">← 上一讲</div><div class="name">几何视觉的两种应用：全景拼接与答题卡判卷</div></a><a class="next" href="opencv-convolution-dnn-tracking.html"><div class="dir">下一讲 →</div><div class="name">卷积、DNN 与目标跟踪：把算法接成视频流水线</div></a></div></main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">先定位车位，再判断是否占用</a><a class="lv2" href="#sec-2">颜色与边缘筛选的真实含义</a><a class="lv2" href="#sec-3">霍夫线段如何变成车道</a><a class="lv2" href="#sec-4">车位切分中的人工标定</a><a class="lv2" href="#sec-5">分类网络到底训练什么</a><a class="lv2" href="#sec-6">推理张量与训练约定</a><a class="lv2" href="#sec-7">练习</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 仅供个人学习使用，请勿传播 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

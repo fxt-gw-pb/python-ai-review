@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>图像读写、数组与坐标：先读懂一张图 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<link rel="stylesheet" href="../assets/css/cv.css">
+</head>
+<body class="has-sidenav cv-doc">
+<header class="topbar">
+  <button class="menu-btn" type="button" aria-label="收起或展开侧栏" title="收起侧栏">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../lessons.html">课程讲义</a>
+    <a href="../cv.html" class="active">CV 视觉</a>
+    <a href="../homework.html">课后练习</a>
+    <a href="../projects.html">实战项目</a>
+  </nav>
+  <span class="spacer"></span>
+</header>
+<div class="layout">
+<aside class="sidenav"><a class="item" href="../cv.html">← CV 模块总览</a><div class="group-title">🧭 学习准备</div><a class="item" data-page-key="cv-getting-started" href="getting-started.html"><span class="no">01</span><span>视觉任务、张量与实验准备</span><span class="done-flag">✅</span></a><div class="group-title">🖼️ OpenCV 图像处理</div><a class="item active" data-page-key="cv-opencv-image-arrays" href="opencv-image-arrays.html"><span class="no">02</span><span>图像读写、数组与坐标：先读懂一张图</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-threshold-morphology" href="opencv-threshold-morphology.html"><span class="no">03</span><span>阈值、平滑与形态学：把目标从背景中分离</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-edges-contours-frequency" href="opencv-edges-contours-frequency.html"><span class="no">04</span><span>梯度、轮廓与频域：从像素变化到几何结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-histogram-template" href="opencv-histogram-template.html"><span class="no">05</span><span>直方图与模板匹配：分布、对比度和局部相似度</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-features-matching" href="opencv-features-matching.html"><span class="no">06</span><span>Harris、SIFT 与特征匹配：找到可重复识别的局部结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-background-optical-flow" href="opencv-background-optical-flow.html"><span class="no">07</span><span>背景建模与光流：区分运动区域并追踪像素</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-credit-card-ocr" href="opencv-credit-card-ocr.html"><span class="no">08</span><span>模板 OCR 实战：从信用卡数字组到逐字识别</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-document-scanner" href="opencv-document-scanner.html"><span class="no">09</span><span>文档扫描与 OCR：从四个角点恢复平整页面</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-panorama-exam" href="opencv-panorama-exam.html"><span class="no">10</span><span>几何视觉的两种应用：全景拼接与答题卡判卷</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-parking-spaces" href="opencv-parking-spaces.html"><span class="no">11</span><span>停车场车位识别：固定几何地图与图像分类结合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-convolution-dnn-tracking" href="opencv-convolution-dnn-tracking.html"><span class="no">12</span><span>卷积、DNN 与目标跟踪：把算法接成视频流水线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-face-blinks" href="opencv-face-blinks.html"><span class="no">13</span><span>人脸关键点与眨眼计数：从坐标到时间状态</span><span class="done-flag">✅</span></a><div class="group-title">🎯 目标检测</div><a class="item" data-page-key="cv-detection-metrics" href="detection-metrics.html"><span class="no">14</span><span>目标检测任务、IoU、NMS 与 mAP</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detection-data-pipeline" href="detection-data-pipeline.html"><span class="no">15</span><span>目标检测标注与数据管线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov3-from-grid-to-box" href="yolov3-from-grid-to-box.html"><span class="no">16</span><span>YOLOv3：从网格到边界框</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov5-model-and-training" href="yolov5-model-and-training.html"><span class="no">17</span><span>YOLOv5：结构、标签分配与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov7-assignment-and-reparameterization" href="yolov7-assignment-and-reparameterization.html"><span class="no">18</span><span>YOLOv7：动态分配与重参数化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientnet-mbconv-and-scaling" href="efficientnet-mbconv-and-scaling.html"><span class="no">19</span><span>EfficientNet：MBConv、SE 与复合缩放</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientdet-bifpn-and-loss" href="efficientdet-bifpn-and-loss.html"><span class="no">20</span><span>EfficientDet：BiFPN、检测头与损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-centernet-objects-as-points" href="centernet-objects-as-points.html"><span class="no">21</span><span>CenterNet：把目标表示为中心点</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detr-set-prediction" href="detr-set-prediction.html"><span class="no">22</span><span>DETR：查询、注意力与集合预测</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deformable-detr-sparse-attention" href="deformable-detr-sparse-attention.html"><span class="no">23</span><span>Deformable DETR：稀疏多尺度注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mmdetection-reproducible-experiment" href="mmdetection-reproducible-experiment.html"><span class="no">24</span><span>MMDetection：配置驱动的检测实验</span><span class="done-flag">✅</span></a><div class="group-title">🧩 图像分割</div><a class="item" data-page-key="cv-segmentation-foundations" href="segmentation-foundations.html"><span class="no">25</span><span>分割基础：标签、损失与 IoU 指标</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-pytorch-vision-workflow" href="pytorch-vision-workflow.html"><span class="no">26</span><span>PyTorch 视觉工程：张量、训练与迁移学习</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-unet-nested-segmentation" href="unet-nested-segmentation.html"><span class="no">27</span><span>U-Net 与 U-Net++：医学细胞分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-u2net-saliency" href="u2net-saliency.html"><span class="no">28</span><span>U²-Net：残差 U 形块与显著目标分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deeplab-voc" href="deeplab-voc.html"><span class="no">29</span><span>DeepLabV3+：空洞卷积、ASPP 与 VOC 工程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-echo-video-segmentation" href="echo-video-segmentation.html"><span class="no">30</span><span>心脏视频分割：代表帧、面积曲线与数据流</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-resnet-medical-classification" href="resnet-medical-classification.html"><span class="no">31</span><span>ResNet 医学分类：残差结构与任务评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-mechanics" href="mask-rcnn-mechanics.html"><span class="no">32</span><span>Mask R-CNN：FPN、RPN、ROIAlign 与 mask 损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-custom-data" href="mask-rcnn-custom-data.html"><span class="no">33</span><span>Mask R-CNN 自定义任务：实例标注与分阶段训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-maskformer-mask2former" href="maskformer-mask2former.html"><span class="no">34</span><span>MaskFormer 与 Mask2Former：区域查询和掩码注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-r2plus1d-video-learning" href="r2plus1d-video-learning.html"><span class="no">35</span><span>R(2+1)D：视频时空卷积与数值回归</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="../cv.html">CV 计算机视觉</a> / OpenCV 图像处理 / 第 02 讲</div>
+<h1>图像读写、数组与坐标：先读懂一张图</h1>
+<div class="chips"><span class="chip">🖼️ OpenCV 图像处理</span></div>
+</div>
+<h2 id="sec-1">本节目标</h2>
+<p>计算机中的图像首先是数组。本节从读图、显示、裁剪、通道、填充和融合入手，建立后续 OCR、检测和跟踪都要使用的数据约定。学完应能在运行算法之前说明输入的高、宽、通道、数据类型与坐标系，并判断一次切片有没有改变原图。</p>
+<h2 id="sec-2">像素、形状与颜色通道</h2>
+<p>彩色图像通常写成 $I\in\{0,\ldots,255\}^{H\times W\times3}$。数组的第一个轴对应行，也就是纵坐标 $y$；第二个轴对应列，也就是横坐标 $x$。所以读取一个像素用 <code>image[y, x]</code>，画一个点却把坐标写成 <code>(x, y)</code>。观察 <code>shape</code>、元素总数和 <code>dtype</code> 时，要把形状与数据类型联系起来：<code>size</code> 是数组元素个数，不是磁盘文件字节数。</p>
+<p>OpenCV 读取的彩色通道顺序是 B、G、R；Matplotlib 显示彩色数组时按 R、G、B 解释。灰度图只有 <code>(H, W)</code>，不是“只留 B 通道”：灰度转换把颜色亮度信息组合到一个通道。直接把 BGR 数组传给 <code>plt.imshow</code> 会产生偏色，数组中的像素并没有被自动改成 RGB。</p>
+<p>下面的教学代码演示读图失败检查、裁剪与显式颜色转换：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">image</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;cat.jpg&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">image</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s1">&#39;未能读取 cat.jpg&#39;</span><span class="p">)</span>
+<span class="n">h</span><span class="p">,</span> <span class="n">w</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+<span class="n">gray</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+<span class="n">roi</span> <span class="o">=</span> <span class="n">image</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">200</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">red_only</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">red_only</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">red_only</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2RGB</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><code>shape[:2]</code> 同时适用于灰度和彩色图；<code>image[0:50, 0:200]</code> 的高度最多 50、宽度最多 200，右端点不包含在内。NumPy 的基础切片一般是共享内存的视图，后续修改 ROI 可能写回原数组，因此这里用 <code>.copy()</code>。<code>red_only[:, :, :2] = 0</code> 将 B、G 清零并保留 R；它得到三通道红色图，不是单通道灰度图。</p>
+<h2 id="sec-3">边界、数值范围与融合</h2>
+<p>滤波窗口滑到图像边缘时，一部分窗口越界。常见填充方式包括复制边缘、反射、不重复端点的反射、环绕和常量填充。补什么值会改变边缘输出，因此比较两个卷积实现时，要同时核对核、深度和边界模式。</p>
+<p><code>uint8</code> 只有 0 到 255。对照数组加法与 <code>cv2.add</code>：对 <code>uint8</code> 数组，250 与 10 相加可能回绕成 4，OpenCV 饱和加法则得到 255。这不是显示问题，而是数值计算规则不同。需要保留超范围中间结果时，先转为浮点，再明确决定最后如何裁剪和显示。</p>
+<p>注意 <code>cv2.resize(image, (width, height))</code> 的参数顺序与 <code>shape</code> 相反；等比例缩放要用同一个比例，分别放大宽、高会改变物体形状。融合公式为 $J=\alpha A+\beta B+\gamma$，两张图的形状和类型应兼容。权重 0.4 与 0.6 的意思是逐像素加权，并不会自动对齐两张图里的物体。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">other</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="s1">&#39;dog.jpg&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">other</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="s1">&#39;未能读取 dog.jpg&#39;</span><span class="p">)</span>
+<span class="n">other</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">h</span><span class="p">))</span>
+<span class="n">mixed</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">addWeighted</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">ok</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imwrite</span><span class="p">(</span><span class="s1">&#39;mixed.png&#39;</span><span class="p">,</span> <span class="n">mixed</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">ok</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s1">&#39;图像保存失败&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<h2 id="sec-4">视频循环为什么要先检查读取结果</h2>
+<p>视频就是按时间排列的帧。用一致的变量名保存读取状态，并避免使用 <code>open</code> 这样的内置函数名。每次读取后立即检查状态，才能在文件结束或解码失败时安全退出：</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">cap</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoCapture</span><span class="p">(</span><span class="s1">&#39;test.mp4&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="n">cap</span><span class="o">.</span><span class="n">isOpened</span><span class="p">():</span>
+    <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s1">&#39;视频未打开&#39;</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">ret</span><span class="p">,</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">cap</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span> <span class="ow">or</span> <span class="n">frame</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">gray</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cvtColor</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">cv2</span><span class="o">.</span><span class="n">COLOR_BGR2GRAY</span><span class="p">)</span>
+        <span class="n">cv2</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="s1">&#39;video&#39;</span><span class="p">,</span> <span class="n">gray</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">cv2</span><span class="o">.</span><span class="n">waitKey</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span> <span class="o">==</span> <span class="mi">27</span><span class="p">:</span>
+            <span class="k">break</span>
+<span class="k">finally</span><span class="p">:</span>
+    <span class="n">cap</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
+    <span class="n">cv2</span><span class="o">.</span><span class="n">destroyAllWindows</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><code>waitKey</code> 既承担按键读取，也让本地窗口处理事件；等待 10 毫秒不意味着视频一定达到 100 FPS，因为解码与计算也耗时。Notebook 的 <code>%matplotlib inline</code> 是魔法命令，复制到普通 <code>.py</code> 文件时要移除。本页代码面向有 OpenCV 图形窗口支持的本地 Python，网站显示的是学习代码与解释。</p>
+<h2 id="sec-5">把输入约定写成检查步骤</h2>
+<p>读一张新图时，可以先记录 <code>(H,W,C)</code>、最小值、最大值与数据类型，再观察一小块像素。若图像已经归一化为 0–1 浮点数，直接按 0–255 的阈值处理会得到几乎全黑的结果；若它是带透明通道的四通道图，直接解包为三个通道也会出错。这类错误通常发生在算法入口，越早检查，越容易定位。</p>
+<p>ROI 坐标也要验证：裁剪条件至少应满足 <code>0 &lt;= x1 &lt; x2 &lt;= W</code> 和 <code>0 &lt;= y1 &lt; y2 &lt;= H</code>。边界框由浮点模型输出时，应明确取整方式，并先裁到图像范围，再判断裁剪是否为空。这样后续 <code>resize</code> 的报错才能与真正的上游定位问题分开。</p>
+<p>为了复查处理结果，保存原始输入、用于计算的数组和用于显示的图片时应使用不同变量。画框和写字会改变像素，若把带有红框的图片重新送入阈值或直方图统计，展示操作就会污染计算。最简单的习惯是始终在 <code>image.copy()</code> 上绘图。</p>
+<h2 id="sec-6">练习</h2>
+<ol>
+<li>一张形状为 <code>(480, 640, 3)</code> 的图，切片 <code>image[100:200, 20:70]</code> 的形状是什么？放大成宽 1280 且保持比例，传给 <code>resize</code> 的尺寸是什么？</li>
+<li>为什么修改 <code>image[:, :, 2]</code> 可能直接改变原图，而修改 <code>image.copy()[:, :, 2]</code> 不会？</li>
+<li>为 <code>cv2.addWeighted</code> 设计一个能检查是否饱和的单像素例子。</li>
+</ol>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><ol>
+<li>ROI 为 <code>(100, 50, 3)</code>；保持比例后的尺寸参数为 <code>(1280, 960)</code>。</li>
+<li>前者是原数组的切片视图，后者先复制了独立内存。应区分变量名与底层数据是否共享。</li>
+<li>例如两张单像素 <code>uint8</code> 图都填 200，令权重均为 1，数学结果为 400，饱和转换后的结果是 255。权重之和不一定必须是 1，但超范围的显示结果需要自己理解。</li>
+</ol></div></div>
+
+
+<div class="done-bar"><button class="mark-done-btn" data-key="cv-opencv-image-arrays" type="button">⛳ 学完了？标记为已完成</button></div>
+
+<div class="pager"><a href="getting-started.html"><div class="dir">← 上一讲</div><div class="name">视觉任务、张量与实验准备</div></a><a class="next" href="opencv-threshold-morphology.html"><div class="dir">下一讲 →</div><div class="name">阈值、平滑与形态学：把目标从背景中分离</div></a></div></main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">本节目标</a><a class="lv2" href="#sec-2">像素、形状与颜色通道</a><a class="lv2" href="#sec-3">边界、数值范围与融合</a><a class="lv2" href="#sec-4">视频循环为什么要先检查读取结果</a><a class="lv2" href="#sec-5">把输入约定写成检查步骤</a><a class="lv2" href="#sec-6">练习</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 仅供个人学习使用，请勿传播 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>

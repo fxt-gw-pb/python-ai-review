@@ -87,7 +87,7 @@
     const prog = document.getElementById("progress-num");
     if (prog) {
       const total = parseInt(prog.dataset.total, 10) || 0;
-      const keys = new Set();
+      const keys = new Set((prog.dataset.progressKeys || "").split(",").filter(Boolean));
       document.querySelectorAll("a[data-page-key]").forEach(c => keys.add(c.dataset.pageKey));
       let n = 0;
       keys.forEach(k => { if (doneSet.has(k)) n++; });

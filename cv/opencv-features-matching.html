@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Harris、SIFT 与特征匹配：找到可重复识别的局部结构 · ai自学</title>
+<link rel="icon" href="../assets/img/logo.jpg">
+<link rel="stylesheet" href="../assets/css/style.css">
+<link rel="stylesheet" href="../assets/css/code.css">
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [["$", "$"], ["\\(", "\\)"]],
+    displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+    processEscapes: true
+  },
+  options: {skipHtmlTags: ["script", "noscript", "style", "textarea", "pre", "code"]}
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
+<link rel="stylesheet" href="../assets/css/cv.css">
+</head>
+<body class="has-sidenav cv-doc">
+<header class="topbar">
+  <button class="menu-btn" type="button" aria-label="收起或展开侧栏" title="收起侧栏">☰</button>
+  <a class="logo" href="../index.html"><span class="logo-badge"><img src="../assets/img/logo.jpg" alt="ai自学"></span>ai自学</a>
+  <nav>
+    <a href="../index.html">首页</a>
+    <a href="../lessons.html">课程讲义</a>
+    <a href="../cv.html" class="active">CV 视觉</a>
+    <a href="../homework.html">课后练习</a>
+    <a href="../projects.html">实战项目</a>
+  </nav>
+  <span class="spacer"></span>
+</header>
+<div class="layout">
+<aside class="sidenav"><a class="item" href="../cv.html">← CV 模块总览</a><div class="group-title">🧭 学习准备</div><a class="item" data-page-key="cv-getting-started" href="getting-started.html"><span class="no">01</span><span>视觉任务、张量与实验准备</span><span class="done-flag">✅</span></a><div class="group-title">🖼️ OpenCV 图像处理</div><a class="item" data-page-key="cv-opencv-image-arrays" href="opencv-image-arrays.html"><span class="no">02</span><span>图像读写、数组与坐标：先读懂一张图</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-threshold-morphology" href="opencv-threshold-morphology.html"><span class="no">03</span><span>阈值、平滑与形态学：把目标从背景中分离</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-edges-contours-frequency" href="opencv-edges-contours-frequency.html"><span class="no">04</span><span>梯度、轮廓与频域：从像素变化到几何结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-histogram-template" href="opencv-histogram-template.html"><span class="no">05</span><span>直方图与模板匹配：分布、对比度和局部相似度</span><span class="done-flag">✅</span></a><a class="item active" data-page-key="cv-opencv-features-matching" href="opencv-features-matching.html"><span class="no">06</span><span>Harris、SIFT 与特征匹配：找到可重复识别的局部结构</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-background-optical-flow" href="opencv-background-optical-flow.html"><span class="no">07</span><span>背景建模与光流：区分运动区域并追踪像素</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-credit-card-ocr" href="opencv-credit-card-ocr.html"><span class="no">08</span><span>模板 OCR 实战：从信用卡数字组到逐字识别</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-document-scanner" href="opencv-document-scanner.html"><span class="no">09</span><span>文档扫描与 OCR：从四个角点恢复平整页面</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-panorama-exam" href="opencv-panorama-exam.html"><span class="no">10</span><span>几何视觉的两种应用：全景拼接与答题卡判卷</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-parking-spaces" href="opencv-parking-spaces.html"><span class="no">11</span><span>停车场车位识别：固定几何地图与图像分类结合</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-convolution-dnn-tracking" href="opencv-convolution-dnn-tracking.html"><span class="no">12</span><span>卷积、DNN 与目标跟踪：把算法接成视频流水线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-opencv-face-blinks" href="opencv-face-blinks.html"><span class="no">13</span><span>人脸关键点与眨眼计数：从坐标到时间状态</span><span class="done-flag">✅</span></a><div class="group-title">🎯 目标检测</div><a class="item" data-page-key="cv-detection-metrics" href="detection-metrics.html"><span class="no">14</span><span>目标检测任务、IoU、NMS 与 mAP</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detection-data-pipeline" href="detection-data-pipeline.html"><span class="no">15</span><span>目标检测标注与数据管线</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov3-from-grid-to-box" href="yolov3-from-grid-to-box.html"><span class="no">16</span><span>YOLOv3：从网格到边界框</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov5-model-and-training" href="yolov5-model-and-training.html"><span class="no">17</span><span>YOLOv5：结构、标签分配与训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-yolov7-assignment-and-reparameterization" href="yolov7-assignment-and-reparameterization.html"><span class="no">18</span><span>YOLOv7：动态分配与重参数化</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientnet-mbconv-and-scaling" href="efficientnet-mbconv-and-scaling.html"><span class="no">19</span><span>EfficientNet：MBConv、SE 与复合缩放</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-efficientdet-bifpn-and-loss" href="efficientdet-bifpn-and-loss.html"><span class="no">20</span><span>EfficientDet：BiFPN、检测头与损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-centernet-objects-as-points" href="centernet-objects-as-points.html"><span class="no">21</span><span>CenterNet：把目标表示为中心点</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-detr-set-prediction" href="detr-set-prediction.html"><span class="no">22</span><span>DETR：查询、注意力与集合预测</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deformable-detr-sparse-attention" href="deformable-detr-sparse-attention.html"><span class="no">23</span><span>Deformable DETR：稀疏多尺度注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mmdetection-reproducible-experiment" href="mmdetection-reproducible-experiment.html"><span class="no">24</span><span>MMDetection：配置驱动的检测实验</span><span class="done-flag">✅</span></a><div class="group-title">🧩 图像分割</div><a class="item" data-page-key="cv-segmentation-foundations" href="segmentation-foundations.html"><span class="no">25</span><span>分割基础：标签、损失与 IoU 指标</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-pytorch-vision-workflow" href="pytorch-vision-workflow.html"><span class="no">26</span><span>PyTorch 视觉工程：张量、训练与迁移学习</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-unet-nested-segmentation" href="unet-nested-segmentation.html"><span class="no">27</span><span>U-Net 与 U-Net++：医学细胞分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-u2net-saliency" href="u2net-saliency.html"><span class="no">28</span><span>U²-Net：残差 U 形块与显著目标分割</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-deeplab-voc" href="deeplab-voc.html"><span class="no">29</span><span>DeepLabV3+：空洞卷积、ASPP 与 VOC 工程</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-echo-video-segmentation" href="echo-video-segmentation.html"><span class="no">30</span><span>心脏视频分割：代表帧、面积曲线与数据流</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-resnet-medical-classification" href="resnet-medical-classification.html"><span class="no">31</span><span>ResNet 医学分类：残差结构与任务评估</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-mechanics" href="mask-rcnn-mechanics.html"><span class="no">32</span><span>Mask R-CNN：FPN、RPN、ROIAlign 与 mask 损失</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-mask-rcnn-custom-data" href="mask-rcnn-custom-data.html"><span class="no">33</span><span>Mask R-CNN 自定义任务：实例标注与分阶段训练</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-maskformer-mask2former" href="maskformer-mask2former.html"><span class="no">34</span><span>MaskFormer 与 Mask2Former：区域查询和掩码注意力</span><span class="done-flag">✅</span></a><a class="item" data-page-key="cv-r2plus1d-video-learning" href="r2plus1d-video-learning.html"><span class="no">35</span><span>R(2+1)D：视频时空卷积与数值回归</span><span class="done-flag">✅</span></a></aside>
+<main class="doc">
+<div class="doc-head">
+<div class="crumb"><a href="../index.html">首页</a> / <a href="../cv.html">CV 计算机视觉</a> / OpenCV 图像处理 / 第 06 讲</div>
+<h1>Harris、SIFT 与特征匹配：找到可重复识别的局部结构</h1>
+<div class="chips"><span class="chip">🖼️ OpenCV 图像处理</span></div>
+</div>
+<h2 id="sec-1">为什么有些点适合匹配</h2>
+<p>大块白墙平移几个像素，局部几乎不变；直线边缘沿着线移动，也很难确定新位置；角点附近向各方向移动，图案都明显变化。特征检测先找这种可定位的位置，再用描述子表达周围结构，最后比较不同图片的描述子。检测到很多点不代表匹配一定正确，关键在于这些点能否在视角、尺度和亮度变化后重复出现。</p>
+<h2 id="sec-2">Harris 从局部变化推导角点</h2>
+<p>把图像窗口平移 $(u,v)$，用加权平方差衡量变化：</p>
+<p>$$
+E(u,v)=\sum_{x,y}w(x,y)[I(x+u,y+v)-I(x,y)]^2.
+$$</p>
+<p>小位移下用一阶近似 $I(x+u,y+v)-I(x,y)\approx I_xu+I_yv$，整理得 $E(u,v)\approx [u,v]M[u,v]^T$，其中</p>
+<p>$$
+M=\sum w\begin{bmatrix}I_x^2&amp;I_xI_y\\I_xI_y&amp;I_y^2\end{bmatrix}.
+$$</p>
+<p>两个特征值都小，窗口基本平坦；一个大一个小，沿一个方向变化强，通常是边缘；两个都大，两个方向都有明显变化，才像角点。Harris 用 $R=\det M-k(\operatorname{trace}M)^2$ 避免逐点显式计算特征值。这里的 $M$ 是局部梯度统计矩阵，并不是将像素位置变换到另一幅图的单应矩阵。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">gray32</span> <span class="o">=</span> <span class="n">gray</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">cornerHarris</span><span class="p">(</span><span class="n">gray32</span><span class="p">,</span> <span class="n">blockSize</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">ksize</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mf">0.04</span><span class="p">)</span>
+<span class="n">marked</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">marked</span><span class="p">[</span><span class="n">response</span> <span class="o">&gt;</span> <span class="mf">0.01</span> <span class="o">*</span> <span class="n">response</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>这是整理后的教学写法。<code>blockSize</code> 控制统计邻域，<code>ksize</code> 控制 Sobel 导数窗口，<code>k</code> 调整角点响应中的惩罚。红色区域是超过相对阈值的像素集合，不一定每块只剩一个定位点；若需要离散角点，要进一步做局部最大值筛选。显式转换浮点类型有助于检查后续梯度计算的数值。</p>
+<h2 id="sec-3">SIFT 如何处理尺度和旋转</h2>
+<p>同一个物体在图中放大，固定窗口看到的结构就不同。SIFT 先建立高斯尺度空间 $L(x,y,\sigma)=G(\sigma)*I$，相邻模糊层相减得到 DoG。在同层 8 个邻点及上下两层 18 个邻点之间比较，寻找共 26 邻域中的极大或极小值，再细化位置，过滤低对比度和不稳定边缘响应。</p>
+<p>尺度定位之后，算法统计局部梯度方向，给关键点分配主方向。描述区域按主方向对齐，就能在一定范围内减弱旋转影响。教材用 2×2 小块说明直方图组合，完整 SIFT 则使用 4×4 个空间单元，每个单元统计 8 个方向，形成 $4\times4\times8=128$ 维描述子。</p>
+<p>一个关键点有位置、尺度和方向；一个描述子是一行 128 个数。若找到 $N$ 个关键点，描述矩阵通常为 <code>(N,128)</code>。这个 128 不是类别数，也不是原图像素宽度。关键点多主方向时可产生位置、尺度相同而方向不同的描述。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">sift</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">SIFT_create</span><span class="p">()</span>
+<span class="n">keypoints</span><span class="p">,</span> <span class="n">descriptors</span> <span class="o">=</span> <span class="n">sift</span><span class="o">.</span><span class="n">detectAndCompute</span><span class="p">(</span><span class="n">gray</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">descriptors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;图像中没有可用的 SIFT 描述子&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>这段按 OpenCV 4 的接口整理。旧示例使用 <code>cv2.xfeatures2d.SIFT_create()</code>，阅读时保留其算法思想，移植时核对安装环境实际接口。<a href="https://docs.opencv.org/4.x/da/df5/tutorial_py_sift_intro.html">OpenCV SIFT 教程</a></p>
+<figure class="cv-figure"><img loading="lazy" decoding="async" src="../assets/img/cv/sift-descriptor.png" alt="SIFT 把局部窗口组织成 4×4 个单元，每个单元统计 8 个方向，组合为 128 维描述子。"><figcaption>SIFT 把局部窗口组织成 4×4 个单元，每个单元统计 8 个方向，组合为 128 维描述子。</figcaption></figure>
+
+<h2 id="sec-4">描述子相似还要经过两次筛选</h2>
+<p>暴力匹配逐一比较候选描述子。SIFT 使用浮点描述子，通常比较欧氏距离；二进制描述子则应根据编码方式选相应距离，不能只复制匹配器参数。<code>crossCheck=True</code> 的含义是 A 的最近邻为 B，同时 B 的最近邻也必须是 A，它强调双向一致。</p>
+<p>另一种筛选是最近邻与次近邻比值测试：若第一名与第二名几乎同样好，说明这块纹理没有区分力。教材阈值 0.75 是示例选择，不等于 75% 正确率。</p>
+<div class="code-card"><div class="code-head"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="lang">Python</span><button class="copy-btn" type="button">复制</button></div><div class="chroma"><pre><span></span><span class="n">matcher</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">BFMatcher</span><span class="p">(</span><span class="n">cv2</span><span class="o">.</span><span class="n">NORM_L2</span><span class="p">)</span>
+<span class="n">candidates</span> <span class="o">=</span> <span class="n">matcher</span><span class="o">.</span><span class="n">knnMatch</span><span class="p">(</span><span class="n">desc_a</span><span class="p">,</span> <span class="n">desc_b</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">good</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">pair</span> <span class="ow">in</span> <span class="n">candidates</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pair</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="n">best</span><span class="p">,</span> <span class="n">second</span> <span class="o">=</span> <span class="n">pair</span>
+        <span class="k">if</span> <span class="n">best</span><span class="o">.</span><span class="n">distance</span> <span class="o">&lt;</span> <span class="mf">0.75</span> <span class="o">*</span> <span class="n">second</span><span class="o">.</span><span class="n">distance</span><span class="p">:</span>
+            <span class="n">good</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">best</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>代码添加了候选数量检查，因为并非每个查询都能找到两个邻居。<code>queryIdx</code> 指向第一幅图的描述子，<code>trainIdx</code> 指向第二幅图，必须与传入匹配器的顺序一致。画连线时若把索引交换，可能得到看似随机的线，却仍不报语法错误。</p>
+<h2 id="sec-5">RANSAC 用几何关系排除假匹配</h2>
+<p>重复窗户、砖块等纹理会产生外观相似但位置错误的匹配。RANSAC 随机选少量点拟合几何模型，再统计有多少匹配符合模型；经过多次试验，保留支持度较高的模型。单应矩阵为 3×3，齐次坐标下满足 $s[x',y',1]^T=H[x,y,1]^T$。至少需要四对非退化对应点；更多点给鲁棒估计提供冗余。</p>
+<p>几何模型也有适用条件。平面物体或近似纯旋转拍摄常适合用单应性，不同深度产生明显视差时，一张矩阵未必能对齐所有区域。RANSAC 只能在既定模型下过滤异常，不能使不适用的模型自动正确。</p>
+<h2 id="sec-6">练习</h2>
+<ol>
+<li>描述子形状 <code>(320,128)</code> 表示什么？</li>
+<li>比值阈值从 0.75 改为 0.5，通常保留的匹配如何变化？</li>
+<li>为什么 20 个外观匹配也可能不能拼接图像？</li>
+</ol>
+
+
+<div class="answer-box"><button class="answer-toggle" type="button"><span>💡 查看参考答案</span><span class="arrow">▼</span></button><div class="answer-body"><div class="answer-tag">✅ 参考答案</div><ol>
+<li>共 320 个局部描述子，每个 128 维；对应关键点的数量应相同。</li>
+<li>更严格，通常保留更少但区分性更强的匹配，过严也可能导致几何估计点数不足。</li>
+<li>匹配可能位置错误、集中在狭小区域或退化成近似直线；场景也可能有严重视差，需要检查空间分布、内点及几何模型。</li>
+</ol></div></div>
+
+
+<div class="done-bar"><button class="mark-done-btn" data-key="cv-opencv-features-matching" type="button">⛳ 学完了？标记为已完成</button></div>
+
+<div class="pager"><a href="opencv-histogram-template.html"><div class="dir">← 上一讲</div><div class="name">直方图与模板匹配：分布、对比度和局部相似度</div></a><a class="next" href="opencv-background-optical-flow.html"><div class="dir">下一讲 →</div><div class="name">背景建模与光流：区分运动区域并追踪像素</div></a></div></main>
+<aside class="toc"><div class="toc-title">本页目录</div><a class="lv2" href="#sec-1">为什么有些点适合匹配</a><a class="lv2" href="#sec-2">Harris 从局部变化推导角点</a><a class="lv2" href="#sec-3">SIFT 如何处理尺度和旋转</a><a class="lv2" href="#sec-4">描述子相似还要经过两次筛选</a><a class="lv2" href="#sec-5">RANSAC 用几何关系排除假匹配</a><a class="lv2" href="#sec-6">练习</a></aside>
+</div>
+<footer class="site-foot">用心整理的个人复习笔记 · 仅供个人学习使用，请勿传播 ✨</footer>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
